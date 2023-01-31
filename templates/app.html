@@ -1,0 +1,92 @@
+<div class="groups">
+    {{#if (or feats.scroll.[0] feats.talisman.[0])}}
+        <section>
+            {{#if feats.scroll.[0]}} 
+                {{> spellGroup group=feats.scroll values=saved.scroll category='scroll'}} 
+            {{/if}} 
+            {{#if feats.talisman.[0]}}
+                {{> talismanGroup group=feats.talisman values=saved.talisman category='talisman'}}
+            {{/if}}
+        </section>
+    {{/if}}
+    {{#if (or feats.trickster.[0] feats.dabbler.[0])}}
+        <section>
+            {{#if feats.trickster.[0]}} 
+                {{> spellGroup group=feats.trickster values=saved.trickster category='trickster'}} 
+            {{/if}} 
+            {{#if feats.dabbler.[0]}}
+                {{> talismanGroup group=feats.dabbler values=saved.dabbler category='dabbler'}}
+            {{/if}}
+        </section>
+    {{/if}}
+</div>
+
+{{#*inline 'talismanGroup'}}
+<div class="group" data-type="talisman" data-category="{{category}}">
+    <h3>{{i18n category}}</h3>
+    {{> talismanRow index=0}}
+    {{> talismanRow index=1}}
+    {{#if group.[1]}}
+        {{> talismanRow index=2}}
+        {{> talismanRow index=3}}
+    {{/if}}
+</div>
+{{/inline}}
+
+{{#*inline 'talismanRow'}}
+<label>#{{addOne index}}</label>
+<input 
+    type="text" 
+    name="talisman"
+    value="{{getTalismanValue values index 'name'}}" 
+    data-uuid="{{getTalismanValue values index 'uuid'}}"
+    data-index="{{index}}"
+    disabled
+/>
+<a data-action="search" data-index={{index}}><i class="fas fa-search"></i></a>
+<a data-action="clear"{{#unless (getTalismanValue values index 'uuid')}} class="disabled"{{/unless}}><i class="fas fa-times"></i></a>
+{{/inline}}
+
+{{#*inline 'spellGroup'}}
+<div class="group" data-type="spell" data-category="{{category}}">
+    <h3>{{i18n category}}</h3>
+    {{> spellRow spellLevel=1}} 
+    {{#if (gte level 8)}} 
+        {{> spellRow spellLevel=2}} 
+    {{/if}}
+    {{#if group.[1]}}
+        {{> spellRow spellLevel=3}} 
+        {{#if (gte level 14)}}
+            {{> spellRow spellLevel=4}}
+        {{/if}}
+        {{#if (gte level 16)}}
+            {{> spellRow spellLevel=5}}
+        {{/if}}
+    {{/if}}
+    {{#if group.[2]}}
+        {{> spellRow spellLevel=6}}
+        {{#if (gte level 20)}}
+            {{> spellRow spellLevel=7}}
+        {{/if}}
+    {{/if}}
+</div>
+{{/inline}} 
+
+{{#*inline 'spellRow'}}
+<label>{{localize (concat 'PF2E.SpellLevel' spellLevel)}}</label>
+<input 
+    type="text" 
+    name="spell"
+    value="{{getSpellValue values spellLevel 'name'}}" 
+    data-uuid="{{getSpellValue values spellLevel 'uuid'}}" 
+    data-level="{{spellLevel}}"
+    disabled
+/>
+<a data-action="search" data-level={{spellLevel}}><i class="fas fa-search"></i></a>
+<a data-action="clear"{{#unless (getSpellValue values spellLevel 'uuid')}} class="disabled"{{/unless}}><i class="fas fa-times"></i></a>
+{{/inline}}
+
+<div class="buttons">
+    <button data-action="accept"><i class="fas fa-save"></i> {{i18n 'accept'}}</button>
+    <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
+</div>

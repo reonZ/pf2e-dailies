@@ -1,0 +1,21 @@
+{
+    "source": "src/main.ts",
+    "module": "scripts/main.js",
+    "scripts": {
+        "watch": "rimraf .parcel-cache && parcel watch",
+        "build": "rimraf .parcel-cache && parcel build"
+    },
+    "author": "Idle",
+    "targets": {
+        "module": {
+            "includeNodeModules": true
+        }
+    },
+    "devDependencies": {
+        "@types/jquery": "latest",
+        "@types/node": "latest",
+        "prompt-sync": "^4.2.0",
+        "parcel": "latest",
+        "rimraf": "^3.0.2"
+    }
+}

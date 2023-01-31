@@ -1,0 +1,51 @@
+{
+    "id": "pf2e-dailies",
+    "title": "PF2e Dailies",
+    "author": "Idle",
+    "description": "Provides a convenient way to take care of some daily preparations.",
+    "authors": [
+        {
+            "name": "Idle",
+            "discord": "Idle#3251"
+        }
+    ],
+    "esmodules": [
+        "scripts/main.js"
+    ],
+    "styles": [
+        "styles/sheet.css",
+        "styles/app.css"
+    ],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ],
+    "relationships": {
+        "systems": [
+            {
+                "id": "pf2e",
+                "type": "system",
+                "manifest": "https://raw.githubusercontent.com/foundryvtt/pf2e/master/system.json",
+                "compatibility": {
+                    "minimum": "4.6.8"
+                }
+            }
+        ],
+        "requires": []
+    },
+    "compatibility": {
+        "minimum": "10.291",
+        "verified": "10"
+    },
+    "version": "1.0.0",
+    "manifestPlusVersion": "1.2.0",
+    "url": "https://github.com/reonZ/pf2e-dailies",
+    "readme": "https://github.com/reonZ/pf2e-dailies/blob/master/README.md",
+    "manifest": "https://raw.githubusercontent.com/reonZ/pf2e-dailies/master/module.json",
+    "download": "https://github.com/reonZ/pf2e-dailies/releases/download/1.0.0/module.zip",
+    "changelog": "https://github.com/reonZ/${id}/blob/master/CHANGELOG.md",
+    "bugs": "https://github.com/reonZ/pf2e-dailies/issues"
+}

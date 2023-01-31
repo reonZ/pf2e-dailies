@@ -1,0 +1,35 @@
+{
+    "pf2e-dailies": {
+        "app": {
+            "title": "Make your dailly preparations",
+            "accept": "Accept",
+            "cancel": "Cancel",
+            "scroll": "Scroll Esoterica",
+            "trickster": "Scroll Trickster",
+            "dabbler": "Talisman Dabbler",
+            "talisman": "Talisman Esoterica",
+            "item": {
+                "spell": {
+                    "name": "Scroll of {name} (Level {level})",
+                    "description": "<p>@UUID[{uuid}]</p><p>This scroll is temporary and was aquired from <strong>{category}</strong></p><hr>{description}"
+                },
+                "talisman": {
+                    "description": "<p>This talisman is temporary and was aquired from <strong>{category}</strong></p><hr>{description}"
+                }
+            },
+            "message": {
+                "remove": "Lost the temporary items:",
+                "add": "Gained the temporary items:",
+                "changes": "Has made the following changes during their daily preparations",
+                "noChanges": "Has made no changes during their daily preparations"
+            },
+            "error": {
+                "wrongType": "Only {type}s can be dropped here.",
+                "wrongLevel": "This {type} level is too high for this slot."
+            }
+        },
+        "sheet": {
+            "title": "Dailly Preparations"
+        }
+    }
+}

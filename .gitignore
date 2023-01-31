@@ -1,0 +1,9 @@
+.git/
+.parcel-cache/
+node_modules/
+releases/
+@types/
+@types
+ignore.txt
+release.mjs
+setup.mjs

@@ -1,6 +1,6 @@
 # FoundryVTT PF2e Dailies
 
-This module will provide a convenient interface to handle a character's daily preparations if they have at least one of the following feats and create/delete the associated items:
+This module will provide a convenient interface to handle a character's daily preparations if they have at least one of the following feats and automatically create/delete the associated items:
 
 -   [Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3713)
     -   [Elaborate Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3720)

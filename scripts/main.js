@@ -1,57 +1,6 @@
 var $a58a848730b694bb$export$2e2bcd8739ae039 = "pf2e-dailies";
 
 
-
-function $7a9da4a58a01538c$export$f6ed52839c6955bc(...path) {
-    return `${0, $a58a848730b694bb$export$2e2bcd8739ae039}.settings.${path.join(".")}`;
-}
-function $7a9da4a58a01538c$export$79b67f6e2f31449(...path) {
-    return `flags.${0, $a58a848730b694bb$export$2e2bcd8739ae039}.${path.join("/")}`;
-}
-function $7a9da4a58a01538c$export$bdd507c72609c24e(...path) {
-    path = path.filter((x)=>typeof x === "string");
-    return `modules/${0, $a58a848730b694bb$export$2e2bcd8739ae039}/templates/${path.join("/")}`;
-}
-function $7a9da4a58a01538c$export$6d1a79e7c04100c2(...path) {
-    return `modules/${0, $a58a848730b694bb$export$2e2bcd8739ae039}/images/${path.join("/")}`;
-}
-
-
-function $c143594d021ef19f$export$8206e8d612b3e63(key) {
-    return game.settings.get((0, $a58a848730b694bb$export$2e2bcd8739ae039), key);
-}
-function $c143594d021ef19f$export$61fd6f1ddd0c20e2(key, value) {
-    return game.settings.set((0, $a58a848730b694bb$export$2e2bcd8739ae039), key, value);
-}
-function $c143594d021ef19f$export$3bfe3819d89751f0(options) {
-    const name = options.name;
-    options.scope = options.scope ?? "world";
-    options.config = options.config ?? false;
-    if (options.config) {
-        options.name = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)(name, "name");
-        options.hint = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)(name, "hint");
-    }
-    if (Array.isArray(options.choices)) options.choices = options.choices.reduce((choices, choice)=>{
-        choices[choice] = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)(name, "choices", choice);
-        return choices;
-    }, {});
-    game.settings.register((0, $a58a848730b694bb$export$2e2bcd8739ae039), name, options);
-}
-function $c143594d021ef19f$export$cd2f7161e4d70860(options) {
-    const name = options.name;
-    options.name = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)("menus", name, "name");
-    options.label = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)("menus", name, "label");
-    options.hint = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)("menus", name, "hint");
-    options.restricted = options.restricted ?? true;
-    options.icon = options.icon ?? "fas fa-cogs";
-    game.settings.registerMenu((0, $a58a848730b694bb$export$2e2bcd8739ae039), name, options);
-}
-function $c143594d021ef19f$export$8cb4a6769fa1780e() {
-    return game.settings.get("core", "combatTrackerConfig");
-}
-
-
-
 function $87d8485a68ef7966$export$b3bd0bc58e36cd63(key, data) {
     key = `${0, $a58a848730b694bb$export$2e2bcd8739ae039}.${key}`;
     if (data) return game.i18n.format(key, data);
@@ -104,6 +53,21 @@ function $c5fee9ae913138c0$export$a3bc9b8ed74fc(str, arg1, arg2) {
     $c5fee9ae913138c0$export$5e14cdade93d6f7b(str, "error", arg1, arg2);
 }
 
+
+
+function $7a9da4a58a01538c$export$f6ed52839c6955bc(...path) {
+    return `${0, $a58a848730b694bb$export$2e2bcd8739ae039}.settings.${path.join(".")}`;
+}
+function $7a9da4a58a01538c$export$79b67f6e2f31449(...path) {
+    return `flags.${0, $a58a848730b694bb$export$2e2bcd8739ae039}.${path.join("/")}`;
+}
+function $7a9da4a58a01538c$export$bdd507c72609c24e(...path) {
+    path = path.filter((x)=>typeof x === "string");
+    return `modules/${0, $a58a848730b694bb$export$2e2bcd8739ae039}/templates/${path.join("/")}`;
+}
+function $7a9da4a58a01538c$export$6d1a79e7c04100c2(...path) {
+    return `modules/${0, $a58a848730b694bb$export$2e2bcd8739ae039}/images/${path.join("/")}`;
+}
 
 
 /** Check if an element is present in the provided set. Especially useful for checking against literal sets */ function $06ea898bdee42455$export$7fd671bc170c6856(set, value) {
@@ -383,18 +347,10 @@ const $f6c0b3be47017fed$var$UUIDS = {
         "Compendium.pf2e.feats-srd.nWd7m0yRcIEVUy7O",
         "Compendium.pf2e.feats-srd.LHjPTV5vP3MOsPPJ"
     ],
-    talisman: [
-        "Compendium.pf2e.feats-srd.ygCLN0brunmBYtJR",
-        "Compendium.pf2e.feats-srd.VO8HbMQ79NULE4FQ"
-    ],
     trickster: [
         "Compendium.pf2e.feats-srd.ROAUR1GhC19Pjk9C",
         "Compendium.pf2e.feats-srd.UrOj9TROtn8nuxPf",
         "Compendium.pf2e.feats-srd.lIg5Gzz7W70jfbk1"
-    ],
-    dabbler: [
-        "Compendium.pf2e.feats-srd.1t5479E6bdvFs4E7",
-        "Compendium.pf2e.feats-srd.PTXZ2C3AV8tZf0iX"
     ]
 };
 function $f6c0b3be47017fed$var$flattenUUIDS() {
@@ -434,46 +390,6 @@ function $f6c0b3be47017fed$export$dad830a78ee132d7(actor, feats) {
 }
 
 
-
-function $bd602e7d70bc6167$export$54f992c69bf0c22c(result) {
-    if (result.type === CONST.TABLE_RESULT_TYPES.DOCUMENT) return `${result.documentCollection}.${result.documentId}`;
-    if (result.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM) return `Compendium.${result.documentCollection}.${result.documentId}`;
-    return undefined;
-}
-function $bd602e7d70bc6167$export$20ab79f56cb5e678(uuid, name) {
-    if (name) return `@UUID[${uuid}]{${name}}`;
-    return `@UUID[${uuid}]`;
-}
-function $bd602e7d70bc6167$export$673773a20336d834(name) {
-    return `<span style="background: #DDD;
-    padding: 1px 4px;
-    border: 1px solid var(--color-border-dark-tertiary);
-    border-radius: 2px;
-    white-space: nowrap;
-    word-break: break-all;">${name}</span>`;
-}
-
-
-function $feccc7a5980a21d5$export$3b90ba7d4b602662(item) {
-    if (!item || !item.isOfType("consumable")) return false;
-    if (!item.traits.has("talisman")) return false;
-    return true;
-}
-function $feccc7a5980a21d5$export$ae435123c67c53c7(item) {
-    if (!item || !item.isOfType("spell")) return false;
-    if (item.isCantrip || item.isRitual) return false;
-    return true;
-}
-function $feccc7a5980a21d5$export$62651879628e0c4c(key, data, fakeLink = false) {
-    let msg = `<p>${(0, $87d8485a68ef7966$export$b3bd0bc58e36cd63)(`app.message.${key}`)}</p>`;
-    data.forEach((x)=>{
-        const name = x.name.endsWith(" **") ? x.name.slice(0, -3) : x.name;
-        msg += fakeLink ? `<p>${(0, $bd602e7d70bc6167$export$673773a20336d834)(name)}</p>` : `<p>@UUID[${x.uuid}]{${name}}</p>`;
-    });
-    return msg;
-}
-
-
 const $ea02428521cc9836$var$localize = (0, $87d8485a68ef7966$export$a2435eff6fb7f6c1)("app");
 class $ea02428521cc9836$export$3c9276ec80fdf8ae extends Application {
     constructor(actor){
@@ -489,7 +405,7 @@ class $ea02428521cc9836$export$3c9276ec80fdf8ae extends Application {
             height: "auto",
             dragDrop: [
                 {
-                    dropSelector: '[name="spell"], [name="talisman"]'
+                    dropSelector: '[name="spell"]'
                 }
             ]
         });
@@ -503,7 +419,6 @@ class $ea02428521cc9836$export$3c9276ec80fdf8ae extends Application {
             feats: feats,
             saved: saved,
             level: actor.level,
-            getTalismanValue: (values, index, attr)=>values?.[index]?.[attr] ?? "",
             getSpellValue: (values, level, attr)=>values?.[level - 1]?.[attr] ?? "",
             addOne: (v)=>v + 1
         };
@@ -511,7 +426,6 @@ class $ea02428521cc9836$export$3c9276ec80fdf8ae extends Application {
     activateListeners(html) {
         super.activateListeners(html);
         html.find("[data-type=spell] [data-action=search]").on("click", this.#onSpellSearch.bind(this));
-        html.find("[data-type=talisman] [data-action=search]").on("click", this.#onTalismanSearch.bind(this));
         html.find("[data-action=clear]").on("click", this.#onClear.bind(this));
         html.find("[data-action=accept]").on("click", this.#onAccept.bind(this));
         html.find("[data-action=cancel]").on("click", this.#onCancel.bind(this));
@@ -520,21 +434,12 @@ class $ea02428521cc9836$export$3c9276ec80fdf8ae extends Application {
         const dataString = event.dataTransfer?.getData("text/plain");
         try {
             const input = $(event.target);
-            const type = input.attr("name");
-            const typeLabel = game.i18n.localize(type === "spell" ? "PF2E.SpellLabel" : "PF2E.TraitTalisman").toLowerCase();
-            const typeError = ()=>(0, $c5fee9ae913138c0$export$c106dd0671a0fc2d)("app.error.wrongType", {
-                    type: typeLabel
-                });
+            const typeError = ()=>(0, $c5fee9ae913138c0$export$c106dd0671a0fc2d)("app.error.wrongType");
             const data = JSON.parse(dataString);
             if (!data || data.type !== "Item" || typeof data.uuid !== "string") return typeError();
-            const typeValidation = type === "spell" ? (0, $feccc7a5980a21d5$export$ae435123c67c53c7) : (0, $feccc7a5980a21d5$export$3b90ba7d4b602662);
             const item = await fromUuid(data.uuid);
-            if (!typeValidation(item)) return typeError();
-            const actor = this._actor;
-            const maxLevel = type === "spell" ? Number(input.attr("data-level")) : Math.floor(actor.level / 2);
-            if (item.level > maxLevel) return (0, $c5fee9ae913138c0$export$c106dd0671a0fc2d)("app.error.wrongLevel", {
-                type: typeLabel
-            });
+            if (!item?.isOfType("spell") || item.isCantrip || item.isRitual) return typeError();
+            if (item.level > Number(input.attr("data-level"))) return (0, $c5fee9ae913138c0$export$c106dd0671a0fc2d)("app.error.wrongLevel");
             input.attr("value", item.name);
             input.attr("data-uuid", item.uuid);
             input.nextAll('[data-action="clear"]').first().removeClass("disabled");
@@ -559,30 +464,10 @@ class $ea02428521cc9836$export$3c9276ec80fdf8ae extends Application {
         };
         game.pf2e.compendiumBrowser.openTab("spell", filter);
     }
-    #onTalismanSearch(event1) {
-        const actor = this._actor;
-        const filter = {
-            armorTypes: [],
-            weaponTypes: [],
-            itemtypes: [
-                "consumable"
-            ],
-            rarity: [],
-            source: [],
-            traits: [
-                "talisman"
-            ],
-            levelRange: {
-                min: 1,
-                max: Math.floor(actor.level / 2)
-            }
-        };
-        game.pf2e.compendiumBrowser.openTab("equipment", filter);
-    }
-    #onClear(event2) {
-        event2.preventDefault();
-        const target = $(event2.currentTarget);
-        const input = target.prevAll('[name="spell"], [name="talisman"]').first();
+    #onClear(event1) {
+        event1.preventDefault();
+        const target = $(event1.currentTarget);
+        const input = target.prevAll('[name="spell"]').first();
         input.attr("value", "");
         input.attr("data-uuid", "");
         target.addClass("disabled");
@@ -591,13 +476,11 @@ class $ea02428521cc9836$export$3c9276ec80fdf8ae extends Application {
         this.element.find("button").attr("disabled", "true");
         this.element.find("a").addClass("disabled");
     }
-    async #onAccept(event3) {
-        event3.preventDefault();
+    async #onAccept(event2) {
+        event2.preventDefault();
         this.#lock();
         const actor = this._actor;
-        const flags = (0, $f5e8fbc5299fcdea$export$a19b74191e00c5e)(actor, "saved") ?? {};
         const groups = {};
-        const remove = [];
         const add = [];
         let message = "";
         this.element.find(".window-content .groups .group").each((_, el)=>{
@@ -606,42 +489,22 @@ class $ea02428521cc9836$export$3c9276ec80fdf8ae extends Application {
             group.find('[name="spell"], [name="talisman"]').each((i, el)=>{
                 const input = $(el);
                 const uuid = input.attr("data-uuid");
-                const level = Number(input.attr("data-level") || 0);
-                const flag = flags[category]?.[i];
-                const hasItem = !!flag?.itemId && !!actor.items.has(flag.itemId);
-                let value;
-                if (flag?.uuid === uuid && hasItem) value = flag;
-                else {
-                    const name = input.attr("value");
-                    const type = input.attr("name");
-                    value = {
-                        name: name,
-                        uuid: uuid,
-                        itemId: uuid ? randomID() : ""
-                    };
-                    if (hasItem) remove.push({
-                        name: name,
-                        uuid: flag.uuid,
-                        itemId: flag.itemId
-                    });
-                    if (uuid) add.push({
-                        name: name,
-                        uuid: uuid,
-                        itemId: value.itemId,
-                        type: type,
-                        level: level,
-                        category: category
-                    });
-                }
+                const level = Number(input.attr("data-level"));
+                const name = input.attr("value");
+                const value = {
+                    name: name,
+                    uuid: uuid
+                };
+                if (uuid) add.push({
+                    name: name,
+                    uuid: uuid,
+                    level: level,
+                    category: category
+                });
                 groups[category] ??= [];
                 groups[category][i] = value;
             });
         });
-        if (remove.length) {
-            const ids = remove.map((x)=>x.itemId);
-            const items = await actor.deleteEmbeddedDocuments("Item", ids);
-            message += (0, $feccc7a5980a21d5$export$62651879628e0c4c)("remove", items, true);
-        }
         if (add.length) {
             const data = [];
             const scrolls = [];
@@ -649,43 +512,29 @@ class $ea02428521cc9836$export$3c9276ec80fdf8ae extends Application {
                 const uuid = entry.uuid;
                 const level = entry.level;
                 const category = $ea02428521cc9836$var$localize(entry.category);
-                let item;
-                if (entry.type === "talisman") {
-                    item = (await fromUuid(uuid))?.toObject();
-                    if (!item) continue;
-                    item.system.description.value = $ea02428521cc9836$var$localize("item.talisman.description", {
-                        category: category,
-                        description: item.system.description.value
-                    });
-                } else {
-                    const scrollUUID = (0, $07f88a1a2cd9bae4$export$759f065e99467277)(level);
-                    scrolls[level] ??= await fromUuid(scrollUUID);
-                    const spell = await fromUuid(uuid);
-                    item = scrolls[level]?.toObject();
-                    if (!item || !spell) continue;
-                    item.name = $ea02428521cc9836$var$localize("item.spell.name", {
-                        name: spell.name,
-                        level: level
-                    });
-                    item.system.spell = spell.clone({
-                        "system.location.heightenedLevel": level
-                    }).toObject();
-                    item.system.traits.value.push(...spell.traditions);
-                    item.system.description.value = $ea02428521cc9836$var$localize("item.spell.description", {
-                        category: category,
-                        uuid: uuid,
-                        description: item.system.description.value
-                    });
-                }
-                item.name = `${item.name} **`;
-                setProperty(item, "_id", entry.itemId);
-                setProperty(item, (0, $7a9da4a58a01538c$export$79b67f6e2f31449)("temporary"), true);
+                const scrollUUID = (0, $07f88a1a2cd9bae4$export$759f065e99467277)(level);
+                scrolls[level] ??= await fromUuid(scrollUUID);
+                const spell = (await fromUuid(uuid))?.toObject();
+                const item = scrolls[level]?.toObject();
+                if (!item || !spell) continue;
+                spell.system.location.heightenedLevel = level;
+                item.name = $ea02428521cc9836$var$localize("item.spell.name", {
+                    name: spell.name,
+                    level: level
+                });
+                item.system.temporary = true;
+                item.system.spell = spell;
+                item.system.traits.value.push(...spell.system.traditions.value);
+                item.system.description.value = $ea02428521cc9836$var$localize("item.spell.description", {
+                    category: category,
+                    uuid: uuid,
+                    description: item.system.description.value
+                });
                 data.push(item);
             }
-            const items = await actor.createEmbeddedDocuments("Item", data, {
-                keepId: true
-            });
-            message += (0, $feccc7a5980a21d5$export$62651879628e0c4c)("add", items);
+            message = `<p>${$ea02428521cc9836$var$localize(`message.add`)}</p>`;
+            const items = await actor.createEmbeddedDocuments("Item", data);
+            items.map((x)=>message += `<p>@UUID[${x.uuid}]</p>`);
         }
         (0, $f5e8fbc5299fcdea$export$5e165df1e30a1331)(actor, "saved", groups);
         if (message) message = `${$ea02428521cc9836$var$localize("message.changes")}<hr>${message}`;
@@ -698,8 +547,8 @@ class $ea02428521cc9836$export$3c9276ec80fdf8ae extends Application {
         });
         this.close();
     }
-    #onCancel(event4) {
-        event4.preventDefault();
+    #onCancel(event3) {
+        event3.preventDefault();
         this.close();
     }
 }
@@ -713,15 +562,7 @@ const $eaeac6e049dc3dfe$var$feats = [
         0
     ],
     [
-        "talisman",
-        0
-    ],
-    [
         "trickster",
-        0
-    ],
-    [
-        "dabbler",
         0
     ]
 ];
@@ -734,66 +575,7 @@ function $eaeac6e049dc3dfe$export$9408ec82f8a50d7c(sheet, html) {
 }
 
 
-
-function $affac971e7ed6841$export$e086df5a71e51694(hook, fn) {
-    const id = Hooks.on(hook, fn);
-    const index = Hooks.events[hook].findIndex((x)=>x.id === id);
-    if (index !== 0) {
-        const [hooked] = Hooks.events[hook].splice(index, 1);
-        Hooks.events[hook].unshift(hooked);
-    }
-}
-
-
-
-const $1e9af8c22026770e$var$localize = (0, $87d8485a68ef7966$export$a2435eff6fb7f6c1)("warning");
-function $1e9af8c22026770e$export$737ef88b7e2208cf(enable) {
-    if (enable) {
-        (0, $affac971e7ed6841$export$e086df5a71e51694)("dropCanvasData", $1e9af8c22026770e$var$onDropCanvasData);
-        (0, $affac971e7ed6841$export$e086df5a71e51694)("dropActorSheetData", $1e9af8c22026770e$var$onDropActorSheetData);
-    } else {
-        Hooks.off("dropCanvasData", $1e9af8c22026770e$var$onDropCanvasData);
-        Hooks.off("dropActorSheetData", $1e9af8c22026770e$var$onDropActorSheetData);
-    }
-}
-function $1e9af8c22026770e$var$onDropCanvasData(canvas, data) {
-    $1e9af8c22026770e$var$checkForWarning(data);
-}
-function $1e9af8c22026770e$var$onDropActorSheetData(target, targetSheet, data) {
-    if (data.actorId === target.id) return;
-    $1e9af8c22026770e$var$checkForWarning(data);
-}
-function $1e9af8c22026770e$var$checkForWarning(data) {
-    if (data.type !== "Item" || !data.uuid) return;
-    const item = fromUuidSync(data.uuid);
-    if (!item || !(0, $f5e8fbc5299fcdea$export$a19b74191e00c5e)(item, "temporary")) return;
-    const content = `<p class="dailies-center">${$1e9af8c22026770e$var$localize("message")}</p>`;
-    Dialog.prompt({
-        title: $1e9af8c22026770e$var$localize("title"),
-        label: $1e9af8c22026770e$var$localize("label"),
-        content: content,
-        rejectClose: false,
-        options: {
-            width: 320
-        }
-    });
-}
-
-
 Hooks.on("renderCharacterSheetPF2e", (0, $eaeac6e049dc3dfe$export$9408ec82f8a50d7c));
-Hooks.once("init", ()=>{
-    (0, $c143594d021ef19f$export$3bfe3819d89751f0)({
-        name: "warning",
-        type: Boolean,
-        default: true,
-        scope: "client",
-        config: true,
-        onChange: (0, $1e9af8c22026770e$export$737ef88b7e2208cf)
-    });
-});
-Hooks.once("ready", ()=>{
-    if ((0, $c143594d021ef19f$export$8206e8d612b3e63)("warning")) setTimeout(()=>(0, $1e9af8c22026770e$export$737ef88b7e2208cf)(true), 2000);
-});
 
 
 //# sourceMappingURL=main.js.map

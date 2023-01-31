@@ -1,6 +1,57 @@
 var $a58a848730b694bb$export$2e2bcd8739ae039 = "pf2e-dailies";
 
 
+
+function $7a9da4a58a01538c$export$f6ed52839c6955bc(...path) {
+    return `${0, $a58a848730b694bb$export$2e2bcd8739ae039}.settings.${path.join(".")}`;
+}
+function $7a9da4a58a01538c$export$79b67f6e2f31449(...path) {
+    return `flags.${0, $a58a848730b694bb$export$2e2bcd8739ae039}.${path.join("/")}`;
+}
+function $7a9da4a58a01538c$export$bdd507c72609c24e(...path) {
+    path = path.filter((x)=>typeof x === "string");
+    return `modules/${0, $a58a848730b694bb$export$2e2bcd8739ae039}/templates/${path.join("/")}`;
+}
+function $7a9da4a58a01538c$export$6d1a79e7c04100c2(...path) {
+    return `modules/${0, $a58a848730b694bb$export$2e2bcd8739ae039}/images/${path.join("/")}`;
+}
+
+
+function $c143594d021ef19f$export$8206e8d612b3e63(key) {
+    return game.settings.get((0, $a58a848730b694bb$export$2e2bcd8739ae039), key);
+}
+function $c143594d021ef19f$export$61fd6f1ddd0c20e2(key, value) {
+    return game.settings.set((0, $a58a848730b694bb$export$2e2bcd8739ae039), key, value);
+}
+function $c143594d021ef19f$export$3bfe3819d89751f0(options) {
+    const name = options.name;
+    options.scope = options.scope ?? "world";
+    options.config = options.config ?? false;
+    if (options.config) {
+        options.name = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)(name, "name");
+        options.hint = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)(name, "hint");
+    }
+    if (Array.isArray(options.choices)) options.choices = options.choices.reduce((choices, choice)=>{
+        choices[choice] = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)(name, "choices", choice);
+        return choices;
+    }, {});
+    game.settings.register((0, $a58a848730b694bb$export$2e2bcd8739ae039), name, options);
+}
+function $c143594d021ef19f$export$cd2f7161e4d70860(options) {
+    const name = options.name;
+    options.name = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)("menus", name, "name");
+    options.label = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)("menus", name, "label");
+    options.hint = (0, $7a9da4a58a01538c$export$f6ed52839c6955bc)("menus", name, "hint");
+    options.restricted = options.restricted ?? true;
+    options.icon = options.icon ?? "fas fa-cogs";
+    game.settings.registerMenu((0, $a58a848730b694bb$export$2e2bcd8739ae039), name, options);
+}
+function $c143594d021ef19f$export$8cb4a6769fa1780e() {
+    return game.settings.get("core", "combatTrackerConfig");
+}
+
+
+
 function $87d8485a68ef7966$export$b3bd0bc58e36cd63(key, data) {
     key = `${0, $a58a848730b694bb$export$2e2bcd8739ae039}.${key}`;
     if (data) return game.i18n.format(key, data);
@@ -53,21 +104,6 @@ function $c5fee9ae913138c0$export$a3bc9b8ed74fc(str, arg1, arg2) {
     $c5fee9ae913138c0$export$5e14cdade93d6f7b(str, "error", arg1, arg2);
 }
 
-
-
-function $7a9da4a58a01538c$export$f6ed52839c6955bc(...path) {
-    return `${0, $a58a848730b694bb$export$2e2bcd8739ae039}.settings.${path.join(".")}`;
-}
-function $7a9da4a58a01538c$export$79b67f6e2f31449(...path) {
-    return `flags.${0, $a58a848730b694bb$export$2e2bcd8739ae039}.${path.join("/")}`;
-}
-function $7a9da4a58a01538c$export$bdd507c72609c24e(...path) {
-    path = path.filter((x)=>typeof x === "string");
-    return `modules/${0, $a58a848730b694bb$export$2e2bcd8739ae039}/templates/${path.join("/")}`;
-}
-function $7a9da4a58a01538c$export$6d1a79e7c04100c2(...path) {
-    return `modules/${0, $a58a848730b694bb$export$2e2bcd8739ae039}/images/${path.join("/")}`;
-}
 
 
 /** Check if an element is present in the provided set. Especially useful for checking against literal sets */ function $06ea898bdee42455$export$7fd671bc170c6856(set, value) {
@@ -698,7 +734,66 @@ function $eaeac6e049dc3dfe$export$9408ec82f8a50d7c(sheet, html) {
 }
 
 
+
+function $affac971e7ed6841$export$e086df5a71e51694(hook, fn) {
+    const id = Hooks.on(hook, fn);
+    const index = Hooks.events[hook].findIndex((x)=>x.id === id);
+    if (index !== 0) {
+        const [hooked] = Hooks.events[hook].splice(index, 1);
+        Hooks.events[hook].unshift(hooked);
+    }
+}
+
+
+
+const $1e9af8c22026770e$var$localize = (0, $87d8485a68ef7966$export$a2435eff6fb7f6c1)("warning");
+function $1e9af8c22026770e$export$737ef88b7e2208cf(enable) {
+    if (enable) {
+        (0, $affac971e7ed6841$export$e086df5a71e51694)("dropCanvasData", $1e9af8c22026770e$var$onDropCanvasData);
+        (0, $affac971e7ed6841$export$e086df5a71e51694)("dropActorSheetData", $1e9af8c22026770e$var$onDropActorSheetData);
+    } else {
+        Hooks.off("dropCanvasData", $1e9af8c22026770e$var$onDropCanvasData);
+        Hooks.off("dropActorSheetData", $1e9af8c22026770e$var$onDropActorSheetData);
+    }
+}
+function $1e9af8c22026770e$var$onDropCanvasData(canvas, data) {
+    $1e9af8c22026770e$var$checkForWarning(data);
+}
+function $1e9af8c22026770e$var$onDropActorSheetData(target, targetSheet, data) {
+    if (data.actorId === target.id) return;
+    $1e9af8c22026770e$var$checkForWarning(data);
+}
+function $1e9af8c22026770e$var$checkForWarning(data) {
+    if (data.type !== "Item" || !data.uuid) return;
+    const item = fromUuidSync(data.uuid);
+    if (!item || !(0, $f5e8fbc5299fcdea$export$a19b74191e00c5e)(item, "temporary")) return;
+    const content = `<p class="dailies-center">${$1e9af8c22026770e$var$localize("message")}</p>`;
+    Dialog.prompt({
+        title: $1e9af8c22026770e$var$localize("title"),
+        label: $1e9af8c22026770e$var$localize("label"),
+        content: content,
+        rejectClose: false,
+        options: {
+            width: 320
+        }
+    });
+}
+
+
 Hooks.on("renderCharacterSheetPF2e", (0, $eaeac6e049dc3dfe$export$9408ec82f8a50d7c));
+Hooks.once("init", ()=>{
+    (0, $c143594d021ef19f$export$3bfe3819d89751f0)({
+        name: "warning",
+        type: Boolean,
+        default: true,
+        scope: "client",
+        config: true,
+        onChange: (0, $1e9af8c22026770e$export$737ef88b7e2208cf)
+    });
+});
+Hooks.once("ready", ()=>{
+    if ((0, $c143594d021ef19f$export$8206e8d612b3e63)("warning")) setTimeout(()=>(0, $1e9af8c22026770e$export$737ef88b7e2208cf)(true), 2000);
+});
 
 
 //# sourceMappingURL=main.js.map

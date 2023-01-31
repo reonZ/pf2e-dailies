@@ -9,8 +9,13 @@
             "discord": "Idle#3251"
         }
     ],
-    "esmodules": ["scripts/main.js"],
-    "styles": ["styles/global.css", "styles/app.css"],
+    "esmodules": [
+        "scripts/main.js"
+    ],
+    "styles": [
+        "styles/global.css",
+        "styles/app.css"
+    ],
     "languages": [
         {
             "lang": "en",
@@ -35,12 +40,12 @@
         "minimum": "10.291",
         "verified": "10"
     },
-    "version": "1.0.0",
+    "version": "1.1.0",
     "manifestPlusVersion": "1.2.0",
     "url": "https://github.com/reonZ/pf2e-dailies",
     "readme": "https://github.com/reonZ/pf2e-dailies/blob/master/README.md",
     "manifest": "https://raw.githubusercontent.com/reonZ/pf2e-dailies/master/module.json",
-    "download": "https://github.com/reonZ/pf2e-dailies/releases/download/1.0.0/module.zip",
+    "download": "https://github.com/reonZ/pf2e-dailies/releases/download/1.1.0/module.zip",
     "changelog": "https://github.com/reonZ/${id}/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/pf2e-dailies/issues"
 }

@@ -29,6 +29,7 @@ The interface allows the user to open the compendium browser (with the right set
 
 Whenever a change is made in the interface:
 
+-   if an item has been added, it will be automatically created and added to the character.
 -   If an item has been removed and is still currently existing on the character, it will automatically be deleted.
 -   If no change has been made but the item is no longer present on the character, the item will be re-created.
 

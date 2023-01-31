@@ -1,10 +1,9 @@
 import { getFlag, setFlag } from '~src/@utils/foundry/flags'
 import { subLocalize } from '~src/@utils/foundry/i18n'
 import { warn } from '~src/@utils/foundry/notifications'
-import { flagsUpdatePath, templatePath } from '~src/@utils/foundry/path'
+import { templatePath } from '~src/@utils/foundry/path'
 import { getScrollCompendiumUUID } from '~src/@utils/pf2e'
 import { hasAllFeats } from '~src/feats'
-import { createMessage, isValidSpellType, isValidTalismanType } from '~src/helpers'
 
 const localize = subLocalize('app')
 
@@ -23,7 +22,7 @@ export class PF2eDailies extends Application {
             height: 'auto',
             dragDrop: [
                 {
-                    dropSelector: '[name="spell"], [name="talisman"]',
+                    dropSelector: '[name="spell"]',
                 },
             ],
         })
@@ -39,8 +38,6 @@ export class PF2eDailies extends Application {
             feats,
             saved,
             level: actor.level,
-            getTalismanValue: (values: ItemFlag[] | undefined, index: number, attr: 'name' | 'uuid') =>
-                values?.[index]?.[attr] ?? '',
             getSpellValue: (values: ItemFlag[] | undefined, level: number, attr: 'name' | 'uuid') =>
                 values?.[level - 1]?.[attr] ?? '',
             addOne: (v: number) => v + 1,
@@ -51,7 +48,6 @@ export class PF2eDailies extends Application {
         super.activateListeners(html)
 
         html.find<HTMLAnchorElement>('[data-type=spell] [data-action=search]').on('click', this.#onSpellSearch.bind(this))
-        html.find<HTMLAnchorElement>('[data-type=talisman] [data-action=search]').on('click', this.#onTalismanSearch.bind(this))
         html.find<HTMLAnchorElement>('[data-action=clear]').on('click', this.#onClear.bind(this))
         html.find<HTMLButtonElement>('[data-action=accept]').on('click', this.#onAccept.bind(this))
         html.find<HTMLButtonElement>('[data-action=cancel]').on('click', this.#onCancel.bind(this))
@@ -61,20 +57,15 @@ export class PF2eDailies extends Application {
         const dataString = event.dataTransfer?.getData('text/plain')
         try {
             const input = $(event.target)
-            const type = input.attr('name') as 'spell' | 'talisman'
-            const typeLabel = game.i18n.localize(type === 'spell' ? 'PF2E.SpellLabel' : 'PF2E.TraitTalisman').toLowerCase()
-            const typeError = () => warn('app.error.wrongType', { type: typeLabel })
+            const typeError = () => warn('app.error.wrongType')
 
             const data: { type: string; uuid: string } = JSON.parse(dataString)
             if (!data || data.type !== 'Item' || typeof data.uuid !== 'string') return typeError()
 
-            const typeValidation = type === 'spell' ? isValidSpellType : isValidTalismanType
             const item = await fromUuid<ItemPF2e>(data.uuid)
-            if (!typeValidation(item)) return typeError()
+            if (!item?.isOfType('spell') || item.isCantrip || item.isRitual) return typeError()
 
-            const actor = this._actor
-            const maxLevel = type === 'spell' ? Number(input.attr('data-level')) : Math.floor(actor.level / 2)
-            if (item.level > maxLevel) return warn('app.error.wrongLevel', { type: typeLabel })
+            if (item.level > Number(input.attr('data-level'))) return warn('app.error.wrongLevel')
 
             input.attr('value', item.name)
             input.attr('data-uuid', item.uuid)
@@ -106,26 +97,10 @@ export class PF2eDailies extends Application {
         game.pf2e.compendiumBrowser.openTab('spell', filter)
     }
 
-    #onTalismanSearch(event: JQuery.ClickEvent<any, any, HTMLAnchorElement>) {
-        const actor = this._actor
-
-        const filter: InitialEquipmentFilters = {
-            armorTypes: [],
-            weaponTypes: [],
-            itemtypes: ['consumable'],
-            rarity: [],
-            source: [],
-            traits: ['talisman'],
-            levelRange: { min: 1, max: Math.floor(actor.level / 2) },
-        }
-
-        game.pf2e.compendiumBrowser.openTab('equipment', filter)
-    }
-
     #onClear(event: JQuery.ClickEvent<any, any, HTMLAnchorElement>) {
         event.preventDefault()
         const target = $(event.currentTarget)
-        const input = target.prevAll('[name="spell"], [name="talisman"]').first()
+        const input = target.prevAll('[name="spell"]').first()
         input.attr('value', '')
         input.attr('data-uuid', '')
         target.addClass('disabled')
@@ -141,10 +116,8 @@ export class PF2eDailies extends Application {
         this.#lock()
 
         const actor = this._actor
-        const flags = getFlag<ItemFlags>(actor, 'saved') ?? ({} as Partial<ItemFlags>)
         const groups = {} as ItemFlags
-        const remove: ItemFlag[] = []
-        const add: (ItemFlag & { type: 'spell' | 'talisman'; level: OneToTen; category: FeatGroup })[] = []
+        const add: (ItemFlag & { level: OneToTen; category: FeatGroup })[] = []
         let message = ''
 
         this.element.find('.window-content .groups .group').each((_, el) => {
@@ -154,31 +127,16 @@ export class PF2eDailies extends Application {
             group.find<HTMLInputElement>('[name="spell"], [name="talisman"]').each((i, el) => {
                 const input = $(el)
                 const uuid = input.attr('data-uuid') as ItemUUID
-                const level = Number(input.attr('data-level') || 0) as OneToTen
-                const flag = flags[category]?.[i]
-                const hasItem = !!flag?.itemId && !!actor.items.has(flag.itemId)
+                const level = Number(input.attr('data-level')) as OneToTen
+                const name = input.attr('value') as string
+                const value = { name, uuid }
 
-                let value: ItemFlag
-                if (flag?.uuid === uuid && hasItem) {
-                    value = flag
-                } else {
-                    const name = input.attr('value') as string
-                    const type = input.attr('name') as 'spell' | 'talisman'
-                    value = { name, uuid, itemId: uuid ? randomID() : '' }
-                    if (hasItem) remove.push({ name, uuid: flag.uuid, itemId: flag.itemId })
-                    if (uuid) add.push({ name, uuid, itemId: value.itemId, type, level, category })
-                }
+                if (uuid) add.push({ name, uuid, level, category })
 
                 groups[category] ??= []
                 groups[category][i] = value
             })
         })
-
-        if (remove.length) {
-            const ids = remove.map(x => x.itemId)
-            const items = await actor.deleteEmbeddedDocuments('Item', ids)
-            message += createMessage('remove', items, true)
-        }
 
         if (add.length) {
             const data: ConsumableSource[] = []
@@ -188,42 +146,33 @@ export class PF2eDailies extends Application {
                 const uuid = entry.uuid
                 const level = entry.level
                 const category = localize(entry.category)
-                let item: ConsumableSource | undefined
+                const scrollUUID = getScrollCompendiumUUID(level)
 
-                if (entry.type === 'talisman') {
-                    item = (await fromUuid(uuid))?.toObject() as ConsumableSource
-                    if (!item) continue
+                scrolls[level] ??= await fromUuid<ConsumablePF2e>(scrollUUID)
 
-                    item.system.description.value = localize('item.talisman.description', {
-                        category,
-                        description: item.system.description.value,
-                    })
-                } else {
-                    const scrollUUID = getScrollCompendiumUUID(level)
-                    scrolls[level] ??= await fromUuid<ConsumablePF2e>(scrollUUID)
+                const spell = (await fromUuid<SpellPF2e>(uuid))?.toObject() as SpellSource
+                const item = scrolls[level]?.toObject() as unknown as ConsumableSource
+                if (!item || !spell) continue
 
-                    const spell = await fromUuid<SpellPF2e>(uuid)
-                    item = scrolls[level]?.toObject() as unknown as ConsumableSource
-                    if (!item || !spell) continue
+                spell.system.location.heightenedLevel = level
 
-                    item.name = localize('item.spell.name', { name: spell.name, level: level })
-                    item.system.spell = spell.clone({ 'system.location.heightenedLevel': level }).toObject() as SpellSource
-                    item.system.traits.value.push(...spell.traditions)
-                    item.system.description.value = localize('item.spell.description', {
-                        category,
-                        uuid: uuid,
-                        description: item.system.description.value,
-                    })
-                }
+                item.name = localize('item.spell.name', { name: spell.name, level: level })
+                item.system.temporary = true
+                item.system.spell = spell
+                item.system.traits.value.push(...spell.system.traditions.value)
+                item.system.description.value = localize('item.spell.description', {
+                    category,
+                    uuid: uuid,
+                    description: item.system.description.value,
+                })
 
-                item.name = `${item.name} **`
-                setProperty(item, '_id', entry.itemId)
-                setProperty(item, flagsUpdatePath('temporary'), true)
                 data.push(item)
             }
 
-            const items = await actor.createEmbeddedDocuments('Item', data, { keepId: true })
-            message += createMessage('add', items as ItemPF2e[])
+            message = `<p>${localize(`message.add`)}</p>`
+
+            const items = (await actor.createEmbeddedDocuments('Item', data)) as ItemPF2e[]
+            items.map(x => (message += `<p>@UUID[${x.uuid}]</p>`))
         }
 
         setFlag(actor, 'saved', groups)

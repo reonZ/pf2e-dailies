@@ -6,13 +6,11 @@ const UUIDS: Record<FeatGroup, ItemUUID[]> = {
         'Compendium.pf2e.feats-srd.nWd7m0yRcIEVUy7O',
         'Compendium.pf2e.feats-srd.LHjPTV5vP3MOsPPJ',
     ],
-    talisman: ['Compendium.pf2e.feats-srd.ygCLN0brunmBYtJR', 'Compendium.pf2e.feats-srd.VO8HbMQ79NULE4FQ'],
     trickster: [
         'Compendium.pf2e.feats-srd.ROAUR1GhC19Pjk9C',
         'Compendium.pf2e.feats-srd.UrOj9TROtn8nuxPf',
         'Compendium.pf2e.feats-srd.lIg5Gzz7W70jfbk1',
     ],
-    dabbler: ['Compendium.pf2e.feats-srd.1t5479E6bdvFs4E7', 'Compendium.pf2e.feats-srd.PTXZ2C3AV8tZf0iX'],
 }
 
 function flattenUUIDS(): FlattenedUUIDS {

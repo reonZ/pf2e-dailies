@@ -5,9 +5,7 @@ import { hasAnyFeat } from './feats'
 const localize = subLocalize('sheet')
 const feats: FeatGroups = [
     ['scroll', 0],
-    ['talisman', 0],
     ['trickster', 0],
-    ['dabbler', 0],
 ]
 
 export function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, html: JQuery) {

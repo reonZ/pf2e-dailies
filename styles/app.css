@@ -1,6 +1,7 @@
 [id^=pf2e-dailies-] .groups {
   display: grid;
   grid-auto-flow: column;
+  align-items: start;
   -moz-column-gap: 1em;
        column-gap: 1em;
 }
@@ -8,16 +9,14 @@
   width: 350px;
 }
 [id^=pf2e-dailies-] .group {
+  width: 350px;
   padding-inline: 0.2em;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 0.2em;
   -moz-column-gap: 0.5em;
        column-gap: 0.5em;
-}
-[id^=pf2e-dailies-] .group:not(:first-child) {
-  margin-top: 1em;
+  gap: 0.2em;
 }
 [id^=pf2e-dailies-] .group h3 {
   grid-column: 1/5;
@@ -25,13 +24,13 @@
 [id^=pf2e-dailies-] .group [data-action=clear] {
   font-size: 1.2em;
 }
-[id^=pf2e-dailies-] .group a.disabled {
+[id^=pf2e-dailies-] .group input:disabled {
+  color: inherit;
+}
+[id^=pf2e-dailies-] a.disabled {
   text-shadow: none;
   color: grey;
   pointer-events: none;
-}
-[id^=pf2e-dailies-] .group input:disabled {
-  color: inherit;
 }
 [id^=pf2e-dailies-] .buttons {
   display: flex;

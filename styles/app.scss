@@ -1,8 +1,8 @@
 [id^='pf2e-dailies-'] {
     .groups {
         display: grid;
-        // grid-template-columns: repeat(auto-fill, 300px);
         grid-auto-flow: column;
+        align-items: start;
         column-gap: 1em;
 
         section {
@@ -11,16 +11,13 @@
     }
 
     .group {
+        width: 350px;
         padding-inline: 0.2em;
         display: grid;
         grid-template-columns: auto 1fr auto;
         align-items: center;
-        gap: 0.2em;
         column-gap: 0.5em;
-
-        &:not(:first-child) {
-            margin-top: 1em;
-        }
+        gap: 0.2em;
 
         h3 {
             grid-column: 1 / 5;
@@ -30,15 +27,15 @@
             font-size: 1.2em;
         }
 
-        a.disabled {
-            text-shadow: none;
-            color: grey;
-            pointer-events: none;
-        }
-
         input:disabled {
             color: inherit;
         }
+    }
+
+    a.disabled {
+        text-shadow: none;
+        color: grey;
+        pointer-events: none;
     }
 
     .buttons {

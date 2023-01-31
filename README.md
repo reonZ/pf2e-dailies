@@ -27,11 +27,9 @@ The interface will look different depending on the feats present on the characte
 
 The interface allows the user to open the compendium browser (with the right settings) and directly drag & drop the appropriate items.
 
-Whenever a change is made in the interface:
-
--   if an item has been added, it will be automatically created and added to the character.
--   If an item has been removed and is still currently existing on the character, it will automatically be deleted.
--   If no change has been made but the item is no longer present on the character, the item will be re-created.
+-   if an item is been added, it will be automatically created and added to the character.
+-   If an item is removed and still physically existing on the character, it will automatically be deleted.
+-   If no change is made but the item is no longer present on the character, the item will be re-created.
 
 ## Scrolls
 

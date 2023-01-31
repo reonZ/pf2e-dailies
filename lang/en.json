@@ -1,5 +1,16 @@
 {
     "pf2e-dailies": {
+        "settings": {
+            "warning": {
+                "name": "Trade Warning",
+                "hint": "Should you be warned when trading a temporary item to another actor"
+            }
+        },
+        "warning": {
+            "title": "Temporary Item Warning",
+            "label": "Acknowledged",
+            "message": "You are trading a temporary item, the module will not be able to keep track of it and will be required to be deleted manually."
+        },
         "app": {
             "title": "Make your dailly preparations",
             "accept": "Accept",

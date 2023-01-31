@@ -28,20 +28,20 @@ The interface will look different depending on the feats present on the characte
 The interface allows the user to open the compendium browser (with the right settings) and directly drag & drop the appropriate items.
 
 -   if an item is added, it will be automatically created on the character.
--   If an item is removed and still physically existing on the character, it will automatically be deleted.
+-   If an item is removed and still physically exists on the character, it will automatically be deleted.
 -   If no change is made but the item is no longer present on the character, the item will be re-created.
 
 ## Scrolls
 
 When a spell is dropped in a spell slot, a new spell scroll will be created with the appropriate hightened level directly in the character's inventory.
 
-To make it easier to remember which scrolls are temporary, they will have the suffixes `**` added to their name.
+To make it easier to remember which scrolls are temporary, they will have the suffix `**` added to their name.
 
 ## Talismans
 
 When a talisman is dropped in a talisman slot, it will automatically be added to the character's inventory.
 
-To make it easier to remember which talismans are temporary, they will have the suffixes `**` added to their name.
+To make it easier to remember which talismans are temporary, they will have the suffix `**` added to their name.
 
 # Chat
 
@@ -52,6 +52,14 @@ A descriptive chat message will be created to indicate what has changed during t
 Because deleted items have been ... deleted, there is no existing link to them, therefore the "link" boxes in that section are not actually clickable.
 
 Only actual changes on the character will be notified in the chat message, if nothing was changed in the interface but items have been re-created for instance, those will be notified.
+
+# Settings
+
+## Trade Warning
+
+![](./readme/warning.webp)
+
+Should you be warned when trading a temporary item to another actor
 
 # CHANGELOG
 

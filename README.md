@@ -23,10 +23,6 @@ The interface will look different depending on the feats present on the characte
 
 The interface allows the user to open the compendium browser (with the right settings) and directly drag & drop the appropriate items.
 
--   if an item is added, it will be automatically created on the character.
--   If an item is removed and still physically exists on the character, it will automatically be deleted.
--   If no change is made but the item is no longer present on the character, the item will be re-created.
-
 ## Scrolls
 
 When a spell is dropped in a spell slot, a temporary spell scroll will be created with the appropriate hightened level directly in the character's inventory.

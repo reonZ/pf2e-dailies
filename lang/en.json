@@ -1,25 +1,30 @@
 {
     "pf2e-dailies": {
-        "app": {
+        "interface": {
             "title": "Make your dailly preparations",
             "accept": "Accept",
             "cancel": "Cancel",
+            "longevity": "Ancestral Longevity",
             "scroll": "Scroll Esoterica",
             "trickster": "Scroll Trickster",
-            "item": {
-                "spell": {
+            "message": {
+                "changes": "Has made the following changes during their daily preparations",
+                "items": "Gained the temporary items:",
+                "choices": "Made the following choices:",
+                "cleared": "Cleared"
+            },
+            "spells": {
+                "error": {
+                    "wrongType": "Only spells can be dropped here.",
+                    "wrongLevel": "The spell level is too high for this slot."
+                },
+                "item": {
                     "name": "Scroll of {name} (Level {level})",
                     "description": "<p>@UUID[{uuid}]</p><p>This scroll is temporary and was aquired from <strong>{category}</strong></p><hr>{description}"
                 }
             },
-            "message": {
-                "add": "Gained the temporary items:",
-                "changes": "Has made the following changes during their daily preparations",
-                "noChanges": "Has made no changes during their daily preparations"
-            },
             "error": {
-                "wrongType": "Only spells can be dropped here.",
-                "wrongLevel": "The spell level is too high for this slot."
+                "empty": "All fields must be filled"
             }
         },
         "sheet": {

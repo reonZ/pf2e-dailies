@@ -1,10 +1,31 @@
-<div class="groups">
-    {{#if feats.scroll.[0]}}
-        {{> spellGroup group=feats.scroll values=saved.scroll category='scroll'}} 
+<div class="content">
+    {{#if longevity}}
+        <div class="large-group">
+            <div class="row">
+                <label>{{i18n 'longevity'}}</label>
+                <select name="longevity">
+                    {{selectOptions longevity.skills nameAttr='skill' labelAttr='skill' selected=longevity.selected}}
+                </select>
+            </div>
+        </div>
+        <hr>
     {{/if}}
-    {{#if feats.trickster.[0]}}
-        {{> spellGroup group=feats.trickster values=saved.trickster category='trickster'}} 
+
+    {{#if (or feats.scroll.[0] feats.trickster.[0])}}
+        <div class="groups">
+            {{#if feats.scroll.[0]}}
+                {{> spellGroup group=feats.scroll values=saved.scroll category='scroll'}} 
+            {{/if}}
+            {{#if feats.trickster.[0]}}
+                {{> spellGroup group=feats.trickster values=saved.trickster category='trickster'}} 
+            {{/if}}
+        </div>
     {{/if}}
+</div>
+
+<div class="buttons">
+    <button data-action="accept"><i class="fas fa-save"></i> {{i18n 'accept'}}</button>
+    <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
 </div>
 
 {{#*inline 'spellGroup'}}
@@ -46,7 +67,3 @@
 <a data-action="clear"{{#unless (getSpellValue values spellLevel 'uuid')}} class="disabled"{{/unless}}><i class="fas fa-times"></i></a>
 {{/inline}}
 
-<div class="buttons">
-    <button data-action="accept"><i class="fas fa-save"></i> {{i18n 'accept'}}</button>
-    <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
-</div>

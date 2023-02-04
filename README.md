@@ -2,6 +2,7 @@
 
 This module will provide a convenient interface to handle a character's daily preparations if they have at least one of the following feats and automatically create the associated items:
 
+-   [Ancestral Longevity](https://2e.aonprd.com/Feats.aspx?ID=12)
 -   [Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3713)
     -   [Elaborate Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3720)
     -   [Grand Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3730)
@@ -31,7 +32,7 @@ When a spell is dropped in a spell slot, a temporary spell scroll will be create
 
 ![](./readme/chat.webp)
 
-A descriptive chat message will be created to indicate what has changed during the daily preparations.
+A descriptive chat message will be created to indicate what have been prepared.
 
 # CHANGELOG
 

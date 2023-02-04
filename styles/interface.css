@@ -1,0 +1,68 @@
+[id^=pf2e-dailies-interface-] {
+  --section-width: 350px;
+}
+[id^=pf2e-dailies-interface-] .content {
+  min-width: var(--section-width);
+}
+[id^=pf2e-dailies-interface-] .large-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+}
+[id^=pf2e-dailies-interface-] .large-group .row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+}
+[id^=pf2e-dailies-interface-] .large-group .row label {
+  border-bottom: 1px solid var(--color-underline-header);
+  font-size: 1.25em;
+  padding-inline: 0.2em;
+  white-space: nowrap;
+}
+[id^=pf2e-dailies-interface-] .groups {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: start;
+  -moz-column-gap: 1em;
+       column-gap: 1em;
+}
+[id^=pf2e-dailies-interface-] .groups .group {
+  width: var(--section-width);
+  padding-inline: 0.2em;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  -moz-column-gap: 0.5em;
+       column-gap: 0.5em;
+  gap: 0.2em;
+}
+[id^=pf2e-dailies-interface-] .groups .group h3 {
+  grid-column: 1/5;
+}
+[id^=pf2e-dailies-interface-] .groups .group [data-action=clear] {
+  font-size: 1.2em;
+}
+[id^=pf2e-dailies-interface-] .groups .group input:disabled {
+  color: inherit;
+}
+[id^=pf2e-dailies-interface-] a.disabled {
+  text-shadow: none;
+  color: grey;
+  pointer-events: none;
+}
+[id^=pf2e-dailies-interface-] .buttons {
+  display: flex;
+  margin-top: 1em;
+}
+[id^=pf2e-dailies-interface-] hr:last-child {
+  display: none;
+}
+[id^=pf2e-dailies-interface-] select,
+[id^=pf2e-dailies-interface-] option {
+  text-transform: capitalize;
+}

@@ -1,3 +1,6 @@
-import { onRenderCharacterSheetPF2e } from './sheet'
+import { setModuleID } from '@utils/module'
+import { renderCharacterSheetPF2e } from './sheet'
 
-Hooks.on('renderCharacterSheetPF2e', onRenderCharacterSheetPF2e)
+setModuleID('pf2e-dailies')
+
+Hooks.on('renderCharacterSheetPF2e', renderCharacterSheetPF2e)

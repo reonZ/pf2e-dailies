@@ -1,6 +1,6 @@
-type FlattenedUUIDS = Map<ItemUUID, { uuid: ItemUUID; group: FeatGroup; index: number; exists: boolean }>
+type FlattenedUUIDS = Record<ItemUUID, { group: FeatGroup; index: number }>
 
-const UUIDS: Record<FeatGroup, ItemUUID[]> = {
+const CATEGORIES: Record<FeatGroup, ItemUUID[]> = {
     scroll: [
         'Compendium.pf2e.feats-srd.OqObuRB8oVSAEKFR',
         'Compendium.pf2e.feats-srd.nWd7m0yRcIEVUy7O',
@@ -11,35 +11,39 @@ const UUIDS: Record<FeatGroup, ItemUUID[]> = {
         'Compendium.pf2e.feats-srd.UrOj9TROtn8nuxPf',
         'Compendium.pf2e.feats-srd.lIg5Gzz7W70jfbk1',
     ],
+    longevity: ['Compendium.pf2e.feats-srd.WoLh16gyDp8y9WOZ'],
 }
 
-function flattenUUIDS(): FlattenedUUIDS {
-    const uuids = Object.entries(UUIDS).flatMap(([group, uuids]) => {
-        return uuids.map((x, i) => [x, { uuid: x, group: group as FeatGroup, index: i, exists: false }] as const)
-    })
-    return new Map(uuids)
-}
+const flattenedUUIDS = (() => {
+    const uuids: FlattenedUUIDS = {}
+    for (const [group, entries] of Object.entries(CATEGORIES)) {
+        for (let i = 0; i < entries.length; i++) {
+            const uuid = entries[i]
+            uuids[uuid] = { group: group as FeatGroup, index: i }
+        }
+    }
+    return uuids
+})()
 
-function expandUUIDS(flatUUIDS: FlattenedUUIDS) {
+const UUIDS = Object.keys(flattenedUUIDS) as ItemUUID[]
+
+export function hasAllFeats(actor: CharacterPF2e) {
     const uuids = {} as Record<FeatGroup, boolean[]>
-    for (const entry of flatUUIDS.values()) {
+    for (const feat of actor.itemTypes.feat) {
+        const sourceId = feat.getFlag('core', 'sourceId') as ItemUUID
+        const entry = flattenedUUIDS[sourceId]
+        if (!entry) continue
         uuids[entry.group] ??= []
-        uuids[entry.group][entry.index] = entry.exists
+        uuids[entry.group][entry.index] = true
     }
     return uuids
 }
 
-export function hasAllFeats(actor: CharacterPF2e) {
-    const uuids = flattenUUIDS()
-    actor.itemTypes.feat.forEach(feat => {
-        const sourceId = feat.getFlag('core', 'sourceId') as ItemUUID
-        const entry = uuids.get(sourceId)
-        if (entry) entry.exists = true
-    })
-    return expandUUIDS(uuids)
+export function getFeat(actor: CharacterPF2e, feat: FeatGroup, index = 0) {
+    const uuid = CATEGORIES[feat][index]
+    return actor.itemTypes.feat.find(x => x.getFlag('core', 'sourceId') === uuid)
 }
 
-export function hasAnyFeat(actor: CharacterPF2e, feats: FeatGroups) {
-    const uuids = feats.map(x => UUIDS[x[0]][x[1]])
-    return !!actor.itemTypes.feat.find(x => uuids.includes(x.getFlag('core', 'sourceId') as ItemUUID))
+export function hasAnyFeat(actor: CharacterPF2e) {
+    return !!actor.itemTypes.feat.find(x => UUIDS.includes(x.getFlag('core', 'sourceId') as ItemUUID))
 }

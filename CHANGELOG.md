@@ -1,6 +1,6 @@
 # 1.3.0
 
--   now handles the feat `Ancestral Longevity`
+-   now handles the feat `Ancestral Longevity` (The selected skill will automatically be ranked to `Trained`)
 -   now requires all fields to be filled
 
 # 1.2.0

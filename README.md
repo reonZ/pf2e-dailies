@@ -30,7 +30,7 @@ When a spell is dropped in a spell slot, a temporary spell scroll will be create
 
 ## Ancestral Longevity
 
-The selected `skill` will automatically be ranked to `Trained`.
+The selected skill will automatically be ranked to `Trained`.
 
 # Chat
 

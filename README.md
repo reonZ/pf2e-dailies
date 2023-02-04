@@ -28,6 +28,10 @@ The interface allows the user to open the compendium browser (with the right set
 
 When a spell is dropped in a spell slot, a temporary spell scroll will be created with the appropriate hightened level directly in the character's inventory.
 
+## Ancestral Longevity
+
+The selected `skill` will automatically be ranked to `Trained`.
+
 # Chat
 
 ![](./readme/chat.webp)

@@ -1,3 +1,8 @@
+# 1.3.0
+
+-   now handles the feat `Ancestral Longevity`
+-   now requires all fields to be filled
+
 # 1.2.0
 
 -   no longer takes charge of talismans (the system is already doing it)

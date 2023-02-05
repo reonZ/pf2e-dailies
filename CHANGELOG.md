@@ -3,6 +3,7 @@
 -   now support items
 -   now support languages
 -   added the item `Bort's Blessing`
+-   added the feat `Ancestral Linguistics`
 
 An item needs to be invested to appear in the interface, the bonus provided is linked to the item itself and like any other bonuses, will be removed if the character un-invest or un-equip the item.
 

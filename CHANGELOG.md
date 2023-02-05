@@ -1,3 +1,12 @@
+# 1.4.0
+
+-   Feats that require you to select an options (like a skill or a language) will now be reset on `rest`
+-   now handles the feat `Ageless Spirit` (The selected skill will automatically be ranked to `Trained`)
+-   now handles the feat `Ancient Memories` (The selected skill will automatically be ranked to `Trained`)
+-   now handles the feat `Flexible Studies` (The selected skill will automatically be ranked to `Trained`)
+
+IMPORTANT: You should always `rest` before your daily preparations, if not, you will most likely encounter some problems.
+
 # 1.3.0
 
 -   now handles the feat `Ancestral Longevity` (The selected skill will automatically be ranked to `Trained`)

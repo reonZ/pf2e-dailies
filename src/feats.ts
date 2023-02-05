@@ -1,5 +1,7 @@
 type FlattenedUUIDS = Record<ItemUUID, { group: FeatGroup; index: number }>
 
+export const SKILL_CATEGORIES: SkillGroup[] = ['longevity', 'ageless', 'memories', 'studies']
+
 const CATEGORIES: Record<FeatGroup, ItemUUID[]> = {
     scroll: [
         'Compendium.pf2e.feats-srd.OqObuRB8oVSAEKFR',
@@ -12,6 +14,9 @@ const CATEGORIES: Record<FeatGroup, ItemUUID[]> = {
         'Compendium.pf2e.feats-srd.lIg5Gzz7W70jfbk1',
     ],
     longevity: ['Compendium.pf2e.feats-srd.WoLh16gyDp8y9WOZ'],
+    ageless: ['Compendium.pf2e.feats-srd.wylnETwIz32Au46y'],
+    memories: ['Compendium.pf2e.feats-srd.ptEOt3lqjxUnAW62'],
+    studies: ['Compendium.pf2e.feats-srd.9bgl6qYWKHzqWZj0'],
 }
 
 const flattenedUUIDS = (() => {

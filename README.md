@@ -3,12 +3,17 @@
 This module will provide a convenient interface to handle a character's daily preparations if they have at least one of the following feats and automatically create the associated items:
 
 -   [Ancestral Longevity](https://2e.aonprd.com/Feats.aspx?ID=12)
+-   [Ageless Spirit](https://2e.aonprd.com/Feats.aspx?ID=2393)
+-   [Ancient Memories](https://2e.aonprd.com/Feats.aspx?ID=3944)
+-   [Flexible Studies](https://2e.aonprd.com/Feats.aspx?ID=1446)
 -   [Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3713)
     -   [Elaborate Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3720)
     -   [Grand Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3730)
 -   [Basic Scroll Cache](https://2e.aonprd.com/Feats.aspx?ID=2054)
     -   [Expert Scroll Cache](https://2e.aonprd.com/Feats.aspx?ID=2056)
     -   [Master Scroll Cache](https://2e.aonprd.com/Feats.aspx?ID=2057)
+
+IMPORTANT: You should always `rest` before your daily preparations, if not, you will most likely encounter some problems.
 
 # Sheet Icon
 
@@ -37,6 +42,10 @@ The selected skill will automatically be ranked to `Trained`.
 ![](./readme/chat.webp)
 
 A descriptive chat message will be created to indicate what have been prepared.
+
+# Rest
+
+Feats that require you to select an options (like a skill or a language) will be reset on `rest`.
 
 # CHANGELOG
 

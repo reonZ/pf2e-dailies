@@ -1,4 +1,4 @@
-import { getFeat, hasAllFeats } from '@src/feats'
+import { getFeat, hasAllFeats, SKILL_CATEGORIES } from '@src/feats'
 import { getFlag, setFlag } from '@utils/foundry/flags'
 import { subLocalize } from '@utils/foundry/localize'
 import { templatePath } from '@utils/foundry/path'
@@ -37,20 +37,14 @@ export class DailiesInterface extends Application {
         const actor = this._actor
         const saved = getFlag<Partial<SavedFlags>>(actor, 'saved') ?? {}
         const feats = hasAllFeats(actor)
-
-        const longevity = (() => {
-            if (!feats.longevity) return
-            const skills = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1)
-            const selected = saved.longevity ?? ''
-            return { skills: skills.map(x => ({ skill: x })), selected }
-        })()
+        const skills = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1).map(x => ({ skill: x }))
 
         return mergeObject(super.getData(options), {
-            i18n: localize,
             feats,
             saved,
+            skills,
+            i18n: localize,
             level: actor.level,
-            longevity,
             getSpellValue: (values: ItemFlag[] | undefined, level: number, attr: 'name' | 'uuid') =>
                 values?.[level - 1]?.[attr] ?? '',
         })
@@ -111,22 +105,24 @@ export class DailiesInterface extends Application {
         const choice: { uuid: string; choice: string; update: EmbeddedDocumentUpdateData<ItemPF2e> }[] = []
         let message = `${localize('message.changes')}<hr>`
 
-        const longevityFeat = getFeat(actor, 'longevity')
-        if (longevityFeat) {
-            const rules = deepClone(longevityFeat._source.system.rules)
-            const longevity = this.element.find('[name=longevity]').val() as SkillLongForm
+        for (const featName of SKILL_CATEGORIES) {
+            const feat = getFeat(actor, featName)
+            if (!feat) continue
+
+            const rules = deepClone(feat._source.system.rules)
+            const selected = this.element.find(`[name=${featName}]`).val() as SkillLongForm
 
             const ruleIndex = rules.findIndex(x => 'pf2e-dailies' in x)
             if (ruleIndex >= 0) rules.splice(ruleIndex, 1)
 
-            rules.push(createLongevityRule(longevity))
+            rules.push(createLongevityRule(selected))
             choice.push({
-                uuid: longevityFeat.uuid,
-                choice: longevity,
-                update: { _id: longevityFeat.id, 'system.rules': rules },
+                uuid: feat.uuid,
+                choice: selected,
+                update: { _id: feat.id, 'system.rules': rules },
             })
 
-            flags.longevity = longevity
+            flags[featName] = selected
         }
 
         const groups = this.element.find('.window-content .groups .group').toArray()

@@ -1,12 +1,18 @@
 <div class="content">
-    {{#if longevity}}
+    {{#if (or feats.longevity.[0] feats.ageless.[0])}}
         <div class="large-group">
-            <div class="row">
-                <label>{{i18n 'longevity'}}</label>
-                <select name="longevity">
-                    {{selectOptions longevity.skills nameAttr='skill' labelAttr='skill' selected=longevity.selected}}
-                </select>
-            </div>
+            {{#if feats.longevity.[0]}}
+                {{> skillRow category='longevity' selected=saved.longevity}}
+            {{/if}}
+            {{#if feats.ageless.[0]}}
+                {{> skillRow category='ageless' selected=saved.ageless}}
+            {{/if}}
+            {{#if feats.memories.[0]}}
+                {{> skillRow category='memories' selected=saved.memories}}
+            {{/if}}
+            {{#if feats.studies.[0]}}
+                {{> skillRow category='studies' selected=saved.studies}}
+            {{/if}}
         </div>
         <hr>
     {{/if}}
@@ -27,6 +33,15 @@
     <button data-action="accept"><i class="fas fa-save"></i> {{i18n 'accept'}}</button>
     <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
 </div>
+
+{{#*inline 'skillRow'}}
+<div class="row">
+    <label>{{i18n category}}</label>
+    <select name="{{category}}">
+        {{selectOptions skills nameAttr='skill' labelAttr='skill' selected=selected}}
+    </select>
+</div>
+{{/inline}}
 
 {{#*inline 'spellGroup'}}
 <div class="group" data-type="spell" data-category="{{category}}">

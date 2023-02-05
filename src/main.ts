@@ -11,11 +11,8 @@ Hooks.once('ready', () => {
 Hooks.on('renderCharacterSheetPF2e', renderCharacterSheetPF2e)
 
 /**
-Ageless Spirit (Leshy)
 Ancestral Linguistics (Elf)
-Ancient Memories (Ghoran)
 Consult The Stars (Lizardfolk, *More or less, you can do this at any time of day, so maybe doesn't work for Dailies)
-Flexible Studies (Investigator)
 Quick Study (Loremaster Archetype)
 Fighter's combat flexibility
  */

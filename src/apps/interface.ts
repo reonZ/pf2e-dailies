@@ -40,12 +40,8 @@ export class DailiesInterface extends Application {
 
         const longevity = (() => {
             if (!feats.longevity) return
-            let skills = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1)
+            const skills = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1)
             const selected = saved.longevity ?? ''
-            if (selected) {
-                skills = skills.filter(x => x !== selected)
-                skills.unshift(selected)
-            }
             return { skills: skills.map(x => ({ skill: x })), selected }
         })()
 
@@ -118,12 +114,12 @@ export class DailiesInterface extends Application {
         const longevityFeat = getFeat(actor, 'longevity')
         if (longevityFeat) {
             const rules = deepClone(longevityFeat._source.system.rules)
-            const ruleIndex = rules.findIndex(x => 'pf2e-dailies' in x)
             const longevity = this.element.find('[name=longevity]').val() as SkillLongForm
 
+            const ruleIndex = rules.findIndex(x => 'pf2e-dailies' in x)
             if (ruleIndex >= 0) rules.splice(ruleIndex, 1)
-            if (longevity) rules.push(createLongevityRule(longevity))
 
+            rules.push(createLongevityRule(longevity))
             choice.push({
                 uuid: longevityFeat.uuid,
                 choice: longevity,

@@ -6,10 +6,15 @@ export function renderCharacterSheetPF2e(sheet: CharacterSheetPF2e, html: JQuery
     const actor = sheet.actor
     if (!hasAnyFeat(actor)) return
 
-    const title = localize('sheet.title')
-    const link = `<a class="roll-icon dailies" title="${title}"><i class="fas fa-mug-saucer"></i></a>`
-    html.find('aside .sidebar .hitpoints .hp-small')
-        .append(link)
+    const small = html.find('aside .sidebar .hitpoints .hp-small')
+    small
+        .append(`<a class="roll-icon dailies" title="${localize('sheet.title')}"><i class="fas fa-mug-saucer"></i></a>`)
         .find('.dailies')
         .on('click', () => new DailiesInterface(actor).render(true, { id: `pf2e-dailies-interface-${actor.id}` }))
+
+    // TODO remove with next system update
+    small
+        .find('[data-action=rest]')
+        .off('click')
+        .on('click', event => game.pf2e.actions.restForTheNight({ event, actors: actor }))
 }

@@ -1,15 +1,27 @@
+# 1.5.0
+
+-   now support items
+-   now support languages
+-   added the item `Bort's Blessing`
+
+An item needs to be invested to appear in the interface, the bonus provided is linked to the item itself and like any other bonuses, will be removed if the character un-invest or un-equip the item.
+
+NOTE: Don't be alarmed the next time you are doing your daily preparations if the spells selected in the `Scroll Esoterica` section are gone, the category name has been changed internally.
+
 # 1.4.0
 
 -   Feats that require you to select an options (like a skill or a language) will now be reset on `rest`
--   now handles the feat `Ageless Spirit` (The selected skill will automatically be ranked to `Trained`)
--   now handles the feat `Ancient Memories` (The selected skill will automatically be ranked to `Trained`)
--   now handles the feat `Flexible Studies` (The selected skill will automatically be ranked to `Trained`)
+-   added the feat `Ageless Spirit`
+-   added the feat `Ancient Memories`
+-   added the feat `Flexible Studies`
+
+Selected skills are ranked to `Trained`
 
 IMPORTANT: You should always `rest` before your daily preparations, if not, you will most likely encounter some problems.
 
 # 1.3.0
 
--   now handles the feat `Ancestral Longevity` (The selected skill will automatically be ranked to `Trained`)
+-   added the feat `Ancestral Longevity` (The selected skill will automatically be ranked to `Trained`)
 -   now requires all fields to be filled
 
 # 1.2.0

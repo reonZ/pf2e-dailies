@@ -8,7 +8,7 @@ An item needs to be invested to appear in the interface, the bonus provided is l
 
 NOTE: Don't be alarmed the next time you are doing your daily preparations if the spells selected in the `Scroll Esoterica` section are gone, the category name has been changed internally.
 
-IMPORTANT: It is possible that openning the interface too quickly after a `rest` result in the reset not being completed yet and the details shown not up to date.
+IMPORTANT: It is possible that opening the interface too quickly after a `rest` result in the reset not being completed yet and the details shown not up to date.
 
 # 1.4.0
 

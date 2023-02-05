@@ -11,8 +11,7 @@ Hooks.once('ready', () => {
 Hooks.on('renderCharacterSheetPF2e', renderCharacterSheetPF2e)
 
 /**
-Ancestral Linguistics (Elf)
-Consult The Stars (Lizardfolk, *More or less, you can do this at any time of day, so maybe doesn't work for Dailies)
+Bort's Blessing
 Quick Study (Loremaster Archetype)
 Fighter's combat flexibility
  */

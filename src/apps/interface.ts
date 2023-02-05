@@ -1,12 +1,12 @@
-import { getFeat, hasAllFeats, SKILL_CATEGORIES } from '@src/feats'
+import { flattenedUUIDS, getAllCategories, getRuleItems, isLanguageCategory, isScrollCategory, isSkillCategory } from '@src/items'
+import { createLanguageRule, createTrainedSkillRule } from '@src/rules'
 import { getFlag, setFlag } from '@utils/foundry/flags'
 import { subLocalize } from '@utils/foundry/localize'
 import { templatePath } from '@utils/foundry/path'
-import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
-import { warn } from '@utils/foundry/notification'
-import { createLongevityRule } from '@src/rules'
-import { createSpellScroll } from '@utils/pf2e/spell'
 import { chatUUID } from '@utils/foundry/uuid'
+import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
+import { createSpellScroll } from '@utils/pf2e/spell'
+import { LANGUAGE_LIST } from '@utils/pf2e/languages'
 
 const localize = subLocalize('interface')
 
@@ -35,18 +35,72 @@ export class DailiesInterface extends Application {
 
     getData(options?: Partial<FormApplicationOptions> | undefined) {
         const actor = this._actor
-        const saved = getFlag<Partial<SavedFlags>>(actor, 'saved') ?? {}
-        const feats = hasAllFeats(actor)
+        const level = actor.level
+        const flags = getFlag<Partial<SavedFlags>>(actor, 'saved') ?? {}
+        const categories = getAllCategories(actor)
         const skills = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1).map(x => ({ skill: x }))
+        const actorLanguages = actor.system.traits.languages.value
+        const languages = LANGUAGE_LIST.filter(x => !actorLanguages.includes(x))
+            .sort()
+            .map(x => ({ language: x }))
+
+        const skillItems: TemplateSkill[] = []
+        const languageItems: TemplateLanguage[] = []
+        const scrollItems: TemplateScroll[] = []
+
+        for (const category in categories) {
+            const items = categories[category as Category]
+            if (!items[0]) continue
+
+            const pushItem = (item: ItemPF2e, list: (TemplateLanguage | TemplateSkill)[]) => {
+                if (item.isOfType('equipment') && !item.isInvested) return
+                list.push({
+                    category: category as RuleCategory,
+                    name: item.name,
+                    selected: flags[category as RuleCategory] ?? '',
+                })
+            }
+
+            if (isSkillCategory(category)) pushItem(items[0], skillItems)
+            if (isLanguageCategory(category)) pushItem(items[0], languageItems)
+
+            if (isScrollCategory(category)) {
+                const slots: TemplateScrollSlot[] = []
+
+                const spellSlot = (spellLevel: number): TemplateScrollSlot => {
+                    const { name, uuid } = flags[category]?.[spellLevel - 1] ?? { name: '', uuid: '' }
+                    return { spellLevel, name, uuid }
+                }
+
+                slots.push(spellSlot(1))
+                if (level >= 8) slots.push(spellSlot(2))
+
+                if (items[1]) {
+                    slots.push(spellSlot(3))
+                    if (level >= 14) slots.push(spellSlot(4))
+                    if (level >= 16) slots.push(spellSlot(5))
+                }
+
+                if (items[2]) {
+                    slots.push(spellSlot(6))
+                    if (level >= 20) slots.push(spellSlot(7))
+                }
+
+                scrollItems.push({
+                    category,
+                    name: items[0].name,
+                    slots,
+                })
+            }
+        }
 
         return mergeObject(super.getData(options), {
-            feats,
-            saved,
-            skills,
             i18n: localize,
-            level: actor.level,
-            getSpellValue: (values: ItemFlag[] | undefined, level: number, attr: 'name' | 'uuid') =>
-                values?.[level - 1]?.[attr] ?? '',
+            skillItems,
+            skills,
+            scrollItems,
+            languages,
+            languageItems,
         })
     }
 
@@ -100,35 +154,43 @@ export class DailiesInterface extends Application {
         this.#lock()
 
         const actor = this._actor
+        const ruleItems = getRuleItems(actor)
         const flags = {} as SavedFlags
         const add: BaseItemSourcePF2e[] = []
-        const choice: { uuid: string; choice: string; update: EmbeddedDocumentUpdateData<ItemPF2e> }[] = []
-        let message = `${localize('message.changes')}<hr>`
+        const skills: ChoiceObject[] = []
+        const languages: ChoiceObject[] = []
+        let message = ''
 
-        for (const featName of SKILL_CATEGORIES) {
-            const feat = getFeat(actor, featName)
-            if (!feat) continue
-
-            const rules = deepClone(feat._source.system.rules)
-            const selected = this.element.find(`[name=${featName}]`).val() as SkillLongForm
-
+        for (const item of ruleItems) {
+            const uuid = item.getFlag('core', 'sourceId') as ItemUUID
+            const category = flattenedUUIDS.get(uuid)!.category as RuleCategory
+            const rules = deepClone(item._source.system.rules)
+            const selected = this.element.find(`[name=${category}]`).val() as SkillLongForm | Language
             const ruleIndex = rules.findIndex(x => 'pf2e-dailies' in x)
+
             if (ruleIndex >= 0) rules.splice(ruleIndex, 1)
 
-            rules.push(createLongevityRule(selected))
-            choice.push({
-                uuid: feat.uuid,
+            const value = {
+                uuid: item.uuid,
                 choice: selected,
-                update: { _id: feat.id, 'system.rules': rules },
-            })
+                update: { _id: item.id, 'system.rules': rules },
+            }
 
-            flags[featName] = selected
+            if (isSkillCategory(category)) {
+                rules.push(createTrainedSkillRule(selected as SkillLongForm))
+                skills.push(value)
+            } else if (isLanguageCategory(category)) {
+                rules.push(createLanguageRule(selected as Language))
+                languages.push(value)
+            }
+
+            flags[category] = selected
         }
 
         const groups = this.element.find('.window-content .groups .group').toArray()
         for (const el of groups) {
             const group = $(el)
-            const category = group.attr('data-category') as ScrollGroup
+            const category = group.attr('data-category') as ScrollCategory
             const spells = group.find<HTMLInputElement>('[name="spell"]').toArray()
 
             for (let i = 0; i < spells.length; i++) {
@@ -136,7 +198,6 @@ export class DailiesInterface extends Application {
                 const uuid = input.attr('data-uuid') as ItemUUID
                 const level = Number(input.attr('data-level')) as OneToTen
                 const name = input.attr('value') as string
-                const value = { name, uuid }
 
                 if (uuid) {
                     const scroll = await createSpellScroll(uuid, level, true)
@@ -144,31 +205,41 @@ export class DailiesInterface extends Application {
                 }
 
                 flags[category] ??= []
-                flags[category][i] = value
+                flags[category][i] = { name, uuid }
             }
         }
 
-        if (choice.length) {
-            const data: EmbeddedDocumentUpdateData<ItemPF2e>[] = []
-            message += `<p><strong>${localize('message.choices')}</strong></p>`
+        const updateData: EmbeddedDocumentUpdateData<ItemPF2e>[] = []
 
-            for (const entry of choice) {
+        const pushChoices = (category: string, choices: ChoiceObject[], separator = false) => {
+            if (!choices.length) return
+
+            if (separator && message) message += '<hr />'
+
+            const title = localize(`message.${category}`)
+            message += `<p><strong>${title}</strong></p>`
+
+            for (const entry of choices) {
                 message += `<p>${chatUUID(entry.uuid)} <span style="text-transform: capitalize;">${entry.choice}</span></p>`
-                data.push(entry.update)
+                updateData.push(entry.update)
             }
-
-            actor.updateEmbeddedDocuments('Item', data)
         }
+
+        pushChoices('skills', skills)
+        pushChoices('languages', languages, true)
+
+        if (updateData.length) await actor.updateEmbeddedDocuments('Item', updateData)
 
         if (add.length) {
-            if (choice.length) message += '<hr />'
+            if (message) message += '<hr />'
             message += `<p><strong>${localize(`message.items`)}</strong></p>`
             const items = (await actor.createEmbeddedDocuments('Item', add)) as ItemPF2e[]
             items.map(x => (message += `<p>${chatUUID(x.uuid)}</p>`))
         }
 
-        setFlag(actor, 'saved', flags)
+        await setFlag(actor, 'saved', flags)
 
+        message = `${localize('message.changes')}<hr>${message}`
         ChatMessage.create({ content: message, speaker: ChatMessage.getSpeaker({ actor }) })
 
         this.close()

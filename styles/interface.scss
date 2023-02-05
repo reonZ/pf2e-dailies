@@ -1,79 +1,81 @@
 [id^='pf2e-dailies-interface-'] {
     --section-width: 350px;
 
-    .content {
-        min-width: var(--section-width);
+    .window-content {
+        .content {
+            min-width: var(--section-width);
 
-        a.disabled {
-            text-shadow: none;
-            color: grey;
-            pointer-events: none;
+            a.disabled {
+                text-shadow: none;
+                color: grey;
+                pointer-events: none;
+            }
         }
-    }
 
-    .large-group {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 0.5em;
-
-        .row {
+        .large-group {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             gap: 0.5em;
 
-            label {
-                border-bottom: 1px solid var(--color-underline-header);
-                font-size: 1.25em;
-                padding-inline: 0.2em;
-                white-space: nowrap;
+            .row {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 0.5em;
+
+                label {
+                    border-bottom: 1px solid var(--color-underline-header);
+                    font-size: 1.25em;
+                    padding-inline: 0.2em;
+                    white-space: nowrap;
+                }
             }
         }
-    }
 
-    .groups {
-        display: grid;
-        grid-auto-flow: column;
-        align-items: start;
-        column-gap: 1em;
-
-        .group {
-            width: var(--section-width);
-            padding-inline: 0.2em;
+        .groups {
             display: grid;
-            grid-template-columns: auto 1fr auto;
-            align-items: center;
-            column-gap: 0.5em;
-            gap: 0.2em;
+            grid-auto-flow: column;
+            align-items: start;
+            column-gap: 1em;
 
-            h3 {
-                grid-column: 1 / 5;
-            }
+            .group {
+                width: var(--section-width);
+                padding-inline: 0.2em;
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+                align-items: center;
+                column-gap: 0.5em;
+                gap: 0.2em;
 
-            [data-action='clear'] {
-                font-size: 1.2em;
-            }
+                h3 {
+                    grid-column: 1 / 5;
+                }
 
-            input:disabled {
-                color: inherit;
+                [data-action='clear'] {
+                    font-size: 1.2em;
+                }
+
+                input:disabled {
+                    color: inherit;
+                }
             }
         }
-    }
 
-    .buttons {
-        display: flex;
-        margin-top: 1em;
-    }
+        .buttons {
+            display: flex;
+            margin-top: 1em;
+        }
 
-    hr:last-child {
-        display: none;
-    }
+        hr:last-child {
+            display: none;
+        }
 
-    select,
-    option {
-        text-transform: capitalize;
+        select,
+        option {
+            text-transform: capitalize;
+        }
     }
 }

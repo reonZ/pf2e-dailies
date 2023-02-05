@@ -1,30 +1,46 @@
 <div class="content">
-    {{#if (or feats.longevity.[0] feats.ageless.[0])}}
+    {{#if (or (and skills.length skillItems.length) languageItems.length)}}
         <div class="large-group">
-            {{#if feats.longevity.[0]}}
-                {{> skillRow category='longevity' selected=saved.longevity}}
-            {{/if}}
-            {{#if feats.ageless.[0]}}
-                {{> skillRow category='ageless' selected=saved.ageless}}
-            {{/if}}
-            {{#if feats.memories.[0]}}
-                {{> skillRow category='memories' selected=saved.memories}}
-            {{/if}}
-            {{#if feats.studies.[0]}}
-                {{> skillRow category='studies' selected=saved.studies}}
-            {{/if}}
+            {{#each skillItems}}
+                <div class="row">
+                    <label>{{this.name}}</label>
+                    <select name="{{this.category}}">
+                        {{selectOptions @root.skills nameAttr='skill' labelAttr='skill' selected=this.selected}}
+                    </select>
+                </div>
+            {{/each}}
+            {{#each languageItems}} 
+                <div class="row">
+                    <label>{{this.name}}</label>
+                    <select name="{{this.category}}">
+                        {{selectOptions @root.languages nameAttr='language' labelAttr='language' selected=this.selected}}
+                    </select>
+                </div>
+            {{/each}}
         </div>
         <hr>
     {{/if}}
 
-    {{#if (or feats.scroll.[0] feats.trickster.[0])}}
+    {{#if scrollItems.length}} 
         <div class="groups">
-            {{#if feats.scroll.[0]}}
-                {{> spellGroup group=feats.scroll values=saved.scroll category='scroll'}} 
-            {{/if}}
-            {{#if feats.trickster.[0]}}
-                {{> spellGroup group=feats.trickster values=saved.trickster category='trickster'}} 
-            {{/if}}
+            {{#each scrollItems}}
+                <div class="group" data-type="spell" data-category="{{this.category}}">
+                    <h3>{{this.name}}</h3>
+                    {{#each this.slots}}
+                        <label>{{localize (concat 'PF2E.SpellLevel' this.spellLevel)}}</label>
+                        <input 
+                            type="text" 
+                            name="spell"
+                            value="{{this.name}}" 
+                            data-uuid="{{this.uuid}}" 
+                            data-level="{{this.spellLevel}}"
+                            disabled
+                        />
+                        <a data-action="search" data-level={{this.spellLevel}}><i class="fas fa-search"></i></a>
+                        <a data-action="clear"{{#unless this.uuid}} class="disabled"{{/unless}}><i class="fas fa-times"></i></a>
+                    {{/each}}
+                </div>
+            {{/each}}
         </div>
     {{/if}}
 </div>
@@ -33,52 +49,3 @@
     <button data-action="accept"><i class="fas fa-save"></i> {{i18n 'accept'}}</button>
     <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
 </div>
-
-{{#*inline 'skillRow'}}
-<div class="row">
-    <label>{{i18n category}}</label>
-    <select name="{{category}}">
-        {{selectOptions skills nameAttr='skill' labelAttr='skill' selected=selected}}
-    </select>
-</div>
-{{/inline}}
-
-{{#*inline 'spellGroup'}}
-<div class="group" data-type="spell" data-category="{{category}}">
-    <h3>{{i18n category}}</h3>
-    {{> spellRow spellLevel=1}} 
-    {{#if (gte level 8)}} 
-        {{> spellRow spellLevel=2}} 
-    {{/if}}
-    {{#if group.[1]}}
-        {{> spellRow spellLevel=3}} 
-        {{#if (gte level 14)}}
-            {{> spellRow spellLevel=4}}
-        {{/if}}
-        {{#if (gte level 16)}}
-            {{> spellRow spellLevel=5}}
-        {{/if}}
-    {{/if}}
-    {{#if group.[2]}}
-        {{> spellRow spellLevel=6}}
-        {{#if (gte level 20)}}
-            {{> spellRow spellLevel=7}}
-        {{/if}}
-    {{/if}}
-</div>
-{{/inline}} 
-
-{{#*inline 'spellRow'}}
-<label>{{localize (concat 'PF2E.SpellLevel' spellLevel)}}</label>
-<input 
-    type="text" 
-    name="spell"
-    value="{{getSpellValue values spellLevel 'name'}}" 
-    data-uuid="{{getSpellValue values spellLevel 'uuid'}}" 
-    data-level="{{spellLevel}}"
-    disabled
-/>
-<a data-action="search" data-level={{spellLevel}}><i class="fas fa-search"></i></a>
-<a data-action="clear"{{#unless (getSpellValue values spellLevel 'uuid')}} class="disabled"{{/unless}}><i class="fas fa-times"></i></a>
-{{/inline}}
-

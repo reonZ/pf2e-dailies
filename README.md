@@ -51,7 +51,7 @@ An item needs to be invested to appear in the interface, the bonus provided is l
 
 ![](./readme/chat.webp)
 
-A descriptive chat message will be created to indicate what have been prepared.
+A descriptive chat message will be created to indicate what has been prepared.
 
 # Rest
 

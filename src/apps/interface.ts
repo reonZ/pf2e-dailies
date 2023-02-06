@@ -62,9 +62,8 @@ export class DailiesInterface extends Application {
             }
 
             if (isSkillCategory(category)) pushItem(items[0], skillItems)
-            if (isLanguageCategory(category)) pushItem(items[0], languageItems)
-
-            if (isScrollCategory(category)) {
+            else if (isLanguageCategory(category)) pushItem(items[0], languageItems)
+            else if (isScrollCategory(category)) {
                 const slots: TemplateScrollSlot[] = []
 
                 const spellSlot = (spellLevel: number): TemplateScrollSlot => {

@@ -1,17 +1,11 @@
 <div class="content">
     {{#if rows.length}}
-    <div class="rows">
+    <div class="group">
         {{#each rows}}
         {{#if (eq this.type 'trainedSkill')}}
-        <label>{{this.label}}</label>
-        <select data-type="{{this.type}}" data-category="{{this.category}}">
-            {{selectOptions this.skills nameAttr='skill' labelAttr='skill' selected=this.selected}}
-        </select>
+        {{> selectRow this}}
         {{else if (eq this.type 'addedLanguage')}}
-        <label>{{this.label}}</label>
-        <select data-type="{{this.type}}" data-category="{{this.category}}">
-            {{selectOptions this.languages nameAttr='language' labelAttr='language' selected=this.selected}}
-        </select>
+        {{> selectRow this}}
         {{/if}}
         {{/each}}
     </div>
@@ -22,11 +16,7 @@
         <h3>{{this.label}}</h3>
         {{#if (eq this.type 'scrollChain')}}
         {{#each this.rows}}
-        <label data-droppable="true">{{localize (concat 'PF2E.SpellLevel' this.spellLevel)}}</label>
-        <input type="text" data-droppable="true" value="{{this.name}}" data-type="{{../this.type}}" data-category="{{../this.category}}"
-            data-uuid="{{this.uuid}}" data-level="{{this.spellLevel}}" disabled />
-        <a data-action="searchSpell" data-level={{this.spellLevel}}><i class="fas fa-search"></i></a>
-        <a data-action="clear" {{#unless this.uuid}} class="disabled" {{/unless}}><i class="fas fa-times"></i></a>
+        {{> dropRow entry=this group=../this search='searchSpell'}}
         {{/each}}
         {{/if}}
     </div>
@@ -37,3 +27,18 @@
     <button data-action="accept"><i class="fas fa-save"></i> {{i18n 'accept'}}</button>
     <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
 </div>
+
+{{#*inline 'dropRow'}}
+<label data-droppable="true">{{entry.label}}</label>
+<input type="text" data-droppable="true" value="{{entry.name}}" data-type="{{group.type}}" data-category="{{group.category}}"
+    data-uuid="{{entry.uuid}}" data-level="{{entry.level}}" disabled />
+<a data-action="{{search}}" data-level={{entry.level}} data-traits="{{traits}}"><i class="fas fa-search"></i></a>
+<a data-action="clear" {{#unless entry.uuid}} class="disabled" {{/unless}}><i class="fas fa-times"></i></a>
+{{/inline}}
+
+{{#*inline 'selectRow'}}
+<label>{{label}}</label>
+<select data-type="{{type}}" data-category="{{category}}">
+    {{selectOptions options nameAttr='key' labelAttr='key' selected=selected}}
+</select>
+{{/inline}}

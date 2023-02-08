@@ -15,6 +15,7 @@ import { chatUUID } from '@utils/foundry/uuid'
 import { LANGUAGE_LIST } from '@utils/pf2e/languages'
 import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
 import { createSpellScroll } from '@utils/pf2e/spell'
+import { ArrayOfNumbers } from '@utils/utils'
 
 const localize = subLocalize('interface')
 
@@ -49,19 +50,19 @@ export class DailiesInterface extends Application {
         const rows: RowTemplate[] = []
         const groups: GroupTemplate[] = []
         const actorLanguages = actor.system.traits.languages.value
-        const skills = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1).map(x => ({ skill: x }))
+        const skills = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1).map(x => ({ key: x }))
         const languages = LANGUAGE_LIST.filter(x => !actorLanguages.includes(x))
             .sort()
-            .map(x => ({ language: x }))
+            .map(x => ({ key: x }))
 
         for (const entry of categories) {
             if (isScrollChainRecord(entry)) {
                 const { type, category, label, items } = entry
                 const slots: ScrollChainTemplateSlot[] = []
 
-                const spellSlot = (spellLevel: number): ScrollChainTemplateSlot => {
-                    const { name, uuid } = flags[category]?.[spellLevel - 1] ?? { name: '', uuid: '' }
-                    return { spellLevel, name, uuid }
+                const spellSlot = (level: number): ScrollChainTemplateSlot => {
+                    const { name, uuid } = flags[category]?.[level - 1] ?? { name: '', uuid: '' }
+                    return { level, name, uuid, label: game.i18n.localize(`PF2E.SpellLevel${level}`) }
                 }
 
                 // first feat
@@ -86,12 +87,12 @@ export class DailiesInterface extends Application {
             } else if (isTrainedSkill(entry)) {
                 const { type, category, label } = entry
                 const selected = flags[category] ?? ''
-                const template: TrainedSkillTemplate = { type, category, label, skills, selected }
+                const template: TrainedSkillTemplate = { type, category, label, options: skills, selected }
                 rows.push(template)
             } else if (isAddedLanguage(entry)) {
                 const { type, category, label } = entry
                 const selected = flags[category] ?? ''
-                const template: AddedLanguageTemplate = { type, category, label, languages, selected }
+                const template: AddedLanguageTemplate = { type, category, label, options: languages, selected }
                 rows.push(template)
             }
         }
@@ -269,20 +270,15 @@ export class DailiesInterface extends Application {
         this.close()
     }
 
-    #onSpellSearch(event: JQuery.ClickEvent<any, any, HTMLAnchorElement>) {
+    #onSpellSearch(event: JQuery.ClickEvent) {
         event.preventDefault()
 
-        const level = Number(event.currentTarget.dataset.level)
-        const levels: number[] = []
-
-        for (let i = 0; i < level; i++) {
-            levels[i] = i + 1
-        }
+        const data = event.currentTarget.dataset as ScrollChainField['dataset']
 
         const filter: InitialSpellFilters = {
             category: ['spell'],
             classes: [],
-            level: levels,
+            level: ArrayOfNumbers(1, Number(data.level)),
             rarity: [],
             school: [],
             source: [],
@@ -290,9 +286,22 @@ export class DailiesInterface extends Application {
             traits: [],
         }
 
-        console.log(filter)
-
         game.pf2e.compendiumBrowser.openTab('spell', filter)
+    }
+
+    #onFeatSearch(event: JQuery.ClickEvent) {
+        event.preventDefault()
+
+        const data = event.currentTarget.dataset
+
+        const filter = {
+            feattype: ['class'],
+            skills: [],
+            rarity: [],
+            source: [],
+            traits: ['fighter'],
+            level: { min: 1, max: 8 },
+        }
     }
 
     #onClear(event: JQuery.ClickEvent<any, any, HTMLAnchorElement>) {

@@ -26,14 +26,10 @@ type ScrollChain = BaseCategory<'scrollChain', ScrollChainName>
 
 type Category = TrainedSkill | AddedLanguage | ScrollChain
 
-type SavedTrainedSkill = SkillLongForm
-type SavedAddedLanguage = Language
-type SavedScrollChain = { name: string; uuid: ItemUUID | '' }[]
-
 type SavedCategories = Partial<
-    Record<TrainedSkillName, SavedTrainedSkill> &
-        Record<AddedLanguageName, SavedAddedLanguage> &
-        Record<ScrollChainName, SavedScrollChain>
+    Record<TrainedSkillName, SkillLongForm> &
+        Record<AddedLanguageName, Language> &
+        Record<ScrollChainName, { name: string; uuid: ItemUUID | '' }[]>
 >
 
 type BaseCategoryTemplate<T extends CategoryType, N extends CategoryName> = {
@@ -42,23 +38,19 @@ type BaseCategoryTemplate<T extends CategoryType, N extends CategoryName> = {
     label: string
 }
 
-type TemplateStringValue<S extends string> = S | ''
-
 type BaseGroupTemplate<T extends CategoryType, N extends CategoryName, R extends any> = BaseCategoryTemplate<T, N> & {
     rows: R[]
 }
 
-type TrainedSkillTemplate = BaseCategoryTemplate<'trainedSkill', TrainedSkillName> & {
-    skills: { skill: SkillLongForm }[]
-    selected: TemplateStringValue<SkillLongForm>
+type BaseOptionsTemplate<T extends CategoryType, N extends CategoryName, K extends string> = BaseCategoryTemplate<T, N> & {
+    options: { key: K }[]
+    selected: K | ''
 }
 
-type AddedLanguageTemplate = BaseCategoryTemplate<'addedLanguage', AddedLanguageName> & {
-    languages: { language: Language }[]
-    selected: TemplateStringValue<Language>
-}
+type TrainedSkillTemplate = BaseOptionsTemplate<'trainedSkill', TrainedSkillName, SkillLongForm>
+type AddedLanguageTemplate = BaseOptionsTemplate<'addedLanguage', AddedLanguageName, Language>
 
-type ScrollChainTemplateSlot = { spellLevel: number; name: string; uuid: TemplateStringValue<ItemUUID> }
+type ScrollChainTemplateSlot = { label: string; level: number; name: string; uuid: ItemUUID | '' }
 type ScrollChainTemplate = BaseGroupTemplate<'scrollChain', ScrollChainName, ScrollChainTemplateSlot>
 
 type RowTemplate = TrainedSkillTemplate | AddedLanguageTemplate
@@ -87,7 +79,7 @@ type ScrollChainField = BaseTemplateField<
     ScrollChain,
     {
         level: `${OneToTen}`
-        uuid: TemplateStringValue<ItemUUID>
+        uuid: ItemUUID | ''
     }
 >
 

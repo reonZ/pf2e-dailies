@@ -33,7 +33,7 @@ A new character sheet icon will appear next to the `rest` one, clicking on it wi
 
 # Interface
 
-![](./readme/interface.webp)
+![](./readme/window.webp)
 
 The interface will look different depending on the feats and items present on the character and its current level.
 

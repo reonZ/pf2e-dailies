@@ -48,6 +48,11 @@ export class DailiesInterface extends Application {
         const categories = hasCategories(actor)
         const rows: RowTemplate[] = []
         const groups: GroupTemplate[] = []
+        const actorLanguages = actor.system.traits.languages.value
+        const skills = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1).map(x => ({ skill: x }))
+        const languages = LANGUAGE_LIST.filter(x => !actorLanguages.includes(x))
+            .sort()
+            .map(x => ({ language: x }))
 
         for (const entry of categories) {
             if (isScrollChainRecord(entry)) {
@@ -81,16 +86,11 @@ export class DailiesInterface extends Application {
             } else if (isTrainedSkill(entry)) {
                 const { type, category, label } = entry
                 const selected = flags[category] ?? ''
-                const skills = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1).map(x => ({ skill: x }))
                 const template: TrainedSkillTemplate = { type, category, label, skills, selected }
                 rows.push(template)
             } else if (isAddedLanguage(entry)) {
                 const { type, category, label } = entry
                 const selected = flags[category] ?? ''
-                const actorLanguages = actor.system.traits.languages.value
-                const languages = LANGUAGE_LIST.filter(x => !actorLanguages.includes(x))
-                    .sort()
-                    .map(x => ({ language: x }))
                 const template: AddedLanguageTemplate = { type, category, label, languages, selected }
                 rows.push(template)
             }

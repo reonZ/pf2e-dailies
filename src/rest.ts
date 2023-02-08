@@ -1,4 +1,4 @@
-import { getRuleItems } from './items'
+import { getRuleItems } from './categories'
 
 export function wrapRestForTheNight() {
     const original = game.pf2e.actions.restForTheNight
@@ -20,6 +20,7 @@ function afterRest(actors: ActorPF2e | ActorPF2e[]) {
         for (const item of ruleItems) {
             const rules = deepClone(item._source.system.rules)
             const ruleIndex = rules.findIndex(x => 'pf2e-dailies' in x)
+
             if (ruleIndex >= 0) {
                 rules.splice(ruleIndex, 1)
                 update.push({ _id: item.id, 'system.rules': rules })

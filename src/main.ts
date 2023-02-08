@@ -11,7 +11,6 @@ Hooks.once('ready', () => {
 Hooks.on('renderCharacterSheetPF2e', renderCharacterSheetPF2e)
 
 /**
-Bort's Blessing
 Quick Study (Loremaster Archetype)
 Fighter's combat flexibility
  */

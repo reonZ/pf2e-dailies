@@ -8,21 +8,17 @@
                 "changes": "Has made the following changes during their daily preparations",
                 "items": "Gained the temporary items:",
                 "skills": "Selected the following skills:",
-                "languages": "Selected the following languages:",
-                "cleared": "Cleared"
-            },
-            "spells": {
-                "error": {
-                    "wrongType": "Only spells can be dropped here.",
-                    "wrongLevel": "The spell level is too high for this slot."
-                },
-                "item": {
-                    "name": "Scroll of {name} (Level {level})",
-                    "description": "<p>@UUID[{uuid}]</p><p>This scroll is temporary and was aquired from <strong>{category}</strong></p><hr>{description}"
-                }
+                "languages": "Selected the following languages:"
             },
             "error": {
-                "empty": "All fields must be filled"
+                "empty": "All fields must be filled",
+                "drop": {
+                    "wrongType": "Invalid data type dropped.",
+                    "spell": {
+                        "wrongType": "Only spells can be dropped here.",
+                        "wrongLevel": "The spell level is too high for this slot."
+                    }
+                }
             }
         },
         "sheet": {

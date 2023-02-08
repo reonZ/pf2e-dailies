@@ -1,3 +1,8 @@
+# 1.6.0
+
+-   the `daily preparations` interface has been re-designed, resulting in something much cleaner
+-   module has been completely refactored
+
 # 1.5.0
 
 -   now support items

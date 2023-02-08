@@ -1,68 +1,57 @@
 [id^=pf2e-dailies-interface-] {
-  --section-width: 350px;
+  max-height: 80%;
 }
 [id^=pf2e-dailies-interface-] .window-content .content {
-  min-width: var(--section-width);
-}
-[id^=pf2e-dailies-interface-] .window-content .content a.disabled {
-  text-shadow: none;
-  color: grey;
-  pointer-events: none;
-}
-[id^=pf2e-dailies-interface-] .window-content .large-group {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5em;
-}
-[id^=pf2e-dailies-interface-] .window-content .large-group .row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5em;
-}
-[id^=pf2e-dailies-interface-] .window-content .large-group .row label {
-  border-bottom: 1px solid var(--color-underline-header);
-  font-size: 1.25em;
-  padding-inline: 0.2em;
-  white-space: nowrap;
-}
-[id^=pf2e-dailies-interface-] .window-content .groups {
   display: grid;
-  grid-auto-flow: column;
-  align-items: start;
-  -moz-column-gap: 1em;
-       column-gap: 1em;
+  grid-auto-flow: row;
+  gap: 1em;
 }
-[id^=pf2e-dailies-interface-] .window-content .groups .group {
-  width: var(--section-width);
-  padding-inline: 0.2em;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  -moz-column-gap: 0.5em;
-       column-gap: 0.5em;
-  gap: 0.2em;
-}
-[id^=pf2e-dailies-interface-] .window-content .groups .group h3 {
-  grid-column: 1/5;
-}
-[id^=pf2e-dailies-interface-] .window-content .groups .group [data-action=clear] {
-  font-size: 1.2em;
-}
-[id^=pf2e-dailies-interface-] .window-content .groups .group input:disabled {
+[id^=pf2e-dailies-interface-] .window-content .content input:disabled {
   color: inherit;
 }
-[id^=pf2e-dailies-interface-] .window-content .buttons {
-  display: flex;
-  margin-top: 1em;
+[id^=pf2e-dailies-interface-] .window-content .content select,
+[id^=pf2e-dailies-interface-] .window-content .content option {
+  text-transform: capitalize;
 }
-[id^=pf2e-dailies-interface-] .window-content hr:last-child {
+[id^=pf2e-dailies-interface-] .window-content .content hr:last-child {
   display: none;
 }
-[id^=pf2e-dailies-interface-] .window-content select,
-[id^=pf2e-dailies-interface-] .window-content option {
-  text-transform: capitalize;
+[id^=pf2e-dailies-interface-] .window-content .content label {
+  margin-left: 0.2em;
+}
+[id^=pf2e-dailies-interface-] .window-content .group,
+[id^=pf2e-dailies-interface-] .window-content .rows {
+  width: 350px;
+  display: grid;
+  gap: 0.2em 0.5em;
+  align-items: center;
+}
+[id^=pf2e-dailies-interface-] .window-content .rows {
+  grid-template-columns: auto 1fr;
+}
+[id^=pf2e-dailies-interface-] .window-content .rows input,
+[id^=pf2e-dailies-interface-] .window-content .rows select {
+  margin-right: 0.2em;
+}
+[id^=pf2e-dailies-interface-] .window-content .group {
+  display: grid;
+  gap: 0.2em 0.5em;
+  align-items: center;
+}
+[id^=pf2e-dailies-interface-] .window-content .group.scrollChain {
+  grid-template-columns: auto 1fr auto auto;
+}
+[id^=pf2e-dailies-interface-] .window-content .group.scrollChain [data-action=clear] {
+  font-size: 1.2em;
+  margin-right: 0.2em;
+}
+[id^=pf2e-dailies-interface-] .window-content .group h3 {
+  grid-column: 1/-1;
+}
+[id^=pf2e-dailies-interface-] .window-content .buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 1em;
+  -moz-column-gap: 0.3em;
+       column-gap: 0.3em;
 }

@@ -1,10 +1,10 @@
 import { DailiesInterface } from '@apps/interface'
 import { localize } from '@utils/foundry/localize'
-import { hasAnyItem } from './items'
+import { hasAnyCategory } from './categories'
 
 export function renderCharacterSheetPF2e(sheet: CharacterSheetPF2e, html: JQuery) {
     const actor = sheet.actor
-    if (!hasAnyItem(actor)) return
+    if (!hasAnyCategory(actor)) return
 
     const small = html.find('aside .sidebar .hitpoints .hp-small')
     small

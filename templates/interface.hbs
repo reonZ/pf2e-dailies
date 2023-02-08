@@ -1,48 +1,36 @@
 <div class="content">
-    {{#if (or (and skills.length skillItems.length) languageItems.length)}}
-        <div class="large-group">
-            {{#each skillItems}}
-                <div class="row">
-                    <label>{{this.name}}</label>
-                    <select name="{{this.category}}">
-                        {{selectOptions @root.skills nameAttr='skill' labelAttr='skill' selected=this.selected}}
-                    </select>
-                </div>
-            {{/each}}
-            {{#each languageItems}} 
-                <div class="row">
-                    <label>{{this.name}}</label>
-                    <select name="{{this.category}}">
-                        {{selectOptions @root.languages nameAttr='language' labelAttr='language' selected=this.selected}}
-                    </select>
-                </div>
-            {{/each}}
-        </div>
-        <hr>
+    {{#if rows.length}}
+    <div class="rows">
+        {{#each rows}}
+        {{#if (eq this.type 'trainedSkill')}}
+        <label>{{this.label}}</label>
+        <select data-type="{{this.type}}" data-category="{{this.category}}">
+            {{selectOptions this.skills nameAttr='skill' labelAttr='skill' selected=this.selected}}
+        </select>
+        {{else if (eq this.type 'addedLanguage')}}
+        <label>{{this.label}}</label>
+        <select data-type="{{this.type}}" data-category="{{this.category}}">
+            {{selectOptions this.languages nameAttr='language' labelAttr='language' selected=this.selected}}
+        </select>
+        {{/if}}
+        {{/each}}
+    </div>
     {{/if}}
 
-    {{#if scrollItems.length}} 
-        <div class="groups">
-            {{#each scrollItems}}
-                <div class="group" data-type="spell" data-category="{{this.category}}">
-                    <h3>{{this.name}}</h3>
-                    {{#each this.slots}}
-                        <label>{{localize (concat 'PF2E.SpellLevel' this.spellLevel)}}</label>
-                        <input 
-                            type="text" 
-                            name="spell"
-                            value="{{this.name}}" 
-                            data-uuid="{{this.uuid}}" 
-                            data-level="{{this.spellLevel}}"
-                            disabled
-                        />
-                        <a data-action="search" data-level={{this.spellLevel}}><i class="fas fa-search"></i></a>
-                        <a data-action="clear"{{#unless this.uuid}} class="disabled"{{/unless}}><i class="fas fa-times"></i></a>
-                    {{/each}}
-                </div>
-            {{/each}}
-        </div>
-    {{/if}}
+    {{#each groups}}
+    <div class="group {{this.type}}">
+        <h3>{{this.label}}</h3>
+        {{#if (eq this.type 'scrollChain')}}
+        {{#each this.rows}}
+        <label data-droppable="true">{{localize (concat 'PF2E.SpellLevel' this.spellLevel)}}</label>
+        <input type="text" data-droppable="true" value="{{this.name}}" data-type="{{../this.type}}" data-category="{{../this.category}}"
+            data-uuid="{{this.uuid}}" data-level="{{this.spellLevel}}" disabled />
+        <a data-action="searchSpell" data-level={{this.spellLevel}}><i class="fas fa-search"></i></a>
+        <a data-action="clear" {{#unless this.uuid}} class="disabled" {{/unless}}><i class="fas fa-times"></i></a>
+        {{/each}}
+        {{/if}}
+    </div>
+    {{/each}}
 </div>
 
 <div class="buttons">

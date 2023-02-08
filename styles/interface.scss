@@ -1,81 +1,71 @@
 [id^='pf2e-dailies-interface-'] {
-    --section-width: 350px;
+    max-height: 80%;
 
     .window-content {
         .content {
-            min-width: var(--section-width);
-
-            a.disabled {
-                text-shadow: none;
-                color: grey;
-                pointer-events: none;
-            }
-        }
-
-        .large-group {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5em;
-
-            .row {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                align-items: center;
-                gap: 0.5em;
-
-                label {
-                    border-bottom: 1px solid var(--color-underline-header);
-                    font-size: 1.25em;
-                    padding-inline: 0.2em;
-                    white-space: nowrap;
-                }
-            }
-        }
-
-        .groups {
             display: grid;
-            grid-auto-flow: column;
-            align-items: start;
-            column-gap: 1em;
+            grid-auto-flow: row;
+            gap: 1em;
 
-            .group {
-                width: var(--section-width);
-                padding-inline: 0.2em;
-                display: grid;
-                grid-template-columns: auto 1fr auto;
-                align-items: center;
-                column-gap: 0.5em;
-                gap: 0.2em;
+            input:disabled {
+                color: inherit;
+            }
 
-                h3 {
-                    grid-column: 1 / 5;
-                }
+            select,
+            option {
+                text-transform: capitalize;
+            }
+
+            hr:last-child {
+                display: none;
+            }
+
+            label {
+                margin-left: 0.2em;
+            }
+        }
+
+        .group,
+        .rows {
+            width: 350px;
+            display: grid;
+            gap: 0.2em 0.5em;
+            align-items: center;
+        }
+
+        .rows {
+            grid-template-columns: auto 1fr;
+
+            input,
+            select {
+                margin-right: 0.2em;
+            }
+        }
+
+        .group {
+            display: grid;
+            gap: 0.2em 0.5em;
+            align-items: center;
+
+            &.scrollChain {
+                grid-template-columns: auto 1fr auto auto;
 
                 [data-action='clear'] {
                     font-size: 1.2em;
+                    margin-right: 0.2em;
                 }
+            }
 
-                input:disabled {
-                    color: inherit;
-                }
+            h3 {
+                grid-column: 1 / -1;
             }
         }
 
         .buttons {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             margin-top: 1em;
-        }
-
-        hr:last-child {
-            display: none;
-        }
-
-        select,
-        option {
-            text-transform: capitalize;
+            column-gap: 0.3em;
         }
     }
 }

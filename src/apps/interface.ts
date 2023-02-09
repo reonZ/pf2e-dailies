@@ -1,11 +1,13 @@
 import {
+    CATEGORY_SEARCH,
     getCategoryUUIDS,
     getRuleItems,
     hasCategories,
     isAddedLanguage,
+    isCombatFlexibility,
     isScrollChainRecord,
     isTrainedSkill,
-    RULE_NAMES,
+    RULE_TYPES,
 } from '@src/categories'
 import { createLanguageRule, createTrainedSkillRule } from '@src/rules'
 import { getFlag, hasSourceId, setFlag } from '@utils/foundry/flags'
@@ -15,7 +17,10 @@ import { chatUUID } from '@utils/foundry/uuid'
 import { LANGUAGE_LIST } from '@utils/pf2e/languages'
 import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
 import { createSpellScroll } from '@utils/pf2e/spell'
-import { ArrayOfNumbers } from '@utils/utils'
+import { sequenceArray } from '@utils/utils'
+import { sluggify } from '@utils/pf2e/utils'
+import { createFeat } from '@src/items'
+import { findItemWithSourceId } from '@utils/foundry/item'
 
 const localize = subLocalize('interface')
 
@@ -47,8 +52,7 @@ export class DailiesInterface extends Application {
         const level = actor.level
         const flags = (getFlag(actor, 'saved') ?? {}) as SavedCategories
         const categories = hasCategories(actor)
-        const rows: RowTemplate[] = []
-        const groups: GroupTemplate[] = []
+        const templates: BaseCategoryTemplate[] = []
         const actorLanguages = actor.system.traits.languages.value
         const skills = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1).map(x => ({ key: x }))
         const languages = LANGUAGE_LIST.filter(x => !actorLanguages.includes(x))
@@ -58,43 +62,79 @@ export class DailiesInterface extends Application {
         for (const entry of categories) {
             if (isScrollChainRecord(entry)) {
                 const { type, category, label, items } = entry
-                const slots: ScrollChainTemplateSlot[] = []
-
-                const spellSlot = (level: number): ScrollChainTemplateSlot => {
+                const slots: DropTemplate[] = []
+                const spellSlot = (level: number): DropTemplate => {
                     const { name, uuid } = flags[category]?.[level - 1] ?? { name: '', uuid: '' }
-                    return { level, name, uuid, label: game.i18n.localize(`PF2E.SpellLevel${level}`) }
+                    return { type: 'drop', level, name, uuid, label: game.i18n.localize(`PF2E.SpellLevel${level}`) }
                 }
-
                 // first feat
                 slots.push(spellSlot(1))
                 if (level >= 8) slots.push(spellSlot(2))
-
                 // second feat
                 if (items[1]) {
                     slots.push(spellSlot(3))
                     if (level >= 14) slots.push(spellSlot(4))
                     if (level >= 16) slots.push(spellSlot(5))
                 }
-
                 // third feat
                 if (items[2]) {
                     slots.push(spellSlot(6))
                     if (level >= 20) slots.push(spellSlot(7))
                 }
-
                 const template: ScrollChainTemplate = { type, category, label, rows: slots }
-                groups.push(template)
+                templates.push(template)
             } else if (isTrainedSkill(entry)) {
                 const { type, category, label } = entry
                 const selected = flags[category] ?? ''
-                const template: TrainedSkillTemplate = { type, category, label, options: skills, selected }
-                rows.push(template)
+                const template: TrainedSkillTemplate = {
+                    type,
+                    category,
+                    label,
+                    rows: [{ type: 'select', options: skills, selected }],
+                }
+                templates.push(template)
             } else if (isAddedLanguage(entry)) {
                 const { type, category, label } = entry
                 const selected = flags[category] ?? ''
-                const template: AddedLanguageTemplate = { type, category, label, options: languages, selected }
-                rows.push(template)
+                const template: AddedLanguageTemplate = {
+                    type,
+                    category,
+                    label,
+                    rows: [{ type: 'select', options: languages, selected }],
+                }
+                templates.push(template)
+            } else if (isCombatFlexibility(entry)) {
+                const { type, category, label, items } = entry
+                const selected = flags[category] ?? []
+                // first feat
+                const slots: DropTemplate[] = [
+                    {
+                        type: 'drop',
+                        label: game.i18n.localize(`PF2E.Level8`),
+                        name: selected[0]?.name ?? '',
+                        uuid: selected[0]?.uuid ?? '',
+                        level: 8,
+                    },
+                ]
+                // second feat
+                if (items[1])
+                    slots.push({
+                        type: 'drop',
+                        label: game.i18n.localize(`PF2E.Level14`),
+                        name: selected[1]?.name ?? '',
+                        uuid: selected[1]?.uuid ?? '',
+                        level: 14,
+                    })
+                const template: CombatFlexibilityTemplate = { type, category, label, rows: slots }
+                templates.push(template)
             }
+        }
+
+        const rows: BaseCategoryTemplate[] = []
+        const groups: BaseCategoryTemplate[] = []
+        for (const template of templates) {
+            if (template.rows.length > 1) groups.push(template)
+            else rows.push(template)
         }
 
         rows.sort((a, b) => a.type.localeCompare(b.type))
@@ -110,7 +150,7 @@ export class DailiesInterface extends Application {
     activateListeners(html: JQuery<HTMLElement>): void {
         super.activateListeners(html)
 
-        html.find<HTMLAnchorElement>('[data-action=searchSpell]').on('click', this.#onSpellSearch.bind(this))
+        html.find<SearchTemplateButton>('[data-action=search]').on('click', this.#onSearch.bind(this))
         html.find<HTMLAnchorElement>('[data-action=clear]').on('click', this.#onClear.bind(this))
         html.find<HTMLButtonElement>('[data-action=accept]').on('click', this.#onAccept.bind(this))
         html.find<HTMLButtonElement>('[data-action=cancel]').on('click', this.#onCancel.bind(this))
@@ -125,7 +165,7 @@ export class DailiesInterface extends Application {
 
         try {
             const dataString = event.dataTransfer?.getData('text/plain')
-            const typeError = () => localize.warn('error.drop.wrongType')
+            const typeError = () => localize.warn('error.drop.wrongDataType')
 
             const data: { type: string; uuid: string } = JSON.parse(dataString)
             if (!data || data.type !== 'Item' || typeof data.uuid !== 'string') return typeError()
@@ -135,16 +175,47 @@ export class DailiesInterface extends Application {
 
             switch (categoryType) {
                 case 'scrollChain':
-                    this.#onDropSpell(target, item)
+                    this.#onDropSpell(target, item, CATEGORY_SEARCH.scrollChain)
+                    break
+                case 'combatFlexibility':
+                    this.#onDropFeat(target, item, CATEGORY_SEARCH.combatFlexibility)
                     break
             }
         } catch (error) {}
     }
 
-    #onDropSpell(target: JQuery, item: ItemPF2e) {
-        if (!item.isOfType('spell') || item.isCantrip || item.isRitual) return localize.warn('error.drop.spell.wrongType')
-        if (item.level > Number(target.attr('data-level'))) return localize.warn('error.drop.spell.wrongLevel')
+    #onDropSpell(target: JQuery, item: ItemPF2e, { category = [] }: InitialSpellFilters = {}) {
+        if (!item.isOfType('spell')) return localize.warn('error.drop.wrongType', { type: 'spell' })
 
+        if (item.isCantrip && !category.includes('cantrip'))
+            return localize.warn('error.drop.cannotBe', { type: 'spell', not: 'cantrip' })
+        if (item.isRitual && !category.includes('ritual'))
+            return localize.warn('error.drop.cannotBe', { type: 'spell', not: 'ritual' })
+        if (item.isFocusSpell && !category.includes('focus'))
+            return localize.warn('error.drop.cannotBe', { type: 'spell', not: 'focus' })
+
+        if (item.level > Number(target.attr('data-level'))) return localize.warn('error.drop.wrongLevel', { type: 'spell' })
+
+        this.#dropItem(target, item)
+    }
+
+    #onDropFeat(target: JQuery, item: ItemPF2e, { feattype = [], traits = [] }: InitialFeatFilters) {
+        if (!item.isOfType('feat') || item.isFeature) return localize.warn('error.drop.wrongType', { type: 'feat' })
+        if (!feattype.includes(item.featType)) return localize.warn('error.drop.cannotBe', { type: 'feat', not: item.featType })
+
+        if (traits.length) {
+            const itemTraits = item.system.traits.value
+            for (const trait of traits) {
+                if (!itemTraits.includes(trait)) return localize.warn('error.drop.wrongTrait', { type: 'feat', trait })
+            }
+        }
+
+        if (item.level > Number(target.attr('data-level'))) return localize.warn('error.drop.wrongLevel', { type: 'feat' })
+
+        this.#dropItem(target, item)
+    }
+
+    #dropItem(target: JQuery, item: ItemPF2e) {
         target.attr('value', item.name)
         target.attr('data-uuid', item.uuid)
         target.nextAll('[data-action="clear"]').first().removeClass('disabled')
@@ -174,26 +245,15 @@ export class DailiesInterface extends Application {
         const itemsToAdd: BaseItemSourcePF2e[] = []
         const selectedLanguages: SelectedObject[] = []
         const selectedSkills: SelectedObject[] = []
-
-        const fields = this.element.find('.window-content .content').find('input, select').toArray() as Array<
-            HTMLElement & TemplateFields
-        >
-
-        const ruleItems = (() => {
-            const hasRuleCategories = fields.some(field => {
-                const category = field.dataset.category as CategoryName
-                return RULE_NAMES.includes(category as RuleName)
-            })
-            return hasRuleCategories ? getRuleItems(actor) : []
-        })()
+        const fields = this.element.find('.window-content .content').find('input, select').toArray() as TemplateField[]
+        const ruleItems = fields.some(field => RULE_TYPES.includes(field.dataset.type as RulesName)) ? getRuleItems(actor) : []
 
         for (const field of fields) {
             const type = field.dataset.type
 
             if (type === 'scrollChain') {
-                const uuid = field.dataset.uuid
+                const { uuid, category } = field.dataset
                 const level = Number(field.dataset.level) as OneToTen
-                const category = field.dataset.category
                 const name = field.value
 
                 if (uuid) {
@@ -203,23 +263,37 @@ export class DailiesInterface extends Application {
 
                 flags[category] ??= []
                 flags[category]![level - 1] = { name, uuid }
-            } else if (type === 'addedLanguage' || type === 'trainedSkill') {
+            } else if (type === 'combatFlexibility') {
+                const { category, uuid, level } = field.dataset
+                const name = field.value
+                const index = level === '8' ? 0 : 1
+                const parentUUID = getCategoryUUIDS(category)[index]
+
+                if (parentUUID) {
+                    const parent = findItemWithSourceId(actor, parentUUID) as FeatPF2e
+                    const feat = await createFeat(uuid, parent)
+                    if (feat) itemsToAdd.push(feat)
+                }
+
+                flags[category] ??= []
+                flags[category]![index] = { name, uuid }
+            } else {
                 const category = field.dataset.category
                 const uuid = getCategoryUUIDS(category)[0]
-                const item = ruleItems.find(item => hasSourceId(item, uuid))
+                const ruleItem = ruleItems.find(item => hasSourceId(item, uuid))
+                if (!ruleItem) continue
 
-                if (!item) continue
+                const rules = deepClone(ruleItem._source.system.rules)
+                for (let i = rules.length - 1; i >= 0; i--) {
+                    const rule = rules[i]
+                    if ('pf2e-dailies' in rule) rules.splice(i, 1)
+                }
 
-                const rules = deepClone(item._source.system.rules)
-                const ruleIndex = rules.findIndex(rule => 'pf2e-dailies' in rule)
                 const selected = field.value
-
-                if (ruleIndex >= 0) rules.splice(ruleIndex, 1)
-
-                const obj: SelectedObject = {
+                const obj = {
                     uuid,
                     selected,
-                    update: { _id: item.id, 'system.rules': rules },
+                    update: { _id: ruleItem.id, 'system.rules': rules },
                 }
 
                 if (type === 'addedLanguage') {
@@ -236,10 +310,10 @@ export class DailiesInterface extends Application {
         }
 
         const updateData: EmbeddedDocumentUpdateData<ItemPF2e>[] = []
-        const pushSelection = (type: 'skills' | 'languages', choices: SelectedObject[], separator = false) => {
+        const pushUpdate = (type: 'skills' | 'languages', choices: SelectedObject[]) => {
             if (!choices.length) return
 
-            if (separator && message) message += '<hr />'
+            if (message) message += '<hr />'
 
             const title = localize(`message.${type}`)
             message += `<p><strong>${title}</strong></p>`
@@ -250,17 +324,40 @@ export class DailiesInterface extends Application {
             }
         }
 
-        pushSelection('languages', selectedLanguages)
-        pushSelection('skills', selectedSkills, true)
+        pushUpdate('languages', selectedLanguages)
+        pushUpdate('skills', selectedSkills)
 
-        if (updateData.length) await actor.updateEmbeddedDocuments('Item', updateData)
-
+        let featsMessage = ''
+        let equipmentMessage = ''
         if (itemsToAdd.length) {
+            const items = (await actor.createEmbeddedDocuments('Item', itemsToAdd)) as ItemPF2e[]
+            for (const item of items) {
+                const msg = `<p>${chatUUID(item.uuid)}</p>`
+                if (item.isOfType('feat')) featsMessage += msg
+                else equipmentMessage += msg
+
+                const parentId = item.getFlag<string>('pf2e', 'grantedBy.id')
+                if (parentId) {
+                    const slug = sluggify(item.name, { camel: 'dromedary' })
+                    const path = `flags.pf2e.itemGrants.${slug}`
+                    updateData.push({ _id: parentId, [path]: { id: item.id, onDelete: 'detach' } })
+                }
+            }
+        }
+
+        if (featsMessage) {
+            if (message) message += '<hr />'
+            message += `<p><strong>${localize(`message.feats`)}</strong></p>`
+            message += featsMessage
+        }
+
+        if (equipmentMessage) {
             if (message) message += '<hr />'
             message += `<p><strong>${localize(`message.items`)}</strong></p>`
-            const items = (await actor.createEmbeddedDocuments('Item', itemsToAdd)) as ItemPF2e[]
-            items.map(x => (message += `<p>${chatUUID(x.uuid)}</p>`))
+            message += equipmentMessage
         }
+
+        if (updateData.length) await actor.updateEmbeddedDocuments('Item', updateData)
 
         await setFlag(actor, 'saved', flags)
 
@@ -270,38 +367,52 @@ export class DailiesInterface extends Application {
         this.close()
     }
 
-    #onSpellSearch(event: JQuery.ClickEvent) {
+    #onSearch(event: JQuery.ClickEvent<any, any, SearchTemplateButton>) {
         event.preventDefault()
 
-        const data = event.currentTarget.dataset as ScrollChainField['dataset']
+        const data = event.currentTarget.dataset
+        const level = Number(data.level)
 
+        switch (data.type) {
+            case 'scrollChain':
+                this.#onSpellSearch({
+                    ...CATEGORY_SEARCH.scrollChain,
+                    level: sequenceArray<OneToTen>(1, level),
+                })
+                break
+            case 'combatFlexibility':
+                this.#onFeatSearch({
+                    ...CATEGORY_SEARCH.combatFlexibility,
+                    level: { min: 1, max: level },
+                })
+                break
+        }
+    }
+
+    #onSpellSearch({ category = [], level = [] }: InitialSpellFilters = {}) {
         const filter: InitialSpellFilters = {
-            category: ['spell'],
+            category,
             classes: [],
-            level: ArrayOfNumbers(1, Number(data.level)),
+            level,
             rarity: [],
             school: [],
             source: [],
             traditions: [],
             traits: [],
         }
-
         game.pf2e.compendiumBrowser.openTab('spell', filter)
     }
 
-    #onFeatSearch(event: JQuery.ClickEvent) {
-        event.preventDefault()
-
-        const data = event.currentTarget.dataset
-
-        const filter = {
-            feattype: ['class'],
+    #onFeatSearch({ feattype = [], level = {}, traits = [] }: InitialFeatFilters = {}) {
+        const filter: InitialFeatFilters = {
+            feattype,
             skills: [],
             rarity: [],
             source: [],
-            traits: ['fighter'],
-            level: { min: 1, max: 8 },
+            traits,
+            level,
         }
+        game.pf2e.compendiumBrowser.openTab('feat', filter)
     }
 
     #onClear(event: JQuery.ClickEvent<any, any, HTMLAnchorElement>) {

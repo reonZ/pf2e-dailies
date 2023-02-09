@@ -19,3 +19,17 @@ export function createLanguageRule(language: Language) {
         [MODULE_ID]: true,
     } as const
 }
+
+// {
+//     "key": "GrantItem",
+//     "uuid": "Compendium.pf2e.feats-srd.5FyvwI24mnROzh61",
+//     "flag": "combatAssessment"
+//   }
+
+/**
+ * flags.pf2e.itemGrants.combatAssessment = {id: feat.id, onDelete: 'detach'}
+ */
+
+/**
+ * flags.pf2e.grantedBy = {id: parent.id, onDelete: "cascade"}
+ */

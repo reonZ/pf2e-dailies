@@ -2,85 +2,96 @@ declare const game: GamePF2e
 declare const canvas: CanvasPF2e
 declare const ui: UiPF2e
 
-type CategoryType = typeof import('./categories').CATEGORY_TYPES[number]
+/**
+ * Variables
+ */
 
-type TrainedSkillName = typeof import('./categories').TRAINED_SKILL_NAMES[number]
-type AddedLanguageName = typeof import('./categories').ADDED_LANGUAGE_NAMES[number]
-type ScrollChainName = typeof import('./categories').SCROLL_CHAIN_NAMES[number]
-
-type RuleName = typeof import('./categories').RULE_NAMES[number]
-
-type CategoryName = TrainedSkillName | AddedLanguageName | ScrollChainName
-
-type BaseCategory<T extends CategoryType, N extends CategoryName> = {
-    type: T
-    category: N
-    uuids: [ItemUUID, ...ItemUUID[]]
-    label?: string
-    isItem?: boolean
-}
-
-type TrainedSkill = BaseCategory<'trainedSkill', TrainedSkillName>
-type AddedLanguage = BaseCategory<'addedLanguage', AddedLanguageName>
-type ScrollChain = BaseCategory<'scrollChain', ScrollChainName>
-
-type Category = TrainedSkill | AddedLanguage | ScrollChain
+type TrainedSkill = ExtractedCategory<'trainedSkill'>
+type AddedLanguage = ExtractedCategory<'addedLanguage'>
+type ScrollChain = ExtractedCategory<'scrollChain'>
+type CombatFlexibility = ExtractedCategory<'combatFlexibility'>
 
 type SavedCategories = Partial<
-    Record<TrainedSkillName, SkillLongForm> &
-        Record<AddedLanguageName, Language> &
-        Record<ScrollChainName, { name: string; uuid: ItemUUID | '' }[]>
+    SavedCategory<TrainedSkill, SkillLongForm> &
+        SavedCategory<AddedLanguage, Language> &
+        SavedCategory<ScrollChain, SavedItem[]> &
+        SavedCategory<CombatFlexibility, SavedItem[]>
 >
 
-type BaseCategoryTemplate<T extends CategoryType, N extends CategoryName> = {
-    type: T
-    category: N
-    label: string
-}
+type TrainedSkillTemplate = BaseCategoryTemplate<TrainedSkill, SelectTemplate<SkillLongForm>>
+type AddedLanguageTemplate = BaseCategoryTemplate<AddedLanguage, SelectTemplate<Language>>
+type ScrollChainTemplate = BaseDropCategoryTemplate<ScrollChain>
+type CombatFlexibilityTemplate = BaseDropCategoryTemplate<CombatFlexibility>
 
-type BaseGroupTemplate<T extends CategoryType, N extends CategoryName, R extends any> = BaseCategoryTemplate<T, N> & {
+type DropTemplateField = BaseDropTemplateField<ScrollChain> | BaseDropTemplateField<CombatFlexibility>
+
+type TemplateField =
+    | BaseTemplateField<TrainedSkill, SkillLongForm, {}>
+    | BaseTemplateField<AddedLanguage, Language, {}>
+    | DropTemplateField
+
+/**
+ * End of Variables
+ */
+
+type SavedItem = { name: string; uuid: TemplateUUID }
+type TemplateUUID = ItemUUID | ''
+type TemplateLevel = `${OneToTen}`
+
+type DeepWriteable<T> = { -readonly [P in keyof T]: DeepWriteable<T[P]> }
+
+type Category = typeof import('./categories').CATEGORIES[number]
+type CategoryType = Category['type']
+type CategoryName = Category['category']
+
+type RulesName = typeof import('./categories').RULE_TYPES[number]
+
+type ExtractedCategory<T extends string> = Extract<Category, { type: T }>
+
+type SavedCategory<C extends Category, D extends any> = Record<C['category'], D>
+
+type BaseCategoryTemplate<C extends Category = Category, R extends any = any> = {
+    type: C['type']
+    category: C['category']
+    label: string
     rows: R[]
 }
 
-type BaseOptionsTemplate<T extends CategoryType, N extends CategoryName, K extends string> = BaseCategoryTemplate<T, N> & {
+type BaseDropCategoryTemplate<C extends Category> = BaseCategoryTemplate<C, DropTemplate>
+
+type SelectTemplate<K extends string> = {
+    type: 'select'
     options: { key: K }[]
     selected: K | ''
 }
 
-type TrainedSkillTemplate = BaseOptionsTemplate<'trainedSkill', TrainedSkillName, SkillLongForm>
-type AddedLanguageTemplate = BaseOptionsTemplate<'addedLanguage', AddedLanguageName, Language>
-
-type ScrollChainTemplateSlot = { label: string; level: number; name: string; uuid: ItemUUID | '' }
-type ScrollChainTemplate = BaseGroupTemplate<'scrollChain', ScrollChainName, ScrollChainTemplateSlot>
-
-type RowTemplate = TrainedSkillTemplate | AddedLanguageTemplate
-type GroupTemplate = ScrollChainTemplate
-
-type ReturnedCategory<C extends Category = Category> = Omit<Required<C>, 'uuids' | 'isItem'> & {
-    items: [true, ...(undefined | true)[]]
+type DropTemplate = {
+    type: 'drop'
+    label: string
+    level: number
+    name: string
+    uuid: TemplateUUID
 }
 
-type SelectedObject = { uuid: string; selected: string; update: EmbeddedDocumentUpdateData<ItemPF2e> }
-
-type BaseTemplateField<V extends string, T extends Category, D extends Record<string, any> = {}> = {
+type BaseTemplateField<C extends Category, V extends string, D extends Record<string, string>> = Omit<
+    HTMLElement,
+    'value' | 'dataset'
+> & {
     value: V
     dataset: {
-        type: T['type']
-        category: T['category']
+        type: C['type']
+        category: C['category']
     } & D
 }
 
-type TrainedSkillField = BaseTemplateField<SkillLongForm, TrainedSkill>
+type BaseDropTemplateField<C extends Category> = BaseTemplateField<C, string, { level: TemplateLevel; uuid: ItemUUID }>
 
-type AddedLanguageField = BaseTemplateField<Language, AddedLanguage>
+type SearchTemplateButton = Omit<HTMLElement, 'dataset'> & { dataset: { type: CategoryType; level: TemplateLevel } }
 
-type ScrollChainField = BaseTemplateField<
-    string,
-    ScrollChain,
-    {
-        level: `${OneToTen}`
-        uuid: ItemUUID | ''
-    }
->
+type ReturnedCategoryItems = [true, ...(undefined | true)[]]
+type ReturnedCategory<C extends Category = Category> = Omit<Required<C>, 'uuids' | 'label'> & {
+    label: string
+    items: ReturnedCategoryItems
+}
 
-type TemplateFields = TrainedSkillField | AddedLanguageField | ScrollChainField
+type SelectedObject = { uuid: string; selected: string; update: EmbeddedDocumentUpdateData<ItemPF2e> }

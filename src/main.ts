@@ -11,6 +11,6 @@ Hooks.once('ready', () => {
 Hooks.on('renderCharacterSheetPF2e', renderCharacterSheetPF2e)
 
 /**
-Quick Study (Loremaster Archetype)
-Fighter's combat flexibility
+ * Scroll Savant
+ * Quick Study (Loremaster Archetype)
  */

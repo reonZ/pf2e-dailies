@@ -8,16 +8,17 @@
                 "changes": "Has made the following changes during their daily preparations",
                 "items": "Gained the temporary items:",
                 "skills": "Selected the following skills:",
+                "feats": "Gained the temporary feats:",
                 "languages": "Selected the following languages:"
             },
             "error": {
                 "empty": "All fields must be filled",
                 "drop": {
-                    "wrongType": "Invalid data type dropped.",
-                    "spell": {
-                        "wrongType": "Only spells can be dropped here.",
-                        "wrongLevel": "The spell level is too high for this slot."
-                    }
+                    "wrongDataType": "Invalid data type dropped.",
+                    "wrongType": "Only {type}s can be dropped here.",
+                    "wrongLevel": "The dropped {type} level is too high for this slot.",
+                    "wrongTrait": "The dropped {type} does not have the {trait} trait.",
+                    "cannotBe": "The dropped {type} cannot be a {not}"
                 }
             }
         },

@@ -1,3 +1,7 @@
+# 1.8.0
+
+-   added the wizard feat `Scroll Savant` (all conditions are supported)
+
 # 1.7.1
 
 -   slight optimization of the `rest` reset (every bit matters since it is async)

@@ -21,6 +21,7 @@ Feat related
 
 Scroll related
 
+-   [Scroll Savant](https://2e.aonprd.com/Feats.aspx?ID=652)
 -   [Basic Scroll Cache](https://2e.aonprd.com/Feats.aspx?ID=2054)
     -   [Expert Scroll Cache](https://2e.aonprd.com/Feats.aspx?ID=2056)
     -   [Master Scroll Cache](https://2e.aonprd.com/Feats.aspx?ID=2057)

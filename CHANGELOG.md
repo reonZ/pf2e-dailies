@@ -1,3 +1,8 @@
+# 1.7.0
+
+-   now support feats (as in you can drop feats in the interface)
+-   added the fighter feat `Combat Flexibility`
+
 # 1.6.0
 
 -   the `daily preparations` interface has been re-designed, resulting in something much cleaner

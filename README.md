@@ -14,6 +14,11 @@ Skill related
 -   [Ancient Memories](https://2e.aonprd.com/Feats.aspx?ID=3944)
 -   [Flexible Studies](https://2e.aonprd.com/Feats.aspx?ID=1446)
 
+Feat related
+
+-   [Combat Flexibility](https://2e.aonprd.com/Classes.aspx?ID=7)
+    -   [Improved Flexibility](https://2e.aonprd.com/Classes.aspx?ID=7)
+
 Scroll related
 
 -   [Basic Scroll Cache](https://2e.aonprd.com/Feats.aspx?ID=2054)
@@ -42,6 +47,12 @@ The interface allows the user to open the compendium browser (with the right set
 ## Scrolls
 
 When a spell is dropped in a spell slot, a temporary spell scroll will be created with the appropriate hightened level directly in the character's inventory.
+
+## Feats
+
+![](./readme/feats.webp)
+
+Selected feats are directly added to the character feat tab, in cascade with the related feat that gave the user the choice.
 
 ## Items
 

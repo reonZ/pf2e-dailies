@@ -37,8 +37,8 @@ async function afterRest(actors: ActorPF2e | ActorPF2e[]) {
                     const slug = sluggify(item.name, { camel: 'dromedary' })
                     const path = `flags.pf2e.itemGrants.-=${slug}`
                     update.push({ _id: parentId, [path]: true })
-                    remove.push(item.id)
                 }
+                remove.push(item.id)
             }
         }
 

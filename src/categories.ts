@@ -6,6 +6,7 @@ export const RULE_TYPES = ['addedLanguage', 'trainedSkill'] as const
 export const CATEGORY_SEARCH = {
     scrollChain: { category: ['spell'] } as InitialSpellFilters,
     combatFlexibility: { feattype: ['class'], traits: ['fighter'] } as InitialFeatFilters,
+    scrollSavant: { category: ['spell'], traditions: ['arcane'] } as InitialSpellFilters,
 } as const
 
 export const CATEGORIES = [
@@ -53,6 +54,13 @@ export const CATEGORIES = [
         category: 'flexibility',
         label: '',
         uuids: ['Compendium.pf2e.classfeatures.8g6HzARbhfcgilP8', 'Compendium.pf2e.classfeatures.W2rwudMNcAxs8VoX'],
+    },
+    // ScrollSavant
+    {
+        type: 'scrollSavant',
+        category: 'savant',
+        label: '',
+        uuids: ['Compendium.pf2e.feats-srd.u5DBg0LrBUKP0JsJ'],
     },
     // ScrollChain
     {
@@ -148,4 +156,8 @@ export function isAddedLanguage(record: ReturnedCategory): record is ReturnedCat
 
 export function isCombatFlexibility(record: ReturnedCategory): record is ReturnedCategory<CombatFlexibility> {
     return record.type === 'combatFlexibility'
+}
+
+export function isScrollSavant(record: ReturnedCategory): record is ReturnedCategory<ScrollSavant> {
+    return record.type === 'scrollSavant'
 }

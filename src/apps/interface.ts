@@ -6,6 +6,7 @@ import {
     isAddedLanguage,
     isCombatFlexibility,
     isScrollChainRecord,
+    isScrollSavant,
     isTrainedSkill,
     RULE_TYPES,
 } from '@src/categories'
@@ -19,7 +20,7 @@ import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
 import { createSpellScroll } from '@utils/pf2e/spell'
 import { sequenceArray } from '@utils/utils'
 import { sluggify } from '@utils/pf2e/utils'
-import { createFeat } from '@src/items'
+import { createFeat, getSpellcastingDetails } from '@src/utils'
 import { findItemWithSourceId } from '@utils/foundry/item'
 
 const localize = subLocalize('interface')
@@ -63,25 +64,52 @@ export class DailiesInterface extends Application {
             if (isScrollChainRecord(entry)) {
                 const { type, category, label, items } = entry
                 const slots: DropTemplate[] = []
-                const spellSlot = (level: number): DropTemplate => {
+                const spellSlot = (level: OneToTen): DropTemplate => {
                     const { name, uuid } = flags[category]?.[level - 1] ?? { name: '', uuid: '' }
                     return { type: 'drop', level, name, uuid, label: game.i18n.localize(`PF2E.SpellLevel${level}`) }
                 }
+
                 // first feat
                 slots.push(spellSlot(1))
                 if (level >= 8) slots.push(spellSlot(2))
+
                 // second feat
                 if (items[1]) {
                     slots.push(spellSlot(3))
                     if (level >= 14) slots.push(spellSlot(4))
                     if (level >= 16) slots.push(spellSlot(5))
                 }
+
                 // third feat
                 if (items[2]) {
                     slots.push(spellSlot(6))
                     if (level >= 20) slots.push(spellSlot(7))
                 }
+
                 const template: ScrollChainTemplate = { type, category, label, rows: slots }
+                templates.push(template)
+            } else if (isScrollSavant(entry)) {
+                const { maxSlot, maxTradition } = getSpellcastingDetails(actor, 'arcane')
+                if (maxSlot < 3) continue
+
+                const { type, category, label } = entry
+                const slots: DropTemplate[] = []
+                const spellSlot = (index: number, level: number): DropTemplate => {
+                    const { name, uuid } = flags[category]?.[index] ?? { name: '', uuid: '' }
+                    return { type: 'drop', level, name, uuid, label: game.i18n.localize(`PF2E.SpellLevel${level}`) }
+                }
+
+                // legendary arcane
+                if (maxTradition >= 4 && maxSlot >= 6) slots.push(spellSlot(3, maxSlot - 5))
+
+                // master arcane
+                if (maxTradition >= 3 && maxSlot >= 5) slots.push(spellSlot(2, maxSlot - 4))
+
+                // no proficiency
+                if (maxSlot >= 4) slots.push(spellSlot(1, maxSlot - 3))
+                slots.push(spellSlot(0, maxSlot - 2))
+
+                const template: ScrollSavantTemplate = { type, category, label, rows: slots }
                 templates.push(template)
             } else if (isTrainedSkill(entry)) {
                 const { type, category, label } = entry
@@ -180,11 +208,14 @@ export class DailiesInterface extends Application {
                 case 'combatFlexibility':
                     this.#onDropFeat(target, item, CATEGORY_SEARCH.combatFlexibility)
                     break
+                case 'scrollSavant':
+                    this.#onDropSpell(target, item, CATEGORY_SEARCH.scrollSavant)
+                    break
             }
         } catch (error) {}
     }
 
-    #onDropSpell(target: JQuery, item: ItemPF2e, { category = [] }: InitialSpellFilters = {}) {
+    #onDropSpell(target: JQuery, item: ItemPF2e, { category = [], traditions = [] }: InitialSpellFilters = {}) {
         if (!item.isOfType('spell')) return localize.warn('error.drop.wrongType', { type: 'spell' })
 
         if (item.isCantrip && !category.includes('cantrip'))
@@ -193,6 +224,14 @@ export class DailiesInterface extends Application {
             return localize.warn('error.drop.cannotBe', { type: 'spell', not: 'ritual' })
         if (item.isFocusSpell && !category.includes('focus'))
             return localize.warn('error.drop.cannotBe', { type: 'spell', not: 'focus' })
+
+        if (traditions.length) {
+            const itemTraditions = item.system.traditions.value
+            for (const tradition of traditions) {
+                if (!itemTraditions.includes(tradition))
+                    return localize.warn('error.drop.wrongTrait', { type: 'spell', trait: tradition, category: 'tradition' })
+            }
+        }
 
         if (item.level > Number(target.attr('data-level'))) return localize.warn('error.drop.wrongLevel', { type: 'spell' })
 
@@ -206,7 +245,8 @@ export class DailiesInterface extends Application {
         if (traits.length) {
             const itemTraits = item.system.traits.value
             for (const trait of traits) {
-                if (!itemTraits.includes(trait)) return localize.warn('error.drop.wrongTrait', { type: 'feat', trait })
+                if (!itemTraits.includes(trait))
+                    return localize.warn('error.drop.wrongTrait', { type: 'feat', trait, category: 'trait' })
             }
         }
 
@@ -251,7 +291,7 @@ export class DailiesInterface extends Application {
         for (const field of fields) {
             const type = field.dataset.type
 
-            if (type === 'scrollChain') {
+            if (type === 'scrollChain' || type === 'scrollSavant') {
                 const { uuid, category } = field.dataset
                 const level = Number(field.dataset.level) as OneToTen
                 const name = field.value
@@ -262,7 +302,7 @@ export class DailiesInterface extends Application {
                 }
 
                 flags[category] ??= []
-                flags[category]![level - 1] = { name, uuid }
+                flags[category]!.push({ name, uuid })
             } else if (type === 'combatFlexibility') {
                 const { category, uuid, level } = field.dataset
                 const name = field.value
@@ -276,7 +316,7 @@ export class DailiesInterface extends Application {
                 }
 
                 flags[category] ??= []
-                flags[category]![index] = { name, uuid }
+                flags[category]!.push({ name, uuid })
             } else {
                 const category = field.dataset.category
                 const uuid = getCategoryUUIDS(category)[0]
@@ -386,10 +426,16 @@ export class DailiesInterface extends Application {
                     level: { min: 1, max: level },
                 })
                 break
+            case 'scrollSavant':
+                this.#onSpellSearch({
+                    ...CATEGORY_SEARCH.scrollSavant,
+                    level: sequenceArray<OneToTen>(1, level),
+                })
+                break
         }
     }
 
-    #onSpellSearch({ category = [], level = [] }: InitialSpellFilters = {}) {
+    #onSpellSearch({ category = [], level = [], traditions = [] }: InitialSpellFilters = {}) {
         const filter: InitialSpellFilters = {
             category,
             classes: [],
@@ -397,7 +443,7 @@ export class DailiesInterface extends Application {
             rarity: [],
             school: [],
             source: [],
-            traditions: [],
+            traditions,
             traits: [],
         }
         game.pf2e.compendiumBrowser.openTab('spell', filter)

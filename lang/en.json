@@ -17,7 +17,7 @@
                     "wrongDataType": "Invalid data type dropped.",
                     "wrongType": "Only {type}s can be dropped here.",
                     "wrongLevel": "The dropped {type} level is too high for this slot.",
-                    "wrongTrait": "The dropped {type} does not have the {trait} trait.",
+                    "wrongTrait": "The dropped {type} does not have the {trait} {category}.",
                     "cannotBe": "The dropped {type} cannot be a {not}"
                 }
             }

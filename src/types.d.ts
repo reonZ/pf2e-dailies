@@ -10,20 +10,26 @@ type TrainedSkill = ExtractedCategory<'trainedSkill'>
 type AddedLanguage = ExtractedCategory<'addedLanguage'>
 type ScrollChain = ExtractedCategory<'scrollChain'>
 type CombatFlexibility = ExtractedCategory<'combatFlexibility'>
+type ScrollSavant = ExtractedCategory<'scrollSavant'>
 
 type SavedCategories = Partial<
-    SavedCategory<TrainedSkill, SkillLongForm> &
-        SavedCategory<AddedLanguage, Language> &
-        SavedCategory<ScrollChain, SavedItem[]> &
-        SavedCategory<CombatFlexibility, SavedItem[]>
+    BaseSavedCategory<TrainedSkill, SkillLongForm> &
+        BaseSavedCategory<AddedLanguage, Language> &
+        SavedItemsCategory<ScrollChain> &
+        SavedItemsCategory<CombatFlexibility> &
+        SavedItemsCategory<ScrollSavant>
 >
 
 type TrainedSkillTemplate = BaseCategoryTemplate<TrainedSkill, SelectTemplate<SkillLongForm>>
 type AddedLanguageTemplate = BaseCategoryTemplate<AddedLanguage, SelectTemplate<Language>>
 type ScrollChainTemplate = BaseDropCategoryTemplate<ScrollChain>
 type CombatFlexibilityTemplate = BaseDropCategoryTemplate<CombatFlexibility>
+type ScrollSavantTemplate = BaseDropCategoryTemplate<ScrollSavant>
 
-type DropTemplateField = BaseDropTemplateField<ScrollChain> | BaseDropTemplateField<CombatFlexibility>
+type DropTemplateField =
+    | BaseDropTemplateField<ScrollChain>
+    | BaseDropTemplateField<CombatFlexibility>
+    | BaseDropTemplateField<ScrollSavant>
 
 type TemplateField =
     | BaseTemplateField<TrainedSkill, SkillLongForm, {}>
@@ -48,7 +54,9 @@ type RulesName = typeof import('./categories').RULE_TYPES[number]
 
 type ExtractedCategory<T extends string> = Extract<Category, { type: T }>
 
-type SavedCategory<C extends Category, D extends any> = Record<C['category'], D>
+type BaseSavedCategory<C extends Category, D extends any> = Record<C['category'], D>
+
+type SavedItemsCategory<C extends Category> = BaseSavedCategory<C, SavedItem[]>
 
 type BaseCategoryTemplate<C extends Category = Category, R extends any = any> = {
     type: C['type']

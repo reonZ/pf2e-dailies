@@ -112,6 +112,10 @@ export function getRuleItems(actor: CharacterPF2e) {
     return filterItemsWithSourceId(actor, RULES_UUIDS, ['feat', 'equipment'])
 }
 
+export function isRuleItem(item: ItemPF2e) {
+    return includesSourceId(item, RULES_UUIDS)
+}
+
 export function hasCategories(actor: CharacterPF2e) {
     const categories = {} as Record<CategoryName, Omit<ReturnedCategory, 'items'> & { items: (undefined | true)[] }>
     const items = [...actor.itemTypes.feat, ...actor.itemTypes.equipment]

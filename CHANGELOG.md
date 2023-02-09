@@ -1,3 +1,7 @@
+# 1.7.1
+
+-   slight optimization of the `rest` reset (every bit matters since it is async)
+
 # 1.7.0
 
 -   now support feats (as in you can drop feats in the interface)

@@ -90,7 +90,7 @@ export class DailiesInterface extends Application {
                 templates.push(template)
             } else if (isScrollSavant(entry)) {
                 const { maxSlot, maxTradition } = getSpellcastingDetails(actor, 'arcane')
-                if (maxSlot < 3) continue
+                if (maxSlot < 4) continue
 
                 const { type, category, label } = entry
                 const slots: DropTemplate[] = []
@@ -106,7 +106,7 @@ export class DailiesInterface extends Application {
                 if (maxTradition >= 3 && maxSlot >= 5) slots.push(spellSlot(2, maxSlot - 4))
 
                 // no proficiency
-                if (maxSlot >= 4) slots.push(spellSlot(1, maxSlot - 3))
+                slots.push(spellSlot(1, maxSlot - 3))
                 slots.push(spellSlot(0, maxSlot - 2))
 
                 const template: ScrollSavantTemplate = { type, category, label, rows: slots }

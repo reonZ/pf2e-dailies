@@ -55,6 +55,10 @@ async function afterRest(actors: ActorPF2e | ActorPF2e[]) {
             if (isRuleItem(item)) cleanRuleItem(item)
         }
 
+        for (const item of itemTypes.heritage) {
+            if (isRuleItem(item)) cleanRuleItem(item)
+        }
+
         if (update.length) actor.updateEmbeddedDocuments('Item', update)
         if (remove.length) actor.deleteEmbeddedDocuments('Item', remove)
     }

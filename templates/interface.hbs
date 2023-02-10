@@ -1,6 +1,6 @@
 <div class="content">
     {{#if rows.length}}
-    <div class="group">
+    <div class="group rows">
         {{#each rows}}
         {{> (concat this.rows.[0].type 'Row') entry=this.rows.[0] group=this label=this.label}}
         {{/each}}

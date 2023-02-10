@@ -30,6 +30,9 @@
 [id^=pf2e-dailies-interface-] .window-content .group select {
   grid-column: 2/-1;
 }
+[id^=pf2e-dailies-interface-] .window-content .rows {
+  grid-template-columns: minmax(120px, auto) 1fr auto auto;
+}
 [id^=pf2e-dailies-interface-] .window-content select,
 [id^=pf2e-dailies-interface-] .window-content option {
   text-transform: capitalize;

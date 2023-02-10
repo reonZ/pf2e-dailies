@@ -38,6 +38,10 @@
             }
         }
 
+        .rows {
+            grid-template-columns: minmax(120px, auto) 1fr auto auto;
+        }
+
         select,
         option {
             text-transform: capitalize;

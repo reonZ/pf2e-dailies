@@ -83,12 +83,12 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             if (type === 'addedLanguage') {
                 rules.push(createLanguageRule(selected as Language))
                 messages.languages.push({ uuid, selected })
-            } else if (type === 'elementalist') {
-                rules.push(createResistanceRule(selected as FourElementTrait, 'half'))
-                messages.resistances.push({ uuid, selected })
             } else if (type === 'trainedSkill') {
                 rules.push(createTrainedSkillRule(selected as SkillLongForm))
                 messages.skills.push({ uuid, selected })
+            } else if (type === 'addedResistance') {
+                rules.push(createResistanceRule(selected as ResistanceType, 'half'))
+                messages.resistances.push({ uuid, selected })
             }
 
             // @ts-ignore

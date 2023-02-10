@@ -9,7 +9,7 @@ declare const ui: UiPF2e
 type TrainedSkill = ExtractedCategory<'trainedSkill'>
 type TrainedLore = ExtractedCategory<'trainedLore'>
 type AddedLanguage = ExtractedCategory<'addedLanguage'>
-type Elementalist = ExtractedCategory<'elementalist'>
+type AddedResistance = ExtractedCategory<'addedResistance'>
 type ScrollChain = ExtractedCategory<'scrollChain'>
 type CombatFlexibility = ExtractedCategory<'combatFlexibility'>
 type ScrollSavant = ExtractedCategory<'scrollSavant'>
@@ -18,7 +18,7 @@ type SavedCategories = Partial<
     BaseSavedCategory<TrainedSkill, SkillLongForm> &
         BaseSavedCategory<TrainedLore, string> &
         BaseSavedCategory<AddedLanguage, Language> &
-        BaseSavedCategory<Elementalist, FourElementTrait> &
+        BaseSavedCategory<AddedResistance, ResistanceType> &
         SavedItemsCategory<ScrollChain> &
         SavedItemsCategory<CombatFlexibility> &
         SavedItemsCategory<ScrollSavant>
@@ -27,7 +27,7 @@ type SavedCategories = Partial<
 type TrainedSkillTemplate = BaseCategoryTemplate<TrainedSkill, SelectTemplate<SkillLongForm>>
 type TrainedLoreTemplate = BaseCategoryTemplate<TrainedLore, InputTemplate>
 type AddedLanguageTemplate = BaseCategoryTemplate<AddedLanguage, SelectTemplate<Language>>
-type ElementalistTemplate = BaseCategoryTemplate<Elementalist, SelectTemplate<FourElementTrait>>
+type AddedResistanceTemplate = BaseCategoryTemplate<AddedResistance, SelectTemplate<ResistanceType>>
 type ScrollChainTemplate = BaseDropCategoryTemplate<ScrollChain>
 type CombatFlexibilityTemplate = BaseDropCategoryTemplate<CombatFlexibility>
 type ScrollSavantTemplate = BaseDropCategoryTemplate<ScrollSavant>
@@ -36,7 +36,7 @@ type TemplateField =
     | BaseTemplateField<TrainedSkill, SkillLongForm, {}>
     | BaseTemplateField<TrainedLore, string, {}>
     | BaseTemplateField<AddedLanguage, Language, {}>
-    | BaseTemplateField<Elementalist, FourElementTrait, {}>
+    | BaseTemplateField<AddedResistance, ResistanceType, {}>
     | BaseDropTemplateField<ScrollChain>
     | BaseDropTemplateField<CombatFlexibility>
     | BaseDropTemplateField<ScrollSavant>

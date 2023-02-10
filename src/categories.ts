@@ -2,14 +2,19 @@ import { getSourceId, includesSourceId } from '@utils/foundry/flags'
 import { filterItemsWithSourceId } from '@utils/foundry/item'
 import { hasLocalization, localize } from '@utils/foundry/localize'
 
-export const RULE_TYPES = ['addedLanguage', 'trainedSkill', 'elementalist'] as const
+export const RULE_TYPES = ['addedLanguage', 'trainedSkill', 'addedResistance'] as const
 
 export const CATEGORIES = [
-    // ElementalistDedication
+    // Redistsance
     {
-        type: 'elementalist',
+        type: 'addedResistance',
         category: 'elementalist',
         uuids: ['Compendium.pf2e.feats-srd.tx9pkrpmtqe4FnvS'],
+    },
+    {
+        type: 'addedResistance',
+        category: 'ganzi',
+        uuids: ['Compendium.pf2e.heritages.3reGfXH0S82hM7Gp'],
     },
     // TrainedLore
     {
@@ -83,11 +88,12 @@ export const CATEGORIES = [
 ] as const
 
 type UuidsType = [ItemUUID, Omit<Category, 'uuids'> & { index: number }]
-const [UUIDS, EQUIP_UUID, FEATS_UUID, RULES_UUIDS, FLATTENED] = (() => {
+const [UUIDS, EQUIP_UUID, FEATS_UUID, HERITAGES_UUID, RULES_UUIDS, FLATTENED] = (() => {
     const UUIDS: UuidsType[] = []
     const FLATTENED = {} as Record<CategoryName, ItemUUID[]>
     const FEATS: ItemUUID[] = []
     const EQUIP: ItemUUID[] = []
+    const HERITAGES: ItemUUID[] = []
     const RULES: ItemUUID[] = []
 
     for (const { type, category, uuids } of CATEGORIES) {
@@ -96,14 +102,16 @@ const [UUIDS, EQUIP_UUID, FEATS_UUID, RULES_UUIDS, FLATTENED] = (() => {
         UUIDS.push(...uuids.map((uuid, index) => [uuid, { type, category, index }] as UuidsType))
         if (RULE_TYPES.includes(type as typeof RULE_TYPES[number])) RULES.push(...uuids)
         if (uuids[0].includes('equipment-srd')) EQUIP.push(uuids[0])
+        else if (uuids[0].includes('heritages')) HERITAGES.push(uuids[0])
         else FEATS.push(uuids[0])
     }
 
-    return [new Map(UUIDS), EQUIP, FEATS, RULES, FLATTENED]
+    return [new Map(UUIDS), EQUIP, FEATS, HERITAGES, RULES, FLATTENED]
 })()
 
 export function hasAnyCategory(actor: CharacterPF2e) {
     return (
+        actor.itemTypes.heritage.some(item => includesSourceId(item, HERITAGES_UUID)) ||
         actor.itemTypes.feat.some(item => includesSourceId(item, FEATS_UUID)) ||
         actor.itemTypes.equipment.some(item => includesSourceId(item, EQUIP_UUID) && item.isInvested)
     )
@@ -114,7 +122,7 @@ export function getCategoryUUIDS(category: CategoryName) {
 }
 
 export function getRuleItems(actor: CharacterPF2e) {
-    return filterItemsWithSourceId(actor, RULES_UUIDS, ['feat', 'equipment'])
+    return filterItemsWithSourceId(actor, RULES_UUIDS, ['feat', 'equipment', 'heritage'])
 }
 
 export function isRuleItem(item: ItemPF2e) {
@@ -122,8 +130,10 @@ export function isRuleItem(item: ItemPF2e) {
 }
 
 export function hasCategories(actor: CharacterPF2e) {
+    const itemTypes = actor.itemTypes
     const categories = {} as Record<CategoryName, Omit<ReturnedCategory, 'items'> & { items: (undefined | true)[] }>
-    const items = [...actor.itemTypes.feat, ...actor.itemTypes.equipment]
+    const items = [...itemTypes.heritage, ...itemTypes.feat, ...itemTypes.equipment]
+
     for (const item of items) {
         const sourceId = getSourceId<ItemUUID>(item)
         if (!sourceId || (item.isOfType('equipment') && !item.isInvested)) continue
@@ -140,6 +150,7 @@ export function hasCategories(actor: CharacterPF2e) {
             categories[category].label = label
         }
     }
+
     return Object.values(categories).filter(x => x.items[0]) as ReturnedCategory[]
 }
 

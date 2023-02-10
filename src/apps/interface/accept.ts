@@ -1,11 +1,11 @@
 import { getCategoryUUIDS, getRuleItems, RULE_TYPES } from '@src/categories'
-import { createSpellScroll } from '@utils/pf2e/spell'
-import { findItemWithSourceId } from '@utils/foundry/item'
 import { hasSourceId, setFlag } from '@utils/foundry/flags'
-import { MODULE_ID } from '@utils/module'
-import { sluggify } from '@utils/pf2e/utils'
-import { chatUUID } from '@utils/foundry/uuid'
+import { findItemWithSourceId } from '@utils/foundry/item'
 import { subLocalize } from '@utils/foundry/localize'
+import { chatUUID } from '@utils/foundry/uuid'
+import { MODULE_ID } from '@utils/module'
+import { createSpellScroll } from '@utils/pf2e/spell'
+import { sluggify } from '@utils/pf2e/utils'
 
 const localize = subLocalize('interface.message')
 
@@ -20,8 +20,9 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
     const messages = {
         languages: [] as { uuid: ItemUUID; selected: string }[],
         skills: [] as { uuid: ItemUUID; selected: string }[],
+        resistances: [] as { uuid: ItemUUID; selected: string }[],
         feats: [] as { uuid: ItemUUID }[],
-        items: [] as { uuid: ItemUUID }[],
+        scrolls: [] as { uuid: ItemUUID }[],
     }
 
     for (const field of fields) {
@@ -82,7 +83,10 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             if (type === 'addedLanguage') {
                 rules.push(createLanguageRule(selected as Language))
                 messages.languages.push({ uuid, selected })
-            } else {
+            } else if (type === 'elementalist') {
+                rules.push(createResistanceRule(selected as FourElementTrait, 'half'))
+                messages.resistances.push({ uuid, selected })
+            } else if (type === 'trainedSkill') {
                 rules.push(createTrainedSkillRule(selected as SkillLongForm))
                 messages.skills.push({ uuid, selected })
             }
@@ -97,7 +101,9 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         if (!list.length) return
 
         if (message) message += '<hr />'
-        message += `<p><strong>${localize(type)}</strong></p>`
+
+        const title = localize.has(type) ? localize(type) : localize('gained', { type })
+        message += `<p><strong>${title}</strong></p>`
 
         for (const { uuid, selected } of list) {
             if (selected === undefined) message += `<p>${chatUUID(uuid)}</p>`
@@ -111,7 +117,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             const uuid = item.uuid
 
             if (item.type === 'feat') messages.feats.push({ uuid })
-            else if (item.type !== 'lore') messages.items.push({ uuid })
+            else if (item.type !== 'lore') messages.scrolls.push({ uuid })
 
             // we add a flag to the parent feat to have the cascade effect in the tab
             const parentId = item.getFlag<string>('pf2e', 'grantedBy.id')
@@ -125,8 +131,9 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
     pushMessages('languages', messages.languages)
     pushMessages('skills', messages.skills)
+    pushMessages('resistances', messages.resistances)
     pushMessages('feats', messages.feats)
-    pushMessages('items', messages.items)
+    pushMessages('scrolls', messages.scrolls)
 
     if (updateData.length) await actor.updateEmbeddedDocuments('Item', updateData)
 
@@ -175,6 +182,16 @@ function createTrainedSkillRule(skill: SkillLongForm) {
         mode: 'upgrade',
         path: `system.skills.${skill}.rank`,
         value: 1,
+        [MODULE_ID]: true,
+    } as const
+}
+
+function createResistanceRule(type: ResistanceType, value: number | string | 'half') {
+    if (value === 'half') value = 'max(1,floor(@actor.level/2))'
+    return {
+        key: 'Resistance',
+        type,
+        value,
         [MODULE_ID]: true,
     } as const
 }

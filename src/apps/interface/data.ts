@@ -2,16 +2,18 @@ import { hasCategories, isCategory } from '@src/categories'
 import { getFlag } from '@utils/foundry/flags'
 import { LANGUAGE_LIST } from '@utils/pf2e/languages'
 import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
+import { FOUR_ELEMENTS } from '@utils/pf2e/spell'
 
 const sortOrder = new Proxy(
     {
         addedLanguage: 0,
         trainedSkill: 1,
         combatFlexibility: 2,
-    } as Record<string | symbol, number>,
+        elementalist: 3,
+    } as Partial<Record<CategoryType | symbol, number>>,
     {
         get(obj, prop) {
-            return prop in obj ? obj[prop] : 99
+            return prop in obj ? obj[prop as CategoryType] : 99
         },
     }
 ) as Record<CategoryType, number>
@@ -22,6 +24,7 @@ export function getData(actor: CharacterPF2e) {
     const categories = hasCategories(actor)
     const templates: BaseCategoryTemplate[] = []
     const actorLanguages = actor.system.traits.languages.value
+    const fourElements = FOUR_ELEMENTS.map(x => ({ key: x }))
     const skills = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1).map(x => ({ key: x }))
     const languages = LANGUAGE_LIST.filter(x => !actorLanguages.includes(x))
         .sort()
@@ -106,6 +109,16 @@ export function getData(actor: CharacterPF2e) {
                 category,
                 label,
                 rows: [{ type: 'select', options: languages, selected }],
+            }
+            templates.push(template)
+        } else if (isCategory(entry, 'elementalist')) {
+            const { type, category, label } = entry
+            const selected = flags[category] ?? ''
+            const template: ElementalistTemplate = {
+                type,
+                category,
+                label,
+                rows: [{ type: 'select', options: fourElements, selected }],
             }
             templates.push(template)
         } else if (isCategory(entry, 'combatFlexibility')) {

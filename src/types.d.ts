@@ -9,6 +9,7 @@ declare const ui: UiPF2e
 type TrainedSkill = ExtractedCategory<'trainedSkill'>
 type TrainedLore = ExtractedCategory<'trainedLore'>
 type AddedLanguage = ExtractedCategory<'addedLanguage'>
+type Elementalist = ExtractedCategory<'elementalist'>
 type ScrollChain = ExtractedCategory<'scrollChain'>
 type CombatFlexibility = ExtractedCategory<'combatFlexibility'>
 type ScrollSavant = ExtractedCategory<'scrollSavant'>
@@ -17,6 +18,7 @@ type SavedCategories = Partial<
     BaseSavedCategory<TrainedSkill, SkillLongForm> &
         BaseSavedCategory<TrainedLore, string> &
         BaseSavedCategory<AddedLanguage, Language> &
+        BaseSavedCategory<Elementalist, FourElementTrait> &
         SavedItemsCategory<ScrollChain> &
         SavedItemsCategory<CombatFlexibility> &
         SavedItemsCategory<ScrollSavant>
@@ -25,20 +27,19 @@ type SavedCategories = Partial<
 type TrainedSkillTemplate = BaseCategoryTemplate<TrainedSkill, SelectTemplate<SkillLongForm>>
 type TrainedLoreTemplate = BaseCategoryTemplate<TrainedLore, InputTemplate>
 type AddedLanguageTemplate = BaseCategoryTemplate<AddedLanguage, SelectTemplate<Language>>
+type ElementalistTemplate = BaseCategoryTemplate<Elementalist, SelectTemplate<FourElementTrait>>
 type ScrollChainTemplate = BaseDropCategoryTemplate<ScrollChain>
 type CombatFlexibilityTemplate = BaseDropCategoryTemplate<CombatFlexibility>
 type ScrollSavantTemplate = BaseDropCategoryTemplate<ScrollSavant>
-
-type DropTemplateField =
-    | BaseDropTemplateField<ScrollChain>
-    | BaseDropTemplateField<CombatFlexibility>
-    | BaseDropTemplateField<ScrollSavant>
 
 type TemplateField =
     | BaseTemplateField<TrainedSkill, SkillLongForm, {}>
     | BaseTemplateField<TrainedLore, string, {}>
     | BaseTemplateField<AddedLanguage, Language, {}>
-    | DropTemplateField
+    | BaseTemplateField<Elementalist, FourElementTrait, {}>
+    | BaseDropTemplateField<ScrollChain>
+    | BaseDropTemplateField<CombatFlexibility>
+    | BaseDropTemplateField<ScrollSavant>
 
 /**
  * End of Variables
@@ -47,6 +48,8 @@ type TemplateField =
 type SavedItem = { name: string; uuid: TemplateUUID }
 type TemplateUUID = ItemUUID | ''
 type TemplateLevel = `${OneToTen}`
+
+type FourElementTrait = Exclude<ElementalTrait, 'metal'>
 
 type Category = typeof import('./categories').CATEGORIES[number]
 type CategoryType = Category['type']

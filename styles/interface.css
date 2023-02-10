@@ -39,6 +39,9 @@
 [id^=pf2e-dailies-interface-] .window-content input {
   color: var(--color-text-dark-primary);
 }
+[id^=pf2e-dailies-interface-] .window-content input {
+  padding-inline: 4px;
+}
 [id^=pf2e-dailies-interface-] .window-content input.drop:disabled {
   color: inherit;
 }
@@ -49,12 +52,12 @@
   -moz-column-gap: 0.3em;
        column-gap: 0.3em;
 }
+[id^=pf2e-dailies-interface-].disabled .window-content a,
+[id^=pf2e-dailies-interface-].disabled .window-content input,
 [id^=pf2e-dailies-interface-].disabled .window-content select,
 [id^=pf2e-dailies-interface-].disabled .window-content option,
-[id^=pf2e-dailies-interface-].disabled .window-content input,
-[id^=pf2e-dailies-interface-].disabled .window-content input.drop,
-[id^=pf2e-dailies-interface-].disabled .window-content a,
-[id^=pf2e-dailies-interface-].disabled .window-content button {
+[id^=pf2e-dailies-interface-].disabled .window-content button,
+[id^=pf2e-dailies-interface-].disabled .window-content input.drop {
   color: var(--color-text-dark-inactive);
   pointer-events: none;
 }

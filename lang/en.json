@@ -5,11 +5,9 @@
             "accept": "Accept",
             "cancel": "Cancel",
             "message": {
+                "gained": "Gained the temporary {type}:",
                 "changes": "Has made the following changes during their daily preparations",
-                "items": "Gained the temporary items:",
-                "skills": "Trained in the following skills:",
-                "feats": "Gained the temporary feats:",
-                "languages": "Gained the temporary languages:"
+                "skills": "Trained in the following skills:"
             },
             "error": {
                 "unexpected": "An unexpected error occured during daily preparations. See the console (F12) for details.",
@@ -22,6 +20,10 @@
                     "cannotBe": "The dropped {type} cannot be a {not}"
                 }
             }
+        },
+        "label": {
+            "elementalist": "Elementalist",
+            "trickster": "Scroll Trickster"
         },
         "sheet": {
             "title": "Daily Preparations"

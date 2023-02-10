@@ -21,11 +21,15 @@ async function afterRest(actors: ActorPF2e | ActorPF2e[]) {
 
         const cleanRuleItem = (item: ItemPF2e) => {
             const rules = deepClone(item._source.system.rules)
-            const ruleIndex = rules.findIndex(x => 'pf2e-dailies' in x)
-            if (ruleIndex >= 0) {
-                rules.splice(ruleIndex, 1)
-                update.push({ _id: item.id, 'system.rules': rules })
+
+            let modified = false
+            for (let i = rules.length - 1; i >= 0; i--) {
+                if (!('pf2e-dailies' in rules[i])) continue
+                rules.splice(i, 1)
+                modified = true
             }
+
+            if (modified) update.push({ _id: item.id, 'system.rules': rules })
         }
 
         for (const item of actor.itemTypes.feat) {

@@ -1,7 +1,7 @@
 {
     "pf2e-dailies": {
         "interface": {
-            "title": "Make your dailly preparations",
+            "title": "Make your daily preparations",
             "accept": "Accept",
             "cancel": "Cancel",
             "message": {
@@ -24,7 +24,7 @@
             }
         },
         "sheet": {
-            "title": "Dailly Preparations"
+            "title": "Daily Preparations"
         }
     }
 }

@@ -56,9 +56,9 @@ When a spell is dropped in a spell slot, a temporary spell scroll will be create
 
 Selected feats are directly added to the character feat tab, in cascade with the related feat that gave the user the choice.
 
-## Items
+## Equipment
 
-An item needs to be invested to appear in the interface, the bonus provided is linked to the item itself and like any other bonuses, will be removed if the character un-invest or un-equip the item.
+Equipment items need to be invested to appear in the interface, the bonus provided is linked to the item itself and like any other bonuses, will be removed if the character un-invest or un-equip the item.
 
 # Chat
 

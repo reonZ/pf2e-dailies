@@ -18,6 +18,7 @@ Skill related
 Resistance related
 
 -   [Elementalist Dedication](https://2e.aonprd.com/Feats.aspx?ID=2986)
+-   [Ganzi Heritage](https://2e.aonprd.com/Heritages.aspx?ID=129)
 
 Feat related
 

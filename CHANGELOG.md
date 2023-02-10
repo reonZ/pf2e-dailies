@@ -1,3 +1,7 @@
+# 1.11.0
+
+-   added the `Ganzi Heritage`
+
 # 1.10.0
 
 -   added the `Elementalist Dedication`

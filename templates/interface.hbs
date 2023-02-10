@@ -2,11 +2,7 @@
     {{#if rows.length}}
     <div class="group">
         {{#each rows}}
-        {{#if (eq this.rows.[0].type 'drop')}}
-        {{> dropRow entry=this.rows.[0] group=this label=this.label}}
-        {{else}}
-        {{> selectRow entry=this.rows.[0] group=this label=this.label}}
-        {{/if}}
+        {{> (concat this.rows.[0].type 'Row') entry=this.rows.[0] group=this label=this.label}}
         {{/each}}
     </div>
     {{/if}}
@@ -15,11 +11,7 @@
     <div class="group {{this.type}}">
         <h3>{{this.label}}</h3>
         {{#each this.rows}}
-        {{#if (eq this.type 'drop')}}
-        {{> dropRow entry=this group=../this label=this.label}}
-        {{else}}
-        {{> selectRow entry=this group=../this label=this.label}}
-        {{/if}}
+        {{> (concat this.type 'Row') entry=this group=../this label=this.label}}
         {{/each}}
     </div>
     {{/each}}
@@ -29,6 +21,13 @@
     <button data-action="accept"><i class="fas fa-save"></i> {{i18n 'accept'}}</button>
     <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
 </div>
+
+{{#*inline 'inputRow'}}
+<label>{{label}}</label>
+<input class="xl" type="text" value="{{entry.selected}}" placeholder="{{entry.placeholder}}" data-type="{{group.type}}"
+    data-category="{{group.category}}" />
+<a data-action="clear" {{#unless entry.uuid}} class="disabled" {{/unless}}><i class="fas fa-times"></i></a>
+{{/inline}}
 
 {{#*inline 'dropRow'}}
 <label data-droppable="true">{{label}}</label>

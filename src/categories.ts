@@ -3,13 +3,14 @@ import { filterItemsWithSourceId } from '@utils/foundry/item'
 
 export const RULE_TYPES = ['addedLanguage', 'trainedSkill'] as const
 
-export const CATEGORY_SEARCH = {
-    scrollChain: { category: ['spell'] } as InitialSpellFilters,
-    combatFlexibility: { feattype: ['class'], traits: ['fighter'] } as InitialFeatFilters,
-    scrollSavant: { category: ['spell'], traditions: ['arcane'] } as InitialSpellFilters,
-} as const
-
 export const CATEGORIES = [
+    // TrainedLore
+    {
+        type: 'trainedLore',
+        category: 'study',
+        label: '',
+        uuids: ['Compendium.pf2e.feats-srd.aLJsBBZzlUK3G8MW'],
+    },
     // TrainedSkill
     {
         type: 'trainedSkill',
@@ -142,22 +143,9 @@ export function hasCategories(actor: CharacterPF2e) {
     return Object.values(categories).filter(x => x.items[0]) as ReturnedCategory[]
 }
 
-export function isScrollChainRecord(record: ReturnedCategory): record is ReturnedCategory<ScrollChain> {
-    return record.type === 'scrollChain'
-}
-
-export function isTrainedSkill(record: ReturnedCategory): record is ReturnedCategory<TrainedSkill> {
-    return record.type === 'trainedSkill'
-}
-
-export function isAddedLanguage(record: ReturnedCategory): record is ReturnedCategory<AddedLanguage> {
-    return record.type === 'addedLanguage'
-}
-
-export function isCombatFlexibility(record: ReturnedCategory): record is ReturnedCategory<CombatFlexibility> {
-    return record.type === 'combatFlexibility'
-}
-
-export function isScrollSavant(record: ReturnedCategory): record is ReturnedCategory<ScrollSavant> {
-    return record.type === 'scrollSavant'
+export function isCategory<N extends CategoryType, C extends Category = ExtractedCategory<N>>(
+    object: ReturnedCategory,
+    category: N
+): object is ReturnedCategory<C> {
+    return object.type === category
 }

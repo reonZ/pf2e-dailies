@@ -7,11 +7,12 @@
             "message": {
                 "changes": "Has made the following changes during their daily preparations",
                 "items": "Gained the temporary items:",
-                "skills": "Selected the following skills:",
+                "skills": "Trained in the following skills:",
                 "feats": "Gained the temporary feats:",
-                "languages": "Selected the following languages:"
+                "languages": "Gained the temporary languages:"
             },
             "error": {
+                "unexpected": "An unexpected error occured during daily preparations. See the console (F12) for details.",
                 "empty": "All fields must be filled",
                 "drop": {
                     "wrongDataType": "Invalid data type dropped.",

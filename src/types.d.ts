@@ -7,6 +7,7 @@ declare const ui: UiPF2e
  */
 
 type TrainedSkill = ExtractedCategory<'trainedSkill'>
+type TrainedLore = ExtractedCategory<'trainedLore'>
 type AddedLanguage = ExtractedCategory<'addedLanguage'>
 type ScrollChain = ExtractedCategory<'scrollChain'>
 type CombatFlexibility = ExtractedCategory<'combatFlexibility'>
@@ -14,6 +15,7 @@ type ScrollSavant = ExtractedCategory<'scrollSavant'>
 
 type SavedCategories = Partial<
     BaseSavedCategory<TrainedSkill, SkillLongForm> &
+        BaseSavedCategory<TrainedLore, string> &
         BaseSavedCategory<AddedLanguage, Language> &
         SavedItemsCategory<ScrollChain> &
         SavedItemsCategory<CombatFlexibility> &
@@ -21,6 +23,7 @@ type SavedCategories = Partial<
 >
 
 type TrainedSkillTemplate = BaseCategoryTemplate<TrainedSkill, SelectTemplate<SkillLongForm>>
+type TrainedLoreTemplate = BaseCategoryTemplate<TrainedLore, InputTemplate>
 type AddedLanguageTemplate = BaseCategoryTemplate<AddedLanguage, SelectTemplate<Language>>
 type ScrollChainTemplate = BaseDropCategoryTemplate<ScrollChain>
 type CombatFlexibilityTemplate = BaseDropCategoryTemplate<CombatFlexibility>
@@ -33,6 +36,7 @@ type DropTemplateField =
 
 type TemplateField =
     | BaseTemplateField<TrainedSkill, SkillLongForm, {}>
+    | BaseTemplateField<TrainedLore, string, {}>
     | BaseTemplateField<AddedLanguage, Language, {}>
     | DropTemplateField
 
@@ -43,8 +47,6 @@ type TemplateField =
 type SavedItem = { name: string; uuid: TemplateUUID }
 type TemplateUUID = ItemUUID | ''
 type TemplateLevel = `${OneToTen}`
-
-type DeepWriteable<T> = { -readonly [P in keyof T]: DeepWriteable<T[P]> }
 
 type Category = typeof import('./categories').CATEGORIES[number]
 type CategoryType = Category['type']
@@ -71,6 +73,12 @@ type SelectTemplate<K extends string> = {
     type: 'select'
     options: { key: K }[]
     selected: K | ''
+}
+
+type InputTemplate = {
+    type: 'input'
+    selected: string
+    placeholder: string
 }
 
 type DropTemplate = {

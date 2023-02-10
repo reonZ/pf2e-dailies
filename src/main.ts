@@ -9,7 +9,3 @@ Hooks.once('ready', () => {
 })
 
 Hooks.on('renderCharacterSheetPF2e', renderCharacterSheetPF2e)
-
-/**
- * Quick Study (Loremaster Archetype)
- */

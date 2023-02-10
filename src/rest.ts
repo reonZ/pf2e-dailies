@@ -1,6 +1,6 @@
 import { getFlag } from '@utils/foundry/flags'
 import { sluggify } from '@utils/pf2e/utils'
-import { getRuleItems, isRuleItem } from './categories'
+import { isRuleItem } from './categories'
 
 export function wrapRestForTheNight() {
     const original = game.pf2e.actions.restForTheNight
@@ -18,6 +18,7 @@ async function afterRest(actors: ActorPF2e | ActorPF2e[]) {
     for (const actor of characters) {
         const update: EmbeddedDocumentUpdateData<ItemPF2e>[] = []
         const remove: string[] = []
+        const itemTypes = actor.itemTypes
 
         const cleanRuleItem = (item: ItemPF2e) => {
             const rules = deepClone(item._source.system.rules)
@@ -32,7 +33,7 @@ async function afterRest(actors: ActorPF2e | ActorPF2e[]) {
             if (modified) update.push({ _id: item.id, 'system.rules': rules })
         }
 
-        for (const item of actor.itemTypes.feat) {
+        for (const item of itemTypes.feat) {
             if (isRuleItem(item)) cleanRuleItem(item)
 
             if (getFlag(item, 'temporary')) {
@@ -46,7 +47,11 @@ async function afterRest(actors: ActorPF2e | ActorPF2e[]) {
             }
         }
 
-        for (const item of actor.itemTypes.equipment) {
+        for (const item of itemTypes.lore) {
+            if (getFlag(item, 'temporary')) remove.push(item.id)
+        }
+
+        for (const item of itemTypes.equipment) {
             if (isRuleItem(item)) cleanRuleItem(item)
         }
 

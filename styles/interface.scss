@@ -34,6 +34,10 @@
                 margin-right: 0.2em;
             }
 
+            input.xl {
+                grid-column: 2 / -2;
+            }
+
             h3 {
                 grid-column: 1 / -1;
             }

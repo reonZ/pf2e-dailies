@@ -6,13 +6,6 @@
   grid-auto-flow: row;
   gap: 1em;
 }
-[id^=pf2e-dailies-interface-] .window-content .content input:disabled {
-  color: inherit;
-}
-[id^=pf2e-dailies-interface-] .window-content .content select,
-[id^=pf2e-dailies-interface-] .window-content .content option {
-  text-transform: capitalize;
-}
 [id^=pf2e-dailies-interface-] .window-content .content hr:last-child {
   display: none;
 }
@@ -28,7 +21,7 @@
   font-size: 1.2em;
   margin-right: 0.2em;
 }
-[id^=pf2e-dailies-interface-] .window-content .group input.xl {
+[id^=pf2e-dailies-interface-] .window-content .group input.input {
   grid-column: 2/-2;
 }
 [id^=pf2e-dailies-interface-] .window-content .group h3 {
@@ -37,10 +30,31 @@
 [id^=pf2e-dailies-interface-] .window-content .group select {
   grid-column: 2/-1;
 }
+[id^=pf2e-dailies-interface-] .window-content select,
+[id^=pf2e-dailies-interface-] .window-content option {
+  text-transform: capitalize;
+}
+[id^=pf2e-dailies-interface-] .window-content select,
+[id^=pf2e-dailies-interface-] .window-content option,
+[id^=pf2e-dailies-interface-] .window-content input {
+  color: var(--color-text-dark-primary);
+}
+[id^=pf2e-dailies-interface-] .window-content input.drop:disabled {
+  color: inherit;
+}
 [id^=pf2e-dailies-interface-] .window-content .buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin-top: 1em;
   -moz-column-gap: 0.3em;
        column-gap: 0.3em;
+}
+[id^=pf2e-dailies-interface-].disabled .window-content select,
+[id^=pf2e-dailies-interface-].disabled .window-content option,
+[id^=pf2e-dailies-interface-].disabled .window-content input,
+[id^=pf2e-dailies-interface-].disabled .window-content input.drop,
+[id^=pf2e-dailies-interface-].disabled .window-content a,
+[id^=pf2e-dailies-interface-].disabled .window-content button {
+  color: var(--color-text-dark-inactive);
+  pointer-events: none;
 }

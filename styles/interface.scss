@@ -7,15 +7,6 @@
             grid-auto-flow: row;
             gap: 1em;
 
-            input:disabled {
-                color: inherit;
-            }
-
-            select,
-            option {
-                text-transform: capitalize;
-            }
-
             hr:last-child {
                 display: none;
             }
@@ -34,7 +25,7 @@
                 margin-right: 0.2em;
             }
 
-            input.xl {
+            input.input {
                 grid-column: 2 / -2;
             }
 
@@ -47,11 +38,40 @@
             }
         }
 
+        select,
+        option {
+            text-transform: capitalize;
+        }
+
+        select,
+        option,
+        input {
+            color: var(--color-text-dark-primary);
+        }
+
+        input.drop:disabled {
+            color: inherit;
+        }
+
         .buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
             margin-top: 1em;
             column-gap: 0.3em;
+        }
+    }
+
+    &.disabled {
+        .window-content {
+            select,
+            option,
+            input,
+            input.drop,
+            a,
+            button {
+                color: var(--color-text-dark-inactive);
+                pointer-events: none;
+            }
         }
     }
 }

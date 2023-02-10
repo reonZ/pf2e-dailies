@@ -51,8 +51,7 @@ export class DailiesInterface extends Application {
     }
 
     #lock() {
-        this.element.find('button').attr('disabled', 'true')
-        this.element.find('a').addClass('disabled')
+        this.element.addClass('disabled')
     }
 
     #validate() {

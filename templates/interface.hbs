@@ -24,14 +24,14 @@
 
 {{#*inline 'inputRow'}}
 <label>{{label}}</label>
-<input class="xl" type="text" value="{{entry.selected}}" placeholder="{{entry.placeholder}}" data-type="{{group.type}}"
+<input type="text" class="input" value="{{entry.selected}}" placeholder="{{entry.placeholder}}" data-type="{{group.type}}"
     data-category="{{group.category}}" />
 <a data-action="clear" {{#unless entry.uuid}} class="disabled" {{/unless}}><i class="fas fa-times"></i></a>
 {{/inline}}
 
 {{#*inline 'dropRow'}}
 <label data-droppable="true">{{label}}</label>
-<input type="text" data-droppable="true" value="{{entry.name}}" data-type="{{group.type}}" data-category="{{group.category}}"
+<input type="text" class="drop" data-droppable="true" value="{{entry.name}}" data-type="{{group.type}}" data-category="{{group.category}}"
     data-uuid="{{entry.uuid}}" data-level="{{entry.level}}" disabled />
 <a data-action="search" data-type="{{group.type}}" data-level={{entry.level}}>
     <i class="fas fa-search"></i>

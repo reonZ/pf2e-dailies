@@ -1,3 +1,10 @@
+# 1.9.1
+
+-   fixed typos
+-   fixed disabling the interface not working
+-   changed regular and disabled colors to use foundry variables
+-   no longer minimize class names during compiling
+
 # 1.9.0
 
 -   added the loremaster feat `Quick Study`

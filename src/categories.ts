@@ -113,7 +113,7 @@ export function hasAnyCategory(actor: CharacterPF2e) {
     return (
         actor.itemTypes.heritage.some(item => includesSourceId(item, HERITAGES_UUID)) ||
         actor.itemTypes.feat.some(item => includesSourceId(item, FEATS_UUID)) ||
-        actor.itemTypes.equipment.some(item => includesSourceId(item, EQUIP_UUID) && item.isInvested)
+        actor.itemTypes.equipment.some(item => includesSourceId(item, EQUIP_UUID) && !(item.isInvested === false))
     )
 }
 

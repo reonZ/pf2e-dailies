@@ -15,6 +15,10 @@ Skill related
 -   [Flexible Studies](https://2e.aonprd.com/Feats.aspx?ID=1446)
 -   [Quick Study](https://2e.aonprd.com/Feats.aspx?ID=2003)
 
+Resistance related
+
+-   [Elementalist Dedication](https://2e.aonprd.com/Feats.aspx?ID=2986)
+
 Feat related
 
 -   [Combat Flexibility](https://2e.aonprd.com/Classes.aspx?ID=7)

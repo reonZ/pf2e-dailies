@@ -1,3 +1,7 @@
+# 1.10.0
+
+-   added the `Elementalist Dedication`
+
 # 1.9.1
 
 -   fixed typos

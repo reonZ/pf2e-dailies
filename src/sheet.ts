@@ -4,7 +4,7 @@ import { hasAnyCategory } from './categories'
 
 export function renderCharacterSheetPF2e(sheet: CharacterSheetPF2e, html: JQuery) {
     const actor = sheet.actor
-    if (!hasAnyCategory(actor)) return
+    if (!actor.isOwner || !hasAnyCategory(actor)) return
 
     const small = html.find('aside .sidebar .hitpoints .hp-small')
     small

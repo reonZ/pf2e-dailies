@@ -11,6 +11,5 @@ Hooks.once('ready', () => {
 Hooks.on('renderCharacterSheetPF2e', renderCharacterSheetPF2e)
 
 /**
- * Scroll Savant
  * Quick Study (Loremaster Archetype)
  */

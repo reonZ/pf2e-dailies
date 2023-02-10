@@ -1,13 +1,15 @@
 import { getCategoryUUIDS, getRuleItems, RULE_TYPES } from '@src/categories'
 import { hasSourceId, setFlag } from '@utils/foundry/flags'
 import { findItemWithSourceId } from '@utils/foundry/item'
-import { subLocalize } from '@utils/foundry/localize'
+import { hasLocalization, localize, subLocalize } from '@utils/foundry/localize'
 import { chatUUID } from '@utils/foundry/uuid'
 import { MODULE_ID } from '@utils/module'
 import { createSpellScroll } from '@utils/pf2e/spell'
 import { sluggify } from '@utils/pf2e/utils'
 
-const localize = subLocalize('interface.message')
+const msg = subLocalize('interface.message')
+
+type ReturnedMessage = { uuid: ItemUUID; selected?: string; category?: CategoryName }
 
 export async function accept(html: JQuery, actor: CharacterPF2e) {
     let message = ''
@@ -18,11 +20,11 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
     const updateData: EmbeddedDocumentUpdateData<ItemPF2e>[] = []
 
     const messages = {
-        languages: [] as { uuid: ItemUUID; selected: string }[],
-        skills: [] as { uuid: ItemUUID; selected: string }[],
-        resistances: [] as { uuid: ItemUUID; selected: string }[],
-        feats: [] as { uuid: ItemUUID }[],
-        scrolls: [] as { uuid: ItemUUID }[],
+        languages: [] as ReturnedMessage[],
+        skills: [] as ReturnedMessage[],
+        resistances: [] as ReturnedMessage[],
+        feats: [] as ReturnedMessage[],
+        scrolls: [] as ReturnedMessage[],
     }
 
     for (const field of fields) {
@@ -62,7 +64,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             if (uuid) {
                 const lore = createTemporaryLore(selected, 1)
                 addData.push(lore)
-                messages.skills.push({ uuid, selected })
+                messages.skills.push({ uuid, selected, category })
             }
 
             flags[category] = selected
@@ -82,13 +84,13 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
             if (type === 'addedLanguage') {
                 rules.push(createLanguageRule(selected as Language))
-                messages.languages.push({ uuid, selected })
+                messages.languages.push({ uuid, selected, category })
             } else if (type === 'trainedSkill') {
                 rules.push(createTrainedSkillRule(selected as SkillLongForm))
-                messages.skills.push({ uuid, selected })
+                messages.skills.push({ uuid, selected, category })
             } else if (type === 'addedResistance') {
                 rules.push(createResistanceRule(selected as ResistanceType, 'half'))
-                messages.resistances.push({ uuid, selected })
+                messages.resistances.push({ uuid, selected, category })
             }
 
             // @ts-ignore
@@ -97,17 +99,19 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         }
     }
 
-    const pushMessages = (type: string, list: { uuid: ItemUUID; selected?: string }[]) => {
+    const pushMessages = (type: string, list: ReturnedMessage[]) => {
         if (!list.length) return
 
         if (message) message += '<hr />'
 
-        const title = localize.has(type) ? localize(type) : localize('gained', { type })
+        const title = msg.has(type) ? msg(type) : msg('gained', { type })
         message += `<p><strong>${title}</strong></p>`
 
-        for (const { uuid, selected } of list) {
-            if (selected === undefined) message += `<p>${chatUUID(uuid)}</p>`
-            else message += `<p>${chatUUID(uuid)} <span style="text-transform: capitalize;">${selected}</span></p>`
+        for (const { uuid, selected, category } of list) {
+            const label = category && hasLocalization(`label.${category}`) ? localize(`label.${category}`) : undefined
+            message += `<p>${chatUUID(uuid, label)}`
+            if (selected) message += ` <span style="text-transform: capitalize;">${selected}</span>`
+            message += '</p>'
         }
     }
 
@@ -139,7 +143,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
     await setFlag(actor, 'saved', flags)
 
-    message = `${localize('changes')}<hr>${message}`
+    message = `${msg('changes')}<hr>${message}`
     ChatMessage.create({ content: message, speaker: ChatMessage.getSpeaker({ actor }) })
 }
 

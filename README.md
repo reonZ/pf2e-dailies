@@ -13,6 +13,7 @@ Skill related
 -   [Ageless Spirit](https://2e.aonprd.com/Feats.aspx?ID=2393)
 -   [Ancient Memories](https://2e.aonprd.com/Feats.aspx?ID=3944)
 -   [Flexible Studies](https://2e.aonprd.com/Feats.aspx?ID=1446)
+-   [Quick Study](https://2e.aonprd.com/Feats.aspx?ID=2003)
 
 Feat related
 
@@ -21,13 +22,13 @@ Feat related
 
 Scroll related
 
--   [Scroll Savant](https://2e.aonprd.com/Feats.aspx?ID=652)
 -   [Basic Scroll Cache](https://2e.aonprd.com/Feats.aspx?ID=2054)
     -   [Expert Scroll Cache](https://2e.aonprd.com/Feats.aspx?ID=2056)
     -   [Master Scroll Cache](https://2e.aonprd.com/Feats.aspx?ID=2057)
 -   [Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3713)
     -   [Elaborate Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3720)
     -   [Grand Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3730)
+-   [Scroll Savant](https://2e.aonprd.com/Feats.aspx?ID=652)
 
 IMPORTANT: You should always `rest` before your daily preparations, if not, you will most likely encounter some problems. It is also possible that openning the interface too quickly after a `rest` result in the reset not being completed yet and the details shown not up to date.
 

@@ -1,3 +1,8 @@
+# 1.9.0
+
+-   now support user input
+-   added the loremaster feat `Quick Study`
+
 # 1.8.0
 
 -   added the wizard feat `Scroll Savant` (all conditions are supported)

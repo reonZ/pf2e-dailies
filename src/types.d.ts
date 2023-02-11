@@ -14,6 +14,7 @@ type AddedResistance = ExtractedCategory<'addedResistance'>
 type ScrollChain = ExtractedCategory<'scrollChain'>
 type CombatFlexibility = ExtractedCategory<'combatFlexibility'>
 type ScrollSavant = ExtractedCategory<'scrollSavant'>
+type TricksterAce = ExtractedCategory<'tricksterAce'>
 
 type SavedCategories = Partial<
     BaseSavedCategory<TrainedSkill, SkillLongForm> &
@@ -23,7 +24,8 @@ type SavedCategories = Partial<
         BaseSavedCategory<AddedResistance, ResistanceType> &
         SavedItemsCategory<ScrollChain> &
         SavedItemsCategory<CombatFlexibility> &
-        SavedItemsCategory<ScrollSavant>
+        SavedItemsCategory<ScrollSavant> &
+        BaseSavedCategory<TricksterAce, SavedItem>
 >
 
 type ThaumaturgeTomeTemplateItem = SelectTemplate<SkillLongForm> & { rank: OneToFour; label: string }
@@ -36,6 +38,7 @@ type AddedResistanceTemplate = BaseCategoryTemplate<AddedResistance, SelectTempl
 type ScrollChainTemplate = BaseDropCategoryTemplate<ScrollChain>
 type CombatFlexibilityTemplate = BaseDropCategoryTemplate<CombatFlexibility>
 type ScrollSavantTemplate = BaseDropCategoryTemplate<ScrollSavant>
+type TricksterAceTemplate = BaseDropCategoryTemplate<TricksterAce>
 
 type TemplateField =
     | BaseTemplateField<TrainedSkill, SkillLongForm>
@@ -46,6 +49,7 @@ type TemplateField =
     | DropTemplateField<ScrollChain>
     | DropTemplateField<CombatFlexibility>
     | DropTemplateField<ScrollSavant>
+    | DropTemplateField<TricksterAce>
 
 /**
  * End of Variables
@@ -92,7 +96,7 @@ type InputTemplate = {
 
 type DropTemplate = {
     type: 'drop'
-    label: string
+    label?: string
     level: number
     name: string
     uuid: TemplateUUID

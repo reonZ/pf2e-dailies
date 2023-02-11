@@ -30,11 +30,30 @@ export async function dropped(event: ElementDragEvent) {
             case 'scrollSavant':
                 droppedSpell(target, item, CATEGORY_SEARCH.scrollSavant)
                 break
+            case 'tricksterAce':
+                droppedSpell(target, item, CATEGORY_SEARCH.tricksterAce, tricksterAceFilter)
+                break
         }
     } catch (error) {}
 }
 
-function droppedSpell(target: JQuery, item: ItemPF2e, { category = [], traditions = [] }: InitialSpellFilters = {}) {
+function tricksterAceFilter(item: SpellPF2e) {
+    const castTime = item.system.time.value
+
+    if (castTime.includes('hour') || (castTime.includes('min') && parseInt(castTime) > 10)) {
+        localize.warn('wrongSpellTime', { time: '10 min' })
+        return false
+    }
+
+    return true
+}
+
+function droppedSpell(
+    target: JQuery,
+    item: ItemPF2e,
+    { category = [], traditions = [] }: InitialSpellFilters = {},
+    filter?: (item: SpellPF2e) => boolean
+) {
     if (!item.isOfType('spell')) return localize.warn('wrongType', { type: 'spell' })
 
     if (item.isCantrip && !category.includes('cantrip')) return localize.warn('cannotBe', { type: 'spell', not: 'cantrip' })
@@ -50,6 +69,8 @@ function droppedSpell(target: JQuery, item: ItemPF2e, { category = [], tradition
     }
 
     if (item.level > Number(target.attr('data-level'))) return localize.warn('wrongLevel', { type: 'spell' })
+
+    if (filter && !filter(item)) return
 
     droppedItem(target, item)
 }

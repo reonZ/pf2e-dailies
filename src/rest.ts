@@ -59,6 +59,10 @@ async function afterRest(actors: ActorPF2e | ActorPF2e[]) {
             if (isRuleItem(item)) cleanRuleItem(item)
         }
 
+        for (const item of itemTypes.spellcastingEntry) {
+            if (getFlag(item, 'temporary')) remove.push(item.id)
+        }
+
         if (update.length) actor.updateEmbeddedDocuments('Item', update)
         if (remove.length) actor.deleteEmbeddedDocuments('Item', remove)
     }

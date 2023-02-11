@@ -1,5 +1,5 @@
 import { getCategoryUUIDS, getRuleItems, RULE_TYPES } from '@src/categories'
-import { hasSourceId, setFlag } from '@utils/foundry/flags'
+import { getFlag, hasSourceId, setFlag } from '@utils/foundry/flags'
 import { findItemWithSourceId } from '@utils/foundry/item'
 import { hasLocalization, localize, subLocalize } from '@utils/foundry/localize'
 import { chatUUID } from '@utils/foundry/uuid'
@@ -45,6 +45,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         resistances: [] as ReturnedMessage[],
         feats: [] as ReturnedMessage[],
         scrolls: [] as ReturnedMessage[],
+        spells: [] as ReturnedMessage[],
     }
 
     for (const field of fields) {
@@ -55,10 +56,8 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             const level = Number(field.dataset.level) as OneToTen
             const name = field.value
 
-            if (uuid) {
-                const scroll = await createSpellScroll(uuid, level, true)
-                if (scroll) addData.push(scroll)
-            }
+            const scroll = await createSpellScroll(uuid, level, true)
+            if (scroll) addData.push(scroll)
 
             flags[category] ??= []
             flags[category]!.push({ name, uuid })
@@ -88,6 +87,20 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             }
 
             flags[category] = selected
+        } else if (type === 'tricksterAce') {
+            const { category, uuid } = field.dataset
+            const name = field.value
+
+            const entrySlug = sluggify("Trickster's Ace", { camel: 'dromedary' })
+            const spell = await createSpellcastingSpell(uuid, 4, entrySlug)
+            if (spell) {
+                const proficiency = actor.classDC?.slug || actor.class?.slug
+                const entry = createSpellcastingEntry("Trickster's Ace", entrySlug, proficiency)
+                addData.push(spell)
+                addData.push(entry)
+            }
+
+            flags[category] = { name, uuid }
         } else {
             const category = field.dataset.category
             const uuid = getCategoryUUIDS(category)[0]
@@ -154,7 +167,15 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             const uuid = item.uuid
 
             if (item.type === 'feat') messages.feats.push({ uuid })
-            else if (item.type !== 'lore') messages.scrolls.push({ uuid })
+            else if (item.type === 'consumable') messages.scrolls.push({ uuid })
+            else if (item.type === 'spellcastingEntry') {
+                const slug = item.slug
+                const spells = items.filter(x => x.type === 'spell' && getFlag(x, 'parent') === slug) as SpellPF2e[]
+                for (const spell of spells) {
+                    updateData.push({ _id: spell.id, 'system.location.value': item.id })
+                    messages.spells.push({ uuid: spell.uuid })
+                }
+            }
 
             // we add a flag to the parent feat to have the cascade effect in the tab
             const parentId = item.getFlag<string>('pf2e', 'grantedBy.id')
@@ -171,6 +192,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
     pushMessages('tome', messages.tome)
     pushMessages('resistances', messages.resistances)
     pushMessages('feats', messages.feats)
+    pushMessages('spells', messages.spells)
     pushMessages('scrolls', messages.scrolls)
 
     if (updateData.length) await actor.updateEmbeddedDocuments('Item', updateData)
@@ -186,9 +208,11 @@ function createTemporaryLore(name: string, rank: OneToFour) {
         type: 'lore',
         img: 'systems/pf2e/icons/default-icons/lore.svg',
         name: name,
+        flags: {
+            [MODULE_ID]: { temporary: true },
+        },
     }
 
-    setProperty(data, `flags.${MODULE_ID}.temporary`, true)
     setProperty(data, 'system.proficient.value', rank)
 
     return data
@@ -232,4 +256,35 @@ function createResistanceRule(type: string, value: number | string | 'half') {
         value,
         [MODULE_ID]: true,
     } as const
+}
+
+async function createSpellcastingSpell(uuid: ItemUUID, level: OneToTen, entry: string) {
+    const spell = (await fromUuid<SpellPF2e>(uuid))?.toObject()
+    if (!spell) return
+
+    setProperty(spell, `flags.${MODULE_ID}.parent`, entry)
+    setProperty(spell, 'system.location.heightenedLevel', level)
+
+    return spell
+}
+
+function createSpellcastingEntry(name: string, slug: string, proficiency: string | undefined | null) {
+    const entry: Partial<BaseItemSourcePF2e> = {
+        type: 'spellcastingEntry',
+        img: 'systems/pf2e/icons/default-icons/spellcastingEntry.svg',
+        name,
+        flags: {
+            [MODULE_ID]: { temporary: true },
+        },
+    }
+
+    setProperty(entry, 'system', {
+        slug,
+        prepared: { value: 'innate' },
+        showSlotlessLevels: { value: false },
+        showUnpreparedSpells: { value: false },
+        proficiency: { value: 1, slug: proficiency },
+    })
+
+    return entry
 }

@@ -5,6 +5,12 @@ import { hasLocalization, localize } from '@utils/foundry/localize'
 export const RULE_TYPES = ['addedLanguage', 'trainedSkill', 'addedResistance', 'thaumaturgeTome'] as const
 
 export const CATEGORIES = [
+    // TricksterAce
+    {
+        type: 'tricksterAce',
+        category: 'ace',
+        uuids: ['Compendium.pf2e.feats-srd.POrE3ZgBRdBL9MsW'],
+    },
     // ThaumaturgeTome
     {
         type: 'thaumaturgeTome',
@@ -17,7 +23,7 @@ export const CATEGORIES = [
             'Compendium.pf2e.classfeatures.QEtgbY8N2V4wTbsI', // Implement Paragon
         ],
     },
-    // Redistsance
+    // AddedResistance
     {
         type: 'addedResistance',
         category: 'elementalist',

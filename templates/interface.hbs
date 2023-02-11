@@ -1,17 +1,17 @@
 <div class="content">
     {{#if rows.length}}
     <div class="group rows">
-        {{#each rows}}
-        {{> (concat this.rows.[0].type 'Row') entry=this.rows.[0] group=this label=this.label}}
+        {{#each rows as | group |}}
+        {{> (concat group.rows.[0].type 'Row') entry=group.rows.[0] group=group label=group.label}}
         {{/each}}
     </div>
     {{/if}}
 
-    {{#each groups}}
-    <div class="group {{this.type}}">
-        <h3>{{this.label}}</h3>
-        {{#each this.rows}}
-        {{> (concat this.type 'Row') entry=this group=../this label=this.label}}
+    {{#each groups as | group |}}
+    <div class="group {{group.type}}">
+        <h3>{{group.label}}</h3>
+        {{#each group.rows as | row |}}
+        {{> (concat row.type 'Row') entry=row group=../group label=row.label}}
         {{/each}}
     </div>
     {{/each}}
@@ -47,8 +47,8 @@
 <label>{{label}}</label>
 <select data-type="{{group.type}}" data-category="{{group.category}}" data-rank="{{entry.rank}}">
     {{#select entry.selected}}
-    {{#each entry.options}}
-    <option value="{{this}}">{{this}}</option>
+    {{#each entry.options as | option |}}
+    <option value="{{option}}">{{option}}</option>
     {{/each}}
     {{/select}}
 </select>

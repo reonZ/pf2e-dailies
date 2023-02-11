@@ -4,6 +4,7 @@ export const CATEGORY_SEARCH = {
     scrollChain: { category: ['spell'] } as InitialSpellFilters,
     combatFlexibility: { feattype: ['class'], traits: ['fighter'] } as InitialFeatFilters,
     scrollSavant: { category: ['spell'], traditions: ['arcane'] } as InitialSpellFilters,
+    tricksterAce: { category: ['cantrip', 'spell'] } as InitialSpellFilters,
 } as const
 
 export function search(event: JQuery.ClickEvent<any, any, SearchTemplateButton>) {
@@ -14,22 +15,16 @@ export function search(event: JQuery.ClickEvent<any, any, SearchTemplateButton>)
 
     switch (data.type) {
         case 'scrollChain':
-            searchSpell({
-                ...CATEGORY_SEARCH.scrollChain,
-                level: sequenceArray<OneToTen>(1, level),
-            })
+            searchSpell({ ...CATEGORY_SEARCH.scrollChain, level: sequenceArray<OneToTen>(1, level) })
             break
         case 'combatFlexibility':
-            searchFeat({
-                ...CATEGORY_SEARCH.combatFlexibility,
-                level: { min: 1, max: level },
-            })
+            searchFeat({ ...CATEGORY_SEARCH.combatFlexibility, level: { min: 1, max: level } })
             break
         case 'scrollSavant':
-            searchSpell({
-                ...CATEGORY_SEARCH.scrollSavant,
-                level: sequenceArray<OneToTen>(1, level),
-            })
+            searchSpell({ ...CATEGORY_SEARCH.scrollSavant, level: sequenceArray<OneToTen>(1, level) })
+            break
+        case 'tricksterAce':
+            searchSpell({ ...CATEGORY_SEARCH.tricksterAce, level: sequenceArray<OneToTen>(1, level) })
             break
     }
 }

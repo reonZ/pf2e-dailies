@@ -13,7 +13,6 @@ const sortOrder = new Proxy(
         trainedSkill: 1,
         addedResistance: 2,
         trainedLore: 3,
-        combatFlexibility: 4,
     } as Partial<Record<CategoryType | symbol, number>>,
     {
         get(obj, prop) {
@@ -34,7 +33,7 @@ export function getData(actor: CharacterPF2e) {
             const slots: DropTemplate[] = []
 
             const spellSlot = (level: OneToTen) => {
-                const { name, uuid } = flags[category]?.[level - 1] ?? { name: '', uuid: '' }
+                const { name = '', uuid = '' } = flags[category]?.[level - 1] ?? {}
                 slots.push({ type: 'drop', level, name, uuid, label: game.i18n.localize(`PF2E.SpellLevel${level}`) })
             }
 
@@ -222,6 +221,16 @@ export function getData(actor: CharacterPF2e) {
                     level: 14,
                 })
             const template: CombatFlexibilityTemplate = { type, category, label, rows: slots }
+            templates.push(template)
+        } else if (isCategory(entry, 'tricksterAce')) {
+            const { type, category, label } = entry
+            const { name = '', uuid = '' } = flags[category] ?? {}
+            const template: TricksterAceTemplate = {
+                type,
+                category,
+                label,
+                rows: [{ type: 'drop', level: 4, name, uuid }],
+            }
             templates.push(template)
         }
     }

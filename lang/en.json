@@ -8,7 +8,8 @@
                 "gained": "Gained the temporary {type}:",
                 "changes": "Has made the following changes during their daily preparations",
                 "skills": "Trained in the following skills:",
-                "tome": "Studied their thaumaturgy tome:"
+                "tome": "Studied their thaumaturgy tome:",
+                "spells": "Is ready to use the spells:"
             },
             "error": {
                 "unexpected": "An unexpected error occured during daily preparations. See the console (F12) for details.",
@@ -18,7 +19,8 @@
                     "wrongType": "Only {type}s can be dropped here.",
                     "wrongLevel": "The dropped {type} level is too high for this slot.",
                     "wrongTrait": "The dropped {type} does not have the {trait} {category}.",
-                    "cannotBe": "The dropped {type} cannot be a {not}"
+                    "cannotBe": "The dropped {type} cannot be a {not}",
+                    "wrongSpellTime": "The dopped spell cast time exceeds {time}."
                 }
             }
         },

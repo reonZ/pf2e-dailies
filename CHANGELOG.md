@@ -1,3 +1,7 @@
+# 1.12.1
+
+-   now shows a loader during processing
+
 # 1.12.0
 
 -   added the `Thaumaturgy Tome` (all conditions are supported)

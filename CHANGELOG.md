@@ -1,3 +1,7 @@
+# 1.12.0
+
+-   added the `Thaumaturgy Tome` (all conditions are supported)
+
 # 1.11.0
 
 -   added the `Ganzi Heritage`

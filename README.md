@@ -14,6 +14,7 @@ Skill related
 -   [Ancient Memories](https://2e.aonprd.com/Feats.aspx?ID=3944)
 -   [Flexible Studies](https://2e.aonprd.com/Feats.aspx?ID=1446)
 -   [Quick Study](https://2e.aonprd.com/Feats.aspx?ID=2003)
+-   [Thaumaturgy Tome](https://2e.aonprd.com/Implements.aspx?ID=7)
 
 Resistance related
 

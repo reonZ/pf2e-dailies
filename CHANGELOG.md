@@ -1,3 +1,7 @@
+# 1.12.2
+
+-   fix debug mistake
+
 # 1.12.1
 
 -   now shows a loader during processing

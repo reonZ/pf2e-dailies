@@ -26,6 +26,10 @@ Feat related
 -   [Combat Flexibility](https://2e.aonprd.com/Classes.aspx?ID=7)
     -   [Improved Flexibility](https://2e.aonprd.com/Classes.aspx?ID=7)
 
+Spell related
+
+-   [Trickster's Ace](https://2e.aonprd.com/Feats.aspx?ID=598)
+
 Scroll related
 
 -   [Basic Scroll Cache](https://2e.aonprd.com/Feats.aspx?ID=2054)
@@ -55,6 +59,10 @@ The interface allows the user to open the compendium browser (with the right set
 ## Scrolls
 
 When a spell is dropped in a spell slot, a temporary spell scroll will be created with the appropriate hightened level directly in the character's inventory.
+
+## Spells
+
+When needed, a spellcasting entry will be added to house the added spells.
 
 ## Feats
 

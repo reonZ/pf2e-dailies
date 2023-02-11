@@ -1,3 +1,7 @@
+# 1.13.0
+
+-   added the feat `Trickster's Ace` (there is no way to force the self target condition, players will have to do it manually)
+
 # 1.12.2
 
 -   fix debug mistake

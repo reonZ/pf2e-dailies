@@ -1,6 +1,9 @@
 [id^=pf2e-dailies-interface-] {
   max-height: 80%;
 }
+[id^=pf2e-dailies-interface-] .window-content {
+  position: relative;
+}
 [id^=pf2e-dailies-interface-] .window-content .content {
   display: grid;
   grid-auto-flow: row;
@@ -56,12 +59,40 @@
   -moz-column-gap: 0.3em;
        column-gap: 0.3em;
 }
-[id^=pf2e-dailies-interface-].disabled .window-content a,
-[id^=pf2e-dailies-interface-].disabled .window-content input,
-[id^=pf2e-dailies-interface-].disabled .window-content select,
-[id^=pf2e-dailies-interface-].disabled .window-content option,
-[id^=pf2e-dailies-interface-].disabled .window-content button,
-[id^=pf2e-dailies-interface-].disabled .window-content input.drop {
-  color: var(--color-text-dark-inactive);
-  pointer-events: none;
+[id^=pf2e-dailies-interface-] .cover {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.411);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+[id^=pf2e-dailies-interface-] .cover .loader {
+  border: 1em solid var(--color-border-light-primary);
+  border-top-color: var(--color-border-dark-primary);
+  border-radius: 50%;
+  width: 30%;
+  aspect-ratio: 1/1;
+  -webkit-animation: spin 2s linear infinite;
+          animation: spin 2s linear infinite;
+  margin-top: -10px;
+}
+@-webkit-keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+[id^=pf2e-dailies-interface-]:not(.disabled) .window-content .cover {
+  display: none;
 }

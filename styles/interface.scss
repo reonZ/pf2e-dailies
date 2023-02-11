@@ -2,6 +2,8 @@
     max-height: 80%;
 
     .window-content {
+        position: relative;
+
         .content {
             display: grid;
             grid-auto-flow: row;
@@ -69,16 +71,38 @@
         }
     }
 
-    &.disabled {
+    .cover {
+        position: absolute;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.411);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .loader {
+            border: 1em solid var(--color-border-light-primary);
+            border-top-color: var(--color-border-dark-primary);
+            border-radius: 50%;
+            width: 30%;
+            aspect-ratio: 1/1;
+            animation: spin 2s linear infinite;
+            margin-top: -10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    }
+
+    &:not(.disabled) {
         .window-content {
-            a,
-            input,
-            select,
-            option,
-            button,
-            input.drop {
-                color: var(--color-text-dark-inactive);
-                pointer-events: none;
+            .cover {
+                display: none;
             }
         }
     }

@@ -22,6 +22,10 @@
     <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
 </div>
 
+<div class="cover">
+    <div class="loader"></div>
+</div>
+
 {{#*inline 'inputRow'}}
 <label>{{label}}</label>
 <input type="text" class="input" value="{{entry.selected}}" placeholder="{{entry.placeholder}}" data-type="{{group.type}}"

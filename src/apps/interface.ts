@@ -70,7 +70,7 @@ export class DailiesInterface extends Application {
 
         if (!this.#validate()) return
 
-        this.#lock()
+        return this.#lock()
 
         try {
             await accept(this.element, this._actor)

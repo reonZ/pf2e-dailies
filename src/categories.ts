@@ -2,9 +2,21 @@ import { getSourceId, includesSourceId } from '@utils/foundry/flags'
 import { filterItemsWithSourceId } from '@utils/foundry/item'
 import { hasLocalization, localize } from '@utils/foundry/localize'
 
-export const RULE_TYPES = ['addedLanguage', 'trainedSkill', 'addedResistance'] as const
+export const RULE_TYPES = ['addedLanguage', 'trainedSkill', 'addedResistance', 'thaumaturgeTome'] as const
 
 export const CATEGORIES = [
+    // ThaumaturgeTome
+    {
+        type: 'thaumaturgeTome',
+        category: 'tome',
+        uuids: [
+            'Compendium.pf2e.classfeatures.MyN1cQgE0HsLF20e', // Tome
+            'Compendium.pf2e.classfeatures.Obm4ItMIIr0whYeO', // Implement Adept
+            'Compendium.pf2e.classfeatures.ZEUxZ4Ta1kDPHiq5', // Second Adept
+            'Compendium.pf2e.feats-srd.yRRM1dsY6jakEMaC', // Intense Implement
+            'Compendium.pf2e.classfeatures.QEtgbY8N2V4wTbsI', // Implement Paragon
+        ],
+    },
     // Redistsance
     {
         type: 'addedResistance',
@@ -58,7 +70,10 @@ export const CATEGORIES = [
     {
         type: 'combatFlexibility',
         category: 'flexibility',
-        uuids: ['Compendium.pf2e.classfeatures.8g6HzARbhfcgilP8', 'Compendium.pf2e.classfeatures.W2rwudMNcAxs8VoX'],
+        uuids: [
+            'Compendium.pf2e.classfeatures.8g6HzARbhfcgilP8', // Combat Flexibility
+            'Compendium.pf2e.classfeatures.W2rwudMNcAxs8VoX', // Improved Flexibility
+        ],
     },
     // ScrollSavant
     {
@@ -71,18 +86,18 @@ export const CATEGORIES = [
         type: 'scrollChain',
         category: 'esoterica',
         uuids: [
-            'Compendium.pf2e.feats-srd.OqObuRB8oVSAEKFR',
-            'Compendium.pf2e.feats-srd.nWd7m0yRcIEVUy7O',
-            'Compendium.pf2e.feats-srd.LHjPTV5vP3MOsPPJ',
+            'Compendium.pf2e.feats-srd.OqObuRB8oVSAEKFR', // Scroll Esoterica
+            'Compendium.pf2e.feats-srd.nWd7m0yRcIEVUy7O', // Elaborate Scroll Esoterica
+            'Compendium.pf2e.feats-srd.LHjPTV5vP3MOsPPJ', // Grand Scroll Esoterica
         ],
     },
     {
         type: 'scrollChain',
         category: 'trickster',
         uuids: [
-            'Compendium.pf2e.feats-srd.ROAUR1GhC19Pjk9C',
-            'Compendium.pf2e.feats-srd.UrOj9TROtn8nuxPf',
-            'Compendium.pf2e.feats-srd.lIg5Gzz7W70jfbk1',
+            'Compendium.pf2e.feats-srd.ROAUR1GhC19Pjk9C', // Basic Scroll Cache
+            'Compendium.pf2e.feats-srd.UrOj9TROtn8nuxPf', // Expert Scroll Cache
+            'Compendium.pf2e.feats-srd.lIg5Gzz7W70jfbk1', // Master Scroll Cache
         ],
     },
 ] as const
@@ -100,20 +115,25 @@ const [UUIDS, EQUIP_UUID, FEATS_UUID, HERITAGES_UUID, RULES_UUIDS, FLATTENED] = 
         FLATTENED[category] ??= []
         FLATTENED[category].push(...uuids)
         UUIDS.push(...uuids.map((uuid, index) => [uuid, { type, category, index }] as UuidsType))
+
         if (RULE_TYPES.includes(type as typeof RULE_TYPES[number])) RULES.push(...uuids)
-        if (uuids[0].includes('equipment-srd')) EQUIP.push(uuids[0])
-        else if (uuids[0].includes('heritages')) HERITAGES.push(uuids[0])
-        else FEATS.push(uuids[0])
+
+        // for fast check on any category
+        const firstUUID = uuids[0]
+        if (firstUUID.includes('equipment-srd')) EQUIP.push(firstUUID)
+        else if (firstUUID.includes('heritages')) HERITAGES.push(firstUUID)
+        else FEATS.push(firstUUID)
     }
 
     return [new Map(UUIDS), EQUIP, FEATS, HERITAGES, RULES, FLATTENED]
 })()
 
 export function hasAnyCategory(actor: CharacterPF2e) {
+    const itemTypes = actor.itemTypes
     return (
-        actor.itemTypes.heritage.some(item => includesSourceId(item, HERITAGES_UUID)) ||
-        actor.itemTypes.feat.some(item => includesSourceId(item, FEATS_UUID)) ||
-        actor.itemTypes.equipment.some(item => includesSourceId(item, EQUIP_UUID) && !(item.isInvested === false))
+        itemTypes.heritage.some(item => includesSourceId(item, HERITAGES_UUID)) ||
+        itemTypes.feat.some(item => includesSourceId(item, FEATS_UUID)) ||
+        itemTypes.equipment.some(item => !(item.isInvested === false) && includesSourceId(item, EQUIP_UUID))
     )
 }
 
@@ -131,7 +151,7 @@ export function isRuleItem(item: ItemPF2e) {
 
 export function hasCategories(actor: CharacterPF2e) {
     const itemTypes = actor.itemTypes
-    const categories = {} as Record<CategoryName, Omit<ReturnedCategory, 'items'> & { items: (undefined | true)[] }>
+    const categories = {} as Record<CategoryName, Omit<ReturnedCategory, 'items'> & { items: (undefined | ItemPF2e)[] }>
     const items = [...itemTypes.heritage, ...itemTypes.feat, ...itemTypes.equipment]
 
     for (const item of items) {
@@ -143,7 +163,7 @@ export function hasCategories(actor: CharacterPF2e) {
 
         const { category, index, type } = entry
         categories[category] ??= { category, type, label: '', items: [] }
-        categories[category].items[index] = true
+        categories[category].items[index] = item
         if (index === 0) {
             const key = `label.${category}`
             const label = hasLocalization(key) ? localize(key) : item.name

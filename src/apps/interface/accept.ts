@@ -4,12 +4,13 @@ import { findItemWithSourceId } from '@utils/foundry/item'
 import { hasLocalization, localize, subLocalize } from '@utils/foundry/localize'
 import { chatUUID } from '@utils/foundry/uuid'
 import { MODULE_ID } from '@utils/module'
+import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
 import { createSpellScroll } from '@utils/pf2e/spell'
 import { sluggify } from '@utils/pf2e/utils'
 
 const msg = subLocalize('interface.message')
 
-type ReturnedMessage = { uuid: ItemUUID; selected?: string; category?: CategoryName }
+type ReturnedMessage = { uuid: ItemUUID; selected?: string; category?: CategoryName; label?: string }
 
 export async function accept(html: JQuery, actor: CharacterPF2e) {
     let message = ''
@@ -18,10 +19,28 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
     const ruleItems = fields.some(field => RULE_TYPES.includes(field.dataset.type as RulesName)) ? getRuleItems(actor) : []
     const addData: Partial<BaseItemSourcePF2e>[] = []
     const updateData: EmbeddedDocumentUpdateData<ItemPF2e>[] = []
+    const rulesToAdd: Map<string, RuleElementSource[]> = new Map()
+
+    const getRules = (item: ItemPF2e) => {
+        const id = item.id
+        const existing = rulesToAdd.get(id)
+        if (existing) return existing
+
+        const rules = deepClone(item._source.system.rules)
+
+        for (let i = rules.length - 1; i >= 0; i--) {
+            const rule = rules[i]
+            if ('pf2e-dailies' in rule) rules.splice(i, 1)
+        }
+
+        rulesToAdd.set(id, rules)
+        return rules
+    }
 
     const messages = {
         languages: [] as ReturnedMessage[],
         skills: [] as ReturnedMessage[],
+        tome: [] as ReturnedMessage[],
         resistances: [] as ReturnedMessage[],
         feats: [] as ReturnedMessage[],
         scrolls: [] as ReturnedMessage[],
@@ -75,28 +94,36 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             if (!ruleItem) continue
 
             const selected = field.value
-            const rules = deepClone(ruleItem._source.system.rules)
-
-            for (let i = rules.length - 1; i >= 0; i--) {
-                const rule = rules[i]
-                if ('pf2e-dailies' in rule) rules.splice(i, 1)
-            }
+            const rules = getRules(ruleItem)
 
             if (type === 'addedLanguage') {
-                rules.push(createLanguageRule(selected as Language))
+                rules.push(createLanguageRule(selected))
                 messages.languages.push({ uuid, selected, category })
             } else if (type === 'trainedSkill') {
-                rules.push(createTrainedSkillRule(selected as SkillLongForm))
+                rules.push(createSkillRule(selected, 1))
                 messages.skills.push({ uuid, selected, category })
             } else if (type === 'addedResistance') {
-                rules.push(createResistanceRule(selected as ResistanceType, 'half'))
+                rules.push(createResistanceRule(selected, 'half'))
                 messages.resistances.push({ uuid, selected, category })
+            } else if (type === 'thaumaturgeTome') {
+                const rank = field.dataset.rank
+                rules.push(createSkillRule(selected, rank))
+                messages.tome.push({ uuid, selected, category, label: PROFICIENCY_RANKS[rank] })
             }
 
-            // @ts-ignore
-            flags[category] = selected
-            updateData.push({ _id: ruleItem.id, 'system.rules': rules })
+            if (type === 'thaumaturgeTome') {
+                const category = field.dataset.category
+                flags[category] ??= []
+                flags[category]!.push(selected as SkillLongForm)
+            } else {
+                // @ts-ignore
+                flags[category] = selected
+            }
         }
+    }
+
+    for (const [id, rules] of rulesToAdd) {
+        updateData.push({ _id: id, 'system.rules': rules })
     }
 
     const pushMessages = (type: string, list: ReturnedMessage[]) => {
@@ -107,9 +134,14 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         const title = msg.has(type) ? msg(type) : msg('gained', { type })
         message += `<p><strong>${title}</strong></p>`
 
-        for (const { uuid, selected, category } of list) {
-            const label = category && hasLocalization(`label.${category}`) ? localize(`label.${category}`) : undefined
-            message += `<p>${chatUUID(uuid, label)}`
+        for (const { uuid, selected, category, label } of list) {
+            if (label) {
+                message += `<p><strong>${label}:</strong>`
+            } else {
+                const label = category && hasLocalization(`label.${category}`) ? localize(`label.${category}`) : undefined
+                message += `<p>${chatUUID(uuid, label)}`
+            }
+
             if (selected) message += ` <span style="text-transform: capitalize;">${selected}</span>`
             message += '</p>'
         }
@@ -135,6 +167,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
     pushMessages('languages', messages.languages)
     pushMessages('skills', messages.skills)
+    pushMessages('tome', messages.tome)
     pushMessages('resistances', messages.resistances)
     pushMessages('feats', messages.feats)
     pushMessages('scrolls', messages.scrolls)
@@ -170,7 +203,7 @@ async function createTemporaryFeat(uuid: ItemUUID, parent: FeatPF2e) {
     return feat
 }
 
-function createLanguageRule(language: Language) {
+function createLanguageRule(language: string) {
     return {
         key: 'ActiveEffectLike',
         mode: 'add',
@@ -180,17 +213,17 @@ function createLanguageRule(language: Language) {
     } as const
 }
 
-function createTrainedSkillRule(skill: SkillLongForm) {
+function createSkillRule(skill: string, rank: OneToFour | `${OneToFour}`) {
     return {
         key: 'ActiveEffectLike',
         mode: 'upgrade',
         path: `system.skills.${skill}.rank`,
-        value: 1,
+        value: Number(rank),
         [MODULE_ID]: true,
     } as const
 }
 
-function createResistanceRule(type: ResistanceType, value: number | string | 'half') {
+function createResistanceRule(type: string, value: number | string | 'half') {
     if (value === 'half') value = 'max(1,floor(@actor.level/2))'
     return {
         key: 'Resistance',

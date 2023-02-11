@@ -7,6 +7,7 @@ declare const ui: UiPF2e
  */
 
 type TrainedSkill = ExtractedCategory<'trainedSkill'>
+type ThaumaturgeTome = ExtractedCategory<'thaumaturgeTome'>
 type TrainedLore = ExtractedCategory<'trainedLore'>
 type AddedLanguage = ExtractedCategory<'addedLanguage'>
 type AddedResistance = ExtractedCategory<'addedResistance'>
@@ -16,6 +17,7 @@ type ScrollSavant = ExtractedCategory<'scrollSavant'>
 
 type SavedCategories = Partial<
     BaseSavedCategory<TrainedSkill, SkillLongForm> &
+        BaseSavedCategory<ThaumaturgeTome, SkillLongForm[]> &
         BaseSavedCategory<TrainedLore, string> &
         BaseSavedCategory<AddedLanguage, Language> &
         BaseSavedCategory<AddedResistance, ResistanceType> &
@@ -24,7 +26,10 @@ type SavedCategories = Partial<
         SavedItemsCategory<ScrollSavant>
 >
 
+type ThaumaturgeTomeTemplateItem = SelectTemplate<SkillLongForm> & { rank: OneToFour; label: string }
+
 type TrainedSkillTemplate = BaseCategoryTemplate<TrainedSkill, SelectTemplate<SkillLongForm>>
+type ThaumaturgeTomeTemplate = BaseCategoryTemplate<ThaumaturgeTome, SelectTemplate<SkillLongForm>>
 type TrainedLoreTemplate = BaseCategoryTemplate<TrainedLore, InputTemplate>
 type AddedLanguageTemplate = BaseCategoryTemplate<AddedLanguage, SelectTemplate<Language>>
 type AddedResistanceTemplate = BaseCategoryTemplate<AddedResistance, SelectTemplate<ResistanceType>>
@@ -33,13 +38,14 @@ type CombatFlexibilityTemplate = BaseDropCategoryTemplate<CombatFlexibility>
 type ScrollSavantTemplate = BaseDropCategoryTemplate<ScrollSavant>
 
 type TemplateField =
-    | BaseTemplateField<TrainedSkill, SkillLongForm, {}>
-    | BaseTemplateField<TrainedLore, string, {}>
-    | BaseTemplateField<AddedLanguage, Language, {}>
-    | BaseTemplateField<AddedResistance, ResistanceType, {}>
-    | BaseDropTemplateField<ScrollChain>
-    | BaseDropTemplateField<CombatFlexibility>
-    | BaseDropTemplateField<ScrollSavant>
+    | BaseTemplateField<TrainedSkill, SkillLongForm>
+    | ExtraTemplateField<ThaumaturgeTome, SkillLongForm, { rank: `${OneToFour}`; label: string }>
+    | BaseTemplateField<TrainedLore, string>
+    | BaseTemplateField<AddedLanguage, Language>
+    | BaseTemplateField<AddedResistance, ResistanceType>
+    | DropTemplateField<ScrollChain>
+    | DropTemplateField<CombatFlexibility>
+    | DropTemplateField<ScrollSavant>
 
 /**
  * End of Variables
@@ -74,7 +80,7 @@ type BaseDropCategoryTemplate<C extends Category> = BaseCategoryTemplate<C, Drop
 
 type SelectTemplate<K extends string> = {
     type: 'select'
-    options: { key: K }[]
+    options: readonly K[]
     selected: K | ''
 }
 
@@ -92,22 +98,28 @@ type DropTemplate = {
     uuid: TemplateUUID
 }
 
-type BaseTemplateField<C extends Category, V extends string, D extends Record<string, string>> = Omit<
-    HTMLElement,
-    'value' | 'dataset'
-> & {
+type BaseTemplateField<C extends Category, V extends string> = Omit<HTMLElement, 'value' | 'dataset'> & {
     value: V
     dataset: {
         type: C['type']
         category: C['category']
-    } & D
+    }
 }
 
-type BaseDropTemplateField<C extends Category> = BaseTemplateField<C, string, { level: TemplateLevel; uuid: ItemUUID }>
+type ExtraTemplateField<C extends Category, V extends string, E extends Record<string, any>> = BaseTemplateField<C, V> & {
+    dataset: E
+}
+
+type DropTemplateField<C extends Category> = BaseTemplateField<C, string> & {
+    dataset: {
+        level: TemplateLevel
+        uuid: ItemUUID
+    }
+}
 
 type SearchTemplateButton = Omit<HTMLElement, 'dataset'> & { dataset: { type: CategoryType; level: TemplateLevel } }
 
-type ReturnedCategoryItems = [true, ...(undefined | true)[]]
+type ReturnedCategoryItems = [ItemPF2e, ...(undefined | ItemPF2e)[]]
 type ReturnedCategory<C extends Category = Category> = Omit<Required<C>, 'uuids' | 'label'> & {
     label: string
     items: ReturnedCategoryItems

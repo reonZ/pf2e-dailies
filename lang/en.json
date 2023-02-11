@@ -7,7 +7,8 @@
             "message": {
                 "gained": "Gained the temporary {type}:",
                 "changes": "Has made the following changes during their daily preparations",
-                "skills": "Trained in the following skills:"
+                "skills": "Trained in the following skills:",
+                "tome": "Studied their thaumaturgy tome:"
             },
             "error": {
                 "unexpected": "An unexpected error occured during daily preparations. See the console (F12) for details.",
@@ -24,7 +25,8 @@
         "label": {
             "elementalist": "Elementalist",
             "trickster": "Scroll Trickster",
-            "ganzi": "Ganzi Heritage"
+            "ganzi": "Ganzi Heritage",
+            "tome": "Thaumaturgy Tome"
         },
         "sheet": {
             "title": "Daily Preparations"

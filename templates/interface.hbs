@@ -41,7 +41,11 @@
 
 {{#*inline 'selectRow'}}
 <label>{{label}}</label>
-<select data-type="{{group.type}}" data-category="{{group.category}}">
-    {{selectOptions entry.options nameAttr='key' labelAttr='key' selected=entry.selected}}
+<select data-type="{{group.type}}" data-category="{{group.category}}" data-rank="{{entry.rank}}">
+    {{#select entry.selected}}
+    {{#each entry.options}}
+    <option value="{{this}}">{{this}}</option>
+    {{/each}}
+    {{/select}}
 </select>
 {{/inline}}

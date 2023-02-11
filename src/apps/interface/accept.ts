@@ -7,6 +7,7 @@ import { MODULE_ID } from '@utils/module'
 import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
 import { createSpellScroll } from '@utils/pf2e/spell'
 import { sluggify } from '@utils/pf2e/utils'
+import { capitalize } from '@utils/string'
 
 const msg = subLocalize('interface.message')
 
@@ -136,7 +137,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
         for (const { uuid, selected, category, label } of list) {
             if (label) {
-                message += `<p><strong>${label}:</strong>`
+                message += `<p><strong>${capitalize(label)}:</strong>`
             } else {
                 const label = category && hasLocalization(`label.${category}`) ? localize(`label.${category}`) : undefined
                 message += `<p>${chatUUID(uuid, label)}`

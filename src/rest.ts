@@ -1,5 +1,6 @@
 import { getFlag } from '@utils/foundry/flags'
 import { sluggify } from '@utils/pf2e/utils'
+import { MODULE_ID } from '@utils/module'
 import { isRuleItem } from './categories'
 
 export function wrapRestForTheNight() {
@@ -25,7 +26,7 @@ async function afterRest(actors: ActorPF2e | ActorPF2e[]) {
 
             let modified = false
             for (let i = rules.length - 1; i >= 0; i--) {
-                if (!('pf2e-dailies' in rules[i])) continue
+                if (!(MODULE_ID in rules[i])) continue
                 rules.splice(i, 1)
                 modified = true
             }

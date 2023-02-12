@@ -31,7 +31,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
         for (let i = rules.length - 1; i >= 0; i--) {
             const rule = rules[i]
-            if ('pf2e-dailies' in rule) rules.splice(i, 1)
+            if (MODULE_ID in rule) rules.splice(i, 1)
         }
 
         rulesToAdd.set(id, rules)
@@ -250,7 +250,7 @@ function createTemporaryLore(name: string, rank: number) {
 }
 
 async function createTemporaryFeat(uuid: ItemUUID, parent: FeatPF2e) {
-    const feat = ((await fromUuid(uuid)) as FeatPF2e | null)?.toObject()
+    const feat = (await fromUuid<FeatPF2e>(uuid))?.toObject()
     if (!feat) return
 
     setProperty(feat, 'flags.pf2e.grantedBy', { id: parent.id, onDelete: 'cascade' })
@@ -293,7 +293,7 @@ async function createSpellcastingSpell(uuid: ItemUUID, level: OneToTen, entry: s
     const spell = (await fromUuid<SpellPF2e>(uuid))?.toObject()
     if (!spell) return
 
-    setProperty(spell, `flags.${MODULE_ID}`, { parent: entry, level: 4 })
+    setProperty(spell, `flags.${MODULE_ID}`, { parent: entry, level })
 
     return spell
 }

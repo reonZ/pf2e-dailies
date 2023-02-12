@@ -53,3 +53,13 @@
     {{/select}}
 </select>
 {{/inline}}
+
+{{#*inline 'randomRow'}}
+<label>{{label}}</label>
+<select class="random" data-type="{{group.type}}" data-category="{{group.category}}">
+    {{#each entry.options as | option |}}
+    <option value="{{option}}">{{option}}</option>
+    {{/each}}
+</select>
+<div class="die"><i class="fa-solid fa-dice-d20"></i></div>
+{{/inline}}

@@ -38,6 +38,16 @@
             select {
                 grid-column: 2 / -1;
             }
+
+            select.random {
+                pointer-events: none;
+                appearance: none;
+                grid-column: 2 / -2;
+            }
+
+            .die i {
+                animation: spin 2s linear infinite;
+            }
         }
 
         .rows {
@@ -52,15 +62,10 @@
 
         select,
         option,
-        input {
+        input,
+        input:disabled,
+        select:disabled {
             color: var(--color-text-dark-primary);
-        }
-
-        input {
-            padding-inline: 4px;
-            &.drop:disabled {
-                color: inherit;
-            }
         }
 
         .buttons {
@@ -87,15 +92,6 @@
             aspect-ratio: 1/1;
             animation: spin 2s linear infinite;
             margin-top: -10px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
         }
     }
 

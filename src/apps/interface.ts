@@ -9,6 +9,7 @@ const localize = subLocalize('interface')
 
 export class DailiesInterface extends Application {
     private _actor: CharacterPF2e
+    private _randomInterval?: NodeJS.Timer
 
     constructor(actor: CharacterPF2e, options?: Partial<ApplicationOptions>) {
         super(options)
@@ -35,6 +36,26 @@ export class DailiesInterface extends Application {
             i18n: localize,
             ...getData(this._actor),
         })
+    }
+
+    render(force?: boolean | undefined, options?: RenderOptions | undefined): this | Promise<this> {
+        if (this._randomInterval) clearInterval(this._randomInterval)
+
+        if (this.element.find('select.random')) {
+            this._randomInterval = setInterval(() => {
+                const randoms = this.element.find<HTMLSelectElement>('select.random')
+                randoms.each((_, select) => {
+                    select.selectedIndex = (select.selectedIndex + 1) % select.options.length
+                })
+            }, 2000)
+        }
+
+        return super.render(force, options)
+    }
+
+    close(options?: ({ force?: boolean | undefined } & Record<string, unknown>) | undefined): Promise<void> {
+        if (this._randomInterval) clearInterval(this._randomInterval)
+        return super.close(options)
     }
 
     activateListeners(html: JQuery<HTMLElement>): void {

@@ -33,6 +33,17 @@
 [id^=pf2e-dailies-interface-] .window-content .group select {
   grid-column: 2/-1;
 }
+[id^=pf2e-dailies-interface-] .window-content .group select.random {
+  pointer-events: none;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  grid-column: 2/-2;
+}
+[id^=pf2e-dailies-interface-] .window-content .group .die i {
+  -webkit-animation: spin 2s linear infinite;
+          animation: spin 2s linear infinite;
+}
 [id^=pf2e-dailies-interface-] .window-content .rows {
   grid-template-columns: minmax(120px, auto) 1fr auto auto;
 }
@@ -43,14 +54,10 @@
 }
 [id^=pf2e-dailies-interface-] .window-content select,
 [id^=pf2e-dailies-interface-] .window-content option,
-[id^=pf2e-dailies-interface-] .window-content input {
+[id^=pf2e-dailies-interface-] .window-content input,
+[id^=pf2e-dailies-interface-] .window-content input:disabled,
+[id^=pf2e-dailies-interface-] .window-content select:disabled {
   color: var(--color-text-dark-primary);
-}
-[id^=pf2e-dailies-interface-] .window-content input {
-  padding-inline: 4px;
-}
-[id^=pf2e-dailies-interface-] .window-content input.drop:disabled {
-  color: inherit;
 }
 [id^=pf2e-dailies-interface-] .window-content .buttons {
   display: grid;
@@ -76,22 +83,6 @@
   -webkit-animation: spin 2s linear infinite;
           animation: spin 2s linear infinite;
   margin-top: -10px;
-}
-@-webkit-keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 [id^=pf2e-dailies-interface-]:not(.disabled) .window-content .cover {
   display: none;

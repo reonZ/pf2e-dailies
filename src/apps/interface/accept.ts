@@ -11,7 +11,7 @@ import { capitalize } from '@utils/string'
 
 const msg = subLocalize('interface.message')
 
-type ReturnedMessage = { uuid: ItemUUID; selected?: string; category?: CategoryName; label?: string }
+type ReturnedMessage = { uuid: ItemUUID; selected?: string; category?: CategoryName; label?: string; random?: boolean }
 
 export async function accept(html: JQuery, actor: CharacterPF2e) {
     let message = ''
@@ -93,6 +93,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
             const entrySlug = sluggify("Trickster's Ace", { camel: 'dromedary' })
             const spell = await createSpellcastingSpell(uuid, 4, entrySlug)
+
             if (spell) {
                 const proficiency = actor.classDC?.slug || actor.class?.slug
                 const entry = createSpellcastingEntry("Trickster's Ace", entrySlug, proficiency)
@@ -123,13 +124,18 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
                 const rank = field.dataset.rank
                 rules.push(createSkillRule(selected, rank))
                 messages.tome.push({ uuid, selected, category, label: PROFICIENCY_RANKS[rank] })
+            } else if (type === 'ganziHeritage') {
+                const options = Array.from((field as HTMLSelectElement).options).map(x => x.value) as ResistanceType[]
+                const selected = await randomOptions(options)
+                rules.push(createResistanceRule(selected, 'half'))
+                messages.resistances.push({ uuid, selected, category, random: true })
             }
 
             if (type === 'thaumaturgeTome') {
                 const category = field.dataset.category
                 flags[category] ??= []
                 flags[category]!.push(selected as SkillLongForm)
-            } else {
+            } else if (type !== 'ganziHeritage') {
                 // @ts-ignore
                 flags[category] = selected
             }
@@ -148,7 +154,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         const title = msg.has(type) ? msg(type) : msg('gained', { type })
         message += `<p><strong>${title}</strong></p>`
 
-        for (const { uuid, selected, category, label } of list) {
+        for (const { uuid, selected, category, label, random = false } of list) {
             if (label) {
                 message += `<p><strong>${capitalize(label)}:</strong>`
             } else {
@@ -157,6 +163,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             }
 
             if (selected) message += ` <span style="text-transform: capitalize;">${selected}</span>`
+            if (random) message += ' <i class="fa-solid fa-dice-d20"></i>'
             message += '</p>'
         }
     }
@@ -168,11 +175,13 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
             if (item.type === 'feat') messages.feats.push({ uuid })
             else if (item.type === 'consumable') messages.scrolls.push({ uuid })
+            // we populate the spellcasting entries with the spells
             else if (item.type === 'spellcastingEntry') {
                 const slug = item.slug
                 const spells = items.filter(x => x.type === 'spell' && getFlag(x, 'parent') === slug) as SpellPF2e[]
                 for (const spell of spells) {
-                    updateData.push({ _id: spell.id, 'system.location.value': item.id })
+                    const level = getFlag(spell, 'level')
+                    updateData.push({ _id: spell.id, 'system.location.value': item.id, 'system.location.heightenedLevel': level })
                     messages.spells.push({ uuid: spell.uuid })
                 }
             }
@@ -201,6 +210,11 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
     message = `${msg('changes')}<hr>${message}`
     ChatMessage.create({ content: message, speaker: ChatMessage.getSpeaker({ actor }) })
+}
+
+async function randomOptions<T extends string>(options: T[]) {
+    const roll = (await new Roll(`1d${options.length}`).evaluate({ async: true })).total
+    return options[roll - 1]
 }
 
 function createTemporaryLore(name: string, rank: OneToFour) {
@@ -262,8 +276,7 @@ async function createSpellcastingSpell(uuid: ItemUUID, level: OneToTen, entry: s
     const spell = (await fromUuid<SpellPF2e>(uuid))?.toObject()
     if (!spell) return
 
-    setProperty(spell, `flags.${MODULE_ID}.parent`, entry)
-    setProperty(spell, 'system.location.heightenedLevel', level)
+    setProperty(spell, `flags.${MODULE_ID}`, { parent: entry, level: 4 })
 
     return spell
 }

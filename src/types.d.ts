@@ -15,6 +15,7 @@ type ScrollChain = ExtractedCategory<'scrollChain'>
 type CombatFlexibility = ExtractedCategory<'combatFlexibility'>
 type ScrollSavant = ExtractedCategory<'scrollSavant'>
 type TricksterAce = ExtractedCategory<'tricksterAce'>
+type GanziHeritage = ExtractedCategory<'ganziHeritage'>
 
 type SavedCategories = Partial<
     BaseSavedCategory<TrainedSkill, SkillLongForm> &
@@ -30,15 +31,16 @@ type SavedCategories = Partial<
 
 type ThaumaturgeTomeTemplateItem = SelectTemplate<SkillLongForm> & { rank: OneToFour; label: string }
 
-type TrainedSkillTemplate = BaseCategoryTemplate<TrainedSkill, SelectTemplate<SkillLongForm>>
-type ThaumaturgeTomeTemplate = BaseCategoryTemplate<ThaumaturgeTome, SelectTemplate<SkillLongForm>>
+type TrainedSkillTemplate = BaseSelectCategoryTemplate<TrainedSkill, SkillLongForm>
+type ThaumaturgeTomeTemplate = BaseSelectCategoryTemplate<ThaumaturgeTome, SkillLongForm>
 type TrainedLoreTemplate = BaseCategoryTemplate<TrainedLore, InputTemplate>
-type AddedLanguageTemplate = BaseCategoryTemplate<AddedLanguage, SelectTemplate<Language>>
-type AddedResistanceTemplate = BaseCategoryTemplate<AddedResistance, SelectTemplate<ResistanceType>>
+type AddedLanguageTemplate = BaseSelectCategoryTemplate<AddedLanguage, Language>
+type AddedResistanceTemplate = BaseSelectCategoryTemplate<AddedResistance, ResistanceType>
 type ScrollChainTemplate = BaseDropCategoryTemplate<ScrollChain>
 type CombatFlexibilityTemplate = BaseDropCategoryTemplate<CombatFlexibility>
 type ScrollSavantTemplate = BaseDropCategoryTemplate<ScrollSavant>
 type TricksterAceTemplate = BaseDropCategoryTemplate<TricksterAce>
+type GanziHeritageTemplate = BaseRandomCategoryTemplate<GanziHeritage, ResistanceType>
 
 type TemplateField =
     | BaseTemplateField<TrainedSkill, SkillLongForm>
@@ -50,6 +52,7 @@ type TemplateField =
     | DropTemplateField<CombatFlexibility>
     | DropTemplateField<ScrollSavant>
     | DropTemplateField<TricksterAce>
+    | RandomTemplateField<GanziHeritage, ResistanceType>
 
 /**
  * End of Variables
@@ -80,12 +83,21 @@ type BaseCategoryTemplate<C extends Category = Category, R extends any = any> = 
     rows: R[]
 }
 
+type BaseSelectCategoryTemplate<C extends Category, R extends any = any> = BaseCategoryTemplate<C, SelectTemplate<R>>
+
+type BaseRandomCategoryTemplate<C extends Category, R extends any = any> = BaseCategoryTemplate<C, RandomTemplate<R>>
+
 type BaseDropCategoryTemplate<C extends Category> = BaseCategoryTemplate<C, DropTemplate>
 
 type SelectTemplate<K extends string> = {
     type: 'select'
     options: readonly K[]
     selected: K | ''
+}
+
+type RandomTemplate<K extends string> = {
+    type: 'random'
+    options: readonly K[]
 }
 
 type InputTemplate = {
@@ -103,6 +115,14 @@ type DropTemplate = {
 }
 
 type BaseTemplateField<C extends Category, V extends string> = Omit<HTMLElement, 'value' | 'dataset'> & {
+    value: V
+    dataset: {
+        type: C['type']
+        category: C['category']
+    }
+}
+
+type RandomTemplateField<C extends Category, V extends string> = Omit<HTMLSelectElement, 'value' | 'dataset'> & {
     value: V
     dataset: {
         type: C['type']

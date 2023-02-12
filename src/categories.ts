@@ -2,7 +2,7 @@ import { getSourceId, includesSourceId } from '@utils/foundry/flags'
 import { filterItemsWithSourceId } from '@utils/foundry/item'
 import { hasLocalization, localize } from '@utils/foundry/localize'
 
-export const RULE_TYPES = ['addedLanguage', 'trainedSkill', 'addedResistance', 'thaumaturgeTome'] as const
+export const RULE_TYPES = ['addedLanguage', 'trainedSkill', 'addedResistance', 'ganziHeritage', 'thaumaturgeTome'] as const
 
 export const CATEGORIES = [
     // TricksterAce
@@ -29,8 +29,9 @@ export const CATEGORIES = [
         category: 'elementalist',
         uuids: ['Compendium.pf2e.feats-srd.tx9pkrpmtqe4FnvS'],
     },
+    // GanziHeritage
     {
-        type: 'addedResistance',
+        type: 'ganziHeritage',
         category: 'ganzi',
         uuids: ['Compendium.pf2e.heritages.3reGfXH0S82hM7Gp'],
     },
@@ -144,7 +145,7 @@ export function hasAnyCategory(actor: CharacterPF2e) {
 }
 
 export function getCategoryUUIDS(category: CategoryName) {
-    return FLATTENED[category]
+    return FLATTENED[category] as ItemUUID[]
 }
 
 export function getRuleItems(actor: CharacterPF2e) {

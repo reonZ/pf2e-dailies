@@ -190,12 +190,11 @@ export function getData(actor: CharacterPF2e) {
         } else if (isCategory(entry, 'addedResistance')) {
             const { type, category, label } = entry
             const selected = flags[category] ?? ''
-            const options = category === 'elementalist' ? FOUR_ELEMENTS : GANZI_RESISTANCES
             const template: AddedResistanceTemplate = {
                 type,
                 category,
                 label,
-                rows: [{ type: 'select', options, selected }],
+                rows: [{ type: 'select', options: FOUR_ELEMENTS, selected }],
             }
             templates.push(template)
         } else if (isCategory(entry, 'combatFlexibility')) {
@@ -230,6 +229,15 @@ export function getData(actor: CharacterPF2e) {
                 category,
                 label,
                 rows: [{ type: 'drop', level: 4, name, uuid }],
+            }
+            templates.push(template)
+        } else if (isCategory(entry, 'ganziHeritage')) {
+            const { type, category, label } = entry
+            const template: GanziHeritageTemplate = {
+                type,
+                category,
+                label,
+                rows: [{ type: 'random', options: GANZI_RESISTANCES }],
             }
             templates.push(template)
         }

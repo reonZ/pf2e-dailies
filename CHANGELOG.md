@@ -1,6 +1,6 @@
 # 1.14.0
 
--   now supports randomly picking choice when necessary
+-   now supports randomly picking options when necessary
 -   the `Ganzi Heritage` has been switched to be random
 
 # 1.13.0

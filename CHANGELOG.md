@@ -1,3 +1,10 @@
+# 1.15.0
+
+-   fix bug with drop fields not saving
+-   fix issue with the processing logo and the cover sizes
+-   now has a combo field which allow to select options from a dropdown or manual inputs
+-   options that let you select a skill now use the combo field, allowing you to either select a skill from the dropdown or enter the name of a lore
+
 # 1.14.0
 
 -   now supports randomly picking options when necessary

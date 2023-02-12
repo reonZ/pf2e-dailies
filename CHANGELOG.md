@@ -1,3 +1,8 @@
+# 1.14.0
+
+-   now supports randomly picking choice when necessary
+-   the `Ganzi Heritage` has been switched to be random
+
 # 1.13.0
 
 -   added the feat `Trickster's Ace` (there is no way to force the self target condition, players will have to do it manually)

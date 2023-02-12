@@ -74,6 +74,18 @@ Selected feats are directly added to the character feat tab, in cascade with the
 
 Equipment items need to be invested to appear in the interface, the bonus provided is linked to the item itself and like any other bonuses, will be removed if the character un-invest or un-equip the item.
 
+# Random
+
+The module will randomly pick an option when necessary.
+
+![](./readme/random.webp)
+
+_An animated die will rotate in the interface window to point out which options are randomly picked, the different options will also loop over inside the field._
+
+![](./readme/random-chat.webp)
+
+_A die is added to the chat message to accentuate which options were randomly chosen._
+
 # Chat
 
 ![](./readme/chat.webp)

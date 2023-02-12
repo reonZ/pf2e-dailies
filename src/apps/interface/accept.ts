@@ -68,9 +68,11 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             const parentUUID = getCategoryUUIDS(category)[index]
 
             if (parentUUID) {
-                const parent = findItemWithSourceId(actor, parentUUID) as FeatPF2e
-                const feat = await createTemporaryFeat(uuid, parent)
-                if (feat) addData.push(feat)
+                const parent = findItemWithSourceId<CharacterPF2e, FeatPF2e>(actor, parentUUID, ['feat'])
+                if (parent) {
+                    const feat = await createTemporaryFeat(uuid, parent)
+                    if (feat) addData.push(feat)
+                }
             }
 
             flags[category] ??= []

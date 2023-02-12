@@ -9,7 +9,7 @@ export const CATEGORIES = [
     {
         type: 'tricksterAce',
         category: 'ace',
-        uuids: ['Compendium.pf2e.feats-srd.POrE3ZgBRdBL9MsW'],
+        uuids: ['Compendium.pf2e.feats-srd.POrE3ZgBRdBL9MsW'], // Trickster's Ace
     },
     // ThaumaturgeTome
     {
@@ -27,51 +27,51 @@ export const CATEGORIES = [
     {
         type: 'addedResistance',
         category: 'elementalist',
-        uuids: ['Compendium.pf2e.feats-srd.tx9pkrpmtqe4FnvS'],
+        uuids: ['Compendium.pf2e.feats-srd.tx9pkrpmtqe4FnvS'], // Elementalist Dedication
     },
     // GanziHeritage
     {
         type: 'ganziHeritage',
         category: 'ganzi',
-        uuids: ['Compendium.pf2e.heritages.3reGfXH0S82hM7Gp'],
+        uuids: ['Compendium.pf2e.heritages.3reGfXH0S82hM7Gp'], // Ganzi
     },
     // TrainedLore
     {
         type: 'trainedLore',
         category: 'study',
-        uuids: ['Compendium.pf2e.feats-srd.aLJsBBZzlUK3G8MW'],
+        uuids: ['Compendium.pf2e.feats-srd.aLJsBBZzlUK3G8MW'], // Quick Study
     },
     // TrainedSkill
     {
         type: 'trainedSkill',
         category: 'ageless',
-        uuids: ['Compendium.pf2e.feats-srd.wylnETwIz32Au46y'],
+        uuids: ['Compendium.pf2e.feats-srd.wylnETwIz32Au46y'], // Ageless Spirit
     },
     {
         type: 'trainedSkill',
         category: 'longevity',
-        uuids: ['Compendium.pf2e.feats-srd.WoLh16gyDp8y9WOZ'],
+        uuids: ['Compendium.pf2e.feats-srd.WoLh16gyDp8y9WOZ'], // Ancestral Longevity
     },
     {
         type: 'trainedSkill',
         category: 'memories',
-        uuids: ['Compendium.pf2e.feats-srd.ptEOt3lqjxUnAW62'],
+        uuids: ['Compendium.pf2e.feats-srd.ptEOt3lqjxUnAW62'], // Ancient Memories
     },
     {
         type: 'trainedSkill',
         category: 'studies',
-        uuids: ['Compendium.pf2e.feats-srd.9bgl6qYWKHzqWZj0'],
+        uuids: ['Compendium.pf2e.feats-srd.9bgl6qYWKHzqWZj0'], // Flexible Studies
     },
     // AddedLanguage
     {
         type: 'addedLanguage',
         category: 'linguistics',
-        uuids: ['Compendium.pf2e.feats-srd.eCWQU16hRLfN1KaX'],
+        uuids: ['Compendium.pf2e.feats-srd.eCWQU16hRLfN1KaX'], // Ancestral Linguistics
     },
     {
         type: 'addedLanguage',
         category: 'borts',
-        uuids: ['Compendium.pf2e.equipment-srd.iS7hAQMAaThHYE8g'],
+        uuids: ['Compendium.pf2e.equipment-srd.iS7hAQMAaThHYE8g'], // Bort's Blessing
     },
     // CombatFlexibility
     {
@@ -86,7 +86,7 @@ export const CATEGORIES = [
     {
         type: 'scrollSavant',
         category: 'savant',
-        uuids: ['Compendium.pf2e.feats-srd.u5DBg0LrBUKP0JsJ'],
+        uuids: ['Compendium.pf2e.feats-srd.u5DBg0LrBUKP0JsJ'], // Scroll Savant
     },
     // ScrollChain
     {

@@ -1,8 +1,9 @@
-[id^='pf2e-dailies-interface-'] {
+#pf2e-dailies-interface {
     max-height: 80%;
 
     .window-content {
         position: relative;
+        background: url(/ui/parchment.jpg) repeat;
 
         .content {
             display: grid;
@@ -45,6 +46,28 @@
                 grid-column: 2 / -2;
             }
 
+            .combo {
+                grid-column: 2 / -1;
+                position: relative;
+
+                select,
+                input {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                }
+
+                input {
+                    width: calc(100% - 20px);
+                    border-radius: 3px 0 0 3px;
+                }
+
+                select {
+                    width: 100%;
+                }
+            }
+
             .die i {
                 animation: spin 2s linear infinite;
             }
@@ -60,12 +83,23 @@
             text-transform: capitalize;
         }
 
+        input,
+        select {
+            border-radius: 3px;
+        }
+
+        .combo,
         select,
         option,
         input,
         input:disabled,
         select:disabled {
             color: var(--color-text-dark-primary);
+            height: 26px;
+        }
+
+        input:not(:disabled) {
+            background: url(/ui/parchment.jpg) repeat;
         }
 
         .buttons {
@@ -88,10 +122,16 @@
             border: 1em solid var(--color-border-light-primary);
             border-top-color: var(--color-border-dark-primary);
             border-radius: 50%;
-            width: 30%;
+            height: min(25%, 8em);
             aspect-ratio: 1/1;
             animation: spin 2s linear infinite;
             margin-top: -10px;
+        }
+    }
+
+    &.disabled {
+        .window-content {
+            pointer-events: none;
         }
     }
 

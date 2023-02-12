@@ -11,7 +11,7 @@
     <div class="group {{group.type}}">
         <h3>{{group.label}}</h3>
         {{#each group.rows as | row |}}
-        {{> (concat row.type 'Row') entry=row group=../group label=row.label}}
+        {{> (concat row.type 'Row') entry=row group=group label=row.label}}
         {{/each}}
     </div>
     {{/each}}
@@ -52,6 +52,22 @@
     {{/each}}
     {{/select}}
 </select>
+{{/inline}}
+
+{{#*inline 'comboRow'}}
+<label>{{label}}</label>
+<div class="combo">
+    <select>
+        <option value=""></option>
+        {{#select entry.selected}}
+        {{#each entry.options as | option |}}
+        <option value="{{option}}">{{option}}</option>
+        {{/each}}
+        {{/select}}
+    </select>
+    <input type="text" class="input" value="{{entry.selected}}" placeholder="{{entry.placeholder}}" data-type="{{group.type}}"
+        data-category="{{group.category}}" data-rank="{{entry.rank}}" data-input="{{entry.input}}" />
+</div>
 {{/inline}}
 
 {{#*inline 'randomRow'}}

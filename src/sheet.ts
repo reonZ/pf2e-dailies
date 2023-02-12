@@ -10,7 +10,7 @@ export function renderCharacterSheetPF2e(sheet: CharacterSheetPF2e, html: JQuery
     small
         .append(`<a class="roll-icon dailies" title="${localize('sheet.title')}"><i class="fas fa-mug-saucer"></i></a>`)
         .find('.dailies')
-        .on('click', () => new DailiesInterface(actor).render(true, { id: `pf2e-dailies-interface-${actor.id}` }))
+        .on('click', () => new DailiesInterface(actor).render(true))
 
     // TODO remove with next system update
     small

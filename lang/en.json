@@ -21,6 +21,9 @@
                     "wrongTrait": "The dropped {type} does not have the {trait} {category}.",
                     "cannotBe": "The dropped {type} cannot be a {not}",
                     "wrongSpellTime": "The dopped spell cast time exceeds {time}."
+                },
+                "input": {
+                    "proficiency": "You are already {rank} in {proficiency}."
                 }
             }
         },

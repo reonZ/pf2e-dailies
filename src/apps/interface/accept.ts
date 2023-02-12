@@ -16,7 +16,7 @@ type ReturnedMessage = { uuid: ItemUUID; selected?: string; category?: CategoryN
 export async function accept(html: JQuery, actor: CharacterPF2e) {
     let message = ''
     const flags = {} as SavedCategories
-    const fields = html.find('.window-content .content').find('input, select').toArray() as TemplateField[]
+    const fields = html.find('.window-content .content').find('input, select[data-type]').toArray() as TemplateField[]
     const ruleItems = fields.some(field => RULE_TYPES.includes(field.dataset.type as RulesName)) ? getRuleItems(actor) : []
     const addData: Partial<BaseItemSourcePF2e>[] = []
     const updateData: EmbeddedDocumentUpdateData<ItemPF2e>[] = []
@@ -80,11 +80,9 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             const uuid = getCategoryUUIDS(category)[0]
             const selected = field.value
 
-            if (uuid) {
-                const lore = createTemporaryLore(selected, 1)
-                addData.push(lore)
-                messages.skills.push({ uuid, selected, category })
-            }
+            const lore = createTemporaryLore(selected, 1)
+            addData.push(lore)
+            messages.skills.push({ uuid, selected, category })
 
             flags[category] = selected
         } else if (type === 'tricksterAce') {
@@ -102,6 +100,36 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             }
 
             flags[category] = { name, uuid }
+        } else if (type === 'trainedSkill' || type === 'thaumaturgeTome') {
+            const dataset = field.dataset
+            const category = dataset.category
+            const uuid = getCategoryUUIDS(category)[0]
+            const selected = field.value
+            const rank = Number(dataset.rank || '1')
+            const isInput = dataset.input === 'true'
+
+            if (isInput) {
+                const lore = createTemporaryLore(selected, rank)
+                addData.push(lore)
+            } else {
+                const ruleItem = ruleItems.find(item => hasSourceId(item, uuid))
+                if (!ruleItem) continue
+
+                const rules = getRules(ruleItem)
+                rules.push(createSkillRule(selected.toLowerCase(), rank))
+            }
+
+            const toSave = { selected: isInput ? selected : selected.toLowerCase(), input: isInput }
+
+            if (type === 'trainedSkill') {
+                messages.skills.push({ uuid, selected, category })
+                flags[field.dataset.category] = toSave
+            } else if (type === 'thaumaturgeTome') {
+                const category = field.dataset.category
+                messages.tome.push({ uuid, selected, category, label: PROFICIENCY_RANKS[rank] })
+                flags[category] ??= []
+                flags[category].push(toSave)
+            }
         } else {
             const category = field.dataset.category
             const uuid = getCategoryUUIDS(category)[0]
@@ -114,16 +142,9 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             if (type === 'addedLanguage') {
                 rules.push(createLanguageRule(selected))
                 messages.languages.push({ uuid, selected, category })
-            } else if (type === 'trainedSkill') {
-                rules.push(createSkillRule(selected, 1))
-                messages.skills.push({ uuid, selected, category })
             } else if (type === 'addedResistance') {
                 rules.push(createResistanceRule(selected, 'half'))
                 messages.resistances.push({ uuid, selected, category })
-            } else if (type === 'thaumaturgeTome') {
-                const rank = field.dataset.rank
-                rules.push(createSkillRule(selected, rank))
-                messages.tome.push({ uuid, selected, category, label: PROFICIENCY_RANKS[rank] })
             } else if (type === 'ganziHeritage') {
                 const options = Array.from((field as HTMLSelectElement).options).map(x => x.value) as ResistanceType[]
                 const selected = await randomOptions(options)
@@ -131,14 +152,8 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
                 messages.resistances.push({ uuid, selected, category, random: true })
             }
 
-            if (type === 'thaumaturgeTome') {
-                const category = field.dataset.category
-                flags[category] ??= []
-                flags[category]!.push(selected as SkillLongForm)
-            } else if (type !== 'ganziHeritage') {
-                // @ts-ignore
-                flags[category] = selected
-            }
+            // @ts-ignore
+            flags[category] = selected
         }
     }
 
@@ -217,7 +232,7 @@ async function randomOptions<T extends string>(options: T[]) {
     return options[roll - 1]
 }
 
-function createTemporaryLore(name: string, rank: OneToFour) {
+function createTemporaryLore(name: string, rank: number) {
     const data: Partial<BaseItemSourcePF2e> = {
         type: 'lore',
         img: 'systems/pf2e/icons/default-icons/lore.svg',
@@ -252,7 +267,7 @@ function createLanguageRule(language: string) {
     } as const
 }
 
-function createSkillRule(skill: string, rank: OneToFour | `${OneToFour}`) {
+function createSkillRule(skill: string, rank: number) {
     return {
         key: 'ActiveEffectLike',
         mode: 'upgrade',

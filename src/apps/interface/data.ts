@@ -3,6 +3,7 @@ import { getFlag } from '@utils/foundry/flags'
 import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
 import { LANGUAGE_LIST } from '@utils/pf2e/languages'
 import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
+import { capitalize } from '@utils/string'
 
 const FOUR_ELEMENTS = ['air', 'earth', 'fire', 'water'] as const
 const GANZI_RESISTANCES = ['acid', 'electricity', 'sonic'] as const
@@ -84,22 +85,41 @@ export function getData(actor: CharacterPF2e) {
             if (!options.length) continue
 
             const { type, category, label } = entry
-            const selected = flags[category] ?? ''
+            let { selected = '', input = true } = flags[category] ?? {}
+
+            if (selected && !input && !options.includes(selected as SkillLongForm)) {
+                selected = ''
+                input = true
+            }
+
             const template: TrainedSkillTemplate = {
                 type,
                 category,
                 label,
-                rows: [{ type: 'select', options, selected }],
+                rows: [{ type: 'combo', options, selected: input ? selected : capitalize(selected), input }],
             }
             templates.push(template)
         } else if (isCategory(entry, 'thaumaturgeTome')) {
             const { type, category, label, items } = entry
-            const slots: ThaumaturgeTomeTemplateItem[] = []
+            const slots: ThaumaturgeTomeTemplate['rows'] = []
             const actorSkills = actor.skills as Record<SkillLongForm, { rank: OneToFour }>
 
             const skillSlot = (index: number, rank: OneToFour, options: SkillLongForm[]) => {
-                const selected = flags[category]?.[index] ?? ''
-                slots.push({ type: 'select', label: PROFICIENCY_RANKS[rank], options, selected, rank })
+                let { selected = '', input = true } = flags[category]?.[index] ?? {}
+
+                if (selected && !input && !options.includes(selected as SkillLongForm)) {
+                    selected = ''
+                    input = true
+                }
+
+                slots.push({
+                    type: 'combo',
+                    label: PROFICIENCY_RANKS[rank],
+                    options,
+                    selected: input ? selected : capitalize(selected),
+                    rank,
+                    input,
+                })
             }
 
             const isTomeSelected = (index: number, option: 'adept' | 'paragon' = 'adept') => {
@@ -121,13 +141,11 @@ export function getData(actor: CharacterPF2e) {
 
                 if (actorLevel >= 9) {
                     if (!masters.length) continue
-
                     skillSlot(0, 3, masters)
                     skillSlot(1, 3, masters)
                 } else {
                     const experts = SKILL_LONG_FORMS.filter(x => actorSkills[x].rank < 2)
                     if (!experts.length) continue
-
                     skillSlot(0, 2, experts)
                     if (masters.length) skillSlot(1, 3, masters)
                 }
@@ -154,7 +172,6 @@ export function getData(actor: CharacterPF2e) {
                     skillSlot(1, 1, trained)
                 }
             }
-
             const template: ThaumaturgeTomeTemplate = {
                 type,
                 category,

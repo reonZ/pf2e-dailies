@@ -18,8 +18,8 @@ type TricksterAce = ExtractedCategory<'tricksterAce'>
 type GanziHeritage = ExtractedCategory<'ganziHeritage'>
 
 type SavedCategories = Partial<
-    BaseSavedCategory<TrainedSkill, SkillLongForm> &
-        BaseSavedCategory<ThaumaturgeTome, SkillLongForm[]> &
+    BaseSavedCategory<TrainedSkill, SavedCombo> &
+        BaseSavedCategory<ThaumaturgeTome, SavedCombo[]> &
         BaseSavedCategory<TrainedLore, string> &
         BaseSavedCategory<AddedLanguage, Language> &
         BaseSavedCategory<AddedResistance, ResistanceType> &
@@ -29,10 +29,8 @@ type SavedCategories = Partial<
         BaseSavedCategory<TricksterAce, SavedItem>
 >
 
-type ThaumaturgeTomeTemplateItem = SelectTemplate<SkillLongForm> & { rank: OneToFour; label: string }
-
-type TrainedSkillTemplate = BaseSelectCategoryTemplate<TrainedSkill, SkillLongForm>
-type ThaumaturgeTomeTemplate = BaseSelectCategoryTemplate<ThaumaturgeTome, SkillLongForm>
+type TrainedSkillTemplate = BaseComboCategoryTemplate<TrainedSkill, SkillLongForm>
+type ThaumaturgeTomeTemplate = BaseComboCategoryTemplate<ThaumaturgeTome, SkillLongForm>
 type TrainedLoreTemplate = BaseCategoryTemplate<TrainedLore, InputTemplate>
 type AddedLanguageTemplate = BaseSelectCategoryTemplate<AddedLanguage, Language>
 type AddedResistanceTemplate = BaseSelectCategoryTemplate<AddedResistance, ResistanceType>
@@ -43,8 +41,8 @@ type TricksterAceTemplate = BaseDropCategoryTemplate<TricksterAce>
 type GanziHeritageTemplate = BaseRandomCategoryTemplate<GanziHeritage, ResistanceType>
 
 type TemplateField =
-    | BaseTemplateField<TrainedSkill, SkillLongForm>
-    | ExtraTemplateField<ThaumaturgeTome, SkillLongForm, { rank: `${OneToFour}`; label: string }>
+    | ComboTemplateField<TrainedSkill>
+    | ComboTemplateField<ThaumaturgeTome>
     | BaseTemplateField<TrainedLore, string>
     | BaseTemplateField<AddedLanguage, Language>
     | BaseTemplateField<AddedResistance, ResistanceType>
@@ -59,6 +57,8 @@ type TemplateField =
  */
 
 type SavedItem = { name: string; uuid: TemplateUUID }
+type SavedCombo = { selected: string; input: boolean }
+
 type TemplateUUID = ItemUUID | ''
 type TemplateLevel = `${OneToTen}`
 
@@ -89,6 +89,8 @@ type BaseRandomCategoryTemplate<C extends Category, R extends any = any> = BaseC
 
 type BaseDropCategoryTemplate<C extends Category> = BaseCategoryTemplate<C, DropTemplate>
 
+type BaseComboCategoryTemplate<C extends Category, R extends any = any> = BaseCategoryTemplate<C, ComboTemplate<R>>
+
 type SelectTemplate<K extends string> = {
     type: 'select'
     options: readonly K[]
@@ -104,6 +106,16 @@ type InputTemplate = {
     type: 'input'
     selected: string
     placeholder: string
+}
+
+type ComboTemplate<K extends string> = {
+    type: 'combo'
+    selected: K | string
+    placeholder?: string
+    options: readonly K[]
+    label?: string
+    rank?: OneToFour
+    input: boolean
 }
 
 type DropTemplate = {
@@ -130,8 +142,14 @@ type RandomTemplateField<C extends Category, V extends string> = Omit<HTMLSelect
     }
 }
 
-type ExtraTemplateField<C extends Category, V extends string, E extends Record<string, any>> = BaseTemplateField<C, V> & {
-    dataset: E
+type ComboTemplateField<C extends Category = Category> = Omit<HTMLInputElement, 'value' | 'dataset'> & {
+    value: V
+    dataset: {
+        type: C['type']
+        category: C['category']
+        input: `${boolean}`
+        rank?: `${number}`
+    }
 }
 
 type DropTemplateField<C extends Category> = BaseTemplateField<C, string> & {

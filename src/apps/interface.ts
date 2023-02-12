@@ -1,9 +1,12 @@
 import { subLocalize } from '@utils/foundry/localize'
 import { templatePath } from '@utils/foundry/path'
+import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
+import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
 import { accept } from './interface/accept'
 import { getData } from './interface/data'
 import { dropped } from './interface/drop'
 import { search } from './interface/search'
+import { capitalize } from '@utils/string'
 
 const localize = subLocalize('interface')
 
@@ -18,6 +21,7 @@ export class DailiesInterface extends Application {
 
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
+            id: 'pf2e-dailies-interface',
             title: localize('title'),
             template: templatePath('interface.hbs'),
             height: 'auto',
@@ -61,7 +65,11 @@ export class DailiesInterface extends Application {
     activateListeners(html: JQuery<HTMLElement>): void {
         super.activateListeners(html)
 
+        html.find<HTMLSelectElement>('.combo select').on('change', this.#onComboSelectChange.bind(this))
+        html.find<ComboTemplateField>('.combo input').on('change', this.#onComboInputChange.bind(this))
+
         html.find<SearchTemplateButton>('[data-action=search]').on('click', search)
+
         html.find<HTMLAnchorElement>('[data-action=clear]').on('click', this.#onClear.bind(this))
         html.find<HTMLButtonElement>('[data-action=accept]').on('click', this.#onAccept.bind(this))
         html.find<HTMLButtonElement>('[data-action=cancel]').on('click', this.#onCancel.bind(this))
@@ -69,6 +77,42 @@ export class DailiesInterface extends Application {
 
     protected async _onDrop(event: ElementDragEvent) {
         dropped(event)
+    }
+
+    #onComboSelectChange(event: JQuery.ChangeEvent) {
+        const select = event.currentTarget
+        const input = select.nextElementSibling as HTMLInputElement
+        input.dataset.input = 'false'
+        input.value = capitalize(select.value)
+    }
+
+    #onComboInputChange(event: JQuery.ChangeEvent<any, any, ComboTemplateField>) {
+        const input = event.currentTarget
+        const select = input.previousElementSibling as HTMLSelectElement
+        const value = input.value.toLowerCase()
+        const type = input.dataset.type
+
+        // TODO original should be conditional on type if more are to come
+        const original = SKILL_LONG_FORMS as string[]
+        const options = Array.from(select.options).map(x => x.value)
+
+        if (options.includes(value)) {
+            select.value = value
+            input.value = capitalize(value)
+            input.dataset.input = 'false'
+        } else if (original.includes(value)) {
+            if (type === 'trainedSkill') {
+                const rank = Number(input.dataset.rank || '1')
+                localize.warn('error.input.proficiency', { rank: PROFICIENCY_RANKS[rank], proficiency: value })
+            }
+
+            select.value = ''
+            input.value = ''
+            input.dataset.input = 'true'
+        } else {
+            select.value = ''
+            input.dataset.input = 'true'
+        }
     }
 
     #lock() {

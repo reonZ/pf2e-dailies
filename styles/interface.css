@@ -1,18 +1,19 @@
-[id^=pf2e-dailies-interface-] {
+#pf2e-dailies-interface {
   max-height: 80%;
 }
-[id^=pf2e-dailies-interface-] .window-content {
+#pf2e-dailies-interface .window-content {
   position: relative;
+  background: url(/ui/parchment.jpg) repeat;
 }
-[id^=pf2e-dailies-interface-] .window-content .content {
+#pf2e-dailies-interface .window-content .content {
   display: grid;
   grid-auto-flow: row;
   gap: 1em;
 }
-[id^=pf2e-dailies-interface-] .window-content .content hr:last-child {
+#pf2e-dailies-interface .window-content .content hr:last-child {
   display: none;
 }
-[id^=pf2e-dailies-interface-] .window-content .group {
+#pf2e-dailies-interface .window-content .group {
   width: 350px;
   display: grid;
   gap: 0.2em 0.5em;
@@ -20,53 +21,80 @@
   grid-template-columns: minmax(70px, auto) 1fr auto auto;
   padding-inline: 0.3em;
 }
-[id^=pf2e-dailies-interface-] .window-content .group [data-action=clear] {
+#pf2e-dailies-interface .window-content .group [data-action=clear] {
   font-size: 1.2em;
   margin-right: 0.2em;
 }
-[id^=pf2e-dailies-interface-] .window-content .group input.input {
+#pf2e-dailies-interface .window-content .group input.input {
   grid-column: 2/-2;
 }
-[id^=pf2e-dailies-interface-] .window-content .group h3 {
+#pf2e-dailies-interface .window-content .group h3 {
   grid-column: 1/-1;
 }
-[id^=pf2e-dailies-interface-] .window-content .group select {
+#pf2e-dailies-interface .window-content .group select {
   grid-column: 2/-1;
 }
-[id^=pf2e-dailies-interface-] .window-content .group select.random {
+#pf2e-dailies-interface .window-content .group select.random {
   pointer-events: none;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
   grid-column: 2/-2;
 }
-[id^=pf2e-dailies-interface-] .window-content .group .die i {
+#pf2e-dailies-interface .window-content .group .combo {
+  grid-column: 2/-1;
+  position: relative;
+}
+#pf2e-dailies-interface .window-content .group .combo select,
+#pf2e-dailies-interface .window-content .group .combo input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+#pf2e-dailies-interface .window-content .group .combo input {
+  width: calc(100% - 20px);
+  border-radius: 3px 0 0 3px;
+}
+#pf2e-dailies-interface .window-content .group .combo select {
+  width: 100%;
+}
+#pf2e-dailies-interface .window-content .group .die i {
   -webkit-animation: spin 2s linear infinite;
           animation: spin 2s linear infinite;
 }
-[id^=pf2e-dailies-interface-] .window-content .rows {
+#pf2e-dailies-interface .window-content .rows {
   grid-template-columns: minmax(120px, auto) 1fr auto auto;
 }
-[id^=pf2e-dailies-interface-] .window-content select,
-[id^=pf2e-dailies-interface-] .window-content option,
-[id^=pf2e-dailies-interface-] .window-content label {
+#pf2e-dailies-interface .window-content select,
+#pf2e-dailies-interface .window-content option,
+#pf2e-dailies-interface .window-content label {
   text-transform: capitalize;
 }
-[id^=pf2e-dailies-interface-] .window-content select,
-[id^=pf2e-dailies-interface-] .window-content option,
-[id^=pf2e-dailies-interface-] .window-content input,
-[id^=pf2e-dailies-interface-] .window-content input:disabled,
-[id^=pf2e-dailies-interface-] .window-content select:disabled {
-  color: var(--color-text-dark-primary);
+#pf2e-dailies-interface .window-content input,
+#pf2e-dailies-interface .window-content select {
+  border-radius: 3px;
 }
-[id^=pf2e-dailies-interface-] .window-content .buttons {
+#pf2e-dailies-interface .window-content .combo,
+#pf2e-dailies-interface .window-content select,
+#pf2e-dailies-interface .window-content option,
+#pf2e-dailies-interface .window-content input,
+#pf2e-dailies-interface .window-content input:disabled,
+#pf2e-dailies-interface .window-content select:disabled {
+  color: var(--color-text-dark-primary);
+  height: 26px;
+}
+#pf2e-dailies-interface .window-content input:not(:disabled) {
+  background: url(/ui/parchment.jpg) repeat;
+}
+#pf2e-dailies-interface .window-content .buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin-top: 1em;
   -moz-column-gap: 0.3em;
        column-gap: 0.3em;
 }
-[id^=pf2e-dailies-interface-] .cover {
+#pf2e-dailies-interface .cover {
   position: absolute;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.411);
@@ -74,16 +102,19 @@
   justify-content: center;
   align-items: center;
 }
-[id^=pf2e-dailies-interface-] .cover .loader {
+#pf2e-dailies-interface .cover .loader {
   border: 1em solid var(--color-border-light-primary);
   border-top-color: var(--color-border-dark-primary);
   border-radius: 50%;
-  width: 30%;
+  height: min(25%, 8em);
   aspect-ratio: 1/1;
   -webkit-animation: spin 2s linear infinite;
           animation: spin 2s linear infinite;
   margin-top: -10px;
 }
-[id^=pf2e-dailies-interface-]:not(.disabled) .window-content .cover {
+#pf2e-dailies-interface.disabled .window-content {
+  pointer-events: none;
+}
+#pf2e-dailies-interface:not(.disabled) .window-content .cover {
   display: none;
 }

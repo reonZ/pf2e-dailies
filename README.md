@@ -74,6 +74,14 @@ Selected feats are directly added to the character feat tab, in cascade with the
 
 Equipment items need to be invested to appear in the interface, the bonus provided is linked to the item itself and like any other bonuses, will be removed if the character un-invest or un-equip the item.
 
+# Combo Field
+
+Sometimes, you should have the option to either select an option from a defined list AND have the opportunity to manually enter some value, for instance with skills which when offered the choice of selecting one, allows for the selection of a lore skill.
+
+![](./readme/combo.webp)
+
+In those cases, the combo field will be used, allowing you to select an options from the dropdown but also to manually type in the input field.
+
 # Random
 
 The module will randomly pick an option when necessary.

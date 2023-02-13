@@ -25,7 +25,8 @@
   font-size: 1.2em;
   margin-right: 0.2em;
 }
-#pf2e-dailies-interface .window-content .group input.input {
+#pf2e-dailies-interface .window-content .group input.input,
+#pf2e-dailies-interface .window-content .group input.alert {
   grid-column: 2/-2;
 }
 #pf2e-dailies-interface .window-content .group h3 {
@@ -59,9 +60,8 @@
 #pf2e-dailies-interface .window-content .group .combo select {
   width: 100%;
 }
-#pf2e-dailies-interface .window-content .group .die i {
-  -webkit-animation: spin 2s linear infinite;
-          animation: spin 2s linear infinite;
+#pf2e-dailies-interface .window-content .group .alert {
+  color: #830000;
 }
 #pf2e-dailies-interface .window-content .rows {
   grid-template-columns: minmax(120px, auto) 1fr auto auto;

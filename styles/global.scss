@@ -5,3 +5,26 @@
         font-size: 1.1rem;
     }
 }
+
+#pf2e-dailies-weapon {
+    .window-content {
+        .dialog-content {
+            p {
+                text-align: center;
+            }
+
+            input {
+                margin-right: 0.5em;
+            }
+
+            label:not(:first-child) {
+                margin-top: 0.5em;
+                display: block;
+            }
+        }
+
+        .dialog-buttons {
+            margin-top: 1em;
+        }
+    }
+}

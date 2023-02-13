@@ -8,15 +8,16 @@ import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
 import { createSpellScroll } from '@utils/pf2e/spell'
 import { sluggify } from '@utils/pf2e/utils'
 import { capitalize } from '@utils/string'
+import { WEAPON_GROUPS } from './data/weapon'
 
 const msg = subLocalize('interface.message')
 
-type ReturnedMessage = { uuid: ItemUUID; selected?: string; category?: CategoryName; label?: string; random?: boolean }
+type ReturnedMessage = { uuid?: ItemUUID; selected?: string; label?: string; random?: boolean }
 
 export async function accept(html: JQuery, actor: CharacterPF2e) {
     let message = ''
     const flags = {} as SavedCategories
-    const fields = html.find('.window-content .content').find('input, select[data-type]').toArray() as TemplateField[]
+    const fields = html.find('.window-content .content').find('input:not(.alert), select[data-type]').toArray() as TemplateField[]
     const ruleItems = fields.some(field => RULE_TYPES.includes(field.dataset.type as RulesName)) ? getRuleItems(actor) : []
     const addData: Partial<BaseItemSourcePF2e>[] = []
     const updateData: EmbeddedDocumentUpdateData<ItemPF2e>[] = []
@@ -46,6 +47,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         feats: [] as ReturnedMessage[],
         scrolls: [] as ReturnedMessage[],
         spells: [] as ReturnedMessage[],
+        mind: [] as ReturnedMessage[],
     }
 
     for (const field of fields) {
@@ -84,7 +86,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
             const lore = createTemporaryLore(selected, 1)
             addData.push(lore)
-            messages.skills.push({ uuid, selected, category })
+            messages.skills.push({ uuid, selected, label: category })
 
             flags[category] = selected
         } else if (type === 'tricksterAce') {
@@ -105,8 +107,8 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         } else if (type === 'trainedSkill' || type === 'thaumaturgeTome') {
             const dataset = field.dataset
             const category = dataset.category
-            const uuid = getCategoryUUIDS(category)[0]
             const selected = field.value
+            const uuid = getCategoryUUIDS(category)[0]
             const rank = Number(dataset.rank || '1')
             const isInput = dataset.input === 'true'
 
@@ -124,14 +126,28 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             const toSave = { selected: isInput ? selected : selected.toLowerCase(), input: isInput }
 
             if (type === 'trainedSkill') {
-                messages.skills.push({ uuid, selected, category })
+                messages.skills.push({ uuid, selected, label: category })
                 flags[field.dataset.category] = toSave
             } else if (type === 'thaumaturgeTome') {
                 const category = field.dataset.category
-                messages.tome.push({ uuid, selected, category, label: PROFICIENCY_RANKS[rank] })
+                messages.tome.push({ selected, label: PROFICIENCY_RANKS[rank] })
                 flags[category] ??= []
                 flags[category].push(toSave)
             }
+        } else if (type === 'mindSmith') {
+            const { category, subcategory } = field.dataset
+            const uuids = getCategoryUUIDS(category)
+            const weapon = findItemWithSourceId(actor, uuids[1], ['weapon'])
+            if (!weapon) continue
+
+            if (subcategory === 'damage') {
+                const selected = field.value as WeaponDamageType
+                updateData.push({ _id: weapon.id, 'system.damage.damageType': selected, 'system.group': WEAPON_GROUPS[selected] })
+                messages.mind.push({ selected, uuid: uuids[0], label: 'mindsmith' })
+            }
+
+            flags[category] ??= {}
+            flags[category]![subcategory] = field.value
         } else {
             const category = field.dataset.category
             const uuid = getCategoryUUIDS(category)[0]
@@ -143,15 +159,15 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
             if (type === 'addedLanguage') {
                 rules.push(createLanguageRule(selected))
-                messages.languages.push({ uuid, selected, category })
+                messages.languages.push({ uuid, selected, label: category })
             } else if (type === 'addedResistance') {
                 rules.push(createResistanceRule(selected, 'half'))
-                messages.resistances.push({ uuid, selected, category })
+                messages.resistances.push({ uuid, selected, label: category })
             } else if (type === 'ganziHeritage') {
                 const options = Array.from((field as HTMLSelectElement).options).map(x => x.value) as ResistanceType[]
                 const selected = await randomOptions(options)
                 rules.push(createResistanceRule(selected, 'half'))
-                messages.resistances.push({ uuid, selected, category, random: true })
+                messages.resistances.push({ uuid, selected, label: category, random: true })
             }
 
             // @ts-ignore
@@ -171,13 +187,12 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         const title = msg.has(type) ? msg(type) : msg('gained', { type })
         message += `<p><strong>${title}</strong></p>`
 
-        for (const { uuid, selected, category, label, random = false } of list) {
-            if (label) {
-                message += `<p><strong>${capitalize(label)}:</strong>`
-            } else {
-                const label = category && hasLocalization(`label.${category}`) ? localize(`label.${category}`) : undefined
-                message += `<p>${chatUUID(uuid, label)}`
-            }
+        for (let { uuid, selected, label, random = false } of list) {
+            label = label && hasLocalization(`label.${label}`) ? localize(`label.${label}`) : label
+            label = capitalize(label)
+
+            message += '<p>'
+            message += uuid ? `${chatUUID(uuid, label)}` : `<strong>${label}</strong>`
 
             if (selected) message += ` <span style="text-transform: capitalize;">${selected}</span>`
             if (random) message += ' <i class="fa-solid fa-dice-d20"></i>'
@@ -216,6 +231,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
     pushMessages('languages', messages.languages)
     pushMessages('skills', messages.skills)
     pushMessages('tome', messages.tome)
+    pushMessages('mindsmith', messages.mind)
     pushMessages('resistances', messages.resistances)
     pushMessages('feats', messages.feats)
     pushMessages('spells', messages.spells)

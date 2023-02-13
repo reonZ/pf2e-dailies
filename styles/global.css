@@ -4,3 +4,17 @@
 .actor.sheet.character .crb-style aside .sidebar a.roll-icon.dailies i {
   font-size: 1.1rem;
 }
+
+#pf2e-dailies-weapon .window-content .dialog-content p {
+  text-align: center;
+}
+#pf2e-dailies-weapon .window-content .dialog-content input {
+  margin-right: 0.5em;
+}
+#pf2e-dailies-weapon .window-content .dialog-content label:not(:first-child) {
+  margin-top: 0.5em;
+  display: block;
+}
+#pf2e-dailies-weapon .window-content .dialog-buttons {
+  margin-top: 1em;
+}

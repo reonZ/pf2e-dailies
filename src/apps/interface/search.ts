@@ -7,7 +7,7 @@ export const CATEGORY_SEARCH = {
     tricksterAce: { category: ['cantrip', 'spell'] } as InitialSpellFilters,
 } as const
 
-export function search(event: JQuery.ClickEvent<any, any, SearchTemplateButton>) {
+export function onSearch(event: JQuery.ClickEvent<any, any, SearchTemplateButton>) {
     event.preventDefault()
 
     const data = event.currentTarget.dataset

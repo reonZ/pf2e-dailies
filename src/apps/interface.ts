@@ -1,12 +1,13 @@
 import { subLocalize } from '@utils/foundry/localize'
 import { templatePath } from '@utils/foundry/path'
-import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
 import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
+import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
+import { capitalize } from '@utils/string'
 import { accept } from './interface/accept'
+import { onAlert } from './interface/alert'
 import { getData } from './interface/data'
 import { dropped } from './interface/drop'
-import { search } from './interface/search'
-import { capitalize } from '@utils/string'
+import { onSearch } from './interface/search'
 
 const localize = subLocalize('interface')
 
@@ -33,6 +34,10 @@ export class DailiesInterface extends Application {
                 },
             ],
         })
+    }
+
+    get actor() {
+        return this._actor
     }
 
     getData(options?: Partial<FormApplicationOptions> | undefined) {
@@ -65,10 +70,12 @@ export class DailiesInterface extends Application {
     activateListeners(html: JQuery<HTMLElement>): void {
         super.activateListeners(html)
 
+        html.find<HTMLAnchorElement>('[data-action=alert]').on('click', onAlert.bind(this))
+
         html.find<HTMLSelectElement>('.combo select').on('change', this.#onComboSelectChange.bind(this))
         html.find<ComboTemplateField>('.combo input').on('change', this.#onComboInputChange.bind(this))
 
-        html.find<SearchTemplateButton>('[data-action=search]').on('click', search)
+        html.find<SearchTemplateButton>('[data-action=search]').on('click', onSearch)
 
         html.find<HTMLAnchorElement>('[data-action=clear]').on('click', this.#onClear.bind(this))
         html.find<HTMLButtonElement>('[data-action=accept]').on('click', this.#onAccept.bind(this))
@@ -122,8 +129,10 @@ export class DailiesInterface extends Application {
     #validate() {
         const warns: string[] = []
         const emptyInputs = this.element.find('input').filter((_, input) => !input.value)
+        const errorInputs = this.element.find('input.alert')
 
         if (emptyInputs.length) warns.push('error.empty')
+        if (errorInputs.length) warns.push('error.unattended')
 
         warns.forEach(x => localize.warn(x))
 

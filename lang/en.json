@@ -5,15 +5,17 @@
             "accept": "Accept",
             "cancel": "Cancel",
             "message": {
-                "gained": "Gained the temporary {type}:",
                 "changes": "Has made the following changes during their daily preparations",
+                "gained": "Gained the temporary {type}:",
                 "skills": "Trained in the following skills:",
                 "tome": "Studied their thaumaturgy tome:",
-                "spells": "Is ready to use the spells:"
+                "spells": "Is ready to use the spells:",
+                "mindsmith": "Is focusing on the mind weapon:"
             },
             "error": {
                 "unexpected": "An unexpected error occured during daily preparations. See the console (F12) for details.",
-                "empty": "All fields must be filled",
+                "empty": "All fields must be filled.",
+                "unattended": "Some alerts are still unattended. Please click on the alert triangles to resolve them.",
                 "drop": {
                     "wrongDataType": "Invalid data type dropped.",
                     "wrongType": "Only {type}s can be dropped here.",
@@ -25,16 +27,42 @@
                 "input": {
                     "proficiency": "You are already {rank} in {proficiency}."
                 }
+            },
+
+            "tooltip": {
+                "random": "This will randomly be selected",
+                "alert": "Click here to resolve",
+                "search": "Open the compendium browser",
+                "clear": "Clear selection"
             }
         },
         "label": {
             "elementalist": "Elementalist",
             "trickster": "Scroll Trickster",
             "ganzi": "Ganzi Heritage",
-            "tome": "Thaumaturgy Tome"
+            "tome": "Thaumaturgy Tome",
+            "mindsmith": "Mind Smith"
         },
         "sheet": {
             "title": "Daily Preparations"
+        },
+        "dialog": {
+            "weapon": {
+                "title": "Mind Weapon",
+                "flavor": "<p>This character doesn't have a mind weapon in their inventory.</p><p>Please select one of the following options to create one.</p>",
+                "accept": "Accept",
+                "cancel": "Cancel",
+                "option": {
+                    "0": "A one-handed weapon that deals <strong>1d4</strong> damage and has the <strong>agile</strong> and <strong>finesse</strong> traits",
+                    "1": "A one-handed weapon that deals <strong>1d6</strong> damage and has the <strong>finesse</strong> trait",
+                    "2": "A one-handed weapon that deals <strong>1d8</strong> damage",
+                    "3": "A two-handed weapon that deals <strong>1d10</strong> damage and has the <strong>reach</strong> trait"
+                },
+                "error": {
+                    "noSelection": "You must select one weapon base type.",
+                    "missing": "The weapon couldn't be found in the compendium."
+                }
+            }
         }
     }
 }

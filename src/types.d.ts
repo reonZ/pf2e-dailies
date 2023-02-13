@@ -6,6 +6,8 @@ declare const ui: UiPF2e
  * Variables
  */
 
+type WeaponDamageType = Exclude<WeaponDamage, 'modular'>
+
 type TrainedSkill = ExtractedCategory<'trainedSkill'>
 type ThaumaturgeTome = ExtractedCategory<'thaumaturgeTome'>
 type TrainedLore = ExtractedCategory<'trainedLore'>
@@ -16,6 +18,11 @@ type CombatFlexibility = ExtractedCategory<'combatFlexibility'>
 type ScrollSavant = ExtractedCategory<'scrollSavant'>
 type TricksterAce = ExtractedCategory<'tricksterAce'>
 type GanziHeritage = ExtractedCategory<'ganziHeritage'>
+type MindSmith = ExtractedCategory<'mindSmith'>
+
+type MindSmithSavedObject = {
+    damage: Omit<WeaponDamage, 'modular'>
+}
 
 type SavedCategories = Partial<
     BaseSavedCategory<TrainedSkill, SavedCombo> &
@@ -26,12 +33,13 @@ type SavedCategories = Partial<
         SavedItemsCategory<ScrollChain> &
         SavedItemsCategory<CombatFlexibility> &
         SavedItemsCategory<ScrollSavant> &
-        BaseSavedCategory<TricksterAce, SavedItem>
+        BaseSavedCategory<TricksterAce, SavedItem> &
+        BaseSavedCategory<MindSmith, Partial<MindSmithSavedObject>>
 >
 
 type TrainedSkillTemplate = BaseComboCategoryTemplate<TrainedSkill, SkillLongForm>
 type ThaumaturgeTomeTemplate = BaseComboCategoryTemplate<ThaumaturgeTome, SkillLongForm>
-type TrainedLoreTemplate = BaseCategoryTemplate<TrainedLore, InputTemplate>
+type TrainedLoreTemplate = BaseCategoryTemplate<TrainedLore, InputTemplate[]>
 type AddedLanguageTemplate = BaseSelectCategoryTemplate<AddedLanguage, Language>
 type AddedResistanceTemplate = BaseSelectCategoryTemplate<AddedResistance, ResistanceType>
 type ScrollChainTemplate = BaseDropCategoryTemplate<ScrollChain>
@@ -39,6 +47,10 @@ type CombatFlexibilityTemplate = BaseDropCategoryTemplate<CombatFlexibility>
 type ScrollSavantTemplate = BaseDropCategoryTemplate<ScrollSavant>
 type TricksterAceTemplate = BaseDropCategoryTemplate<TricksterAce>
 type GanziHeritageTemplate = BaseRandomCategoryTemplate<GanziHeritage, ResistanceType>
+type MindSmithTemplate = BaseCategoryTemplate<
+    MindSmith,
+    [AlertTemplate | SelectTemplate<Omit<WeaponDamage, 'modular'>, keyof MindSmithSavedObject>]
+>
 
 type TemplateField =
     | ComboTemplateField<TrainedSkill>
@@ -51,6 +63,7 @@ type TemplateField =
     | DropTemplateField<ScrollSavant>
     | DropTemplateField<TricksterAce>
     | RandomTemplateField<GanziHeritage, ResistanceType>
+    | SelectTemplateField<MindSmith, string, keyof MindSmithSavedObject>
 
 /**
  * End of Variables
@@ -80,26 +93,33 @@ type BaseCategoryTemplate<C extends Category = Category, R extends any = any> = 
     type: C['type']
     category: C['category']
     label: string
-    rows: R[]
+    rows: R
 }
 
-type BaseSelectCategoryTemplate<C extends Category, R extends any = any> = BaseCategoryTemplate<C, SelectTemplate<R>>
+type BaseSelectCategoryTemplate<C extends Category, R extends any = any> = BaseCategoryTemplate<C, SelectTemplate<R, string>[]>
 
-type BaseRandomCategoryTemplate<C extends Category, R extends any = any> = BaseCategoryTemplate<C, RandomTemplate<R>>
+type BaseRandomCategoryTemplate<C extends Category, R extends any = any> = BaseCategoryTemplate<C, RandomTemplate<R>[]>
 
-type BaseDropCategoryTemplate<C extends Category> = BaseCategoryTemplate<C, DropTemplate>
+type BaseDropCategoryTemplate<C extends Category> = BaseCategoryTemplate<C, DropTemplate[]>
 
-type BaseComboCategoryTemplate<C extends Category, R extends any = any> = BaseCategoryTemplate<C, ComboTemplate<R>>
+type BaseComboCategoryTemplate<C extends Category, R extends any = any> = BaseCategoryTemplate<C, ComboTemplate<R>[]>
 
-type SelectTemplate<K extends string> = {
+type SelectTemplate<K extends string, S extends string> = {
     type: 'select'
     options: readonly K[]
     selected: K | ''
+    subcategory?: S
+    label?: string
 }
 
 type RandomTemplate<K extends string> = {
     type: 'random'
     options: readonly K[]
+}
+
+type AlertTemplate = {
+    type: 'alert'
+    message: string
 }
 
 type InputTemplate = {
@@ -126,11 +146,23 @@ type DropTemplate = {
     uuid: TemplateUUID
 }
 
-type BaseTemplateField<C extends Category, V extends string> = Omit<HTMLElement, 'value' | 'dataset'> & {
+type BaseTemplateField<C extends Category = Category, V extends string = string> = Omit<HTMLElement, 'value' | 'dataset'> & {
     value: V
     dataset: {
         type: C['type']
         category: C['category']
+    }
+}
+
+type SelectTemplateField<C extends Category, V extends string, S extends string> = Omit<
+    HTMLSelectElement,
+    'value' | 'dataset'
+> & {
+    value: V
+    dataset: {
+        type: C['type']
+        category: C['category']
+        subcategory: S
     }
 }
 
@@ -148,7 +180,7 @@ type ComboTemplateField<C extends Category = Category> = Omit<HTMLInputElement, 
         type: C['type']
         category: C['category']
         input: `${boolean}`
-        rank?: `${number}`
+        rank: `${number}` | ''
     }
 }
 

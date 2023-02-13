@@ -4,6 +4,7 @@ import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
 import { LANGUAGE_LIST } from '@utils/pf2e/languages'
 import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
 import { capitalize } from '@utils/string'
+import { WEAPON_DAMAGE_TYPES } from './data/weapon'
 
 const FOUR_ELEMENTS = ['air', 'earth', 'fire', 'water'] as const
 const GANZI_RESISTANCES = ['acid', 'electricity', 'sonic'] as const
@@ -257,6 +258,26 @@ export function getData(actor: CharacterPF2e) {
                 rows: [{ type: 'random', options: GANZI_RESISTANCES }],
             }
             templates.push(template)
+        } else if (isCategory(entry, 'mindSmith')) {
+            const { type, category, label, items } = entry
+
+            const template: MindSmithTemplate = {
+                type,
+                category,
+                label,
+                rows: [{ type: 'alert', message: 'Missing Mind Weapon' }],
+            }
+            templates.push(template)
+
+            if (!items[1] && typeof getFlag(actor, 'weapon') !== 'number') continue
+
+            template.rows[0] = {
+                type: 'select',
+                options: WEAPON_DAMAGE_TYPES,
+                selected: flags[category]?.damage ?? '',
+                subcategory: 'damage',
+                label,
+            }
         }
     }
 

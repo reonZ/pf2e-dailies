@@ -5,6 +5,15 @@ import { hasLocalization, localize } from '@utils/foundry/localize'
 export const RULE_TYPES = ['addedLanguage', 'trainedSkill', 'addedResistance', 'ganziHeritage', 'thaumaturgeTome'] as const
 
 export const CATEGORIES = [
+    // MindSmith
+    {
+        type: 'mindSmith',
+        category: 'mindsmith',
+        uuids: [
+            'Compendium.pf2e.feats-srd.juikoiIA0Jy8PboY', // Mind Smith Dedication,
+            'Compendium.pf2e-dailies.equipment.VpmEozw21aRxX15P', // Mind Weapon
+        ],
+    },
     // TricksterAce
     {
         type: 'tricksterAce',
@@ -159,11 +168,12 @@ export function isRuleItem(item: ItemPF2e) {
 export function hasCategories(actor: CharacterPF2e) {
     const itemTypes = actor.itemTypes
     const categories = {} as Record<CategoryName, Omit<ReturnedCategory, 'items'> & { items: (undefined | ItemPF2e)[] }>
-    const items = [...itemTypes.heritage, ...itemTypes.feat, ...itemTypes.equipment]
+    const items = [...itemTypes.heritage, ...itemTypes.feat, ...itemTypes.equipment, ...itemTypes.weapon]
 
     for (const item of items) {
         const sourceId = getSourceId<ItemUUID>(item)
-        if (!sourceId || (item.isOfType('equipment') && !item.isInvested)) continue
+
+        if (!sourceId || (item.isOfType('equipment') && item.isInvested === false)) continue
 
         const entry = UUIDS.get(sourceId)
         if (!entry) continue

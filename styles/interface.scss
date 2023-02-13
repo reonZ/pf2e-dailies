@@ -28,7 +28,8 @@
                 margin-right: 0.2em;
             }
 
-            input.input {
+            input.input,
+            input.alert {
                 grid-column: 2 / -2;
             }
 
@@ -68,8 +69,8 @@
                 }
             }
 
-            .die i {
-                animation: spin 2s linear infinite;
+            .alert {
+                color: #830000;
             }
         }
 

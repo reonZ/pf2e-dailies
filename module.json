@@ -9,9 +9,7 @@
             "discord": "Idle#3251"
         }
     ],
-    "esmodules": [
-        "scripts/main.js"
-    ],
+    "esmodules": ["scripts/main.js"],
     "compatibility": {
         "minimum": "10.291",
         "verified": "10"
@@ -24,10 +22,7 @@
     "download": "https://github.com/reonZ/pf2e-dailies/releases/download/1.15.0/module.zip",
     "changelog": "https://github.com/reonZ/pf2e-dailies/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/pf2e-dailies/issues",
-    "styles": [
-        "styles/global.css",
-        "styles/interface.css"
-    ],
+    "styles": ["styles/global.css", "styles/interface.css"],
     "languages": [
         {
             "lang": "en",
@@ -46,5 +41,14 @@
                 }
             }
         ]
-    }
+    },
+    "packs": [
+        {
+            "name": "equipment",
+            "label": "PF2e Dailies (equipment)",
+            "system": "pf2e",
+            "path": "packs/equipment.db",
+            "type": "Item"
+        }
+    ]
 }

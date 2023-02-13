@@ -40,6 +40,13 @@ Scroll related
     -   [Grand Scroll Esoterica](https://2e.aonprd.com/Feats.aspx?ID=3730)
 -   [Scroll Savant](https://2e.aonprd.com/Feats.aspx?ID=652)
 
+Mind Smith Dedication
+
+-   [Mind Smith](https://2e.aonprd.com/Archetypes.aspx?ID=194)
+    -   [Malleable Mental Forge](https://2e.aonprd.com/Feats.aspx?ID=3868)
+    -   [Runic Mind Smithing](https://2e.aonprd.com/Feats.aspx?ID=3870)
+    -   [Advanced Runic Mind-Smithing](https://2e.aonprd.com/Feats.aspx?ID=3872)
+
 IMPORTANT: You should always `rest` before your daily preparations, if not, you will most likely encounter some problems. It is also possible that openning the interface too quickly after a `rest` result in the reset not being completed yet and the details shown not up to date.
 
 # Sheet Icon
@@ -73,6 +80,14 @@ Selected feats are directly added to the character feat tab, in cascade with the
 ## Equipment
 
 Equipment items need to be invested to appear in the interface, the bonus provided is linked to the item itself and like any other bonuses, will be removed if the character un-invest or un-equip the item.
+
+# Alert Field
+
+![](./readme/alert.webp)
+
+When there is a problem with any part of data gathering (like the `Mind Weapon` missing), the alert field will be displayed in place of a regular option one, it will have a succinct description of the issue and offer a way to resolve it by clicking on the alert triangle.
+
+This is not to be mistaken with an error message, this is used to offer the user a way to interract beyond the interface window, like automatically creating your `Mind Weapon`.
 
 # Combo Field
 

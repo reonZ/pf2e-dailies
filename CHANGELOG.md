@@ -1,3 +1,8 @@
+# 1.16.0
+
+-   now has an alert field, which will display what is wrong and offer a way to fix it (by clicking on the alert triangle)
+-   added full support for `Mind Smith Dedication` (only the parts that are dailies)
+
 # 1.15.0
 
 -   fix bug with drop fields not saving

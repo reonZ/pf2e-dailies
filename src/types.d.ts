@@ -6,7 +6,22 @@ declare const ui: UiPF2e
  * Variables
  */
 
-type WeaponDamageType = Exclude<WeaponDamage, 'modular'>
+type RunePropertyKey = 'propertyRune1' | 'propertyRune2' | 'propertyRune3' | 'propertyRune4'
+
+type MindSmithDamageType = keyof typeof import('@data/weapon').WEAPON_GROUPS
+type MindSmithWeaponTrait = typeof import('@data/weapon').WEAPON_TRAITS[number]
+type MindSmithWeaponRunes = typeof import('@data/weapon').WEAPON_RUNES[number]
+type MindSmithWeaponGreaterRunes = typeof import('@data/weapon').WEAPON_GREATER_RUNES[number]
+type MindSmithWeaponAllRunes = MindSmithWeaponRunes | MindSmithWeaponGreaterRunes
+type MindSmithSavedObject = {
+    damage: MindSmithDamageType
+    trait: MindSmithWeaponTrait
+    rune: MindSmithWeaponAllRunes
+}
+type MindSmithSavedItem<K extends keyof MindSmithSavedObject> = RequiredBy<
+    SelectTemplate<MindSmithSavedObject[K], K>,
+    'label' | 'subcategory'
+>
 
 type TrainedSkill = ExtractedCategory<'trainedSkill'>
 type ThaumaturgeTome = ExtractedCategory<'thaumaturgeTome'>
@@ -19,10 +34,6 @@ type ScrollSavant = ExtractedCategory<'scrollSavant'>
 type TricksterAce = ExtractedCategory<'tricksterAce'>
 type GanziHeritage = ExtractedCategory<'ganziHeritage'>
 type MindSmith = ExtractedCategory<'mindSmith'>
-
-type MindSmithSavedObject = {
-    damage: Omit<WeaponDamage, 'modular'>
-}
 
 type SavedCategories = Partial<
     BaseSavedCategory<TrainedSkill, SavedCombo> &
@@ -49,7 +60,7 @@ type TricksterAceTemplate = BaseDropCategoryTemplate<TricksterAce>
 type GanziHeritageTemplate = BaseRandomCategoryTemplate<GanziHeritage, ResistanceType>
 type MindSmithTemplate = BaseCategoryTemplate<
     MindSmith,
-    [AlertTemplate | SelectTemplate<Omit<WeaponDamage, 'modular'>, keyof MindSmithSavedObject>]
+    [AlertTemplate] | [MindSmithSavedItem<'damage'>, MindSmithSavedItem<'trait'>, MindSmithSavedItem<'rune'>]
 >
 
 type TemplateField =

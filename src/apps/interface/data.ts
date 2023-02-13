@@ -1,10 +1,18 @@
+import {
+    getFreePropertySlot,
+    runetoLabel,
+    WEAPON_DAMAGE_TYPES,
+    WEAPON_GREATER_RUNES,
+    WEAPON_RUNES,
+    WEAPON_TRAITS,
+} from '@data/weapon'
 import { hasCategories, isCategory } from '@src/categories'
 import { getFlag } from '@utils/foundry/flags'
+import { localize } from '@utils/foundry/localize'
 import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
 import { LANGUAGE_LIST } from '@utils/pf2e/languages'
 import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
 import { capitalize } from '@utils/string'
-import { WEAPON_DAMAGE_TYPES } from './data/weapon'
 
 const FOUR_ELEMENTS = ['air', 'earth', 'fire', 'water'] as const
 const GANZI_RESISTANCES = ['acid', 'electricity', 'sonic'] as const
@@ -269,7 +277,8 @@ export function getData(actor: CharacterPF2e) {
             }
             templates.push(template)
 
-            if (!items[1] && typeof getFlag(actor, 'weapon') !== 'number') continue
+            // we missing the weapon
+            if (!items[1]) continue
 
             template.rows[0] = {
                 type: 'select',
@@ -277,6 +286,36 @@ export function getData(actor: CharacterPF2e) {
                 selected: flags[category]?.damage ?? '',
                 subcategory: 'damage',
                 label,
+            }
+
+            // Malleable Mental Forge
+            if (items[2]) {
+                template.rows[1] = {
+                    type: 'select',
+                    options: WEAPON_TRAITS,
+                    selected: flags[category]?.trait ?? '',
+                    subcategory: 'trait',
+                    label: localize('label.mentalforge'),
+                }
+            }
+
+            // we don't have the next feats
+            if (!items[3] && !items[4]) continue
+
+            const weapon = items[1] as WeaponPF2e
+
+            // the weapon doesn't have any free property rune slot
+            if (!getFreePropertySlot(weapon)) continue
+
+            const runes = (items[4] ? WEAPON_GREATER_RUNES : WEAPON_RUNES) as readonly MindSmithWeaponAllRunes[]
+            const selected = flags[category]?.rune ?? ''
+
+            template.rows[2] = {
+                type: 'select',
+                options: runes.map(x => runetoLabel(x)),
+                selected: runetoLabel(selected && runes.includes(selected) ? selected : ''),
+                subcategory: 'rune',
+                label: localize('label.runicmind'),
             }
         }
     }

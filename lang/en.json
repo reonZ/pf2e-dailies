@@ -41,7 +41,9 @@
             "trickster": "Scroll Trickster",
             "ganzi": "Ganzi Heritage",
             "tome": "Thaumaturgy Tome",
-            "mindsmith": "Mind Smith"
+            "mindsmith": "Mind Smith",
+            "mentalforge": "Mental Forge",
+            "runicmind": "Runic Smithing"
         },
         "sheet": {
             "title": "Daily Preparations"

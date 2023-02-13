@@ -1,7 +1,9 @@
-import { getFlag } from '@utils/foundry/flags'
+import { getFlag, setFlag } from '@utils/foundry/flags'
 import { sluggify } from '@utils/pf2e/utils'
 import { MODULE_ID } from '@utils/module'
-import { isRuleItem } from './categories'
+import { getCategoryUUIDS, isRuleItem } from './categories'
+import { findItemWithSourceId } from '@utils/foundry/item'
+import { WEAPON_TRAITS } from './data/weapon'
 
 export function wrapRestForTheNight() {
     const original = game.pf2e.actions.restForTheNight
@@ -64,6 +66,20 @@ async function afterRest(actors: ActorPF2e | ActorPF2e[]) {
             if (getFlag(item, 'temporary')) remove.push(item.id)
         }
 
+        const mindWeaponUUID = getCategoryUUIDS('mindsmith')[1]
+        const mindWeapon = findItemWithSourceId(actor, mindWeaponUUID, ['weapon'])
+        if (mindWeapon) {
+            let traits = mindWeapon._source.system.traits?.value ?? []
+            traits = traits.filter(x => !WEAPON_TRAITS.includes(x as MindSmithWeaponTrait))
+            update.push({ _id: mindWeapon.id, 'system.traits.value': traits })
+
+            const runeProperty = getFlag<RunePropertyKey | ''>(actor, 'weapon.runeProperty')
+            if (runeProperty) {
+                update.push({ _id: mindWeapon.id, [`system.${runeProperty}.value`]: null })
+            }
+        }
+
+        setFlag(actor, 'weapon.runeProperty', '')
         if (update.length) actor.updateEmbeddedDocuments('Item', update)
         if (remove.length) actor.deleteEmbeddedDocuments('Item', remove)
     }

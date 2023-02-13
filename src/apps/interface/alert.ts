@@ -1,7 +1,7 @@
 import { DailiesInterface } from '@apps/interface'
 import { getCategoryUUIDS } from '@src/categories'
 import { subLocalize } from '@utils/foundry/localize'
-import { WEAPON_BASE_TYPES } from './data/weapon'
+import { WEAPON_BASE_TYPES } from '@data/weapon'
 
 const localize = subLocalize('dialog')
 

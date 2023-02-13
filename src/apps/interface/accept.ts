@@ -1,3 +1,4 @@
+import { getFreePropertySlot, labelToRune, WEAPON_GROUPS } from '@data/weapon'
 import { getCategoryUUIDS, getRuleItems, RULE_TYPES } from '@src/categories'
 import { getFlag, hasSourceId, setFlag } from '@utils/foundry/flags'
 import { findItemWithSourceId } from '@utils/foundry/item'
@@ -8,7 +9,6 @@ import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
 import { createSpellScroll } from '@utils/pf2e/spell'
 import { sluggify } from '@utils/pf2e/utils'
 import { capitalize } from '@utils/string'
-import { WEAPON_GROUPS } from './data/weapon'
 
 const msg = subLocalize('interface.message')
 
@@ -137,17 +137,34 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         } else if (type === 'mindSmith') {
             const { category, subcategory } = field.dataset
             const uuids = getCategoryUUIDS(category)
-            const weapon = findItemWithSourceId(actor, uuids[1], ['weapon'])
+            const weapon = findItemWithSourceId<CharacterPF2e, WeaponPF2e>(actor, uuids[1], ['weapon'])
             if (!weapon) continue
 
+            let value = field.value
+
             if (subcategory === 'damage') {
-                const selected = field.value as WeaponDamageType
+                const selected = field.value as MindSmithDamageType
                 updateData.push({ _id: weapon.id, 'system.damage.damageType': selected, 'system.group': WEAPON_GROUPS[selected] })
                 messages.mind.push({ selected, uuid: uuids[0], label: 'mindsmith' })
+            } else if (subcategory === 'trait') {
+                const selected = field.value as MindSmithWeaponTrait
+                const traits = deepClone(weapon._source.system.traits?.value ?? [])
+                if (!traits.includes(selected)) traits.push(selected)
+                updateData.push({ _id: weapon.id, 'system.traits.value': traits })
+                messages.mind.push({ selected, uuid: uuids[2], label: 'mentalforge' })
+            } else if (subcategory === 'rune') {
+                const propertySlot = getFreePropertySlot(weapon)
+                if (!propertySlot) continue
+
+                const selected = labelToRune(value)
+                updateData.push({ _id: weapon.id, [`system.${propertySlot}.value`]: selected })
+                messages.mind.push({ selected, uuid: uuids[3], label: 'runicmind' })
+                setFlag(actor, 'weapon.runeProperty', propertySlot)
+                value = selected
             }
 
             flags[category] ??= {}
-            flags[category]![subcategory] = field.value
+            flags[category]![subcategory] = value
         } else {
             const category = field.dataset.category
             const uuid = getCategoryUUIDS(category)[0]

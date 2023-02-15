@@ -108,7 +108,7 @@ The module will randomly pick an option when necessary.
 
 ![](./readme/random.webp)
 
-_An die icon will displayed in the interface window to point out which options are randomly picked, the different options will also loop over inside the field._
+_A die icon will displayed in the interface window to point out which options are randomly picked, the different options will also loop over inside the field._
 
 ![](./readme/random-chat.webp)
 

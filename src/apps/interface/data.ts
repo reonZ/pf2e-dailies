@@ -1,11 +1,5 @@
 import { hasCategories, isReturnedCategory } from '@src/categories'
-import { getFlag } from '@utils/foundry/flags'
-import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
-import { getChoiSetRuleSelection } from '@utils/pf2e/item'
-import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
-import { capitalize } from '@utils/string'
-import { LANGUAGE_LIST } from '@utils/pf2e/languages'
-import { localize } from '@utils/foundry/localize'
+import { getFamiliarPack } from '@src/data/familiar'
 import {
     getFreePropertySlot,
     runetoLabel,
@@ -14,6 +8,13 @@ import {
     WEAPON_RUNES,
     WEAPON_TRAITS,
 } from '@src/data/weapon'
+import { getFlag } from '@utils/foundry/flags'
+import { localize } from '@utils/foundry/localize'
+import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
+import { getChoiSetRuleSelection } from '@utils/pf2e/item'
+import { LANGUAGE_LIST } from '@utils/pf2e/languages'
+import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
+import { capitalize } from '@utils/string'
 
 const FOUR_ELEMENTS = ['air', 'earth', 'fire', 'water'] as const
 const GANZI_RESISTANCES = ['acid', 'electricity', 'sonic'] as const
@@ -44,7 +45,7 @@ export function getData(actor: CharacterPF2e) {
         const nbAbilityies = actor.attributes.familiarAbilities.value
         const options: SelectOption<string>[] = []
 
-        const indexes = game.packs.get('pf2e.familiar-abilities')!.index
+        const indexes = getFamiliarPack().index
         for (const index of indexes) {
             options.push({ value: index._id, label: index.name })
         }
@@ -337,6 +338,22 @@ export function getData(actor: CharacterPF2e) {
                     subcategory: 'rune',
                 },
             }
+        } else if (isReturnedCategory(entry, 'addedFeat')) {
+            const { type, category, label } = entry
+            const row: TemplateRow<AddedFeatTemplate> = {
+                rowType: 'drop',
+                value: flags[category]?.name ?? '',
+                dataset: {
+                    uuid: flags[category]?.uuid ?? '',
+                    level: Math.floor(actorLevel / 2),
+                },
+            }
+            templates.push({
+                type,
+                category,
+                label: localize('label.metamagical'),
+                rows: [row],
+            })
         }
     }
 

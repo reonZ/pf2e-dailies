@@ -15,6 +15,7 @@ export async function dropped(event: ElementDragEvent) {
         const typeError = () => localize.warn('wrongDataType')
 
         const data: { type: string; uuid: string } = JSON.parse(dataString)
+        console.log(data)
         if (!data || data.type !== 'Item' || typeof data.uuid !== 'string') return typeError()
 
         const item = await fromUuid<ItemPF2e>(data.uuid)
@@ -33,8 +34,24 @@ export async function dropped(event: ElementDragEvent) {
             case 'tricksterAce':
                 droppedSpell(target, item, CATEGORY_SEARCH.tricksterAce, tricksterAceFilter)
                 break
+            case 'addedFeat':
+                droppedAddedFeat(target, item)
+                break
         }
     } catch (error) {}
+}
+
+function droppedAddedFeat(target: JQuery, item: ItemPF2e) {
+    const category = target.attr('data-category') as CategoryName
+
+    switch (category) {
+        case 'metamagical':
+            const filters = CATEGORY_SEARCH.addedFeat.metamagical
+            filters.traits ??= []
+            filters.traits.push('wizard')
+            droppedFeat(target, item, filters)
+            break
+    }
 }
 
 function tricksterAceFilter(item: SpellPF2e) {

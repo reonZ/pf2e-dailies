@@ -45,7 +45,8 @@
 <label data-droppable="true">{{label}}</label>
 <input type="text" class="drop" data-droppable="true" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}}
     disabled />
-<a data-action="search" data-type="{{group.type}}" data-level="{{entry.level}}" title="{{@root.i18n 'tooltip.search'}}">
+<a data-action="search" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}}"
+    title="{{@root.i18n 'tooltip.search'}}">
     <i class="fas fa-search"></i>
 </a>
 <a data-action="clear" {{#unless entry.uuid}} class="disabled" {{/unless}} title="{{@root.i18n 'tooltip.clear'}}">

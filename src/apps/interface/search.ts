@@ -5,6 +5,9 @@ export const CATEGORY_SEARCH = {
     combatFlexibility: { feattype: ['class'], traits: ['fighter'] } as InitialFeatFilters,
     scrollSavant: { category: ['spell'], traditions: ['arcane'] } as InitialSpellFilters,
     tricksterAce: { category: ['cantrip', 'spell'] } as InitialSpellFilters,
+    addedFeat: {
+        metamagical: { feattype: ['class'], traits: ['metamagic'] } as InitialFeatFilters,
+    },
 } as const
 
 export function onSearch(event: JQuery.ClickEvent<any, any, SearchButton>) {
@@ -25,6 +28,17 @@ export function onSearch(event: JQuery.ClickEvent<any, any, SearchButton>) {
             break
         case 'tricksterAce':
             searchSpell({ ...CATEGORY_SEARCH.tricksterAce, level: sequenceArray<OneToTen>(1, level) })
+            break
+        case 'addedFeat':
+            searchAddedFeat(data.category, level)
+            break
+    }
+}
+
+function searchAddedFeat(category: CategoryName, level: number) {
+    switch (category) {
+        case 'metamagical':
+            searchFeat({ ...CATEGORY_SEARCH.addedFeat.metamagical, level: { min: 1, max: level } })
             break
     }
 }

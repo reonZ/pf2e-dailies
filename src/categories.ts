@@ -6,6 +6,12 @@ export const RULE_TYPES = ['addedLanguage', 'trainedSkill', 'addedResistance', '
 export const MINDSMITH_WEAPON_UUID = 'Compendium.pf2e-dailies.equipment.VpmEozw21aRxX15P'
 
 export const CATEGORY_DATA = [
+    // AddedFeat
+    {
+        type: 'addedFeat',
+        category: 'metamagical',
+        uuids: ['Compendium.pf2e.classfeatures.89zWKD2CN7nRu2xp'], // Metamagical Experimentation
+    },
     // MindSmith
     {
         type: 'mindSmith',
@@ -154,6 +160,7 @@ const { CATEGORIES, UUIDS, FIRST_FEATS, FIRST_EQUIPMENTS, FIRST_HERITAGES, RULES
 export function hasAnyCategory(actor: CharacterPF2e) {
     const itemTypes = actor.itemTypes
     return (
+        // !!getRations(actor) ||
         actor.familiar ||
         itemTypes.heritage.some(item => includesSourceId(item, FIRST_HERITAGES)) ||
         itemTypes.feat.some(item => includesSourceId(item, FIRST_FEATS)) ||

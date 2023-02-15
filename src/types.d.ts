@@ -41,6 +41,7 @@ type TricksterAce = ExtractedCategory<'tricksterAce'>
 type GanziHeritage = ExtractedCategory<'ganziHeritage'>
 type FamiliarAbility = { type: 'familiarAbility'; category: 'familiar' }
 type MindSmith = ExtractedCategory<'mindSmith'>
+type AddedFeat = ExtractedCategory<'addedFeat'>
 
 // saves
 type SavedCategories = Partial<
@@ -49,13 +50,14 @@ type SavedCategories = Partial<
         SavedCategory<TrainedLore, string> &
         SavedCategory<AddedLanguage, Language> &
         SavedCategory<AddedResistance, ResistanceType> &
-        SavedDropCategory<ScrollChain> &
-        SavedDropCategory<CombatFlexibility> &
-        SavedDropCategory<ScrollSavant> &
+        SavedCategory<ScrollChain, SavedDrop[]> &
+        SavedCategory<CombatFlexibility, SavedDrop[]> &
+        SavedCategory<ScrollSavant, SavedDrop[]> &
         SavedCategory<TricksterAce, SavedDrop> &
         SavedCategory<GanziHeritage, ResistanceType> &
         SavedCategory<FamiliarAbility, string[]> &
-        SavedCategory<MindSmith, Partial<SavedMindSmith>>
+        SavedCategory<MindSmith, Partial<SavedMindSmith>> &
+        SavedCategory<AddedFeat, SavedDrop>
 >
 
 // templates
@@ -77,6 +79,7 @@ type MindSmithTemplate = BaseCategoryTemplate<
     MindSmith,
     [AlertRowTemplate<MindSmith>] | [MindSmithRowTemplate<'damage'>, MindSmithRowTemplate<'trait'>, MindSmithRowTemplate<'rune'>]
 >
+type AddedFeatTemplate = DropTemplate<AddedFeat>
 
 type ComboTemplateFields =
     | ComboTemplateField<TrainedSkill>
@@ -96,6 +99,7 @@ type TemplateField =
     | RandomTemplateField<GanziHeritage>
     | SelectTemplateField<FamiliarAbility, string>
     | MindSmithTemplateField
+    | DropTemplateField<AddedFeat>
 
 /**
  * End of Variables
@@ -120,7 +124,6 @@ type RulesName = typeof import('./categories').RULE_TYPES[number]
 type ExtractedCategory<S extends string> = Omit<Extract<RawCategory, { type: S }>, 'uuids'>
 
 type SavedCategory<C extends Category, D extends any> = Record<C['category'], D>
-type SavedDropCategory<C extends Category> = SavedCategory<C, SavedDrop[]>
 
 type TemplateRows<T extends BaseCategoryTemplate> = T['rows']
 type TemplateRow<T extends BaseCategoryTemplate> = TemplateRows<T>[number]
@@ -219,7 +222,9 @@ type ComboTemplateField<C extends Category = Category> = BaseTemplateField<HTMLI
     }
 }
 
-type SearchButton = Omit<HTMLElement, 'value' | 'dataset'> & { dataset: { type: CategoryType; level: TemplateLevel } }
+type SearchButton = Omit<HTMLElement, 'value' | 'dataset'> & {
+    dataset: { type: CategoryType; category: CategoryName; level: TemplateLevel }
+}
 
 // type ReturnedCategoryItems = [ItemPF2e, ...(undefined | ItemPF2e)[]]
 // type ReturnedCategory<C extends Category = Category> = Omit<Required<C>, 'uuids' | 'label'> & {

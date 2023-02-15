@@ -48,7 +48,8 @@
             "mentalforge": "Mental Forge",
             "runicmind": "Runic Smithing",
             "familiar": "Familiar Abilities",
-            "ability": "Ability #{nb}"
+            "ability": "Ability #{nb}",
+            "metamagical": "Metamagical"
         },
         "sheet": {
             "title": "Daily Preparations"

@@ -1,5 +1,6 @@
-import { getFreePropertySlot, labelToRune, WEAPON_GROUPS } from '@data/weapon'
+import { getFreePropertySlot, WEAPON_GROUPS } from '@data/weapon'
 import { getCategoryUUIDS, getRuleItems, RULE_TYPES } from '@src/categories'
+import { familiarUUID, getFamiliarPack } from '@src/data/familiar'
 import { getFlag, hasSourceId, setFlag } from '@utils/foundry/flags'
 import { findItemWithSourceId } from '@utils/foundry/item'
 import { hasLocalization, localize, subLocalize } from '@utils/foundry/localize'
@@ -64,9 +65,9 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
             flags[category] ??= []
             flags[category]!.push({ name: field.value, uuid })
-        } else if (type === 'combatFlexibility') {
+        } else if (type === 'addedFeat' || type === 'combatFlexibility') {
             const { category, uuid, level } = field.dataset
-            const index = level === '8' ? 0 : 1
+            const index = type === 'combatFlexibility' ? (level === '8' ? 0 : 1) : 0
             const parentUUID = getCategoryUUIDS(category)[index]
 
             if (parentUUID) {
@@ -77,8 +78,12 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
                 }
             }
 
-            flags[category] ??= []
-            flags[category]!.push({ name: field.value, uuid })
+            if (type === 'combatFlexibility') {
+                flags[field.dataset.category] ??= []
+                flags[field.dataset.category]!.push({ name: field.value, uuid })
+            } else {
+                flags[field.dataset.category] = { uuid, name: field.value }
+            }
         } else if (type === 'trainedLore') {
             const category = field.dataset.category
             const uuid = getCategoryUUIDS(category)[0]
@@ -169,7 +174,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
             if (actor.familiar) {
                 addToFamiliar.push(field.value)
-                messages.familiar.push({ uuid: `Compendium.pf2e.familiar-abilities.${id}` })
+                messages.familiar.push({ uuid: familiarUUID(id) })
             }
 
             flags[category] ??= []
@@ -235,7 +240,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         if (ids.length) familiar.deleteEmbeddedDocuments('Item', ids)
 
         if (addToFamiliar.length) {
-            const pack = game.packs.get<CompendiumCollection<EffectPF2e>>('pf2e.familiar-abilities')!
+            const pack = getFamiliarPack()
             const items: EffectSource[] = []
 
             for (const id of addToFamiliar) {

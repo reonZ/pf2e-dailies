@@ -34,6 +34,11 @@
             "lang": "en",
             "name": "English",
             "path": "lang/en.json"
+        },
+        {
+            "lang": "zh-Hans",
+            "name": "中文（简体）",
+            "path": "lang/zh_Hans.json"
         }
     ],
     "relationships": {

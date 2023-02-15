@@ -74,7 +74,7 @@ When a spell is dropped in a spell slot, a temporary spell scroll will be create
 
 ## Spells
 
-When needed, a spellcasting entry will be added to house the added spells.
+When needed, a spellcasting entry will also be created to house the added spells.
 
 ## Feats
 

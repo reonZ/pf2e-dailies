@@ -96,7 +96,7 @@ This is not to be mistaken with an error message, this is used to offer the user
 
 # Combo Field
 
-Sometimes, you should have the option to either select an option from a defined list AND have the opportunity to manually enter some value, for instance with skills which when offered the choice of selecting one, allows for the selection of a lore skill.
+Sometimes, you should have the option to select an option from a defined list AND have the opportunity to manually enter some value, for instance with skills which when offered the choice of selecting one, allows for the selection of a lore skill.
 
 ![](./readme/combo.webp)
 

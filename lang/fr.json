@@ -1,1 +1,76 @@
-{}
+{
+    "pf2e-dailies": {
+        "interface": {
+            "accept": "Accepter",
+            "cancel": "Annuler",
+            "alert": {
+                "weapon": "Arme spirituelle manquante"
+            },
+            "message": {
+                "gained": "Obtenu le {type} temporaire :",
+                "skills": "qualifié dans les compétences suivantes :",
+                "tome": "A étudié le tome de thaumaturgie suivant :",
+                "spells": "est prêt à utiliser les sorts :",
+                "mindsmith": "se concentre sur l'arme spirituelle :",
+                "changes": "a fait les changements suivants au cours de ses préparatifs quotidiens",
+                "familiar": "a choisi les capacités de familier :"
+            },
+            "error": {
+                "unexpected": "Une erreur inattendue s'est produite au cours des préparatifs quotidiens. Consultez la console (F12) pour plus de détails.",
+                "empty": "Tous les champs doivent être remplis.",
+                "drop": {
+                    "wrongDataType": "Type de données invalide déposé.",
+                    "wrongType": "Seuls {types} peuvent être déposés ici.",
+                    "wrongLevel": "Le niveau du {type} déposé est trop élevé pour cet emplacement.",
+                    "wrongTrait": "Le {type} déposé n'a pas le {catégorie} {trait}.",
+                    "wrongSpellTime": "Le temps d'incantation du sort déposé excède {time}.",
+                    "cannotBe": "Le {type} déposé ne peut pas être un {non}"
+                },
+                "input": {
+                    "proficiency": "Vous êtes déjà {rank} en {proficiency}."
+                },
+                "unattended": "Certaines alertes ne sont toujours pas résolues. Veuillez cliquer sur les triangles d'alerte pour les résoudre."
+            },
+            "tooltip": {
+                "random": "Il sera sélectionné au hasard",
+                "alert": "Cliquez ici pour résoudre",
+                "search": "Ouvrir le navigateur de compendium",
+                "clear": "Effacer la sélection"
+            },
+            "title": "Faire vos préparatifs quotidiens"
+        },
+        "label": {
+            "elementalist": "Élémentaliste",
+            "trickster": "Usurpateur de parchemin",
+            "tome": "Tome de thaumaturgie",
+            "mindsmith": "Façonneur spirituel",
+            "mentalforge": "Forge mentale",
+            "runicmind": "Façonnage runique",
+            "familiar": "Capacités de familier",
+            "ability": "Capacité #{nb}",
+            "metamagical": "Métamagique",
+            "ganzi": "Héritage ganzi"
+        },
+        "dialog": {
+            "weapon": {
+                "title": "Arme spirituelle",
+                "accept": "Accepter",
+                "cancel": "Annuler",
+                "option": {
+                    "1": "Une arme à une main qui inflige <strong>1d6</strong> dégâts et possède le trait <strong>finesse</strong>",
+                    "2": "Une arme à une main qui inflige <strong>1d8</strong> dégâts",
+                    "3": "Une arme à deux mains qui inflige <strong>1d10</strong> dégâts et possède le trait <strong>allonge</strong>",
+                    "0": "Une arme à une main qui inflige <strong>1d4</strong> points de dégâts et possède les traits <strong>agile</strong> et <strong>finesse</strong>"
+                },
+                "error": {
+                    "noSelection": "Vous devez choisir un type d'arme de base.",
+                    "missing": "L'arme n'a pas pu être trouvée dans le compendium."
+                },
+                "flavor": "<p>Ce personnage n'a pas d'arme spirituelle dans son inventaire.</p><p>Veuillez choisir une des options suivantes pour en créer une.</p>"
+            }
+        },
+        "sheet": {
+            "title": "Préparatifs quotidiens"
+        }
+    }
+}

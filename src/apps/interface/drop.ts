@@ -46,8 +46,8 @@ function droppedAddedFeat(target: JQuery, item: ItemPF2e) {
 
     switch (category) {
         case 'metamagical':
-            const filters = CATEGORY_SEARCH.addedFeat.metamagical
-            filters.traits ??= []
+            const filters = { ...CATEGORY_SEARCH.addedFeat.metamagical }
+            filters.traits = (filters.traits ?? [])?.slice()
             filters.traits.push('wizard')
             droppedFeat(target, item, filters)
             break

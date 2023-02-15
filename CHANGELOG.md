@@ -1,3 +1,7 @@
+# 1.17.0
+
+-   added support for familiar abilities
+
 # 1.16.0
 
 -   now has an alert field, which will display what is wrong and offer a way to fix it (by clicking on the alert triangle)

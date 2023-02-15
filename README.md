@@ -2,6 +2,10 @@
 
 This module will provide a convenient interface to handle a character's daily preparations if they have at least one of the following feats or items:
 
+Familiar Abilities
+
+-   If the character has a familiar, the module will offer the ability to select its abilities.
+
 Language related
 
 -   [Ancestral Linguistics](https://2e.aonprd.com/Feats.aspx?ID=1407)

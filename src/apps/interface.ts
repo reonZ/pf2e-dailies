@@ -43,6 +43,22 @@ export class DailiesInterface extends Application {
     getData(options?: Partial<FormApplicationOptions> | undefined) {
         return mergeObject(super.getData(options), {
             i18n: localize,
+            dump: ({
+                dataset,
+                value,
+                placeholder,
+            }: {
+                value?: string
+                placeholder?: string
+                dataset?: Record<string, string>
+            }) => {
+                let msg = ''
+                if (value) msg += ` value="${value}"`
+                if (placeholder) msg += ` placeholder="${placeholder}"`
+                if (dataset) Object.entries(dataset).forEach(([key, value]) => (msg += ` data-${key}="${value}"`))
+                if (msg) msg += ' '
+                return msg
+            },
             ...getData(this._actor),
         })
     }
@@ -73,9 +89,9 @@ export class DailiesInterface extends Application {
         html.find<HTMLAnchorElement>('[data-action=alert]').on('click', onAlert.bind(this))
 
         html.find<HTMLSelectElement>('.combo select').on('change', this.#onComboSelectChange.bind(this))
-        html.find<ComboTemplateField>('.combo input').on('change', this.#onComboInputChange.bind(this))
+        html.find<ComboTemplateFields>('.combo input').on('change', this.#onComboInputChange.bind(this))
 
-        html.find<SearchTemplateButton>('[data-action=search]').on('click', onSearch)
+        html.find<SearchButton>('[data-action=search]').on('click', onSearch)
 
         html.find<HTMLAnchorElement>('[data-action=clear]').on('click', this.#onClear.bind(this))
         html.find<HTMLButtonElement>('[data-action=accept]').on('click', this.#onAccept.bind(this))
@@ -93,7 +109,7 @@ export class DailiesInterface extends Application {
         input.value = capitalize(select.value)
     }
 
-    #onComboInputChange(event: JQuery.ChangeEvent<any, any, ComboTemplateField>) {
+    #onComboInputChange(event: JQuery.ChangeEvent<any, any, ComboTemplateFields>) {
         const input = event.currentTarget
         const select = input.previousElementSibling as HTMLSelectElement
         const value = input.value.toLowerCase()
@@ -108,8 +124,8 @@ export class DailiesInterface extends Application {
             input.value = capitalize(value)
             input.dataset.input = 'false'
         } else if (original.includes(value)) {
-            if (type === 'trainedSkill') {
-                const rank = Number(input.dataset.rank || '1')
+            if (type === 'thaumaturgeTome' || type === 'trainedSkill') {
+                const rank = type === 'thaumaturgeTome' ? Number(input.dataset.rank) : 1
                 localize.warn('error.input.proficiency', { rank: PROFICIENCY_RANKS[rank], proficiency: value })
             }
 

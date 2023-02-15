@@ -22,6 +22,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
     const addData: Partial<BaseItemSourcePF2e>[] = []
     const updateData: EmbeddedDocumentUpdateData<ItemPF2e>[] = []
     const rulesToAdd: Map<string, RuleElementSource[]> = new Map()
+    const addToFamiliar: string[] = []
 
     const getRules = (item: ItemPF2e) => {
         const id = item.id
@@ -48,6 +49,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         scrolls: [] as ReturnedMessage[],
         spells: [] as ReturnedMessage[],
         mind: [] as ReturnedMessage[],
+        familiar: [] as ReturnedMessage[],
     }
 
     for (const field of fields) {
@@ -56,16 +58,14 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
         if (type === 'scrollChain' || type === 'scrollSavant') {
             const { uuid, category } = field.dataset
             const level = Number(field.dataset.level) as OneToTen
-            const name = field.value
 
             const scroll = await createSpellScroll(uuid, level, true)
             if (scroll) addData.push(scroll)
 
             flags[category] ??= []
-            flags[category]!.push({ name, uuid })
+            flags[category]!.push({ name: field.value, uuid })
         } else if (type === 'combatFlexibility') {
             const { category, uuid, level } = field.dataset
-            const name = field.value
             const index = level === '8' ? 0 : 1
             const parentUUID = getCategoryUUIDS(category)[index]
 
@@ -78,7 +78,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             }
 
             flags[category] ??= []
-            flags[category]!.push({ name, uuid })
+            flags[category]!.push({ name: field.value, uuid })
         } else if (type === 'trainedLore') {
             const category = field.dataset.category
             const uuid = getCategoryUUIDS(category)[0]
@@ -105,12 +105,11 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
             flags[category] = { name, uuid }
         } else if (type === 'trainedSkill' || type === 'thaumaturgeTome') {
-            const dataset = field.dataset
-            const category = dataset.category
+            const { input, category } = field.dataset
             const selected = field.value
             const uuid = getCategoryUUIDS(category)[0]
-            const rank = Number(dataset.rank || '1')
-            const isInput = dataset.input === 'true'
+            const rank = type === 'thaumaturgeTome' ? Number(field.dataset.rank) : 1
+            const isInput = input === 'true'
 
             if (isInput) {
                 const lore = createTemporaryLore(selected, rank)
@@ -140,55 +139,66 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             const weapon = findItemWithSourceId<CharacterPF2e, WeaponPF2e>(actor, uuids[1], ['weapon'])
             if (!weapon) continue
 
-            let value = field.value
+            flags[category] ??= {}
 
             if (subcategory === 'damage') {
                 const selected = field.value as MindSmithDamageType
                 updateData.push({ _id: weapon.id, 'system.damage.damageType': selected, 'system.group': WEAPON_GROUPS[selected] })
                 messages.mind.push({ selected, uuid: uuids[0], label: 'mindsmith' })
+                flags[category]![subcategory] = selected
             } else if (subcategory === 'trait') {
                 const selected = field.value as MindSmithWeaponTrait
                 const traits = deepClone(weapon._source.system.traits?.value ?? [])
                 if (!traits.includes(selected)) traits.push(selected)
                 updateData.push({ _id: weapon.id, 'system.traits.value': traits })
                 messages.mind.push({ selected, uuid: uuids[2], label: 'mentalforge' })
+                flags[category]![subcategory] = selected
             } else if (subcategory === 'rune') {
                 const propertySlot = getFreePropertySlot(weapon)
                 if (!propertySlot) continue
 
-                const selected = labelToRune(value)
+                const selected = field.value as MindSmithWeaponAllRunes
                 updateData.push({ _id: weapon.id, [`system.${propertySlot}.value`]: selected })
                 messages.mind.push({ selected, uuid: uuids[3], label: 'runicmind' })
+                flags[category]![subcategory] = selected
                 setFlag(actor, 'weapon.runeProperty', propertySlot)
-                value = selected
+            }
+        } else if (type === 'familiarAbility') {
+            const category = field.dataset.category
+            const id = field.value
+
+            if (actor.familiar) {
+                addToFamiliar.push(field.value)
+                messages.familiar.push({ uuid: `Compendium.pf2e.familiar-abilities.${id}` })
             }
 
-            flags[category] ??= {}
-            flags[category]![subcategory] = value
+            flags[category] ??= []
+            flags[category].push(id)
         } else {
             const category = field.dataset.category
             const uuid = getCategoryUUIDS(category)[0]
             const ruleItem = ruleItems.find(item => hasSourceId(item, uuid))
             if (!ruleItem) continue
 
-            const selected = field.value
             const rules = getRules(ruleItem)
 
             if (type === 'addedLanguage') {
+                const selected = field.value as Language
                 rules.push(createLanguageRule(selected))
                 messages.languages.push({ uuid, selected, label: category })
+                flags[field.dataset.category] = selected
             } else if (type === 'addedResistance') {
+                const selected = field.value as ResistanceType
                 rules.push(createResistanceRule(selected, 'half'))
                 messages.resistances.push({ uuid, selected, label: category })
+                flags[field.dataset.category] = selected
             } else if (type === 'ganziHeritage') {
-                const options = Array.from((field as HTMLSelectElement).options).map(x => x.value) as ResistanceType[]
+                const options = Array.from((field as SelectTemplateField).options).map(x => x.value) as ResistanceType[]
                 const selected = await randomOptions(options)
                 rules.push(createResistanceRule(selected, 'half'))
                 messages.resistances.push({ uuid, selected, label: category, random: true })
+                flags[field.dataset.category] = selected
             }
-
-            // @ts-ignore
-            flags[category] = selected
         }
     }
 
@@ -214,6 +224,26 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
             if (selected) message += ` <span style="text-transform: capitalize;">${selected}</span>`
             if (random) message += ' <i class="fa-solid fa-dice-d20"></i>'
             message += '</p>'
+        }
+    }
+
+    if (actor.familiar) {
+        const familiar = actor.familiar
+
+        // we remove old abilities
+        const ids = familiar.itemTypes.effect.map(x => x.id)
+        if (ids.length) familiar.deleteEmbeddedDocuments('Item', ids)
+
+        if (addToFamiliar.length) {
+            const pack = game.packs.get<CompendiumCollection<EffectPF2e>>('pf2e.familiar-abilities')!
+            const items: EffectSource[] = []
+
+            for (const id of addToFamiliar) {
+                const source = (await pack.getDocument(id))?.toObject()
+                if (source) items.push(source)
+            }
+
+            if (items.length) familiar.createEmbeddedDocuments('Item', items)
         }
     }
 
@@ -253,6 +283,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
     pushMessages('feats', messages.feats)
     pushMessages('spells', messages.spells)
     pushMessages('scrolls', messages.scrolls)
+    pushMessages('familiar', messages.familiar)
 
     if (updateData.length) await actor.updateEmbeddedDocuments('Item', updateData)
 

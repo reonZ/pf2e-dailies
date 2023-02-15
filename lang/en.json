@@ -4,13 +4,17 @@
             "title": "Make your daily preparations",
             "accept": "Accept",
             "cancel": "Cancel",
+            "alert": {
+                "weapon": "Missing Mind Weapon"
+            },
             "message": {
                 "changes": "Has made the following changes during their daily preparations",
                 "gained": "Gained the temporary {type}:",
                 "skills": "Trained in the following skills:",
                 "tome": "Studied their thaumaturgy tome:",
                 "spells": "Is ready to use the spells:",
-                "mindsmith": "Is focusing on the mind weapon:"
+                "mindsmith": "Is focusing on the mind weapon:",
+                "familiar": "Has selected the familiar abilities:"
             },
             "error": {
                 "unexpected": "An unexpected error occured during daily preparations. See the console (F12) for details.",
@@ -28,7 +32,6 @@
                     "proficiency": "You are already {rank} in {proficiency}."
                 }
             },
-
             "tooltip": {
                 "random": "This will randomly be selected",
                 "alert": "Click here to resolve",
@@ -43,7 +46,9 @@
             "tome": "Thaumaturgy Tome",
             "mindsmith": "Mind Smith",
             "mentalforge": "Mental Forge",
-            "runicmind": "Runic Smithing"
+            "runicmind": "Runic Smithing",
+            "familiar": "Familiar Abilities",
+            "ability": "Ability #{nb}"
         },
         "sheet": {
             "title": "Daily Preparations"

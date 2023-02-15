@@ -1,8 +1,8 @@
 import { getFlag, setFlag } from '@utils/foundry/flags'
-import { sluggify } from '@utils/pf2e/utils'
-import { MODULE_ID } from '@utils/module'
-import { getCategoryUUIDS, isRuleItem } from './categories'
 import { findItemWithSourceId } from '@utils/foundry/item'
+import { MODULE_ID } from '@utils/module'
+import { sluggify } from '@utils/pf2e/utils'
+import { isRuleItem, MINDSMITH_WEAPON_UUID } from './categories'
 import { WEAPON_TRAITS } from './data/weapon'
 
 export function wrapRestForTheNight() {
@@ -66,8 +66,7 @@ async function afterRest(actors: ActorPF2e | ActorPF2e[]) {
             if (getFlag(item, 'temporary')) remove.push(item.id)
         }
 
-        const mindWeaponUUID = getCategoryUUIDS('mindsmith')[1]
-        const mindWeapon = findItemWithSourceId(actor, mindWeaponUUID, ['weapon'])
+        const mindWeapon = findItemWithSourceId(actor, MINDSMITH_WEAPON_UUID, ['weapon'])
         if (mindWeapon) {
             let traits = mindWeapon._source.system.traits?.value ?? []
             traits = traits.filter(x => !WEAPON_TRAITS.includes(x as MindSmithWeaponTrait))

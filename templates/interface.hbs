@@ -2,7 +2,7 @@
     {{#if rows.length}}
     <div class="group rows">
         {{#each rows as | group |}}
-        {{> (concat group.rows.[0].type 'Row') entry=group.rows.[0] group=group label=group.label}}
+        {{> (concat group.rows.[0].rowType 'Row') entry=group.rows.[0] group=group label=group.label}}
         {{/each}}
     </div>
     {{/if}}
@@ -11,7 +11,7 @@
     <div class="group {{group.type}}">
         <h3>{{group.label}}</h3>
         {{#each group.rows as | row |}}
-        {{> (concat row.type 'Row') entry=row group=group label=row.label}}
+        {{> (concat row.rowType 'Row') entry=row group=group label=row.label}}
         {{/each}}
     </div>
     {{/each}}
@@ -26,26 +26,26 @@
     <div class="loader"></div>
 </div>
 
+
 {{#*inline 'alertRow'}}
 <label>{{label}}</label>
-<input type="text" class="alert" value="{{entry.message}}" data-type="{{group.type}}" data-category="{{group.category}}" disabled>
+<input type="text" class="alert" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}} disabled>
 <a class="alert" data-action="alert" title="{{@root.i18n 'tooltip.alert'}}"><i class="fa-solid fa-triangle-exclamation"></i></a>
 {{/inline}}
 
 {{#*inline 'inputRow'}}
 <label>{{label}}</label>
-<input type="text" class="input" value="{{entry.selected}}" placeholder="{{entry.placeholder}}" data-type="{{group.type}}"
-    data-category="{{group.category}}" />
-<a data-action="clear" {{#unless entry.uuid}} class="disabled" {{/unless}} title="{{@root.i18n 'tooltip.clear'}}">
+<input type="text" class="input" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}} />
+<a data-action="clear" title="{{@root.i18n 'tooltip.clear'}}">
     <i class="fas fa-times"></i>
 </a>
 {{/inline}}
 
 {{#*inline 'dropRow'}}
 <label data-droppable="true">{{label}}</label>
-<input type="text" class="drop" data-droppable="true" value="{{entry.name}}" data-type="{{group.type}}" data-category="{{group.category}}"
-    data-uuid="{{entry.uuid}}" data-level="{{entry.level}}" disabled />
-<a data-action="search" data-type="{{group.type}}" data-level={{entry.level}} title="{{@root.i18n 'tooltip.search'}}">
+<input type="text" class="drop" data-droppable="true" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}}
+    disabled />
+<a data-action="search" data-type="{{group.type}}" data-level="{{entry.level}}" title="{{@root.i18n 'tooltip.search'}}">
     <i class="fas fa-search"></i>
 </a>
 <a data-action="clear" {{#unless entry.uuid}} class="disabled" {{/unless}} title="{{@root.i18n 'tooltip.clear'}}">
@@ -55,10 +55,10 @@
 
 {{#*inline 'selectRow'}}
 <label>{{label}}</label>
-<select data-type="{{group.type}}" data-category="{{group.category}}" data-subcategory="{{entry.subcategory}}">
-    {{#select entry.selected}}
+<select data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}}>
+    {{#select entry.value}}
     {{#each entry.options as | option |}}
-    <option value="{{option}}">{{option}}</option>
+    <option value="{{option.value}}">{{option.label}}</option>
     {{/each}}
     {{/select}}
 </select>
@@ -69,14 +69,13 @@
 <div class="combo">
     <select>
         <option value=""></option>
-        {{#select entry.selected}}
+        {{#select entry.value}}
         {{#each entry.options as | option |}}
-        <option value="{{option}}">{{option}}</option>
+        <option value="{{option.value}}">{{option.label}}</option>
         {{/each}}
         {{/select}}
     </select>
-    <input type="text" class="input" value="{{entry.selected}}" placeholder="{{entry.placeholder}}" data-type="{{group.type}}"
-        data-category="{{group.category}}" data-rank="{{entry.rank}}" data-input="{{entry.input}}" />
+    <input type="text" class="input" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}} />
 </div>
 {{/inline}}
 
@@ -84,7 +83,7 @@
 <label>{{label}}</label>
 <select class="random" data-type="{{group.type}}" data-category="{{group.category}}">
     {{#each entry.options as | option |}}
-    <option value="{{option}}">{{option}}</option>
+    <option value="{{option.value}}">{{option.label}}</option>
     {{/each}}
 </select>
 <div class="die" title="{{@root.i18n 'tooltip.random'}}"><i class="fa-solid fa-dice-d20"></i></div>

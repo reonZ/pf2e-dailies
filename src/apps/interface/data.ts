@@ -1,3 +1,11 @@
+import { hasCategories, isReturnedCategory } from '@src/categories'
+import { getFlag } from '@utils/foundry/flags'
+import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
+import { getChoiSetRuleSelection } from '@utils/pf2e/item'
+import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
+import { capitalize } from '@utils/string'
+import { LANGUAGE_LIST } from '@utils/pf2e/languages'
+import { localize } from '@utils/foundry/localize'
 import {
     getFreePropertySlot,
     runetoLabel,
@@ -5,14 +13,7 @@ import {
     WEAPON_GREATER_RUNES,
     WEAPON_RUNES,
     WEAPON_TRAITS,
-} from '@data/weapon'
-import { hasCategories, isCategory } from '@src/categories'
-import { getFlag } from '@utils/foundry/flags'
-import { localize } from '@utils/foundry/localize'
-import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
-import { LANGUAGE_LIST } from '@utils/pf2e/languages'
-import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
-import { capitalize } from '@utils/string'
+} from '@src/data/weapon'
 
 const FOUR_ELEMENTS = ['air', 'earth', 'fire', 'water'] as const
 const GANZI_RESISTANCES = ['acid', 'electricity', 'sonic'] as const
@@ -33,121 +34,143 @@ const sortOrder = new Proxy(
 
 export function getData(actor: CharacterPF2e) {
     const actorLevel = actor.level
-    const flags = (getFlag(actor, 'saved') ?? {}) as SavedCategories
+    const flags = getFlag<SavedCategories>(actor, 'saved') ?? {}
     const categories = hasCategories(actor)
     const templates: BaseCategoryTemplate[] = []
 
+    if (actor.familiar) {
+        const category = 'familiar'
+        const rows: SelectRowTemplate<FamiliarAbility, string>[] = []
+        const nbAbilityies = actor.attributes.familiarAbilities.value
+        const options: SelectOption<string>[] = []
+
+        const indexes = game.packs.get('pf2e.familiar-abilities')!.index
+        for (const index of indexes) {
+            options.push({ value: index._id, label: index.name })
+        }
+
+        for (let index = 0; index < nbAbilityies; index++) {
+            rows.push({
+                rowType: 'select',
+                value: flags[category]?.[index] ?? '',
+                options,
+                label: localize('label.ability', { nb: index + 1 }),
+            })
+        }
+
+        if (rows.length) {
+            templates.push({
+                type: 'familiarAbility',
+                category,
+                label: localize('label.familiar'),
+                rows,
+            })
+        }
+    }
+
     for (const entry of categories) {
-        if (isCategory(entry, 'scrollChain')) {
+        if (isReturnedCategory(entry, ['scrollChain', 'scrollSavant'])) {
             const { type, category, label, items } = entry
-            const slots: DropTemplate[] = []
+            const rows: DropRowTemplate[] = []
 
-            const spellSlot = (level: OneToTen) => {
-                const { name = '', uuid = '' } = flags[category]?.[level - 1] ?? {}
-                slots.push({ type: 'drop', level, name, uuid, label: game.i18n.localize(`PF2E.SpellLevel${level}`) })
+            const spellSlot = (level: number, index: number = level - 1) => {
+                const { name = '', uuid = '' } = flags[category]?.[index] ?? {}
+                rows.push({
+                    rowType: 'drop',
+                    value: name,
+                    label: game.i18n.localize(`PF2E.SpellLevel${level}`),
+                    dataset: { uuid, level },
+                })
             }
 
-            // first feat
-            spellSlot(1)
-            if (actorLevel >= 8) spellSlot(2)
+            if (type === 'scrollChain') {
+                // first feat
+                spellSlot(1)
+                if (actorLevel >= 8) spellSlot(2)
 
-            // second feat
-            if (items[1]) {
-                spellSlot(3)
-                if (actorLevel >= 14) spellSlot(4)
-                if (actorLevel >= 16) spellSlot(5)
+                // second feat
+                if (items[1]) {
+                    spellSlot(3)
+                    if (actorLevel >= 14) spellSlot(4)
+                    if (actorLevel >= 16) spellSlot(5)
+                }
+
+                // third feat
+                if (items[2]) {
+                    spellSlot(6)
+                    if (actorLevel >= 20) spellSlot(7)
+                }
+            } else {
+                const { maxSlot, maxTradition } = getSpellcastingDetails(actor, 'arcane')
+
+                // legendary arcane
+                if (maxTradition >= 4 && maxSlot >= 6) spellSlot(maxSlot - 5, 3)
+
+                // master arcane
+                if (maxTradition >= 3 && maxSlot >= 5) spellSlot(maxSlot - 4, 2)
+
+                // no proficiency
+                spellSlot(maxSlot - 3, 1)
+                spellSlot(maxSlot - 2, 0)
             }
 
-            // third feat
-            if (items[2]) {
-                spellSlot(6)
-                if (actorLevel >= 20) spellSlot(7)
-            }
-
-            const template: ScrollChainTemplate = { type, category, label, rows: slots }
-            templates.push(template)
-        } else if (isCategory(entry, 'scrollSavant')) {
-            const { maxSlot, maxTradition } = getSpellcastingDetails(actor, 'arcane')
-            if (maxSlot < 4) continue
-
-            const { type, category, label } = entry
-            const slots: DropTemplate[] = []
-            const spellSlot = (index: number, level: number): DropTemplate => {
-                const { name, uuid } = flags[category]?.[index] ?? { name: '', uuid: '' }
-                return { type: 'drop', level, name, uuid, label: game.i18n.localize(`PF2E.SpellLevel${level}`) }
-            }
-
-            // legendary arcane
-            if (maxTradition >= 4 && maxSlot >= 6) slots.push(spellSlot(3, maxSlot - 5))
-
-            // master arcane
-            if (maxTradition >= 3 && maxSlot >= 5) slots.push(spellSlot(2, maxSlot - 4))
-
-            // no proficiency
-            slots.push(spellSlot(1, maxSlot - 3))
-            slots.push(spellSlot(0, maxSlot - 2))
-
-            const template: ScrollSavantTemplate = { type, category, label, rows: slots }
-            templates.push(template)
-        } else if (isCategory(entry, 'trainedSkill')) {
+            templates.push({ type, category, label, rows })
+        } else if (isReturnedCategory(entry, 'trainedSkill')) {
             const options = SKILL_LONG_FORMS.filter(x => actor.skills[x]!.rank! < 1)
             if (!options.length) continue
 
             const { type, category, label } = entry
-            let { selected = '', input = true } = flags[category] ?? {}
 
+            let { selected = '', input = true } = flags[category] ?? {}
             if (selected && !input && !options.includes(selected as SkillLongForm)) {
                 selected = ''
                 input = true
             }
 
-            const template: TrainedSkillTemplate = {
-                type,
-                category,
-                label,
-                rows: [{ type: 'combo', options, selected: input ? selected : capitalize(selected), input }],
+            const row: TemplateRow<TrainedSkillTemplate> = {
+                rowType: 'combo',
+                options: arrayToSelectOptions(options),
+                value: input ? selected : capitalize(selected),
+                dataset: { input },
             }
-            templates.push(template)
-        } else if (isCategory(entry, 'thaumaturgeTome')) {
+            templates.push({ type, category, label, rows: [row] })
+        } else if (isReturnedCategory(entry, 'thaumaturgeTome')) {
             const { type, category, label, items } = entry
-            const slots: ThaumaturgeTomeTemplate['rows'] = []
+            const rows: TemplateRows<ThaumaturgeTomeTemplate> = []
             const actorSkills = actor.skills as Record<SkillLongForm, { rank: OneToFour }>
 
             const skillSlot = (index: number, rank: OneToFour, options: SkillLongForm[]) => {
                 let { selected = '', input = true } = flags[category]?.[index] ?? {}
-
                 if (selected && !input && !options.includes(selected as SkillLongForm)) {
                     selected = ''
                     input = true
                 }
 
-                slots.push({
-                    type: 'combo',
+                rows.push({
+                    rowType: 'combo',
                     label: PROFICIENCY_RANKS[rank],
-                    options,
-                    selected: input ? selected : capitalize(selected),
-                    rank,
-                    input,
+                    options: arrayToSelectOptions(options),
+                    value: input ? selected : capitalize(selected),
+                    dataset: { input, rank },
                 })
             }
 
             const isTomeSelected = (index: number, option: 'adept' | 'paragon' = 'adept') => {
                 const item = items[index]
-                return item ? getRuleSelection(item, option) === 'tome' : false
+                return item ? getChoiSetRuleSelection(item, option) === 'tome' : false
             }
 
             // Implement Paragon
             if (isTomeSelected(4, 'paragon')) {
                 const skills = SKILL_LONG_FORMS.filter(x => actorSkills[x].rank < 4)
                 if (!skills.length) continue
-
                 skillSlot(0, 4, skills)
                 skillSlot(1, 4, skills)
             }
+
             // Intense Implement or Second Adept or Implement Adept
             else if (items[3] || isTomeSelected(2) || isTomeSelected(1)) {
                 const masters = SKILL_LONG_FORMS.filter(x => actorSkills[x].rank < 3)
-
                 if (actorLevel >= 9) {
                     if (!masters.length) continue
                     skillSlot(0, 3, masters)
@@ -158,151 +181,146 @@ export function getData(actor: CharacterPF2e) {
                     skillSlot(0, 2, experts)
                     if (masters.length) skillSlot(1, 3, masters)
                 }
-            } else {
+            }
+
+            // base Tome
+            else {
                 if (actorLevel >= 5) {
                     const experts = SKILL_LONG_FORMS.filter(x => actorSkills[x].rank < 2)
                     if (!experts.length) continue
-
                     skillSlot(0, 2, experts)
                     skillSlot(1, 2, experts)
                 } else if (actorLevel >= 3) {
                     const trained = SKILL_LONG_FORMS.filter(x => actorSkills[x].rank < 1)
                     if (!trained.length) continue
-
                     skillSlot(0, 1, trained)
-
                     const experts = SKILL_LONG_FORMS.filter(x => actorSkills[x].rank < 2)
                     if (experts.length) skillSlot(1, 2, experts)
                 } else {
                     const trained = SKILL_LONG_FORMS.filter(x => actorSkills[x].rank < 1)
                     if (!trained.length) continue
-
                     skillSlot(0, 1, trained)
                     skillSlot(1, 1, trained)
                 }
             }
-            const template: ThaumaturgeTomeTemplate = {
-                type,
-                category,
-                label,
-                rows: slots,
-            }
-            templates.push(template)
-        } else if (isCategory(entry, 'trainedLore')) {
+
+            templates.push({ type, category, label, rows })
+        } else if (isReturnedCategory(entry, 'trainedLore')) {
             const { type, category, label } = entry
-            const selected = flags[category] ?? ''
-            const template: TrainedLoreTemplate = {
-                type,
-                category,
-                label,
-                rows: [{ type: 'input', selected, placeholder: game.i18n.localize('PF2E.NewPlaceholders.Lore') }],
+            const row: TemplateRow<TrainedLoreTemplate> = {
+                rowType: 'input',
+                placeholder: game.i18n.localize('PF2E.NewPlaceholders.Lore'),
+                value: flags[category] ?? '',
             }
-            templates.push(template)
-        } else if (isCategory(entry, 'addedLanguage')) {
+            templates.push({ type, category, label, rows: [row] })
+        } else if (isReturnedCategory(entry, 'addedLanguage')) {
             const actorLanguages = actor.system.traits.languages.value
             const options = LANGUAGE_LIST.filter(x => !actorLanguages.includes(x)).sort()
             if (!options.length) continue
 
             const { type, category, label } = entry
-            const selected = flags[category] ?? ''
-
-            const template: AddedLanguageTemplate = {
-                type,
-                category,
-                label,
-                rows: [{ type: 'select', options, selected }],
+            const row: TemplateRow<AddedLanguageTemplate> = {
+                rowType: 'select',
+                options: arrayToSelectOptions(options),
+                value: flags[category] ?? '',
             }
-            templates.push(template)
-        } else if (isCategory(entry, 'addedResistance')) {
+            templates.push({ type, category, label, rows: [row] })
+        } else if (isReturnedCategory(entry, 'addedResistance')) {
             const { type, category, label } = entry
-            const selected = flags[category] ?? ''
-            const template: AddedResistanceTemplate = {
-                type,
-                category,
-                label,
-                rows: [{ type: 'select', options: FOUR_ELEMENTS, selected }],
+            const row: TemplateRow<AddedResistanceTemplate> = {
+                rowType: 'select',
+                options: arrayToSelectOptions(FOUR_ELEMENTS),
+                value: flags[category] ?? '',
             }
-            templates.push(template)
-        } else if (isCategory(entry, 'combatFlexibility')) {
+            templates.push({ type, category, label, rows: [row] })
+        } else if (isReturnedCategory(entry, 'combatFlexibility')) {
             const { type, category, label, items } = entry
             const selected = flags[category] ?? []
-            // first feat
-            const slots: DropTemplate[] = [
-                {
-                    type: 'drop',
-                    label: game.i18n.localize(`PF2E.Level8`),
-                    name: selected[0]?.name ?? '',
+            const rows: TemplateRows<CombatFlexibilityTemplate> = []
+
+            // Combat Flexibility
+            rows.push({
+                rowType: 'drop',
+                value: selected[0]?.name ?? '',
+                label: game.i18n.localize(`PF2E.Level8`),
+                dataset: {
                     uuid: selected[0]?.uuid ?? '',
                     level: 8,
                 },
-            ]
-            // second feat
-            if (items[1])
-                slots.push({
-                    type: 'drop',
+            })
+
+            // Improved Flexibility
+            if (items[1]) {
+                rows.push({
+                    rowType: 'drop',
                     label: game.i18n.localize(`PF2E.Level14`),
-                    name: selected[1]?.name ?? '',
-                    uuid: selected[1]?.uuid ?? '',
-                    level: 14,
+                    value: selected[1]?.name ?? '',
+                    dataset: {
+                        uuid: selected[1]?.uuid ?? '',
+                        level: 14,
+                    },
                 })
-            const template: CombatFlexibilityTemplate = { type, category, label, rows: slots }
-            templates.push(template)
-        } else if (isCategory(entry, 'tricksterAce')) {
+            }
+
+            templates.push({ type, category, label, rows })
+        } else if (isReturnedCategory(entry, 'tricksterAce')) {
             const { type, category, label } = entry
             const { name = '', uuid = '' } = flags[category] ?? {}
-            const template: TricksterAceTemplate = {
-                type,
-                category,
-                label,
-                rows: [{ type: 'drop', level: 4, name, uuid }],
+            const row: TemplateRow<TricksterAceTemplate> = {
+                rowType: 'drop',
+                value: name,
+                dataset: {
+                    uuid,
+                    level: 4,
+                },
             }
-            templates.push(template)
-        } else if (isCategory(entry, 'ganziHeritage')) {
+            templates.push({ type, category, label, rows: [row] })
+        } else if (isReturnedCategory(entry, 'ganziHeritage')) {
             const { type, category, label } = entry
-            const template: GanziHeritageTemplate = {
-                type,
-                category,
-                label,
-                rows: [{ type: 'random', options: GANZI_RESISTANCES }],
+            const row: TemplateRow<GanziHeritageTemplate> = {
+                rowType: 'random',
+                options: arrayToSelectOptions(GANZI_RESISTANCES),
             }
-            templates.push(template)
-        } else if (isCategory(entry, 'mindSmith')) {
+            templates.push({ type, category, label, rows: [row] })
+        } else if (isReturnedCategory(entry, 'mindSmith')) {
             const { type, category, label, items } = entry
+            const weapon = items[1] as WeaponPF2e
 
             const template: MindSmithTemplate = {
                 type,
                 category,
                 label,
-                rows: [{ type: 'alert', message: 'Missing Mind Weapon' }],
+                rows: [{ rowType: 'alert', value: localize('interface.alert.weapon') }],
             }
             templates.push(template)
 
             // we missing the weapon
-            if (!items[1]) continue
-
+            if (!weapon) continue
             template.rows[0] = {
-                type: 'select',
-                options: WEAPON_DAMAGE_TYPES,
-                selected: flags[category]?.damage ?? '',
-                subcategory: 'damage',
+                rowType: 'select',
+                options: arrayToSelectOptions(WEAPON_DAMAGE_TYPES),
+                value: flags[category]?.damage ?? '',
                 label,
+                dataset: {
+                    subcategory: 'damage',
+                },
             }
 
             // Malleable Mental Forge
             if (items[2]) {
                 template.rows[1] = {
-                    type: 'select',
-                    options: WEAPON_TRAITS,
-                    selected: flags[category]?.trait ?? '',
-                    subcategory: 'trait',
+                    rowType: 'select',
+                    options: arrayToSelectOptions(WEAPON_TRAITS),
+                    value: flags[category]?.trait ?? '',
                     label: localize('label.mentalforge'),
+                    dataset: {
+                        subcategory: 'trait',
+                    },
                 }
             }
 
             // we don't have the next feats
             if (!items[3] && !items[4]) continue
-
-            const weapon = items[1] as WeaponPF2e
 
             // the weapon doesn't have any free property rune slot
             if (!getFreePropertySlot(weapon)) continue
@@ -311,11 +329,13 @@ export function getData(actor: CharacterPF2e) {
             const selected = flags[category]?.rune ?? ''
 
             template.rows[2] = {
-                type: 'select',
-                options: runes.map(x => runetoLabel(x)),
-                selected: runetoLabel(selected && runes.includes(selected) ? selected : ''),
-                subcategory: 'rune',
+                rowType: 'select',
+                options: runes.map(x => ({ value: x, label: runetoLabel(x) })),
+                value: selected && runes.includes(selected) ? selected : '',
                 label: localize('label.runicmind'),
+                dataset: {
+                    subcategory: 'rune',
+                },
             }
         }
     }
@@ -333,14 +353,12 @@ export function getData(actor: CharacterPF2e) {
     return { rows, groups }
 }
 
-function getRuleSelection<T extends unknown>(item: ItemPF2e, option: string) {
-    const rules = item._source.system.rules as ChoiceSetSource[]
-    const rule = rules.find(rule => rule.key === 'ChoiceSet' && rule.rollOption === option)
-    return rule?.selection as T | undefined
+function arrayToSelectOptions<T extends string>(arr: readonly T[] | T[]) {
+    return arr.map(x => ({ value: x, label: x })) as SelectOption<T>[]
 }
 
 function getSpellcastingDetails(actor: ActorPF2e, tradition: MagicTradition) {
-    let maxSlot = 0
+    let maxSlot = 1
     let maxTradition = 0
 
     for (const entry of actor.spellcasting) {
@@ -355,5 +373,5 @@ function getSpellcastingDetails(actor: ActorPF2e, tradition: MagicTradition) {
         if (entry.tradition === tradition) maxTradition = Math.max(maxTradition, entry.rank)
     }
 
-    return { maxSlot: Math.clamped(maxSlot, 1, 10), maxTradition }
+    return { maxSlot: Math.min(maxSlot, 10), maxTradition }
 }

@@ -1,3 +1,7 @@
+# 1.18.1
+
+-   fix search traits stacking bug
+
 # 1.18.0
 
 -   fix bug with browser search level

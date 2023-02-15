@@ -29,6 +29,7 @@ Feat related
 
 -   [Combat Flexibility](https://2e.aonprd.com/Classes.aspx?ID=7)
     -   [Improved Flexibility](https://2e.aonprd.com/Classes.aspx?ID=7)
+-   [Metamagical Experimentation](https://2e.aonprd.com/ArcaneThesis.aspx?ID=2)
 
 Spell related
 

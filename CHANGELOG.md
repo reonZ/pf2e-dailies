@@ -1,3 +1,8 @@
+# 1.18.0
+
+-   fix bug with browser search level
+-   added the feat `Metamagical Experimentation`
+
 # 1.17.0
 
 -   added support for familiar abilities

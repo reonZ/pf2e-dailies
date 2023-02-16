@@ -1,4 +1,5 @@
 import { hasCategories, isReturnedCategory } from '@src/categories'
+import { getRations } from '@src/data/consumables'
 import { getFamiliarPack } from '@src/data/familiar'
 import {
     getFreePropertySlot,
@@ -21,10 +22,11 @@ const GANZI_RESISTANCES = ['acid', 'electricity', 'sonic'] as const
 
 const sortOrder = new Proxy(
     {
-        addedLanguage: 0,
-        trainedSkill: 1,
-        addedResistance: 2,
-        trainedLore: 3,
+        useRations: 0,
+        addedLanguage: 1,
+        trainedSkill: 2,
+        addedResistance: 3,
+        trainedLore: 4,
     } as Partial<Record<CategoryType | symbol, number>>,
     {
         get(obj, prop) {
@@ -67,6 +69,35 @@ export function getData(actor: CharacterPF2e) {
                 rows,
             })
         }
+    }
+
+    const rations = getRations(actor)
+    if (rations?.uses.value) {
+        const { value, max } = rations.uses
+        const quantity = rations.quantity
+        const remaining = (quantity - 1) * max + value
+        const last = remaining <= 1
+
+        const row: TemplateRow<UseRationsTemplate> = {
+            rowType: 'select',
+            options: [
+                {
+                    value: false,
+                    label: localize('interface.rations.no'),
+                },
+                {
+                    value: true,
+                    label: last ? localize('interface.rations.last') : localize('interface.rations.yes', { nb: remaining }),
+                },
+            ],
+            value: false,
+        }
+        templates.push({
+            type: 'useRations',
+            category: 'rations',
+            label: rations.name,
+            rows: [row],
+        })
     }
 
     for (const entry of categories) {
@@ -339,7 +370,7 @@ export function getData(actor: CharacterPF2e) {
                 },
             }
         } else if (isReturnedCategory(entry, 'addedFeat')) {
-            const { type, category, label } = entry
+            const { type, category } = entry
             const row: TemplateRow<AddedFeatTemplate> = {
                 rowType: 'drop',
                 value: flags[category]?.name ?? '',

@@ -42,6 +42,7 @@ type GanziHeritage = ExtractedCategory<'ganziHeritage'>
 type FamiliarAbility = { type: 'familiarAbility'; category: 'familiar' }
 type MindSmith = ExtractedCategory<'mindSmith'>
 type AddedFeat = ExtractedCategory<'addedFeat'>
+type UseRations = { type: 'useRations'; category: 'rations' }
 
 // saves
 type SavedCategories = Partial<
@@ -54,7 +55,6 @@ type SavedCategories = Partial<
         SavedCategory<CombatFlexibility, SavedDrop[]> &
         SavedCategory<ScrollSavant, SavedDrop[]> &
         SavedCategory<TricksterAce, SavedDrop> &
-        SavedCategory<GanziHeritage, ResistanceType> &
         SavedCategory<FamiliarAbility, string[]> &
         SavedCategory<MindSmith, Partial<SavedMindSmith>> &
         SavedCategory<AddedFeat, SavedDrop>
@@ -80,6 +80,7 @@ type MindSmithTemplate = BaseCategoryTemplate<
     [AlertRowTemplate<MindSmith>] | [MindSmithRowTemplate<'damage'>, MindSmithRowTemplate<'trait'>, MindSmithRowTemplate<'rune'>]
 >
 type AddedFeatTemplate = DropTemplate<AddedFeat>
+type UseRationsTemplate = SelectTemplate<UseRations, boolean>
 
 type ComboTemplateFields =
     | ComboTemplateField<TrainedSkill>
@@ -100,6 +101,7 @@ type TemplateField =
     | SelectTemplateField<FamiliarAbility, string>
     | MindSmithTemplateField
     | DropTemplateField<AddedFeat>
+    | SelectTemplateField<UseRations, `${boolean}`>
 
 /**
  * End of Variables
@@ -116,8 +118,8 @@ type RemoveUUIDS<T> = {
 
 type RawCategory = typeof import('./categories').CATEGORY_DATA[number]
 type Category = { type: CategoryType; category: CategoryName }
-type CategoryType = RawCategory['type'] | 'familiarAbility'
-type CategoryName = RawCategory['category'] | 'familiar'
+type CategoryType = RawCategory['type'] | 'familiarAbility' | 'useRations'
+type CategoryName = RawCategory['category'] | 'familiar' | 'rations'
 
 type RulesName = typeof import('./categories').RULE_TYPES[number]
 

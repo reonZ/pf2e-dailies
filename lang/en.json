@@ -8,13 +8,19 @@
                 "weapon": "Missing Mind Weapon"
             },
             "message": {
-                "changes": "Has made the following changes during their daily preparations",
+                "changes": "Has made the following changes during their daily preparations.",
+                "noChanges": "Has made no changes during their daily preparations, you didn't even need to know about it really.",
                 "gained": "Gained the temporary {type}:",
                 "skills": "Trained in the following skills:",
                 "tome": "Studied their thaumaturgy tome:",
                 "spells": "Is ready to use the spells:",
                 "mindsmith": "Is focusing on the mind weapon:",
-                "familiar": "Has selected the familiar abilities:"
+                "familiar": "Has selected the familiar abilities:",
+                "rations": {
+                    "used": "Consumed one {name} and has {nb} remaining.",
+                    "last": "Consumed their last remaining {name}.",
+                    "almost": "Consumed one {name} and has only {nb} remaining."
+                }
             },
             "error": {
                 "unexpected": "An unexpected error occured during daily preparations. See the console (F12) for details.",
@@ -26,7 +32,7 @@
                     "wrongLevel": "The dropped {type} level is too high for this slot.",
                     "wrongTrait": "The dropped {type} does not have the {trait} {category}.",
                     "cannotBe": "The dropped {type} cannot be a {not}",
-                    "wrongSpellTime": "The dopped spell cast time exceeds {time}."
+                    "wrongSpellTime": "The dropped spell cast-time exceeds {time}."
                 },
                 "input": {
                     "proficiency": "You are already {rank} in {proficiency}."
@@ -37,6 +43,11 @@
                 "alert": "Click here to resolve",
                 "search": "Open the compendium browser",
                 "clear": "Clear selection"
+            },
+            "rations": {
+                "yes": "Consume ({nb} remaining)",
+                "no": "Do not consume any",
+                "last": "Consume last available"
             }
         },
         "label": {

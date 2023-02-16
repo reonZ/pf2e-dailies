@@ -1,6 +1,7 @@
 import { getSourceId, includesSourceId } from '@utils/foundry/flags'
 import { filterItemsWithSourceId, getItems } from '@utils/foundry/item'
 import { hasLocalization, localize } from '@utils/foundry/localize'
+import { getRations } from './data/consumables'
 
 export const RULE_TYPES = ['addedLanguage', 'trainedSkill', 'addedResistance', 'ganziHeritage', 'thaumaturgeTome'] as const
 export const MINDSMITH_WEAPON_UUID = 'Compendium.pf2e-dailies.equipment.VpmEozw21aRxX15P'
@@ -160,7 +161,7 @@ const { CATEGORIES, UUIDS, FIRST_FEATS, FIRST_EQUIPMENTS, FIRST_HERITAGES, RULES
 export function hasAnyCategory(actor: CharacterPF2e) {
     const itemTypes = actor.itemTypes
     return (
-        // !!getRations(actor) ||
+        getRations(actor)?.uses.value ||
         actor.familiar ||
         itemTypes.heritage.some(item => includesSourceId(item, FIRST_HERITAGES)) ||
         itemTypes.feat.some(item => includesSourceId(item, FIRST_FEATS)) ||

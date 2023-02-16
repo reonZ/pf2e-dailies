@@ -1,10 +1,11 @@
 import { getFreePropertySlot, WEAPON_GROUPS } from '@data/weapon'
 import { getCategoryUUIDS, getRuleItems, RULE_TYPES } from '@src/categories'
+import { getRations } from '@src/data/consumables'
 import { familiarUUID, getFamiliarPack } from '@src/data/familiar'
 import { getFlag, hasSourceId, setFlag } from '@utils/foundry/flags'
 import { findItemWithSourceId } from '@utils/foundry/item'
 import { hasLocalization, localize, subLocalize } from '@utils/foundry/localize'
-import { chatUUID } from '@utils/foundry/uuid'
+import { chatUUID, fakeChatUUID } from '@utils/foundry/uuid'
 import { MODULE_ID } from '@utils/module'
 import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
 import { createSpellScroll } from '@utils/pf2e/spell'
@@ -179,6 +180,37 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
             flags[category] ??= []
             flags[category].push(id)
+        } else if (type === 'useRations') {
+            if (field.value !== 'true') continue
+
+            const rations = getRations(actor)
+            if (!rations?.uses.value) continue
+
+            const quantity = rations.quantity
+            const { value, max } = rations.uses
+
+            if (value <= 1) {
+                if (quantity <= 1) {
+                    rations.delete()
+                } else {
+                    updateData.push({
+                        _id: rations.id,
+                        'system.quantity': Math.max(rations.quantity - 1, 0),
+                        'system.charges.value': max,
+                    })
+                }
+            } else {
+                updateData.push({
+                    _id: rations.id,
+                    'system.charges.value': Math.max(value - 1, 0),
+                })
+            }
+
+            const remaining = (quantity - 1) * max + value
+            const name = remaining <= 1 ? fakeChatUUID(rations.name) : chatUUID(rations.uuid)
+            if (remaining <= 1) message += msg('rations.last', { name })
+            else if (remaining <= 3) message += msg('rations.almost', { name, nb: remaining - 1 })
+            else message += msg('rations.used', { name, nb: remaining - 1 })
         } else {
             const category = field.dataset.category
             const uuid = getCategoryUUIDS(category)[0]
@@ -202,7 +234,6 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
                 const selected = await randomOptions(options)
                 rules.push(createResistanceRule(selected, 'half'))
                 messages.resistances.push({ uuid, selected, label: category, random: true })
-                flags[field.dataset.category] = selected
             }
         }
     }
@@ -294,7 +325,7 @@ export async function accept(html: JQuery, actor: CharacterPF2e) {
 
     await setFlag(actor, 'saved', flags)
 
-    message = `${msg('changes')}<hr>${message}`
+    message = message ? `${msg('changes')}<hr>${message}` : msg('noChanges')
     ChatMessage.create({ content: message, speaker: ChatMessage.getSpeaker({ actor }) })
 }
 

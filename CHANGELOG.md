@@ -1,3 +1,8 @@
+# 1.19.1
+
+-   added a background color to the input as fallback for the parchment
+-   fixed an issue with combo dropdown not selecting the previous value (it had no real incidence for the user but still)
+
 # 1.19.0
 
 -   added support for ration consumption (the default option will always revert to "not consume" instead of being saved)

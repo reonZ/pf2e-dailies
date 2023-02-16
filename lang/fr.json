@@ -12,8 +12,14 @@
                 "tome": "A étudié le tome de thaumaturgie suivant :",
                 "spells": "est prêt à utiliser les sorts :",
                 "mindsmith": "se concentre sur l'arme spirituelle :",
-                "changes": "a fait les changements suivants au cours de ses préparatifs quotidiens",
-                "familiar": "a choisi les capacités de familier :"
+                "changes": "a fait les changements suivants au cours de ses préparatifs quotidiens.",
+                "familiar": "a choisi les capacités de familier :",
+                "noChanges": "N'a fait aucun changement pendant ses préparatifs quotidiens et vous n'aviez pas réellement besoin de le savoir.",
+                "rations": {
+                    "used": "a consommé un {name} et il lui en reste {nb}.",
+                    "last": "a consommé le dernier {name}.",
+                    "almost": "a consommé un {name} et n'en a plus que {nb}."
+                }
             },
             "error": {
                 "unexpected": "Une erreur inattendue s'est produite au cours des préparatifs quotidiens. Consultez la console (F12) pour plus de détails.",
@@ -37,7 +43,12 @@
                 "search": "Ouvrir le navigateur de compendium",
                 "clear": "Effacer la sélection"
             },
-            "title": "Faire vos préparatifs quotidiens"
+            "title": "Faire vos préparatifs quotidiens",
+            "rations": {
+                "yes": "Consommé (il en reste {nb})",
+                "no": "N'en consomme pas",
+                "last": "Consommer le dernier disponible"
+            }
         },
         "label": {
             "elementalist": "Élémentaliste",

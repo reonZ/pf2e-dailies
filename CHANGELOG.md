@@ -1,3 +1,7 @@
+# 1.19.0
+
+-   added support for ration consumption (the default option will always revert to "not consume" instead of being saved)
+
 # 1.18.1
 
 -   fix search traits stacking bug

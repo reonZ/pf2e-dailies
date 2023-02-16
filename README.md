@@ -1,6 +1,10 @@
 # FoundryVTT PF2e Dailies
 
-This module will provide a convenient interface to handle a character's daily preparations if they have at least one of the following feats or items:
+**This module will provide a convenient interface to handle a character's daily preparations if they have at least one of the following feats, items or features:**
+
+Consuming Rations
+
+-   if the character has any rations available in their inventory, they will be offered the option to consume one.
 
 Familiar Abilities
 

@@ -162,6 +162,7 @@ export function getData(actor: CharacterPF2e) {
             const row: TemplateRow<TrainedSkillTemplate> = {
                 rowType: 'combo',
                 options: arrayToSelectOptions(options),
+                selected: selected,
                 value: input ? selected : capitalize(selected),
                 dataset: { input },
             }
@@ -182,6 +183,7 @@ export function getData(actor: CharacterPF2e) {
                     rowType: 'combo',
                     label: PROFICIENCY_RANKS[rank],
                     options: arrayToSelectOptions(options),
+                    selected: selected,
                     value: input ? selected : capitalize(selected),
                     dataset: { input, rank },
                 })

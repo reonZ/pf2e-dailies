@@ -57,11 +57,7 @@
 {{#*inline 'selectRow'}}
 <label>{{label}}</label>
 <select data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}}>
-    {{#select entry.value}}
-    {{#each entry.options as | option |}}
-    <option value="{{option.value}}">{{option.label}}</option>
-    {{/each}}
-    {{/select}}
+    {{selectOptions entry.options selected=entry.value nameAttr='value' labelAttr='label'}}
 </select>
 {{/inline}}
 
@@ -70,11 +66,7 @@
 <div class="combo">
     <select>
         <option value=""></option>
-        {{#select entry.value}}
-        {{#each entry.options as | option |}}
-        <option value="{{option.value}}">{{option.label}}</option>
-        {{/each}}
-        {{/select}}
+        {{selectOptions entry.options selected=entry.selected nameAttr='value' labelAttr='label'}}
     </select>
     <input type="text" class="input" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}} />
 </div>

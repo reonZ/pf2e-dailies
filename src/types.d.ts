@@ -167,6 +167,7 @@ type DropRowTemplate<C extends Category = Category> = BaseRowTemplate<C, 'drop'>
 }
 
 type ComboRowTemplate<C extends Category = Category, O extends string = string> = BaseRowTemplate<C, 'combo'> & {
+    selected: O | ''
     value: O | ''
     placeholder?: string
     options: SelectOption<O>[]

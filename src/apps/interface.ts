@@ -263,9 +263,7 @@ export class DailiesInterface extends Application {
 
         let fixed
         try {
-            console.log('before fix')
             fixed = await row.fix(args)
-            console.log('after fix')
         } catch (error) {
             localize.error('error.unexpected')
             console.error(error)
@@ -273,7 +271,6 @@ export class DailiesInterface extends Application {
         }
 
         this.#unlock()
-        console.log(fixed)
         if (fixed) this.render()
     }
 

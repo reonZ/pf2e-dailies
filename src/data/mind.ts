@@ -191,9 +191,7 @@ async function fix({ actor }: DailyValueArgs<MindGenerics>) {
     )
 
     if (weapon) {
-        console.log('before')
         await actor.createEmbeddedDocuments('Item', [weapon])
-        console.log('after')
         return true
     }
 

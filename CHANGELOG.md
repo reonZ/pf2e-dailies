@@ -1,3 +1,7 @@
+# 2.0.1
+
+-   removed some debug stuff
+
 # 2.0.0
 
 -   module has been completely re-written (keep an eye out for bugs)

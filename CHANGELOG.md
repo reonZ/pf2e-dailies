@@ -1,3 +1,8 @@
+# 2.1.0
+
+-   dispose of monaco models directly instead of letting the extension do it (allowing for definition peeking using alt+F12)
+-   check for extension version and notify the user if out-of-date
+
 # 2.0.1
 
 -   removed some debug stuff

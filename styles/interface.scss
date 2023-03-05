@@ -78,15 +78,17 @@
             grid-template-columns: minmax(120px, auto) 1fr auto auto;
         }
 
-        select,
-        option,
-        label {
-            text-transform: capitalize;
-        }
-
         input,
         select {
             border-radius: 3px;
+        }
+
+        select:disabled {
+            cursor: not-allowed;
+
+            &[editable] > button {
+                stroke: red;
+            }
         }
 
         .combo,

@@ -1,85 +1,54 @@
-import { getFlag, setFlag } from '@utils/foundry/flags'
-import { findItemWithSourceId } from '@utils/foundry/item'
-import { MODULE_ID } from '@utils/module'
+import { getFlag, getSourceId, setFlag } from '@utils/foundry/flags'
 import { sluggify } from '@utils/pf2e/utils'
-import { isRuleItem, MINDSMITH_WEAPON_UUID } from './categories'
-import { WEAPON_TRAITS } from './data/weapon'
+import { getDailyFromSourceId } from './dailies'
+import { MODULE_ID } from './main'
 
-export function wrapRestForTheNight() {
-    const original = game.pf2e.actions.restForTheNight
-    game.pf2e.actions.restForTheNight = async (options: ActionDefaultOptions) => {
-        const result = await original(options)
-        if (result.length && options.actors) afterRest(options.actors)
-        return result
-    }
-}
+export async function restForTheNight(actor: CharacterPF2e) {
+    const update: EmbeddedDocumentUpdateData<ItemPF2e>[] = []
+    const remove: string[] = []
 
-async function afterRest(actors: ActorPF2e | ActorPF2e[]) {
-    actors = Array.isArray(actors) ? actors : [actors]
+    for (const item of actor.items) {
+        if (getFlag(item, 'temporary')) {
+            remove.push(item.id)
 
-    const characters = actors.filter(x => x.isOfType('character')) as CharacterPF2e[]
-    for (const actor of characters) {
-        const update: EmbeddedDocumentUpdateData<ItemPF2e>[] = []
-        const remove: string[] = []
-        const itemTypes = actor.itemTypes
-
-        const cleanRuleItem = (item: ItemPF2e) => {
-            const rules = deepClone(item._source.system.rules)
-
-            let modified = false
-            for (let i = rules.length - 1; i >= 0; i--) {
-                if (!(MODULE_ID in rules[i])) continue
-                rules.splice(i, 1)
-                modified = true
-            }
-
-            if (modified) update.push({ _id: item.id, 'system.rules': rules })
-        }
-
-        for (const item of itemTypes.feat) {
-            if (isRuleItem(item)) cleanRuleItem(item)
-
-            if (getFlag(item, 'temporary')) {
-                const parentId = item.getFlag<string>('pf2e', 'grantedBy.id')
+            // we remove the itemGrants flag from the parent feat
+            if (item.isOfType('feat')) {
+                const parentId = getFlag<string>(item, 'grantedBy')
                 if (parentId) {
                     const slug = sluggify(item.name, { camel: 'dromedary' })
                     const path = `flags.pf2e.itemGrants.-=${slug}`
                     update.push({ _id: parentId, [path]: true })
                 }
-                remove.push(item.id)
+            }
+
+            // we don't need to do more work because the item is being deleted
+            continue
+        }
+
+        const sourceId = getSourceId(item)
+
+        // We run the daily rest function if it exists
+        if (sourceId) {
+            const daily = getDailyFromSourceId(sourceId)
+            if (daily?.rest) {
+                await daily.rest({ item, sourceId, updateItem: data => update.push(data) })
             }
         }
 
-        for (const item of itemTypes.lore) {
-            if (getFlag(item, 'temporary')) remove.push(item.id)
-        }
-
-        for (const item of itemTypes.equipment) {
-            if (isRuleItem(item)) cleanRuleItem(item)
-        }
-
-        for (const item of itemTypes.heritage) {
-            if (isRuleItem(item)) cleanRuleItem(item)
-        }
-
-        for (const item of itemTypes.spellcastingEntry) {
-            if (getFlag(item, 'temporary')) remove.push(item.id)
-        }
-
-        const mindWeapon = findItemWithSourceId(actor, MINDSMITH_WEAPON_UUID, ['weapon'])
-        if (mindWeapon) {
-            let traits = mindWeapon._source.system.traits?.value ?? []
-            traits = traits.filter(x => !WEAPON_TRAITS.includes(x as MindSmithWeaponTrait))
-            update.push({ _id: mindWeapon.id, 'system.traits.value': traits })
-
-            const runeProperty = getFlag<RunePropertyKey | ''>(actor, 'weapon.runeProperty')
-            if (runeProperty) {
-                update.push({ _id: mindWeapon.id, [`system.${runeProperty}.value`]: null })
+        // we clean temporary rule elements
+        const rules = deepClone(item._source.system.rules)
+        let modifiedRules = false
+        for (let i = rules.length - 1; i >= 0; i--) {
+            if (MODULE_ID in rules[i]!) {
+                rules.splice(i, 1)
+                modifiedRules = true
             }
         }
-
-        setFlag(actor, 'weapon.runeProperty', '')
-        if (update.length) actor.updateEmbeddedDocuments('Item', update)
-        if (remove.length) actor.deleteEmbeddedDocuments('Item', remove)
+        if (modifiedRules) update.push({ _id: item.id, 'system.rules': rules })
     }
+
+    if (update.length) await actor.updateEmbeddedDocuments('Item', update)
+    if (remove.length) await actor.deleteEmbeddedDocuments('Item', remove)
+
+    await setFlag(actor, 'rested', true)
 }

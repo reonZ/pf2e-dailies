@@ -1,7 +1,12 @@
-# 1.19.1
+# 2.0.0
 
--   added a background color to the input as fallback for the parchment
--   fixed an issue with combo dropdown not selecting the previous value (it had no real incidence for the user but still)
+-   module has been completely re-written (keep an eye out for bugs)
+-   characters are now forced to `rest` before they can make daily preparations
+-   message links for created items now point to the compendium entries instead of the actor items
+-   now displays resistance value in message
+-   now displays spell level in message
+-   now links directly to the spell instead of the scroll in the message (still shows the name of the scroll)
+-   the module now offers full support for homebrew dailies
 
 # 1.19.0
 

@@ -1,116 +1,158 @@
+import { DailiesInterface } from '@apps/interface'
 import { subLocalize } from '@utils/foundry/localize'
-import { CATEGORY_SEARCH } from './search'
+import { getTranslatedSkills } from '@utils/pf2e/skills'
+import { sluggify } from '@utils/pf2e/utils'
 
 const localize = subLocalize('interface.error.drop')
 
-export async function dropped(event: ElementDragEvent) {
-    let target = $(event.target)
-    if (target.is('label')) target = target.next()
-
-    const categoryType = target.attr('data-type') as CategoryType | undefined
-    if (!categoryType) return
-
-    try {
-        const dataString = event.dataTransfer?.getData('text/plain')
-        const typeError = () => localize.warn('wrongDataType')
-
-        const data: { type: string; uuid: string } = JSON.parse(dataString)
-        console.log(data)
-        if (!data || data.type !== 'Item' || typeof data.uuid !== 'string') return typeError()
-
-        const item = await fromUuid<ItemPF2e>(data.uuid)
-        if (!item) return typeError()
-
-        switch (categoryType) {
-            case 'scrollChain':
-                droppedSpell(target, item, CATEGORY_SEARCH.scrollChain)
-                break
-            case 'combatFlexibility':
-                droppedFeat(target, item, CATEGORY_SEARCH.combatFlexibility)
-                break
-            case 'scrollSavant':
-                droppedSpell(target, item, CATEGORY_SEARCH.scrollSavant)
-                break
-            case 'tricksterAce':
-                droppedSpell(target, item, CATEGORY_SEARCH.tricksterAce, tricksterAceFilter)
-                break
-            case 'addedFeat':
-                droppedAddedFeat(target, item)
-                break
-        }
-    } catch (error) {}
-}
-
-function droppedAddedFeat(target: JQuery, item: ItemPF2e) {
-    const category = target.attr('data-category') as CategoryName
-
-    switch (category) {
-        case 'metamagical':
-            const filters = { ...CATEGORY_SEARCH.addedFeat.metamagical }
-            filters.traits = (filters.traits ?? [])?.slice()
-            filters.traits.push('wizard')
-            droppedFeat(target, item, filters)
-            break
-    }
-}
-
-function tricksterAceFilter(item: SpellPF2e) {
-    const castTime = item.system.time.value
-
-    if (castTime.includes('hour') || (castTime.includes('min') && parseInt(castTime) > 10)) {
-        localize.warn('wrongSpellTime', { time: '10 min' })
-        return false
-    }
-
-    return true
-}
-
-function droppedSpell(
-    target: JQuery,
+export async function onDropFeat(
+    this: DailiesInterface,
     item: ItemPF2e,
-    { category = [], traditions = [] }: InitialSpellFilters = {},
-    filter?: (item: SpellPF2e) => boolean
+    target: HTMLInputElement,
+    filter: DailyRowDropParsedFeat
 ) {
-    if (!item.isOfType('spell')) return localize.warn('wrongType', { type: 'spell' })
+    if (!item.isOfType('feat')) return localize('notFeat')
 
-    if (item.isCantrip && !category.includes('cantrip')) return localize.warn('cannotBe', { type: 'spell', not: 'cantrip' })
-    if (item.isRitual && !category.includes('ritual')) return localize.warn('cannotBe', { type: 'spell', not: 'ritual' })
-    if (item.isFocusSpell && !category.includes('focus')) return localize.warn('cannotBe', { type: 'spell', not: 'focus' })
+    const { featType, traits, system, level } = item
+    const { search, drop } = filter
 
-    if (traditions.length) {
-        const itemTraditions = item.system.traditions.value
-        for (const tradition of traditions) {
-            if (!itemTraditions.includes(tradition))
-                return localize.warn('wrongTrait', { type: 'spell', trait: tradition, category: 'tradition' })
+    if (search.feattype.length && !search.feattype.includes(featType)) {
+        return localize.warn('wrongType', { types: localizeAll('featTypes', search.feattype) })
+    }
+
+    if (search.traits.values.length) {
+        const conjunction = search.traits.conjunction ?? 'and'
+        const testFn = conjunction === 'or' ? 'some' : 'every'
+        const test = search.traits.values[testFn](trait => traits.has(trait))
+        if (!test) {
+            return localize.warn(conjunction === 'or' ? 'wrongTraitOr' : 'wrongTraitAnd', {
+                traits: localizeAll('featTraits', search.traits.values),
+            })
         }
     }
 
-    if (item.level > Number(target.attr('data-level'))) return localize.warn('wrongLevel', { type: 'spell' })
+    if (search.skills.length) {
+        const translatedSkills = getTranslatedSkills()
+        const prerequisites = system.prerequisites.value.map(prerequisite => prerequisite.value.toLocaleLowerCase())
+        const test = search.skills.some(skill =>
+            prerequisites.some(prerequisite => prerequisite.includes(skill) || prerequisite.includes(translatedSkills[skill]!))
+        )
+        if (!test) return localize.warn('wrongSkill', { skills: localizeAll('skillList', search.skills) })
+    }
 
-    if (filter && !filter(item)) return
+    if (search.rarity.length && !search.rarity.includes(system.traits.rarity)) {
+        return localize.warn('wrongRarity', { rarities: localizeAll('rarityTraits', search.rarity) })
+    }
 
-    droppedItem(target, item)
-}
+    if (search.source.length && !search.source.includes(sluggify(system.source.value))) {
+        return localize.warn('wrongSource', { sources: search.source.join(', ') })
+    }
 
-function droppedFeat(target: JQuery, item: ItemPF2e, { feattype = [], traits = [] }: InitialFeatFilters) {
-    if (!item.isOfType('feat') || item.isFeature) return localize.warn('wrongType', { type: 'feat' })
-    if (!feattype.includes(item.featType)) return localize.warn('cannotBe', { type: 'feat', not: item.featType })
+    const { min, max } = search.level
+    if (level < min) return localize.warn('wrongLevelLow', { level: `min: ${min}` })
+    else if (level > max) return localize.warn('wrongLevelHigh', { level: `max: ${max}` })
 
-    if (traits.length) {
-        const itemTraits = item.system.traits.value
-        for (const trait of traits) {
-            if (!itemTraits.includes(trait)) return localize.warn('wrongTrait', { type: 'feat', trait, category: 'trait' })
+    if (drop) {
+        const args = this.dailyArgs[target.dataset.daily!]
+        if (args) {
+            const result = await drop(item, args)
+            if (typeof result === 'object') {
+                if (result.data) return game.i18n.format(result.error, result.data)
+                else return game.i18n.localize(result.error)
+            } else if (result === false) {
+                return localize.warn('wrongCustom')
+            }
         }
     }
 
-    if (item.level > Number(target.attr('data-level'))) return localize.warn('wrongLevel', { type: 'feat' })
-
-    droppedItem(target, item)
+    onDropItem(item, target)
 }
 
-function droppedItem(target: JQuery, item: ItemPF2e) {
-    target.val(item.name)
-    target.attr('value', item.name)
-    target.attr('data-uuid', item.uuid)
-    target.nextAll('[data-action="clear"]').first().removeClass('disabled')
+export async function onDropSpell(
+    this: DailiesInterface,
+    item: ItemPF2e,
+    target: HTMLInputElement,
+    filter: DailyRowDropParsedSpell
+) {
+    if (!item.isOfType('spell')) return localize('notSpell')
+
+    const { system, level, traits, traditions, school } = item
+    const { search, drop } = filter
+
+    if (search.category.length) {
+        const categories = search.category
+            .map(x => game.i18n.localize(x === 'cantrip' ? 'PF2E.SpellCantripLabel' : CONFIG.PF2E.spellCategories[x]))
+            .join(', ')
+
+        if (
+            (item.isCantrip && !search.category.includes('cantrip')) ||
+            (item.isFocusSpell && !search.category.includes('focus')) ||
+            (item.isRitual && !search.category.includes('ritual')) ||
+            (!item.isCantrip && !item.isFocusSpell && !item.isRitual && !search.category.includes('spell'))
+        ) {
+            return localize.warn('wrongCategory', { categories })
+        }
+    }
+
+    if (search.traits.values.length) {
+        const conjunction = search.traits.conjunction ?? 'and'
+        const testFn = conjunction === 'or' ? 'some' : 'every'
+        const test = search.traits.values[testFn](trait => traits.has(trait))
+        if (!test) {
+            return localize.warn(conjunction === 'or' ? 'wrongTraitOr' : 'wrongTraitAnd', {
+                traits: localizeAll('spellTraits', search.traits.values),
+            })
+        }
+    }
+
+    if (search.traditions.length) {
+        if (!search.traditions.some(tradition => traditions.has(tradition))) {
+            return localize.warn('wrongTradition', { traditions: localizeAll('magicTraditions', search.traditions) })
+        }
+    }
+
+    if (search.level.length && !search.level.includes(level)) {
+        return localize.warn('wrongLevel', { levels: search.level.join(', ') })
+    }
+
+    if (search.school.length && !search.school.includes(school)) {
+        return localize.warn('wrongSchool', { schools: localizeAll('magicSchools', search.school) })
+    }
+
+    if (search.rarity.length && !search.rarity.includes(system.traits.rarity)) {
+        return localize.warn('wrongRarity', { rarities: localizeAll('rarityTraits', search.rarity) })
+    }
+
+    if (search.source.length && !search.source.includes(sluggify(system.source.value))) {
+        return localize.warn('wrongSource', { sources: search.source.join(', ') })
+    }
+
+    if (drop) {
+        const args = this.dailyArgs[target.dataset.daily!]
+        if (args) {
+            const result = await drop(item, args)
+            if (typeof result === 'object') {
+                if (result.data) return ui.notifications.warn(game.i18n.format(result.error, result.data))
+                else return ui.notifications.warn(game.i18n.localize(result.error))
+            } else if (result === false) {
+                return localize.warn('wrongCustom')
+            }
+        }
+    }
+
+    onDropItem(item, target)
+}
+
+function localizeAll<
+    C extends keyof Omit<PF2ECONFIG, 'proficiencyLevels'>,
+    K extends keyof Omit<PF2ECONFIG, 'proficiencyLevels'>[C]
+>(config: C, list: K[]): string {
+    const localized = list.map(key => game.i18n.localize(CONFIG.PF2E[config][key] as unknown as string))
+    return localized.join(', ')
+}
+
+export function onDropItem(item: ItemPF2e, target: HTMLInputElement) {
+    target.value = item.name
+    target.dataset.uuid = item.uuid
+    target.nextElementSibling!.nextElementSibling!.classList.remove('disabled')
 }

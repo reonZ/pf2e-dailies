@@ -2,7 +2,7 @@
     {{#if rows.length}}
     <div class="group rows">
         {{#each rows as | group |}}
-        {{> (concat group.rows.[0].rowType 'Row') entry=group.rows.[0] group=group label=group.label}}
+        {{> (concat group.rows.[0].data.type 'Row') entry=group.rows.[0] label=group.label}}
         {{/each}}
     </div>
     {{/if}}
@@ -11,11 +11,12 @@
     <div class="group {{group.type}}">
         <h3>{{group.label}}</h3>
         {{#each group.rows as | row |}}
-        {{> (concat row.rowType 'Row') entry=row group=group label=row.label}}
+        {{> (concat row.data.type 'Row') entry=row label=row.label}}
         {{/each}}
     </div>
     {{/each}}
 </div>
+
 
 <div class="buttons">
     <button data-action="accept"><i class="fas fa-save"></i> {{i18n 'accept'}}</button>
@@ -29,34 +30,34 @@
 
 {{#*inline 'alertRow'}}
 <label>{{label}}</label>
-<input type="text" class="alert" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}} disabled>
-<a class="alert" data-action="alert" title="{{@root.i18n 'tooltip.alert'}}"><i class="fa-solid fa-triangle-exclamation"></i></a>
+<input type="text" class="alert" {{{@root.dump entry}}} disabled>
+<a class="alert" data-action="alert" {{{@root.dump entry}}} data-tooltip="{{@root.i18n 'tooltip.alert'}}">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+</a>
 {{/inline}}
 
 {{#*inline 'inputRow'}}
 <label>{{label}}</label>
-<input type="text" class="input" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}} />
-<a data-action="clear" title="{{@root.i18n 'tooltip.clear'}}">
+<input type="text" class="input" {{{@root.dump entry}}} />
+<a data-action="clear" data-tooltip="{{@root.i18n 'tooltip.clear'}}">
     <i class="fas fa-times"></i>
 </a>
 {{/inline}}
 
 {{#*inline 'dropRow'}}
 <label data-droppable="true">{{label}}</label>
-<input type="text" class="drop" data-droppable="true" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}}
-    disabled />
-<a data-action="search" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}}"
-    title="{{@root.i18n 'tooltip.search'}}">
+<input type="text" class="drop" data-droppable="true" {{{@root.dump entry}}} disabled />
+<a data-action="search" {{{@root.dump entry}}} data-tooltip="{{@root.i18n 'tooltip.search'}}">
     <i class="fas fa-search"></i>
 </a>
-<a data-action="clear" {{#unless entry.uuid}} class="disabled" {{/unless}} title="{{@root.i18n 'tooltip.clear'}}">
+<a data-action="clear" {{#unless entry.uuid}} class="disabled" {{/unless}} data-tooltip="{{@root.i18n 'tooltip.clear'}}">
     <i class="fas fa-times"></i>
 </a>
 {{/inline}}
 
 {{#*inline 'selectRow'}}
 <label>{{label}}</label>
-<select data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}}>
+<select {{{@root.dump entry}}}>
     {{selectOptions entry.options selected=entry.value nameAttr='value' labelAttr='label'}}
 </select>
 {{/inline}}
@@ -64,20 +65,20 @@
 {{#*inline 'comboRow'}}
 <label>{{label}}</label>
 <div class="combo">
-    <select>
+    <select {{#unless entry.options.length}}data-tooltip="{{@root.i18n 'tooltip.noSelect'}}" disabled{{/unless}}>
         <option value=""></option>
         {{selectOptions entry.options selected=entry.selected nameAttr='value' labelAttr='label'}}
     </select>
-    <input type="text" class="input" data-type="{{group.type}}" data-category="{{group.category}}" {{{@root.dump entry}}} />
+    <input type="text" class="input" {{{@root.dump entry}}} />
 </div>
 {{/inline}}
 
 {{#*inline 'randomRow'}}
 <label>{{label}}</label>
-<select class="random" data-type="{{group.type}}" data-category="{{group.category}}">
+<select class="random" {{{@root.dump entry}}}>
     {{#each entry.options as | option |}}
     <option value="{{option.value}}">{{option.label}}</option>
     {{/each}}
 </select>
-<div class="die" title="{{@root.i18n 'tooltip.random'}}"><i class="fa-solid fa-dice-d20"></i></div>
+<div class="die" data-tooltip="{{@root.i18n 'tooltip.random'}}"><i class="fa-solid fa-dice-d20"></i></div>
 {{/inline}}

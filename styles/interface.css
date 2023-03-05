@@ -66,14 +66,15 @@
 #pf2e-dailies-interface .window-content .rows {
   grid-template-columns: minmax(120px, auto) 1fr auto auto;
 }
-#pf2e-dailies-interface .window-content select,
-#pf2e-dailies-interface .window-content option,
-#pf2e-dailies-interface .window-content label {
-  text-transform: capitalize;
-}
 #pf2e-dailies-interface .window-content input,
 #pf2e-dailies-interface .window-content select {
   border-radius: 3px;
+}
+#pf2e-dailies-interface .window-content select:disabled {
+  cursor: not-allowed;
+}
+#pf2e-dailies-interface .window-content select:disabled[editable] > button {
+  stroke: red;
 }
 #pf2e-dailies-interface .window-content .combo,
 #pf2e-dailies-interface .window-content select,

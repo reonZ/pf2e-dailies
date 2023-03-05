@@ -1,11 +1,31 @@
 import { setModuleID } from '@utils/module'
-import { wrapRestForTheNight } from './rest'
+import { registerSetting, registerSettingMenu } from '@utils/foundry/settings'
+import { parseCustomDailies } from './dailies'
+import { restForTheNight } from './rest'
 import { renderCharacterSheetPF2e } from './sheet'
+import { DailyCustoms } from '@apps/customs'
 
-setModuleID('pf2e-dailies')
+export const MODULE_ID = 'pf2e-dailies'
+setModuleID(MODULE_ID)
 
-Hooks.once('ready', () => {
-    wrapRestForTheNight()
-})
+Hooks.on('pf2e.restForTheNight', restForTheNight)
 
 Hooks.on('renderCharacterSheetPF2e', renderCharacterSheetPF2e)
+
+Hooks.once('setup', () => {
+    registerSetting({
+        name: 'customDailies',
+        type: Array,
+        default: [],
+        onChange: parseCustomDailies,
+    })
+
+    registerSettingMenu({
+        name: 'customs',
+        type: DailyCustoms,
+    })
+})
+
+Hooks.once('ready', async () => {
+    await parseCustomDailies()
+})

@@ -7,31 +7,27 @@
             "alert": {
                 "weapon": "Missing Mind Weapon"
             },
-            "message": {
-                "changes": "Has made the following changes during their daily preparations.",
-                "noChanges": "Has made no changes during their daily preparations, you didn't even need to know about it really.",
-                "gained": "Gained the temporary {type}:",
-                "skills": "Trained in the following skills:",
-                "tome": "Studied their thaumaturgy tome:",
-                "spells": "Is ready to use the spells:",
-                "mindsmith": "Is focusing on the mind weapon:",
-                "familiar": "Has selected the familiar abilities:",
-                "rations": {
-                    "used": "Consumed one {name} and has {nb} remaining.",
-                    "last": "Consumed their last remaining {name}.",
-                    "almost": "Consumed one {name} and has only {nb} remaining."
-                }
-            },
             "error": {
                 "unexpected": "An unexpected error occured during daily preparations. See the console (F12) for details.",
                 "empty": "All fields must be filled.",
                 "unattended": "Some alerts are still unattended. Please click on the alert triangles to resolve them.",
                 "drop": {
                     "wrongDataType": "Invalid data type dropped.",
-                    "wrongType": "Only {type}s can be dropped here.",
-                    "wrongLevel": "The dropped {type} level is too high for this slot.",
-                    "wrongTrait": "The dropped {type} does not have the {trait} {category}.",
-                    "cannotBe": "The dropped {type} cannot be a {not}",
+                    "wrongType": "The dropped item does not have the right type (needed: {types}).",
+                    "wrongCategory": "The dropped item does not have the right category (needed: {categories}).",
+                    "wrongTradition": "The dropped item does not have the right tradition (needed: {traditions}).",
+                    "wrongSchool": "The dropped item does not have the right school (needed: {schools}).",
+                    "wrongLevel": "The dropped item level does not have the right level (needed: {levels}).",
+                    "wrongLevelLow": "The dropped item level is too low for this slot ({level}).",
+                    "wrongLevelHigh": "The dropped item level is too high for this slot ({level}).",
+                    "wrongTraitAnd": "The dropped item does not have all the traits (needed all: {traits}).",
+                    "wrongTraitOr": "The dropped item does not have either of the traits (needed any: {traits}).",
+                    "wrongSkill": "The dropped item does not have the right prerequisite skills ({skills}).",
+                    "wrongRarity": "The dropped item does not have the right rarity ({rarities}).",
+                    "wrongSource": "The dropped item does not originate from the right source ({sources}).",
+                    "wrongCustom": "The dropped item didn't match the filters.",
+                    "notFeat": "Only feats can be dropped here.",
+                    "notSpell": "Only spells can be dropped here.",
                     "wrongSpellTime": "The dropped spell cast-time exceeds {time}."
                 },
                 "input": {
@@ -42,12 +38,100 @@
                 "random": "This will randomly be selected",
                 "alert": "Click here to resolve",
                 "search": "Open the compendium browser",
-                "clear": "Clear selection"
+                "clear": "Clear selection",
+                "noSelect": "No options available"
             },
             "rations": {
                 "yes": "Consume ({nb} remaining)",
                 "no": "Do not consume any",
                 "last": "Consume last available"
+            }
+        },
+        "customs": {
+            "title": "Custom Dailies",
+            "saved": "The daily '{daily}' was successfully saved.",
+            "deleted": "The daily '{daily}' was successfully deleted.",
+            "error": {
+                "duplicate": ""
+            },
+            "list": {
+                "create": "Create Daily"
+            },
+            "code": {
+                "save": "Save Daily",
+                "notify": "If you want to have a better experience while creating homebrew dailies, there is an extension for the module that replaces this with a very powerful text editor including all the typings of the module.<br>The extension module is not registered with the foundry but you can find it there: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>"
+            },
+            "delete": {
+                "title": "Delete Daily",
+                "content": "Are you sure you want to dlete this daily ?"
+            },
+            "template": {
+                "template": "Template",
+                "templates": "Templates",
+                "create": "Create Daily",
+                "noEmpty": "Some fields are not optional, please make sure you provide entries for all the fields which are not specified (optional).",
+                "badResistance": "A resistance value must be strictly supperior to 0.",
+                "tooltips": {
+                    "key": "Unique key for your daily.",
+                    "label": "(optional) Label used in the preparation interface and chat message. If left empty, the name of the root item will be used instead.",
+                    "uuid": "The uuid of the root item (feat, equipment, etc.) that will decide if this daily is used or not (if the character has said item).",
+                    "resistances": "Comma separated list of resistances from which the user will be able to select.",
+                    "resistance": "The value of the resistance gained.",
+                    "feattype": "(optional) Comma separated list of feat types used in the filter.",
+                    "feattraits": "(optional) Comma separated list of feat traits used in the filter.",
+                    "featlevel": "(optional) The max feat level used in the filter. Can be a number or one of the shortcuts 'level' and 'half' which respectively use the actor's level or half its value.",
+                    "spelllevel": "(optional) The level to which the spell will be heightened. Can be left empty to use the original level of the spell.",
+                    "spellcategory": "(optional) Comma separated list of spell categories.",
+                    "spelltraits": "(optional) Comma separated list of spell traits used in the filter.",
+                    "traditions": "(optional) Comma separated list of spell traditions used in the filter.",
+                    "spelllevels": "(optional) Comma separated list of spell levels used in the filter. If a single number is provided, it will be used as the upper range value. Can be one of the shortcuts 'level' and 'half' which respectively use the actor's level or half its value."
+                },
+                "default": {
+                    "label": "Default",
+                    "hint": "This is the default template boilerplate."
+                },
+                "trainedSkill": {
+                    "label": "Trained Skill",
+                    "hint": "This template was used for feats like <strong>Ancestral Longevity</strong> or <strong>Ageless Spirit</strong> to upgrade one skill or create a new lore with the proficiency rank of <strong>Trained</strong>."
+                },
+                "trainedLore": {
+                    "label": "Trained Lore",
+                    "hint": "This template was used for the <strong>Quick Study</strong> feat to create a new lore with the proficiency rank of <strong>Trained</strong>."
+                },
+                "language": {
+                    "label": "Language",
+                    "hint": "This template was used with the <strong>Ancestral Linguistics</strong> feat and the <strong>Bort's Blessing</strong> ring to add a new language."
+                },
+                "resistance": {
+                    "label": "Resistance",
+                    "hint": "This template was used for the <strong>Elementalist</strong> dedication and <strong>Ganzi</strong> heritage to add a new resistance among a predefined set of options."
+                },
+                "feat": {
+                    "label": "Feat",
+                    "hint": "This template was used for the <strong>Metamagical Experimentation</strong> feat to create a new feat."
+                },
+                "spell": {
+                    "label": "Spell",
+                    "hint": "This template will allow the creation of a new spell which is added to a temporary spellcasting entry."
+                },
+                "example": "Example",
+                "examples": "Examples",
+                "tome": {
+                    "label": "Thaumaturgy Tome",
+                    "hint": "This is what the code would look like if the <strong>Tome</strong> implement of the Thaumaturge class was a homebrew daily, it highlights the use of children with conditions and the use of the <u>prepare</u> function."
+                },
+                "flexibility": {
+                    "label": "Combat Flexibility",
+                    "hint": "This is what the code would look like if the <strong>Combat Flexibility</strong> feat was a homebrew daily, it is a very simple example of drop rows with <u>spell filters</u> and <u>child predicate</u>."
+                },
+                "savant": {
+                    "label": "Scroll Savant",
+                    "hint": "This is what the code would look like if the <strong>Scroll Savant</strong> feat was a homebrew daily. We gather some simple data in the <u>prepare</u> function and use it for the <u>condition</u> function of the different rows."
+                },
+                "mind": {
+                    "label": "Mind Smith",
+                    "hint": "This is what the code would look like if the <strong>Mind Smith</strong> dedication was a homebrow daily. This is by far the most complex example, the rows make use of both <u>child predicates</u> and <u>condition</u>, everything is falling appart if the character doesn't have a mind weapon equiped (the weapon is in a compendium pack) and that is why we are using the <u>alert</u> row to create said weapon if needed. It also make use of the <u>rest</u> function to clean up the mind weapon."
+                }
             }
         },
         "label": {
@@ -80,6 +164,43 @@
                 "error": {
                     "noSelection": "You must select one weapon base type.",
                     "missing": "The weapon couldn't be found in the compendium."
+                }
+            }
+        },
+        "error": {
+            "unexpected": "An unexpected error occured during preparation of the module <strong>PF2e Dailies</strong>. See the console (F12) for details.",
+            "unrested": "You must rest before your daily preparations.",
+            "duplicate": "A daily with this key already exists.",
+            "invalidKey": "The daily key must be a string."
+        },
+        "spellEntry": {
+            "name": "Temporary Spells"
+        },
+        "message": {
+            "changes": "Has made the following changes during their daily preparations.",
+            "noChanges": "Has made no changes during their daily preparations, you didn't even need to know about it really.",
+            "gained": "Gained the temporary {type}:",
+            "resistances": "Gained the resistances:",
+            "languages": "Learned to read and speak:",
+            "skills": "Trained in the following skills:",
+            "tome": "Studied their thaumaturgy tome:",
+            "spells": "Is ready to use the spells:",
+            "mindsmith": "Is focusing on the mind weapon:",
+            "familiar": "Has selected the familiar abilities:",
+            "feats": "Learned the feats:",
+            "scrolls": "Created the temporary scrolls:",
+            "rations": {
+                "used": "Consumed one {name} and has {nb} remaining.",
+                "last": "Consumed their last remaining {name}.",
+                "almost": "Consumed one {name} and has only {nb} remaining."
+            }
+        },
+        "settings": {
+            "menus": {
+                "customs": {
+                    "name": "Custom Dailies",
+                    "hint": "Register you own dailies to the module.",
+                    "label": "Register"
                 }
             }
         }

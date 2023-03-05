@@ -1,20 +1,21 @@
 import { DailiesInterface } from '@apps/interface'
 import { localize } from '@utils/foundry/localize'
-import { hasAnyCategory } from './categories'
+import { getFlag } from '@utils/foundry/flags'
+import { warn } from '@utils/foundry/notification'
+import { hasAnyDaily } from './dailies'
 
 export function renderCharacterSheetPF2e(sheet: CharacterSheetPF2e, html: JQuery) {
     const actor = sheet.actor
-    if (!actor.isOwner || !hasAnyCategory(actor)) return
+    if (!actor.isOwner || !hasAnyDaily(actor)) return
 
     const small = html.find('aside .sidebar .hitpoints .hp-small')
     small
-        .append(`<a class="roll-icon dailies" title="${localize('sheet.title')}"><i class="fas fa-mug-saucer"></i></a>`)
+        .append(`<a class="roll-icon dailies" data-tooltip="${localize('sheet.title')}"><i class="fas fa-mug-saucer"></i></a>`)
         .find('.dailies')
-        .on('click', () => new DailiesInterface(actor).render(true))
+        .on('click', () => openDailiesInterface(actor))
+}
 
-    // TODO remove with next system update
-    small
-        .find('[data-action=rest]')
-        .off('click')
-        .on('click', event => game.pf2e.actions.restForTheNight({ event, actors: actor }))
+function openDailiesInterface(actor: CharacterPF2e) {
+    if (getFlag(actor, 'rested') !== true) return warn('error.unrested')
+    new DailiesInterface(actor).render(true)
 }

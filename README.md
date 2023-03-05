@@ -1,6 +1,6 @@
 # FoundryVTT PF2e Dailies
 
-**This module will provide a convenient interface to handle a character's daily preparations if they have at least one of the following feats, items or features:**
+**This module will provide a convenient interface to handle a character's daily preparations, here is a list of built-in features in the module:**
 
 Consuming Rations
 
@@ -55,8 +55,6 @@ Mind Smith Dedication
     -   [Malleable Mental Forge](https://2e.aonprd.com/Feats.aspx?ID=3868)
     -   [Runic Mind Smithing](https://2e.aonprd.com/Feats.aspx?ID=3870)
     -   [Advanced Runic Mind-Smithing](https://2e.aonprd.com/Feats.aspx?ID=3872)
-
-IMPORTANT: You should always `rest` before your daily preparations, if not, you will most likely encounter some problems. It is also possible that openning the interface too quickly after a `rest` result in the reset not being completed yet and the details shown not up to date.
 
 # Sheet Icon
 
@@ -127,6 +125,12 @@ A descriptive chat message will be created to indicate what has been prepared.
 # Rest
 
 Feats and items that require you to select an options (e.g. skill or language) will be reset on `rest`.
+
+# Homebrew
+
+You can add your own dailies using the `register` menu in the settings.
+
+Note: If you want to have a better experience while creating homebrew dailies, there is an extension for the module with a very powerful text editor including all the typings of the module. The extension module is not registered with the foundry but you can find it there: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>
 
 # CHANGELOG
 

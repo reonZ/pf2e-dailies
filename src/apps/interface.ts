@@ -1,19 +1,26 @@
+import { getDailies } from '@src/dailies'
 import { subLocalize } from '@utils/foundry/localize'
 import { templatePath } from '@utils/foundry/path'
-import { PROFICIENCY_RANKS } from '@utils/pf2e/actor'
-import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
-import { capitalize } from '@utils/string'
-import { accept } from './interface/accept'
-import { onAlert } from './interface/alert'
-import { getData } from './interface/data'
-import { dropped } from './interface/drop'
-import { onSearch } from './interface/search'
+import { getFlag } from '@utils/foundry/flags'
+import { getTemplate } from './interface/data'
+import { onDropFeat, onDropItem, onDropSpell } from './interface/drop'
+import { processData } from './interface/process'
+import { parseFeatFilter, parseSpellFilter } from './interface/shared'
+import { getFamiliarPack } from '@data/familiar'
+import { getRations } from '@data/rations'
 
 const localize = subLocalize('interface')
 
 export class DailiesInterface extends Application {
     private _actor: CharacterPF2e
     private _randomInterval?: NodeJS.Timer
+    private _dailies: ReturnedDaily[] = []
+    private _dailyArgs: Record<string, DailyValueArgs> = {}
+    private _saved: Record<string, DailySaved> = {}
+    private _children: Record<string, DailyValueArgs['children']> = {}
+    private _custom: Record<string, DailyCustom> = {}
+    private _predicate: Record<string, string[]> = {}
+    private _rows: Record<string, Record<string, DailyRow>> = {}
 
     constructor(actor: CharacterPF2e, options?: Partial<ApplicationOptions>) {
         super(options)
@@ -40,26 +47,148 @@ export class DailiesInterface extends Application {
         return this._actor
     }
 
-    getData(options?: Partial<FormApplicationOptions> | undefined) {
+    get dailies() {
+        return this._dailies
+    }
+
+    get dailyArgs() {
+        return this._dailyArgs
+    }
+
+    get saved() {
+        return this._saved
+    }
+
+    get children() {
+        return this._children
+    }
+
+    get custom() {
+        return this._custom
+    }
+
+    get predicate() {
+        return this._predicate
+    }
+
+    get rows() {
+        return this._rows
+    }
+
+    async getData(options?: Partial<FormApplicationOptions> | undefined) {
+        const templates: DailyTemplate[] = []
+        const actor = this._actor
+        this._dailies = getDailies(actor)
+
+        if (actor.familiar) {
+            const type = 'dailies.familiar'
+            const localize = subLocalize('label')
+            const nbAbilityies = actor.attributes.familiarAbilities.value
+            const pack = getFamiliarPack()
+            const options = pack.index.map(index => ({ value: index._id, label: index.name }))
+            const flags = getFlag<Record<`${number}`, string>>(actor, type) ?? {}
+
+            const template: DailyTemplate = {
+                label: localize('familiar'),
+                rows: [],
+            }
+
+            for (let index = 0; index < nbAbilityies; index++) {
+                template.rows.push({
+                    label: localize('ability', { nb: index + 1 }),
+                    value: flags[`${index}`] ?? '',
+                    order: 100,
+                    options,
+                    data: {
+                        type: 'select',
+                        daily: type,
+                        row: index.toString(),
+                    },
+                })
+            }
+
+            if (template.rows.length) {
+                this._rows[type] = template.rows.reduce((rows, { data }) => {
+                    rows[data.row] = { save: true } as DailyRow
+                    return rows
+                }, {} as Record<string, DailyRow>)
+                templates.push(template)
+            }
+        }
+
+        const rations = getRations(actor)
+        if (rations?.uses.value) {
+            const type = 'dailies.rations'
+            const row = 'rations'
+            const { value, max } = rations.uses
+            const quantity = rations.quantity
+            const remaining = (quantity - 1) * max + value
+            const last = remaining <= 1
+
+            const options = [
+                {
+                    value: 'false',
+                    label: localize('rations.no'),
+                },
+                {
+                    value: 'true',
+                    label: last ? localize('rations.last') : localize('rations.yes', { nb: remaining }),
+                },
+            ]
+
+            templates.push({
+                label: rations.name,
+                rows: [
+                    {
+                        label: '',
+                        order: 200,
+                        value: 'false',
+                        options,
+                        data: {
+                            type: 'select',
+                            daily: type,
+                            row: row,
+                        },
+                    },
+                ],
+            })
+
+            this._rows[type] = { [row]: { save: false } as DailyRow }
+        }
+
+        for (const daily of this._dailies) {
+            try {
+                const template = await getTemplate.call(this, daily)
+                templates.push(template)
+            } catch (error) {
+                localize.error('error.unexpected')
+                console.error(error)
+                console.error(`The error occured during templating of ${daily.key}`)
+            }
+        }
+
+        const rows: DailyTemplate[] = []
+        const groups: DailyTemplate[] = []
+        for (const template of templates) {
+            if (template.rows.length > 1) groups.push(template)
+            else if (template.rows.length) rows.push(template)
+        }
+
+        rows.sort((a, b) => b.rows[0]!.order - a.rows[0]!.order)
+        groups.sort((a, b) => a.rows.length - b.rows.length)
+
         return mergeObject(super.getData(options), {
             i18n: localize,
-            dump: ({
-                dataset,
-                value,
-                placeholder,
-            }: {
-                value?: string
-                placeholder?: string
-                dataset?: Record<string, string>
-            }) => {
+            dump: ({ value, placeholder, data }: DailyRowTemplate) => {
                 let msg = ''
                 if (value) msg += ` value="${value}"`
                 if (placeholder) msg += ` placeholder="${placeholder}"`
-                if (dataset) Object.entries(dataset).forEach(([key, value]) => (msg += ` data-${key}="${value}"`))
+                Object.entries(data).forEach(([key, value]) => (msg += ` data-${key}="${value}"`))
                 if (msg) msg += ' '
                 return msg
             },
-            ...getData(this._actor),
+            rows,
+            groups,
         })
     }
 
@@ -86,52 +215,118 @@ export class DailiesInterface extends Application {
     activateListeners(html: JQuery<HTMLElement>): void {
         super.activateListeners(html)
 
-        html.find<HTMLAnchorElement>('[data-action=alert]').on('click', onAlert.bind(this))
-
-        html.find<HTMLSelectElement>('.combo select').on('change', this.#onComboSelectChange.bind(this))
-        html.find<ComboTemplateFields>('.combo input').on('change', this.#onComboInputChange.bind(this))
-
-        html.find<SearchButton>('[data-action=search]').on('click', onSearch)
-
         html.find<HTMLAnchorElement>('[data-action=clear]').on('click', this.#onClear.bind(this))
         html.find<HTMLButtonElement>('[data-action=accept]').on('click', this.#onAccept.bind(this))
         html.find<HTMLButtonElement>('[data-action=cancel]').on('click', this.#onCancel.bind(this))
+
+        html.find<HTMLSelectElement>('.combo select').on('change', this.#onComboSelectChange.bind(this))
+        html.find<HTMLInputElement>('.combo input').on('change', this.#onComboInputChange.bind(this))
+
+        html.find<HTMLAnchorElement>('[data-action=search]').on('click', this.#onSearch.bind(this))
+
+        html.find<HTMLAnchorElement>('[data-action=alert]').on('click', this.#onAlert.bind(this))
     }
 
     protected async _onDrop(event: ElementDragEvent) {
-        dropped(event)
+        const localize = subLocalize('interface.error.drop')
+        let target = event.target as HTMLInputElement | HTMLLabelElement
+        if (target instanceof HTMLLabelElement) target = target.nextElementSibling as HTMLInputElement
+
+        try {
+            const dataString = event.dataTransfer?.getData('text/plain')
+            const data: { type: string; uuid: string } = JSON.parse(dataString)
+            if (!data || data.type !== 'Item' || typeof data.uuid !== 'string') return localize.warn('wrongDataType')
+
+            const item = await fromUuid<ItemPF2e>(data.uuid)
+            if (!item) return localize.warn('wrongDataType')
+
+            const filter = await this.#getfilterFromElement(target)
+            if (!filter) return onDropItem(item, target)
+
+            if (filter.type === 'feat') onDropFeat.call(this, item, target, filter)
+            else if (filter.type === 'spell') onDropSpell.call(this, item, target, filter)
+            else onDropItem(item, target)
+        } catch (error) {
+            localize.error('error.unexpected')
+            console.error(error)
+            console.error(`The error occured during _onDrop`)
+        }
+    }
+
+    async #onAlert(event: JQuery.ClickEvent<any, any, HTMLAnchorElement>) {
+        event.preventDefault()
+        this.#lock()
+
+        const data = event.currentTarget.dataset as { daily: string; row: string }
+        const row = this.rows[data.daily]![data.row]! as DailyRowAlert
+        const args = this.dailyArgs[data.daily]!
+
+        let fixed
+        try {
+            console.log('before fix')
+            fixed = await row.fix(args)
+            console.log('after fix')
+        } catch (error) {
+            localize.error('error.unexpected')
+            console.error(error)
+            console.error(`The error occured during an alert fix of '${data.daily}'`)
+        }
+
+        this.#unlock()
+        console.log(fixed)
+        if (fixed) this.render()
+    }
+
+    async #onSearch(event: JQuery.ClickEvent<any, any, HTMLAnchorElement>) {
+        event.preventDefault()
+        const filter = await this.#getfilterFromElement(event.currentTarget)
+        if (filter) game.pf2e.compendiumBrowser.openTab(filter.type, filter.search)
+        else game.pf2e.compendiumBrowser.render(true)
+    }
+
+    async #getfilterFromElement(element: HTMLElement) {
+        const { daily, row } = element.dataset as { daily: string; row: string }
+        const filter = (this.rows[daily]?.[row] as DailyRowDrop | undefined)?.filter
+        const args = this.dailyArgs[daily]
+
+        if (!args || !filter) return
+
+        let { search, drop, type } = filter
+        if (typeof search === 'function') search = await search(args)
+
+        if (type === 'feat') {
+            return {
+                type: 'feat',
+                search: parseFeatFilter(this.actor, search as DailyFeatFilter),
+                drop,
+            } as DailyRowDropParsedFeat
+        } else {
+            return {
+                type: 'spell',
+                search: parseSpellFilter(this.actor, search as DailySpellFilter),
+                drop,
+            } as DailyRowDropParsedSpell
+        }
     }
 
     #onComboSelectChange(event: JQuery.ChangeEvent) {
-        const select = event.currentTarget
+        const select = event.currentTarget as HTMLSelectElement
         const input = select.nextElementSibling as HTMLInputElement
         input.dataset.input = 'false'
-        input.value = capitalize(select.value)
+        input.value = select.options[select.selectedIndex]!.text
     }
 
-    #onComboInputChange(event: JQuery.ChangeEvent<any, any, ComboTemplateFields>) {
+    #onComboInputChange(event: JQuery.ChangeEvent<any, any, HTMLInputElement>) {
         const input = event.currentTarget
         const select = input.previousElementSibling as HTMLSelectElement
         const value = input.value.toLowerCase()
-        const type = input.dataset.type
-
-        // TODO original should be conditional on type if more are to come
-        const original = SKILL_LONG_FORMS as string[]
         const options = Array.from(select.options).map(x => x.value)
 
-        if (options.includes(value)) {
+        const index = options.indexOf(value)
+        if (index !== -1) {
             select.value = value
-            input.value = capitalize(value)
+            input.value = select.options[index]!.text
             input.dataset.input = 'false'
-        } else if (original.includes(value)) {
-            if (type === 'thaumaturgeTome' || type === 'trainedSkill') {
-                const rank = type === 'thaumaturgeTome' ? Number(input.dataset.rank) : 1
-                localize.warn('error.input.proficiency', { rank: PROFICIENCY_RANKS[rank], proficiency: value })
-            }
-
-            select.value = ''
-            input.value = ''
-            input.dataset.input = 'true'
         } else {
             select.value = ''
             input.dataset.input = 'true'
@@ -142,13 +337,17 @@ export class DailiesInterface extends Application {
         this.element.addClass('disabled')
     }
 
+    #unlock() {
+        this.element.removeClass('disabled')
+    }
+
     #validate() {
         const warns: string[] = []
         const emptyInputs = this.element.find('input').filter((_, input) => !input.value)
-        const errorInputs = this.element.find('input.alert')
+        const alertInputs = this.element.find('input.alert')
 
         if (emptyInputs.length) warns.push('error.empty')
-        if (errorInputs.length) warns.push('error.unattended')
+        if (alertInputs.length) warns.push('error.unattended')
 
         warns.forEach(x => localize.warn(x))
 
@@ -157,18 +356,9 @@ export class DailiesInterface extends Application {
 
     async #onAccept(event: JQuery.ClickEvent) {
         event.preventDefault()
-
         if (!this.#validate()) return
-
         this.#lock()
-
-        try {
-            await accept(this.element, this._actor)
-        } catch (error) {
-            localize.error('error.unexpected')
-            console.error(error)
-        }
-
+        await processData.call(this)
         this.close()
     }
 

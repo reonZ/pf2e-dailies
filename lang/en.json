@@ -194,6 +194,10 @@
             }
         },
         "settings": {
+            "familiar": {
+                "name": "Familiar Abilities",
+                "hint": "Comma separated effect UUIDs. Those will be added to the list of familiar abilities."
+            },
             "menus": {
                 "customs": {
                     "name": "Custom Dailies",

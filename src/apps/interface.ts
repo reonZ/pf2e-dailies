@@ -8,6 +8,7 @@ import { processData } from './interface/process'
 import { parseFeatFilter, parseSpellFilter } from './interface/shared'
 import { getFamiliarPack } from '@data/familiar'
 import { getRations } from '@data/rations'
+import { getSetting } from '@utils/foundry/settings'
 
 const localize = subLocalize('interface')
 
@@ -85,13 +86,23 @@ export class DailiesInterface extends Application {
             const localize = subLocalize('label')
             const nbAbilityies = actor.attributes.familiarAbilities.value
             const pack = getFamiliarPack()
-            const options = pack.index.map(index => ({ value: index._id, label: index.name }))
             const flags = getFlag<Record<`${number}`, string>>(actor, type) ?? {}
 
             const template: DailyTemplate = {
                 label: localize('familiar'),
                 rows: [],
             }
+
+            const options: SelectOption[] = pack.index.map(({ _id, name }) => ({ value: _id, label: name }))
+
+            const customUUIDS = getSetting<string>('familiar').split(',')
+            for (let uuid of customUUIDS) {
+                uuid = uuid.trim()
+                const item = await fromUuid<ItemPF2e>(uuid)
+                if (item && item.isOfType('effect')) options.push({ value: uuid, label: item.name })
+            }
+
+            options.sort((a, b) => (a.label < b.label ? -1 : b.label < a.label ? 1 : 0))
 
             for (let index = 0; index < nbAbilityies; index++) {
                 template.rows.push({

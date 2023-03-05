@@ -22,6 +22,13 @@ Hooks.once('setup', () => {
         onChange: parseCustomDailies,
     })
 
+    registerSetting({
+        name: 'familiar',
+        type: String,
+        default: '',
+        config: true,
+    })
+
     registerSettingMenu({
         name: 'customs',
         type: DailyCustoms,

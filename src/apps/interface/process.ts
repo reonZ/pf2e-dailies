@@ -68,11 +68,14 @@ export async function processData(this: DailiesInterface) {
 
         for (const field of Object.values(fields['dailies.familiar'])) {
             const value = field.value
-            const source = (await pack.getDocument(value))?.toObject()
+            const isCustom = value.includes('.')
+            const item = await (isCustom ? fromUuid<ItemPF2e>(value) : pack.getDocument(value))
+            if (!item || !item.isOfType('effect')) continue
 
+            const source = item.toObject()
             if (source) {
                 abilities.push(source)
-                messageObj.add('familiar', { uuid: familiarUUID(value) })
+                messageObj.add('familiar', { uuid: isCustom ? (value as ItemUUID) : familiarUUID(value) })
             }
         }
 

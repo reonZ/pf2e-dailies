@@ -188,9 +188,9 @@
             "feats": "Learned the feats:",
             "scrolls": "Created the temporary scrolls:",
             "rations": {
-                "used": "Consumed one {name} and has {nb} remaining.",
-                "last": "Consumed their last remaining {name}.",
-                "almost": "Consumed one {name} and has only {nb} remaining."
+                "used": "Consumed one of their {name} and has {nb} remaining.",
+                "last": "Consumed the last of their {name}.",
+                "almost": "Consumed one of their {name} and has only {nb} remaining."
             }
         },
         "settings": {

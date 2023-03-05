@@ -126,6 +126,10 @@ A descriptive chat message will be created to indicate what has been prepared.
 
 Feats and items that require you to select an options (e.g. skill or language) will be reset on `rest`.
 
+# Additional Familiar Abilities
+
+You can add additional familiar abilities by adding their UUIDs in the settings (comma separated).
+
 # Homebrew
 
 You can add your own dailies using the `register` menu in the settings.

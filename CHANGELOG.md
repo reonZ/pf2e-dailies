@@ -1,3 +1,7 @@
+# 2.2.0
+
+-   you can now register custom familiar abilities (add their UUIDs in settings)
+
 # 2.1.0
 
 -   dispose of monaco models directly instead of letting the extension do it (allowing for definition peeking using alt+F12)

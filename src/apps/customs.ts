@@ -13,6 +13,7 @@ import { tome } from './customs/tome'
 import { flexibility } from './customs/flexibility'
 import { savant } from './customs/savant'
 import { mind } from './customs/mind'
+import { EXT_VERSION } from '@src/main'
 
 const localize = subLocalize('customs')
 
@@ -62,6 +63,8 @@ export class DailyCustoms extends FormApplication {
         const customs = getSetting<SavedCustomDaily[]>('customDailies')
         const code = customs.find(custom => custom.key === this._selectedDaily)?.code
         const template = this._selectedTemplate
+        const extension = getModule<PF2eDailiesExtApi>('pf2e-dailies-ext')
+        const newVersion = extension?.active && isNewerVersion(EXT_VERSION, extension.version) ? { version: EXT_VERSION } : ''
 
         return mergeObject(super.getData(options), {
             i18n: localize,
@@ -72,12 +75,15 @@ export class DailyCustoms extends FormApplication {
             customs,
             examples: EXAMPLES,
             isExample: EXAMPLES.includes(template),
-            monaco: getModule<PF2eDailiesExtApi>('pf2e-dailies-ext')?.active,
+            monaco: extension?.active,
+            newVersion,
         })
     }
 
     activateListeners(html: JQuery<HTMLElement>) {
         super.activateListeners(html)
+
+        this._monaco?.dispose()
 
         const monaco = getModule<PF2eDailiesExtApi>('pf2e-dailies-ext')?.api
         const area = html.find<HTMLTextAreaElement>('.code')[0]

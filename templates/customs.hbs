@@ -18,6 +18,9 @@
     <div class="right">
         {{#if code}}
         {{#if monaco}}
+        {{#if newVersion}}
+        <div class="notify">{{{i18n 'code.newVersion' newVersion}}}</div>
+        {{/if}}
         <div class="monaco">
             <div class="placeholder"></div>
         </div>

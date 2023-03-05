@@ -8,6 +8,8 @@ import { DailyCustoms } from '@apps/customs'
 export const MODULE_ID = 'pf2e-dailies'
 setModuleID(MODULE_ID)
 
+export const EXT_VERSION = '1.1.0'
+
 Hooks.on('pf2e.restForTheNight', restForTheNight)
 
 Hooks.on('renderCharacterSheetPF2e', renderCharacterSheetPF2e)

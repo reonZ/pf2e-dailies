@@ -59,7 +59,8 @@
             },
             "code": {
                 "save": "Save Daily",
-                "notify": "If you want to have a better experience while creating homebrew dailies, there is an extension for the module that replaces this with a very powerful text editor including all the typings of the module.<br>The extension module is not registered with the foundry but you can find it there: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>"
+                "newVersion": "There is a new version <strong>{version}</strong> of the extension that is available to download, not updating it may result creating issues. You can find the extension here: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>",
+                "notify": "If you want to have a better experience while creating homebrew dailies, there is an extension for the module that replaces this with a very powerful text editor including all the typings of the module.<br>The extension module is not registered with the foundry but you can find it here: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>"
             },
             "delete": {
                 "title": "Delete Daily",

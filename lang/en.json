@@ -51,9 +51,6 @@
             "title": "Custom Dailies",
             "saved": "The daily '{daily}' was successfully saved.",
             "deleted": "The daily '{daily}' was successfully deleted.",
-            "error": {
-                "duplicate": ""
-            },
             "list": {
                 "create": "Create Daily"
             },

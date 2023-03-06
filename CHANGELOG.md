@@ -1,3 +1,8 @@
+# 2.3.0
+
+-   added french localization (thanks to [rectulo](https://github.com/rectulo))
+-   added russian localization (thanks to [DoctorDankovsky](https://github.com/DoctorDankovsky))
+
 # 2.2.0
 
 -   you can now register custom familiar abilities (add their UUIDs in settings)

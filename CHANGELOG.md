@@ -1,3 +1,7 @@
+# 2.3.2
+
+-   removal of russian localization because of conflicts
+
 # 2.3.1
 
 -   fixed an issue with firefox not allow drag & drop on `disabled` inputs

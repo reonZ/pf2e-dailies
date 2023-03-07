@@ -96,14 +96,27 @@
         option,
         input,
         input:disabled,
+        input:read-only,
         select:disabled {
             color: var(--color-text-dark-primary);
             height: 26px;
         }
 
-        input:not(:disabled) {
-            background: url(/ui/parchment.jpg) repeat;
-            background-color: #d9d9cd;
+        input {
+            &:read-only {
+                cursor: default;
+                border: none;
+
+                &:focus,
+                &:focus-visible {
+                    box-shadow: none;
+                }
+            }
+
+            &:not(:disabled, :read-only) {
+                background: url(/ui/parchment.jpg) repeat;
+                background-color: #d9d9cd;
+            }
         }
 
         .buttons {
@@ -130,6 +143,15 @@
             aspect-ratio: 1/1;
             animation: spin 2s linear infinite;
             margin-top: -10px;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
     }
 

@@ -246,6 +246,8 @@ export class DailiesInterface extends Application {
         try {
             const dataString = event.dataTransfer?.getData('text/plain')
             const data: { type: string; uuid: string } = JSON.parse(dataString)
+            console.log(data)
+
             if (!data || data.type !== 'Item' || typeof data.uuid !== 'string') return localize.warn('wrongDataType')
 
             const item = await fromUuid<ItemPF2e>(data.uuid)

@@ -1,3 +1,17 @@
+# 2.3.2
+
+-   removal of russian localization because of conflicts
+
+# 2.3.1
+
+-   fixed an issue with firefox not allow drag & drop on `disabled` inputs
+-   added `spin` animation for the process loader (it was thought to be but was actually added by another module)
+
+# 2.3.0
+
+-   added french localization (thanks to [rectulo](https://github.com/rectulo))
+-   added russian localization (thanks to [DoctorDankovsky](https://github.com/DoctorDankovsky))
+
 # 2.2.0
 
 -   you can now register custom familiar abilities (add their UUIDs in settings)

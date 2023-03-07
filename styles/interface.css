@@ -76,16 +76,39 @@
 #pf2e-dailies-interface .window-content select:disabled[editable] > button {
   stroke: red;
 }
+#pf2e-dailies-interface .window-content input:-moz-read-only {
+  color: var(--color-text-dark-primary);
+  height: 26px;
+}
 #pf2e-dailies-interface .window-content .combo,
 #pf2e-dailies-interface .window-content select,
 #pf2e-dailies-interface .window-content option,
 #pf2e-dailies-interface .window-content input,
 #pf2e-dailies-interface .window-content input:disabled,
+#pf2e-dailies-interface .window-content input:read-only,
 #pf2e-dailies-interface .window-content select:disabled {
   color: var(--color-text-dark-primary);
   height: 26px;
 }
-#pf2e-dailies-interface .window-content input:not(:disabled) {
+#pf2e-dailies-interface .window-content input:-moz-read-only {
+  cursor: default;
+  border: none;
+}
+#pf2e-dailies-interface .window-content input:read-only {
+  cursor: default;
+  border: none;
+}
+#pf2e-dailies-interface .window-content input:-moz-read-only:focus, #pf2e-dailies-interface .window-content input:-moz-read-only:focus-visible {
+  box-shadow: none;
+}
+#pf2e-dailies-interface .window-content input:read-only:focus, #pf2e-dailies-interface .window-content input:read-only:focus-visible {
+  box-shadow: none;
+}
+#pf2e-dailies-interface .window-content input:not(:disabled, :-moz-read-only) {
+  background: url(/ui/parchment.jpg) repeat;
+  background-color: #d9d9cd;
+}
+#pf2e-dailies-interface .window-content input:not(:disabled, :read-only) {
   background: url(/ui/parchment.jpg) repeat;
   background-color: #d9d9cd;
 }
@@ -113,6 +136,22 @@
   -webkit-animation: spin 2s linear infinite;
           animation: spin 2s linear infinite;
   margin-top: -10px;
+}
+@-webkit-keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 #pf2e-dailies-interface.disabled .window-content {
   pointer-events: none;

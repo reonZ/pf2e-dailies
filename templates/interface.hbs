@@ -46,7 +46,7 @@
 
 {{#*inline 'dropRow'}}
 <label data-droppable="true">{{label}}</label>
-<input type="text" class="drop" data-droppable="true" {{{@root.dump entry}}} disabled />
+<input type="text" class="drop" data-droppable="true" {{{@root.dump entry}}} readonly />
 <a data-action="search" {{{@root.dump entry}}} data-tooltip="{{@root.i18n 'tooltip.search'}}">
     <i class="fas fa-search"></i>
 </a>

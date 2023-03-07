@@ -1,3 +1,8 @@
+# 2.3.1
+
+-   fixed an issue with firefox not allow drag & drop on `disabled` inputs
+-   added `spin` animation for the process loader (it was thought to be but was actually added by another module)
+
 # 2.3.0
 
 -   added french localization (thanks to [rectulo](https://github.com/rectulo))

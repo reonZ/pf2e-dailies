@@ -44,12 +44,29 @@ type DailyTemplate = { label: string; rows: DailyRowTemplate[] }
 
 type DailyProcessFunction<T extends DailyGenerics = DailyGenerics> = DailyFunction<DailyProcessFunctionArgs<T>, void>
 
-type DailyFeatFilter = Omit<InitialFeatFilters, 'level'> & {
+type BaseDailyFilter<V extends string = string> = {
+    traits?:
+        | (V | { value: V; not?: boolean })[]
+        | {
+              conjunction?: 'and' | 'or'
+              selected?: (V | { value: V; not?: boolean })[]
+          }
+    source?: string[]
+    rarity?: Rarity[]
+}
+
+type DailyFeatFilter = BaseDailyFilter<FeatTrait> & {
+    feattype?: FeatType[]
+    skills?: (keyof ConfigPF2e['PF2E']['skillList'])[]
     level?: DailySimplifiableValue | { min?: DailySimplifiableValue; max?: DailySimplifiableValue }
 }
 
-type DailySpellFilter = Omit<InitialSpellFilters, 'level'> & {
+type DailySpellFilter = BaseDailyFilter<SpellTrait> & {
+    category?: (keyof ConfigPF2e['PF2E']['spellCategories'] | 'cantrip')[]
     level?: DailySimplifiableValue | number[]
+    school?: MagicSchool[]
+    traditions?: MagicTradition[]
+    // timefilter: SelectData
 }
 
 type SavedCustomDaily = { key: string; code: string }

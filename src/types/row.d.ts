@@ -6,30 +6,6 @@ type DailyRowDropFunction<T extends DailyGenerics = DailyGenerics, I extends Ite
     args: DailyValueArgs<T>
 ) => DailyRowDropFunctionReturnedValue | Promise<DailyRowDropFunctionReturnedValue>
 
-type DailyRowDropFilter<T extends DailyGenerics, S extends string, F extends BaseInitialFilters, I extends ItemPF2e> = {
-    type: S
-    search: DailyValue<DailyValueArgs<T>, F>
-    drop?: DailyRowDropFunction<T, I>
-}
-
-type DailyRowDropFeat<T extends DailyGenerics = DailyGenerics> = {
-    filter: DailyRowDropFilter<T, 'feat', DailyFeatFilter, FeatPF2e>
-}
-
-type DailyRowDropSpell<T extends DailyGenerics = DailyGenerics> = {
-    filter: DailyRowDropFilter<T, 'spell', DailySpellFilter, SpellPF2e>
-}
-
-type DailyRowDropParsedFeat = DailyRowDropParsedFilter<'feat', InitialFeatFilters, FeatPF2e>
-
-type DailyRowDropParsedSpell = DailyRowDropParsedFilter<'spell', InitialSpellFilters, SpellPF2e>
-
-type DailyRowDropParsedFilter<S extends string, F extends BaseInitialFilters, I extends ItemPF2e> = {
-    type: S
-    search: DeepRequired<F>
-    drop?: DailyRowDropFunction<T, I>
-}
-
 type DailyRow<T extends DailyGenerics = DailyGenerics> =
     | DailyRowInput<T>
     | DailyRowSelect<T>
@@ -72,8 +48,50 @@ type DailyRowCombo<T extends DailyGenerics = DailyGenerics> = BaseDailyRow<T, 'c
     labelizer?: (args: DailyValueArgs<T>) => (value: string) => string
 }
 
-type DailyRowDrop<T extends DailyGenerics = DailyGenerics> = BaseDailyRow<T, 'drop'> &
-    (DailyRowDropFeat<T> | DailyRowDropSpell<T>)
+type BaseDailyRowDropFilter<
+    T extends DailyGenerics = DailyGenerics,
+    S extends string = string,
+    F extends BaseDailyFilter = BaseDailyFilter,
+    I extends ItemPF2e = ItemPF2e
+> = {
+    type: S
+    search: DailyValue<DailyValueArgs<T>, F>
+    drop?: DailyRowDropFunction<T, I>
+}
+
+type BaseDailyRowDrop<
+    T extends DailyGenerics = DailyGenerics,
+    S extends string = string,
+    F extends BaseDailyFilter = BaseDailyFilter,
+    I extends ItemPF2e = ItemPF2e
+> = BaseDailyRow<T, 'drop'> & {
+    filter: BaseDailyRowDropFilter<T, S, F, I>
+}
+
+type DailyRowDropFeat<T extends DailyGenerics = DailyGenerics> = BaseDailyRowDrop<T, 'feat', DailyFeatFilter, FeatPF2e>
+type DailyRowDropSpell<T extends DailyGenerics = DailyGenerics> = BaseDailyRowDrop<T, 'spell', DailySpellFilter, SpellPF2e>
+type DailyRowDrop<T extends DailyGenerics = DailyGenerics> = DailyRowDropFeat<T> | DailyRowDropSpell<T>
+
+type DailyDropFeatFilter<T extends DailyGenerics = DailyGenerics> = DailyRowDropFeat<T>['filter']
+type DailyDropSpellFilter<T extends DailyGenerics = DailyGenerics> = DailyRowDropSpell<T>['filter']
+
+type DailyDropFeatParsedtFilter<T extends DailyGenerics = DailyGenerics> = Omit<DailyDropFeatFilter<T>, 'shared'> & {
+    search: FeatFilters
+}
+type DailyDropSpellParsedtFilter<T extends DailyGenerics = DailyGenerics> = Omit<DailyDropSpellFilter<T>, 'shared'> & {
+    search: SpellFilters
+}
+type DailyDropParsedFilter<T extends DailyGenerics = DailyGenerics> =
+    | DailyDropFeatParsedtFilter<T>
+    | DailyDropSpellParsedtFilter<T>
+
+type DailyDropFeatResultFilter<T extends DailyGenerics = DailyGenerics> = Omit<DailyDropFeatFilter<T>, 'shared'> & {
+    search: DailyFeatFilter
+}
+type DailyDropSpellResultFilter<T extends DailyGenerics = DailyGenerics> = Omit<DailyDropSpellFilter<T>, 'shared'> & {
+    search: DailySpellFilter
+}
+type DailyDropResultFilter<T extends DailyGenerics = DailyGenerics> = DailyDropFeatResultFilter<T> | DailyDropSpellResultFilter<T>
 
 type DailyRowTemplate<T extends DailyGenerics = DailyGenerics> = {
     label: string

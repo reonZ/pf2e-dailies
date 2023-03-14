@@ -1,5 +1,5 @@
 export function getFamiliarPack() {
-    return game.packs.get<CompendiumCollection<EffectPF2e>>('pf2e.familiar-abilities')!
+    return game.packs.get('pf2e.familiar-abilities')! as CompendiumCollection<EffectPF2e>
 }
 
 export function familiarUUID(id: string) {

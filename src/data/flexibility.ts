@@ -41,9 +41,7 @@ function createRow(slug: FlexibilityRow, level: number, child?: FlexibilityChild
             type: 'feat',
             search: {
                 feattype: ['class'],
-                traits: {
-                    values: ['fighter'],
-                },
+                traits: ['fighter'],
                 level,
             },
         },

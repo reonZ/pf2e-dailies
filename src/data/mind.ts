@@ -19,7 +19,7 @@ const WEAPON_GROUPS = {
     slashing: 'sword',
     piercing: 'spear',
     bludgeoning: 'club',
-} as Record<WeaponDamage, string>
+} as Record<WeaponDamageType, string>
 
 const WEAPON_TRAITS = ['grapple', 'nonlethal', 'shove', 'trip', 'modular']
 
@@ -112,7 +112,7 @@ export const mindSmith: Daily<MindGenerics> = {
 
         messages.addGroup('mindsmith')
 
-        const selected = fields.smith.value as WeaponDamage
+        const selected = fields.smith.value as WeaponDamageType
         updateItem({ _id: weapon.id, 'system.damage.damageType': selected, 'system.group': WEAPON_GROUPS[selected] })
         messages.add('mindsmith', { selected: utils.damageLabel(selected), uuid: item.uuid, label: 'mindsmith' })
 

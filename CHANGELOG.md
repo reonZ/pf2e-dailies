@@ -1,3 +1,7 @@
+# 2.4.0
+
+-   updated for system version `4.9.0` which changed the way compendium browser filters work
+
 # 2.3.2
 
 -   removal of russian localization because of conflicts

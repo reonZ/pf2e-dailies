@@ -9,9 +9,7 @@
             "discord": "Idle#3251"
         }
     ],
-    "esmodules": [
-        "scripts/main.js"
-    ],
+    "esmodules": ["scripts/main.js"],
     "compatibility": {
         "minimum": "10.291",
         "verified": "10"
@@ -24,11 +22,7 @@
     "download": "https://github.com/reonZ/pf2e-dailies/releases/download/2.4.0/module.zip",
     "changelog": "https://github.com/reonZ/pf2e-dailies/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/pf2e-dailies/issues",
-    "styles": [
-        "styles/global.css",
-        "styles/interface.css",
-        "styles/customs.css"
-    ],
+    "styles": ["styles/global.css", "styles/interface.css", "styles/customs.css"],
     "languages": [
         {
             "lang": "en",
@@ -50,6 +44,13 @@
                 "compatibility": {
                     "minimum": "4.9.2"
                 }
+            }
+        ],
+        "requires": [
+            {
+                "id": "lib-wrapper",
+                "type": "module",
+                "manifest": "https://raw.githubusercontent.com/ruipin/fvtt-lib-wrapper/master/module.json"
             }
         ]
     },

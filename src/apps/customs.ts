@@ -221,15 +221,12 @@ export class DailyCustoms extends FormApplication {
                 feattype: splitList<FeatType>(data.feattype),
                 level: simplyfiable(data.level) || { min: 0, max: 20 },
             }
-
-            if (traits.length) filter.traits = { values: traits, conjunction: 'and' }
-
+            if (traits.length) filter.traits = traits
             const daily = createFeatDaily(key, uuid, filter, label)
             code = this.#stringifyDaily(daily, { key, uuid, label }, 'FeatGenerics')
         } else if (template === 'spell') {
             const level = Number(data.level) || undefined
             const traits = splitList<SpellTrait>(data.traits)
-
             let levels: (DailySimplifiableValue | string)[] | DailySimplifiableValue = data.levels.split(',').map(x => x.trim())
             if (levels.length === 1) {
                 levels = simplyfiable(levels[0]!) as DailySimplifiableValue
@@ -239,15 +236,12 @@ export class DailyCustoms extends FormApplication {
                     .map(x => Number(x))
                     .filter(x => !isNaN(x)) as number[]
             }
-
             const filter: DailySpellFilter = {
                 category: splitList(data.category),
                 traditions: splitList(data.traditions),
                 level: (levels || []) as DailySimplifiableValue | number[],
             }
-
-            if (traits.length) filter.traits = { values: traits, conjunction: 'and' }
-
+            if (traits.length) filter.traits = traits
             const daily = createSpellDaily(key, uuid, filter, level, label)
             code = this.#stringifyDaily(daily, { key, uuid, label, level }, 'SpellGenerics')
         } else if (template === 'tome') {

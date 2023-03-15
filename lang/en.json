@@ -22,6 +22,7 @@
                     "wrongLevelHigh": "The dropped item level is too high for this slot ({level}).",
                     "wrongTraitAnd": "The dropped item does not have all the traits (needed all: {traits}).",
                     "wrongTraitOr": "The dropped item does not have either of the traits (needed any: {traits}).",
+                    "wrongTraits": "The dropped item has mismatched traits.",
                     "wrongSkill": "The dropped item does not have the right prerequisite skills ({skills}).",
                     "wrongRarity": "The dropped item does not have the right rarity ({rarities}).",
                     "wrongSource": "The dropped item does not originate from the right source ({sources}).",
@@ -56,7 +57,7 @@
             },
             "code": {
                 "save": "Save Daily",
-                "newVersion": "There is a new version <strong>{version}</strong> of the extension that is available to download, not updating it may result creating issues. You can find the extension here: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>",
+                "newVersion": "There is a new version <strong>{version}</strong> of the extension that is available to download, not updating it may result in experiencing some issues. You can find the extension here: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>",
                 "notify": "If you want to have a better experience while creating homebrew dailies, there is an extension for the module that replaces this with a very powerful text editor including all the typings of the module.<br>The extension module is not registered with the foundry but you can find it here: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>"
             },
             "delete": {
@@ -169,7 +170,8 @@
             "unexpected": "An unexpected error occured during preparation of the module <strong>PF2e Dailies</strong>. See the console (F12) for details.",
             "unrested": "You must rest before your daily preparations.",
             "duplicate": "A daily with this key already exists.",
-            "invalidKey": "The daily key must be a string."
+            "invalidKey": "The daily key must be a string.",
+            "noLibwrapper": "The module now requires the dependency module 'libwrapper' to work at its best."
         },
         "spellEntry": {
             "name": "Temporary Spells"

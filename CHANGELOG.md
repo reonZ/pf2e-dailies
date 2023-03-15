@@ -1,3 +1,11 @@
+# 2.5.0
+
+-   now prevents the system from deleting temporary items when using the `Complete Daily Crafting` action in the crafting tab
+
+# 2.4.0
+
+-   updated for system version `4.9.0` which changed the way compendium browser filters work
+
 # 2.3.2
 
 -   removal of russian localization because of conflicts

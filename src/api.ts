@@ -7,8 +7,8 @@ import { createSpellScroll } from '@utils/pf2e/spell'
 
 const halfLevelString = 'max(1,floor(@actor.level/2))'
 
-type CreateSkillArgs = { skill: string; value: ZeroToFour | string; mode?: PredicateMode; predicate?: RawPredicate }
-type CreateLanguageArgs = { language: string; mode?: PredicateMode; predicate?: RawPredicate }
+type CreateSkillArgs = { skill: string; value: ZeroToFour | string; mode?: AELikeChangeMode; predicate?: RawPredicate }
+type CreateLanguageArgs = { language: string; mode?: AELikeChangeMode; predicate?: RawPredicate }
 type CreateLoreArgs = { name: string; rank: OneToFour }
 type CreateResistanceArgs = { type: string; value: number | string | 'half'; predicate?: RawPredicate }
 type CreateScrollArgs = { uuid: ItemUUID; level?: OneToTen }
@@ -109,7 +109,7 @@ export const utils = {
     sequenceArray,
     // equipment
     damageLabel: (damage: string) => {
-        return game.i18n.localize(CONFIG.PF2E.weaponDamage[damage as WeaponDamage])
+        return game.i18n.localize(CONFIG.PF2E.weaponDamage[damage as WeaponDamageType])
     },
     weaponTraitLabel: (trait: string) => {
         return game.i18n.localize(CONFIG.PF2E.weaponTraits[trait as WeaponTrait])

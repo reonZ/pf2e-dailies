@@ -41,7 +41,7 @@ const BUILTINS = [
     ), // Ganzi
     createFeatDaily('metamagical', 'Compendium.pf2e.classfeatures.89zWKD2CN7nRu2xp', {
         feattype: ['class'],
-        traits: { values: ['metamagic', 'wizard'], conjunction: 'and' },
+        traits: { selected: ['metamagic', 'wizard'], conjunction: 'and' },
         level: 'half',
     }), // Metamagical Experimentation
     combatFlexibility,

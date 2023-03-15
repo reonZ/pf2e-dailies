@@ -1,14 +1,14 @@
+import { getFamiliarPack } from '@data/familiar'
+import { getRations } from '@data/rations'
 import { getDailies } from '@src/dailies'
+import { getFlag } from '@utils/foundry/flags'
 import { subLocalize } from '@utils/foundry/localize'
 import { templatePath } from '@utils/foundry/path'
-import { getFlag } from '@utils/foundry/flags'
+import { getSetting } from '@utils/foundry/settings'
 import { getTemplate } from './interface/data'
 import { onDropFeat, onDropItem, onDropSpell } from './interface/drop'
 import { processData } from './interface/process'
-import { parseFeatFilter, parseSpellFilter } from './interface/shared'
-import { getFamiliarPack } from '@data/familiar'
-import { getRations } from '@data/rations'
-import { getSetting } from '@utils/foundry/settings'
+import { parseFilter } from './interface/shared'
 
 const localize = subLocalize('interface')
 
@@ -95,9 +95,9 @@ export class DailiesInterface extends Application {
 
             const options: SelectOption[] = pack.index.map(({ _id, name }) => ({ value: _id, label: name }))
 
-            const customUUIDS = getSetting<string>('familiar').split(',')
+            const customUUIDS = getSetting<string>('familiar').split(',') as ItemUUID[]
             for (let uuid of customUUIDS) {
-                uuid = uuid.trim()
+                uuid = uuid.trim() as ItemUUID
                 const item = await fromUuid<ItemPF2e>(uuid)
                 if (item && item.isOfType('effect')) options.push({ value: uuid, label: item.name })
             }
@@ -203,7 +203,7 @@ export class DailiesInterface extends Application {
         })
     }
 
-    render(force?: boolean | undefined, options?: RenderOptions | undefined): this | Promise<this> {
+    render(force?: boolean | undefined, options?: RenderOptions | undefined) {
         if (this._randomInterval) clearInterval(this._randomInterval)
 
         if (this.element.find('select.random')) {
@@ -218,7 +218,7 @@ export class DailiesInterface extends Application {
         return super.render(force, options)
     }
 
-    close(options?: ({ force?: boolean | undefined } & Record<string, unknown>) | undefined): Promise<void> {
+    close(options?: ({ force?: boolean | undefined } & Record<string, unknown>) | undefined) {
         if (this._randomInterval) clearInterval(this._randomInterval)
         return super.close(options)
     }
@@ -245,8 +245,7 @@ export class DailiesInterface extends Application {
 
         try {
             const dataString = event.dataTransfer?.getData('text/plain')
-            const data: { type: string; uuid: string } = JSON.parse(dataString)
-            console.log(data)
+            const data: { type: string; uuid: ItemUUID } = JSON.parse(dataString)
 
             if (!data || data.type !== 'Item' || typeof data.uuid !== 'string') return localize.warn('wrongDataType')
 
@@ -289,34 +288,28 @@ export class DailiesInterface extends Application {
 
     async #onSearch(event: JQuery.ClickEvent<any, any, HTMLAnchorElement>) {
         event.preventDefault()
-        const filter = await this.#getfilterFromElement(event.currentTarget)
+        const filter = await this.#getfilterFromElement(event.currentTarget, true)
         if (filter) game.pf2e.compendiumBrowser.openTab(filter.type, filter.search)
         else game.pf2e.compendiumBrowser.render(true)
     }
 
-    async #getfilterFromElement(element: HTMLElement) {
+    async #getfilterFromElement(element: HTMLElement, parsed: true): Promise<DailyDropParsedFilter | void>
+    async #getfilterFromElement(element: HTMLElement, parsed?: false): Promise<DailyDropResultFilter | void>
+    async #getfilterFromElement(
+        element: HTMLElement,
+        parsed?: boolean
+    ): Promise<DailyDropResultFilter | DailyDropParsedFilter | void> {
         const { daily, row } = element.dataset as { daily: string; row: string }
         const filter = (this.rows[daily]?.[row] as DailyRowDrop | undefined)?.filter
         const args = this.dailyArgs[daily]
 
         if (!args || !filter) return
 
-        let { search, drop, type } = filter
-        if (typeof search === 'function') search = await search(args)
+        if (typeof filter.search === 'function') filter.search = await filter.search(args)
 
-        if (type === 'feat') {
-            return {
-                type: 'feat',
-                search: parseFeatFilter(this.actor, search as DailyFeatFilter),
-                drop,
-            } as DailyRowDropParsedFeat
-        } else {
-            return {
-                type: 'spell',
-                search: parseSpellFilter(this.actor, search as DailySpellFilter),
-                drop,
-            } as DailyRowDropParsedSpell
-        }
+        if (!parsed) return filter as DailyDropResultFilter
+
+        return parseFilter.call(this, filter)
     }
 
     #onComboSelectChange(event: JQuery.ChangeEvent) {

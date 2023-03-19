@@ -96,7 +96,8 @@
                     "hint": "这一模板是为诸如 <strong>快速学习 Quick Study</strong> 这样的专长所准备，可以创造一个新学识，其熟练度为<strong>受训</strong>."
                 },
                 "language": {
-                    "hint": "这一模板是为诸如 <strong>传世语言学 Ancestral Linguistics</strong> 这样的专长以及 <strong>波尔特的祝福 Bort's Blessing</strong> 这类物品所准备，用来增加一门新的语言。"
+                    "hint": "这一模板是为诸如 <strong>传世语言学 Ancestral Linguistics</strong> 这样的专长以及 <strong>波尔特的祝福 Bort's Blessing</strong> 这类物品所准备，用来增加一门新的语言。",
+                    "label": "语言"
                 },
                 "resistance": {
                     "label": "抗力",

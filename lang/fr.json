@@ -202,9 +202,9 @@
             "familiar": "A sélectionné les pouvoirs de familier :",
             "scrolls": "A créé les parchemins temporaires :",
             "rations": {
-                "used": "A consommé un(e) {name} et il lui en reste {nb}.",
-                "last": "A consommé le(a) dernier(ère) {name}.",
-                "almost": "a consommé un(e) {name} et n'en a plus que {nb}."
+                "used": "a consommé un(e) de ses {name} et il lui en reste {nb}.",
+                "last": "a consommé le(a) dernier(ère) {name}.",
+                "almost": "a consommé un(e) de ses {name} et n'en a plus que {nb}."
             }
         },
         "spellEntry": {
@@ -217,6 +217,10 @@
                     "hint": "Enregistrez vos propres préparatifs quotidiens dans le module.",
                     "label": "Registre"
                 }
+            },
+            "familiar": {
+                "name": "Pouvoirs de familier",
+                "hint": "UUID des effets séparés par des virgules. Ceux-ci seront ajoutés à la liste des pouvoirs de familier."
             }
         }
     }

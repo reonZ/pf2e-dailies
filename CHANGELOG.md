@@ -1,3 +1,8 @@
+# 2.5.1
+
+-   updated french localization (thanks to [rectulo](https://github.com/rectulo))
+-   added chinese localization ([LiyuNodream](https://github.com/LiyuNodream))
+
 # 2.5.0
 
 -   now prevents the system from deleting temporary items when using the `Complete Daily Crafting` action in the crafting tab

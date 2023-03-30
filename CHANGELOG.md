@@ -1,7 +1,7 @@
 # 2.5.1
 
 -   updated french localization (thanks to [rectulo](https://github.com/rectulo))
--   added chinese localization ([LiyuNodream](https://github.com/LiyuNodream))
+-   added chinese localization (thanks to [LiyuNodream](https://github.com/LiyuNodream))
 
 # 2.5.0
 

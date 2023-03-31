@@ -1,3 +1,7 @@
+# 2.5.2
+
+-   added chinese traditional option
+
 # 2.5.1
 
 -   updated french localization (thanks to [rectulo](https://github.com/rectulo))

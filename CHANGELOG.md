@@ -1,6 +1,6 @@
 # 2.5.2
 
--   added chinese traditional option
+-   added chinese traditional localization option
 
 # 2.5.1
 

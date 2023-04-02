@@ -10,7 +10,7 @@ import { warn } from '@utils/foundry/notification'
 export const MODULE_ID = 'pf2e-dailies'
 setModuleID(MODULE_ID)
 
-export const EXT_VERSION = '1.2.0'
+export const EXT_VERSION = '1.3.0'
 
 Hooks.on('pf2e.restForTheNight', restForTheNight)
 

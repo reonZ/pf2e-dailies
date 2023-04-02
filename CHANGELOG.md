@@ -1,6 +1,6 @@
 # 2.6.0
 
--   updated for system version `4.10.0` which changed feat filters
+-   updated for system version `4.10.0` feat filters
 
 # 2.5.2
 

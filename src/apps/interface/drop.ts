@@ -16,8 +16,8 @@ export async function onDropFeat(
 
     const { search, drop } = filter
 
-    if (search.feattype?.length && !search.feattype.includes(item.featType)) {
-        return localize.warn('wrongType', { types: localizeAll('featTypes', search.feattype) })
+    if (search.category?.length && !search.category.includes(item.category)) {
+        return localize.warn('wrongType', { types: localizeAll('featCategories', search.category) })
     }
 
     if (search.traits) {

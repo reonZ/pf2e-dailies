@@ -25,7 +25,6 @@ type DailyData = {
     label: string
     resistances: string
     resistance: string
-    feattype: string
     traits: string
     level: string
     category: string
@@ -218,7 +217,7 @@ export class DailyCustoms extends FormApplication {
         } else if (template === 'feat') {
             const traits = splitList<FeatTrait>(data.traits)
             const filter: DailyFeatFilter = {
-                feattype: splitList<FeatType>(data.feattype),
+                category: splitList<FeatCategory>(data.category),
                 level: simplyfiable(data.level) || { min: 0, max: 20 },
             }
             if (traits.length) filter.traits = traits

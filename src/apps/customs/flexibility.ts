@@ -17,7 +17,7 @@ export const flexibility = [
     '        filter: {',
     "            type: 'feat',",
     '            search: {',
-    "                feattype: ['class'],",
+    "                category: ['class'],",
     '                traits: {',
     "                    values: ['fighter'],",
     '                },',

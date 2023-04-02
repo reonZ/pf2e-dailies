@@ -40,7 +40,7 @@ function createRow(slug: FlexibilityRow, level: number, child?: FlexibilityChild
         filter: {
             type: 'feat',
             search: {
-                feattype: ['class'],
+                category: ['class'],
                 traits: ['fighter'],
                 level,
             },

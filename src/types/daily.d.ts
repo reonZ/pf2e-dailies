@@ -56,7 +56,7 @@ type BaseDailyFilter<V extends string = string> = {
 }
 
 type DailyFeatFilter = BaseDailyFilter<FeatTrait> & {
-    feattype?: FeatType[]
+    category?: FeatCategory[]
     skills?: (keyof ConfigPF2e['PF2E']['skillList'])[]
     level?: DailySimplifiableValue | { min?: DailySimplifiableValue; max?: DailySimplifiableValue }
 }

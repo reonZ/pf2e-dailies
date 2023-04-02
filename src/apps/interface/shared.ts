@@ -78,7 +78,7 @@ async function parseSpellFilter(actor: CharacterPF2e, search: DailySpellFilter) 
 async function parseFeatFilter(actor: CharacterPF2e, search: DailyFeatFilter) {
     const data = await game.pf2e.compendiumBrowser.tabs.feat.getFilterData()
 
-    checkFilter(search.feattype, data.checkboxes.feattype)
+    checkFilter(search.category, data.checkboxes.category)
     checkFilter(search.skills, data.checkboxes.skills)
     checkFilter(search.rarity, data.checkboxes.rarity)
     checkFilter(search.source, data.checkboxes.source)

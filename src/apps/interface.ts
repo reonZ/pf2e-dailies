@@ -31,9 +31,9 @@ export class DailiesInterface extends Application {
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             id: 'pf2e-dailies-interface',
-            title: localize('title'),
             template: templatePath('interface.hbs'),
             height: 'auto',
+            width: 400,
             submitOnClose: false,
             submitOnChange: false,
             dragDrop: [
@@ -245,7 +245,7 @@ export class DailiesInterface extends Application {
 
         try {
             const dataString = event.dataTransfer?.getData('text/plain')
-            const data: { type: string; uuid: ItemUUID } = JSON.parse(dataString)
+            const data = JSON.parse(dataString) as { type: string; uuid: ItemUUID }
 
             if (!data || data.type !== 'Item' || typeof data.uuid !== 'string') return localize.warn('wrongDataType')
 

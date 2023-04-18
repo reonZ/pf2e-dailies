@@ -1,11 +1,13 @@
-import { setModuleID } from '@utils/module'
+import { DailyCustoms } from '@apps/customs'
+import { getCurrentModule } from '@utils/foundry/module'
+import { warn } from '@utils/foundry/notification'
 import { registerSetting, registerSettingMenu } from '@utils/foundry/settings'
+import { registerWrapper } from '@utils/libwrapper'
+import { setModuleID } from '@utils/module'
+import { openDailiesInterface } from './api'
 import { parseCustomDailies } from './dailies'
 import { restForTheNight } from './rest'
 import { renderCharacterSheetPF2e } from './sheet'
-import { DailyCustoms } from '@apps/customs'
-import { registerWrapper } from '@utils/libwrapper'
-import { warn } from '@utils/foundry/notification'
 
 export const MODULE_ID = 'pf2e-dailies'
 setModuleID(MODULE_ID)
@@ -35,6 +37,10 @@ Hooks.once('setup', () => {
         name: 'customs',
         type: DailyCustoms,
     })
+
+    getCurrentModule<PF2eDailiesAPI>().api = {
+        openDailiesInterface: actor => openDailiesInterface(actor),
+    }
 })
 
 Hooks.once('ready', async () => {

@@ -4,6 +4,11 @@ import { LANGUAGE_LIST } from '@utils/pf2e/languages'
 import { capitalize } from '@utils/string'
 import { sequenceArray } from '@utils/utils'
 import { createSpellScroll } from '@utils/pf2e/spell'
+import { warn } from '@utils/foundry/notification'
+import { getFlag } from '@utils/foundry/flags'
+import { DailiesInterface } from '@apps/interface'
+import { localize } from '@utils/foundry/localize'
+import { hasAnyDaily } from './dailies'
 
 const halfLevelString = 'max(1,floor(@actor.level/2))'
 
@@ -122,4 +127,19 @@ export const utils = {
         return potency > 0 && item.system.runes.property.length < potency
     },
     getFreePropertyRuneSlot,
+}
+
+export function openDailiesInterface(actor?: ActorPF2e | CharacterPF2e | null, force?: boolean) {
+    if (!actor || !actor.isOfType('character')) {
+        const controlled = canvas.tokens.controlled
+        actor = controlled.find(token => token.actor?.isOfType('character'))?.actor as CharacterPF2e | undefined
+    }
+
+    actor ??= game.user.character
+    if (!actor || !actor.isOfType('character')) return warn('error.noCharacterSelected')
+
+    if (getFlag(actor, 'rested') !== true) return warn('error.unrested')
+    if (!force && !hasAnyDaily(actor)) return warn('error.noDailies')
+
+    new DailiesInterface(actor, { title: localize('interface.title', { name: actor.name }) }).render(true)
 }

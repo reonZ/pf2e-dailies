@@ -1,7 +1,7 @@
 {
     "pf2e-dailies": {
         "interface": {
-            "title": "Make your daily preparations",
+            "title": "{name}'s daily preparations",
             "accept": "Accept",
             "cancel": "Cancel",
             "alert": {
@@ -171,7 +171,9 @@
             "unrested": "You must rest before your daily preparations.",
             "duplicate": "A daily with this key already exists.",
             "invalidKey": "The daily key must be a string.",
-            "noLibwrapper": "The module now requires the dependency module 'libwrapper' to work at its best."
+            "noLibwrapper": "The module now requires the dependency module 'libwrapper' to work at its best.",
+            "noCharacterSelected": "No <strong>Character</strong> were provided to the <strong>openDailyInterface</strong> function.",
+            "noDailies": "This character has no dailies."
         },
         "spellEntry": {
             "name": "Temporary Spells"

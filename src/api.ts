@@ -1,13 +1,14 @@
+import { DailiesInterface } from '@apps/interface'
+import { getFlag } from '@utils/foundry/flags'
+import { localize } from '@utils/foundry/localize'
+import { warn } from '@utils/foundry/notification'
 import { getChoiSetRuleSelection, getFreePropertyRuneSlot } from '@utils/pf2e/item'
-import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
 import { LANGUAGE_LIST } from '@utils/pf2e/languages'
+import { SKILL_LONG_FORMS } from '@utils/pf2e/skills'
+import { createSpellScroll } from '@utils/pf2e/spell'
 import { capitalize } from '@utils/string'
 import { sequenceArray } from '@utils/utils'
-import { createSpellScroll } from '@utils/pf2e/spell'
-import { warn } from '@utils/foundry/notification'
-import { getFlag } from '@utils/foundry/flags'
-import { DailiesInterface } from '@apps/interface'
-import { localize } from '@utils/foundry/localize'
+import { createWatchChatMessage } from './chat'
 import { hasAnyDaily } from './dailies'
 
 const halfLevelString = 'max(1,floor(@actor.level/2))'
@@ -130,16 +131,23 @@ export const utils = {
 }
 
 export function openDailiesInterface(actor?: ActorPF2e | CharacterPF2e | null, force?: boolean) {
-    if (!actor || !actor.isOfType('character')) {
+    if (!actor || !actor.isOfType('character') || !actor.isOwner) {
         const controlled = canvas.tokens.controlled
-        actor = controlled.find(token => token.actor?.isOfType('character'))?.actor as CharacterPF2e | undefined
+        actor = controlled.find(token => token.actor?.isOfType('character') && token.actor.isOwner)?.actor as
+            | CharacterPF2e
+            | undefined
+        if (!actor) actor = game.user.character
     }
 
-    actor ??= game.user.character
-    if (!actor || !actor.isOfType('character')) return warn('error.noCharacterSelected')
+    if (!actor || !actor.isOfType('character') || !actor.isOwner) return warn('error.noCharacterSelected')
 
     if (getFlag(actor, 'rested') !== true) return warn('error.unrested')
     if (!force && !hasAnyDaily(actor)) return warn('error.noDailies')
 
     new DailiesInterface(actor, { title: localize('interface.title', { name: actor.name }) }).render(true)
+}
+
+export function requestDailies() {
+    if (!game.user.isGM) return warn('error.notGM')
+    createWatchChatMessage()
 }

@@ -1,10 +1,11 @@
 import { DailyCustoms } from '@apps/customs'
 import { getCurrentModule } from '@utils/foundry/module'
 import { warn } from '@utils/foundry/notification'
-import { registerSetting, registerSettingMenu } from '@utils/foundry/settings'
+import { getSetting, registerSetting, registerSettingMenu } from '@utils/foundry/settings'
 import { registerWrapper } from '@utils/libwrapper'
 import { setModuleID } from '@utils/module'
-import { openDailiesInterface } from './api'
+import { openDailiesInterface, requestDailies } from './api'
+import { renderChatMessage } from './chat'
 import { parseCustomDailies } from './dailies'
 import { restForTheNight } from './rest'
 import { renderCharacterSheetPF2e } from './sheet'
@@ -33,6 +34,14 @@ Hooks.once('setup', () => {
         config: true,
     })
 
+    registerSetting({
+        name: 'watch',
+        type: Boolean,
+        default: false,
+        config: true,
+        onChange: enableWatchHook,
+    })
+
     registerSettingMenu({
         name: 'customs',
         type: DailyCustoms,
@@ -40,7 +49,10 @@ Hooks.once('setup', () => {
 
     getCurrentModule<PF2eDailiesAPI>().api = {
         openDailiesInterface: actor => openDailiesInterface(actor),
+        requestDailies,
     }
+
+    if (getSetting('watch')) enableWatchHook(true)
 })
 
 Hooks.once('ready', async () => {
@@ -57,6 +69,10 @@ Hooks.once('ready', async () => {
         'OVERRIDE'
     )
 })
+
+function enableWatchHook(enabled: boolean) {
+    Hooks[enabled ? 'on' : 'off']('renderChatMessage', renderChatMessage)
+}
 
 async function onPerformDailyCrafting(this: CharacterPF2e) {
     const entries = (await this.getCraftingEntries()).filter(e => e.isDailyPrep)

@@ -173,7 +173,8 @@
             "invalidKey": "The daily key must be a string.",
             "noLibwrapper": "The module now requires the dependency module 'libwrapper' to work at its best.",
             "noCharacterSelected": "No <strong>Character</strong> were provided to the <strong>openDailyInterface</strong> function.",
-            "noDailies": "This character has no dailies."
+            "noDailies": "This character has no dailies.",
+            "notGM": "Only GM can do that."
         },
         "spellEntry": {
             "name": "Temporary Spells"
@@ -195,6 +196,10 @@
                 "used": "Consumed one of their {name} and has {nb} remaining.",
                 "last": "Consumed the last of their {name}.",
                 "almost": "Consumed one of their {name} and has only {nb} remaining."
+            },
+            "dailiesRequest": {
+                "content": "It is that time of the day, please make you daily preparations.",
+                "button": "Daily Preparations"
             }
         },
         "settings": {
@@ -208,6 +213,10 @@
                     "hint": "Register you own dailies to the module.",
                     "label": "Register"
                 }
+            },
+            "watch": {
+                "name": "Watch For Request",
+                "hint": "Enable this option if you plan on using the 'requestDailies' api function, otherwise, clicking on the button in the chat message will not do anything."
             }
         }
     }

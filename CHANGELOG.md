@@ -1,3 +1,7 @@
+# 2.7.1
+
+-   just a typo
+
 # 2.7.0
 
 -   the module now exposes functions that can be used in macros or by other modules

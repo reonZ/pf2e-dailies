@@ -198,7 +198,7 @@
                 "almost": "Consumed one of their {name} and has only {nb} remaining."
             },
             "dailiesRequest": {
-                "content": "It is that time of the day, please make you daily preparations.",
+                "content": "It is that time of the day, please make your daily preparations.",
                 "button": "Daily Preparations"
             }
         },

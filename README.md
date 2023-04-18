@@ -136,6 +136,38 @@ You can add your own dailies using the `register` menu in the settings.
 
 Note: If you want to have a better experience while creating homebrew dailies, there is an extension for the module with a very powerful text editor including all the typings of the module. The extension module is not registered with the foundry but you can find it there: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>
 
+# API
+
+A set of functions is exposed from the module to be used by third parties:
+
+```js
+/**
+ * Retrieves the API object containing the funtions
+ */
+game.modules.get('pf2e-dailies').api
+```
+
+```js
+/**
+ * Opens the `Daily Preparations` interface for a character
+ * if no actor parameter is provided, the module will look
+ * for a valid character among the currently selected tokens
+ * or get the default user's character if any.
+ *
+ * @param {CharacterPF2e} [actor]
+ */
+function openDailiesInterface(actor?: CharacterPF2e): void
+```
+
+```js
+/**
+ * This will create a chat message reminding all the users to do their
+ * daily preparations, this requires for the setting `Watch For Request`
+ * to be enabled, otherwise the chat card button will not be functional.
+ */
+function requestDailies(): void
+```
+
 # CHANGELOG
 
 You can see the changelog [HERE](./CHANGELOG.md)

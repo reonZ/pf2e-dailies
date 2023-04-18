@@ -1,3 +1,35 @@
+# 2.7.0
+
+-   the module now exposes functions that can be used in macros or by other modules
+
+```js
+/**
+ * Retrieves the API object containing the funtions
+ */
+game.modules.get('pf2e-dailies').api
+```
+
+```js
+/**
+ * Opens the `Daily Preparations` interface for a character
+ * if no actor parameter is provided, the module will look
+ * for a valid character among the currently selected tokens
+ * or get the default user's character if any.
+ *
+ * @param {CharacterPF2e} [actor]
+ */
+function openDailiesInterface(actor?: CharacterPF2e): void
+```
+
+```js
+/**
+ * This will create a chat message reminding all the users to do their
+ * daily preparations, this requires for the setting `Watch For Request`
+ * to be enabled, otherwise the chat card button will not be functional.
+ */
+function requestDailies(): void
+```
+
 # 2.6.0
 
 -   updated for system version `4.10.0` feat filters

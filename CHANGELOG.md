@@ -1,3 +1,7 @@
+# 2.7.2
+
+-   fixed creating a temporary rule element on an item making all other rules eligible to delete on `rest`
+
 # 2.7.1
 
 -   just a typo

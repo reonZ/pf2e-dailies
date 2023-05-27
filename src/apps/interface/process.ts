@@ -127,7 +127,10 @@ export async function processData(this: DailiesInterface) {
                 messages: messageObj,
                 addItem: source => addItems.push(source),
                 updateItem: data => updateItems.push(data),
-                addRule: (source, parent) => getRules(parent ?? item).push(source),
+                addRule: (source, parent) => {
+                    source[MODULE_ID] = true
+                    getRules(parent ?? item).push(source)
+                },
                 addFeat: (source, parent) => {
                     if (item.isOfType('feat')) {
                         const parentId = (parent ?? item).id
@@ -169,7 +172,6 @@ export async function processData(this: DailiesInterface) {
     }
 
     for (const [id, rules] of addRules) {
-        rules.forEach(x => (x[MODULE_ID] = true))
         updateItems.push({ _id: id, 'system.rules': rules })
     }
 

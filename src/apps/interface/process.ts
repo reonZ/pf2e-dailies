@@ -132,8 +132,9 @@ export async function processData(this: DailiesInterface) {
                     getRules(parent ?? item).push(source)
                 },
                 addFeat: (source, parent) => {
-                    if (item.isOfType('feat')) {
-                        const parentId = (parent ?? item).id
+                    parent ??= item
+                    if (parent.isOfType('feat')) {
+                        const parentId = parent.id
                         setProperty(source, 'flags.pf2e.grantedBy', { id: parentId, onDelete: 'cascade' })
                         setProperty(source, `flags.${MODULE_ID}.grantedBy`, parentId)
                     }

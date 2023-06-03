@@ -1,3 +1,11 @@
+# 2.8.0
+
+-   updated the familiar abilities for the system version `4.12.7`, which means that custom familiar abilities now need to be `Action`s and not `Effect`s anymore
+
+# 2.7.3
+
+-   fixed temporary feat parent check
+
 # 2.7.2
 
 -   fixed creating a temporary rule element on an item making all other rules eligible to delete on `rest`

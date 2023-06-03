@@ -99,7 +99,7 @@ export class DailiesInterface extends Application {
             for (let uuid of customUUIDS) {
                 uuid = uuid.trim() as ItemUUID
                 const item = await fromUuid<ItemPF2e>(uuid)
-                if (item && item.isOfType('effect')) options.push({ value: uuid, label: item.name })
+                if (item && item.isOfType('action')) options.push({ value: uuid, label: item.name })
             }
 
             options.sort((a, b) => (a.label < b.label ? -1 : b.label < a.label ? 1 : 0))

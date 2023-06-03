@@ -58,10 +58,10 @@ export async function processData(this: DailiesInterface) {
     if (actor.familiar && fields['dailies.familiar']) {
         const familiar = actor.familiar
         const pack = getFamiliarPack()
-        const abilities: EffectSource[] = []
+        const abilities: ActionItemSource[] = []
 
         // we remove old abilities
-        const ids = familiar.itemTypes.effect.map(effect => effect.id)
+        const ids = familiar.itemTypes.action.map(item => item.id)
         if (ids.length) familiar.deleteEmbeddedDocuments('Item', ids)
 
         messageObj.addGroup('familiar', 20)
@@ -70,7 +70,7 @@ export async function processData(this: DailiesInterface) {
             const value = field.value as ItemUUID
             const isCustom = value.includes('.')
             const item = await (isCustom ? fromUuid<ItemPF2e>(value) : pack.getDocument(value))
-            if (!item || !item.isOfType('effect')) continue
+            if (!item || !item.isOfType('action')) continue
 
             const source = item.toObject()
             if (source) {

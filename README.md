@@ -1,5 +1,7 @@
 # FoundryVTT PF2e Dailies
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K6M2V13)
+
 **This module will provide a convenient interface to handle a character's daily preparations, here is a list of built-in features in the module:**
 
 Consuming Rations

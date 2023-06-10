@@ -1,3 +1,7 @@
+# 2.8.1
+
+-   fixed rituals spellcasting entries breaking some lookups (slipped through from when the system changed rituals)
+
 # 2.8.0
 
 -   updated the familiar abilities for the system version `4.12.7`, which means that custom familiar abilities now need to be `Action`s and not `Effect`s anymore

@@ -58,7 +58,7 @@
                 "type": "system",
                 "manifest": "https://raw.githubusercontent.com/foundryvtt/pf2e/master/system.json",
                 "compatibility": {
-                    "minimum": "4.12.7"
+                    "minimum": "4.12.9"
                 }
             }
         ],

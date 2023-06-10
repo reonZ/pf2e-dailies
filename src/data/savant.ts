@@ -10,12 +10,14 @@ export const scrollSavant: Daily<SavantGenerics> = {
     prepare: ({ actor }) => {
         const { maxSlot, maxTradition } = getSpellcastingTraditionDetails(actor, 'arcane')
 
-        return {
+        const custom = {
             first: { level: maxSlot - 2, condition: true },
             second: { level: maxSlot - 3, condition: true },
             third: { level: maxSlot - 4, condition: maxTradition >= 3 && maxSlot >= 5 },
             fourth: { level: maxSlot - 5, condition: maxTradition >= 4 && maxSlot >= 6 },
         } as SavantCustom
+
+        return custom
     },
     rows: (['first', 'second', 'third', 'fourth'] as const).map(rowName => {
         const row: DailyRowDrop<SavantGenerics> = {
@@ -48,8 +50,8 @@ function getSpellcastingTraditionDetails(actor: CharacterPF2e, tradition: MagicT
     let maxSlot: OneToTen = 1
     let maxTradition: ZeroToFour = 0
 
-    for (const entry of actor.spellcasting) {
-        if ('pf2e-staves' in entry.flags) continue // we skip staff entries
+    for (const entry of actor.spellcasting.regular) {
+        if (entry.flags && 'pf2e-staves' in entry.flags) continue // we skip staff entries
 
         const slots = entry.system.slots
         for (const key in slots) {

@@ -13,7 +13,7 @@ export const savant = [
     '    let maxSlot = 1',
     '    let maxTradition = 0',
     '',
-    '    for (const entry of actor.spellcasting) {',
+    '    for (const entry of actor.spellcasting.regular) {',
     "        if ('pf2e-staves' in entry.flags) continue // we skip staff entries",
     '',
     '        const slots = entry.system.slots',

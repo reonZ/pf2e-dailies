@@ -1,3 +1,8 @@
+# 2.9.0
+
+-   converted all UUIDs to v11 version
+-   v11 only
+
 # 2.8.1
 
 -   fixed rituals spellcasting entries breaking some lookups (slipped through from when the system changed rituals)

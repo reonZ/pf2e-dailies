@@ -3,5 +3,5 @@ export function getFamiliarPack() {
 }
 
 export function familiarUUID(id: string) {
-    return `Compendium.pf2e.familiar-abilities.${id}` as ItemUUID
+    return `Compendium.pf2e.familiar-abilities.Item.${id}` as ItemUUID
 }

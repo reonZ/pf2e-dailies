@@ -32,7 +32,7 @@ export const savant = [
     'const scrollSavant = {',
     "    key: 'savant',",
     '    item: {',
-    "        uuid: 'Compendium.pf2e.feats-srd.u5DBg0LrBUKP0JsJ', // Scroll Savant",
+    "        uuid: 'Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ', // Scroll Savant",
     '    },',
     '    prepare: ({ actor }) => {',
     "        const { maxSlot, maxTradition } = getSpellcastingTraditionDetails(actor, 'arcane')",

@@ -43,7 +43,7 @@ const WEAPON_GREATER_RUNES = [
 export const mindSmith: Daily<MindGenerics> = {
     key: 'mindsmith',
     item: {
-        uuid: 'Compendium.pf2e.feats-srd.juikoiIA0Jy8PboY', // Mind Smith Dedication
+        uuid: 'Compendium.pf2e.feats-srd.Item.juikoiIA0Jy8PboY', // Mind Smith Dedication
     },
     children: [
         {
@@ -52,15 +52,15 @@ export const mindSmith: Daily<MindGenerics> = {
         },
         {
             slug: 'mental',
-            uuid: 'Compendium.pf2e.feats-srd.PccekOihIbRWdDky', // Malleable Mental Forge
+            uuid: 'Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky', // Malleable Mental Forge
         },
         {
             slug: 'runic',
-            uuid: 'Compendium.pf2e.feats-srd.2uQbQgz1AbjzcFSp', // Runic Mind Smithing
+            uuid: 'Compendium.pf2e.feats-srd.Item.2uQbQgz1AbjzcFSp', // Runic Mind Smithing
         },
         {
             slug: 'advanced',
-            uuid: 'Compendium.pf2e.feats-srd.fgnfXwFcn9jZlXGD', // Advanced Runic Mind Smithing
+            uuid: 'Compendium.pf2e.feats-srd.Item.fgnfXwFcn9jZlXGD', // Advanced Runic Mind Smithing
         },
     ],
     rows: [

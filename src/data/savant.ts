@@ -5,7 +5,7 @@ type SavantGenerics = [SavantRow, SavantCustom, '']
 export const scrollSavant: Daily<SavantGenerics> = {
     key: 'savant',
     item: {
-        uuid: 'Compendium.pf2e.feats-srd.u5DBg0LrBUKP0JsJ', // Scroll Savant
+        uuid: 'Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ', // Scroll Savant
     },
     prepare: ({ actor }) => {
         const { maxSlot, maxTradition } = getSpellcastingTraditionDetails(actor, 'arcane')

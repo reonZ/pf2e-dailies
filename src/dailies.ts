@@ -17,29 +17,29 @@ import { AsyncFunction } from '@utils/function'
 
 const BUILTINS = [
     thaumaturgeTome,
-    createTrainedSkillDaily('longevity', 'Compendium.pf2e.feats-srd.WoLh16gyDp8y9WOZ'), // Ancestral Longevity
-    createTrainedSkillDaily('ageless', 'Compendium.pf2e.feats-srd.wylnETwIz32Au46y'), // Ageless Spirit
-    createTrainedSkillDaily('memories', 'Compendium.pf2e.feats-srd.ptEOt3lqjxUnAW62'), // Ancient Memories
-    createTrainedSkillDaily('studies', 'Compendium.pf2e.feats-srd.9bgl6qYWKHzqWZj0'), // Flexible Studies
-    createTrainedLoreDaily('study', 'Compendium.pf2e.feats-srd.aLJsBBZzlUK3G8MW'), // Quick Study
-    createLanguageDaily('linguistics', 'Compendium.pf2e.feats-srd.eCWQU16hRLfN1KaX'), // Ancestral Linguistics
-    createLanguageDaily('borts', 'Compendium.pf2e.equipment-srd.iS7hAQMAaThHYE8g'), // Bort's Blessing
+    createTrainedSkillDaily('longevity', 'Compendium.pf2e.feats-srd.Item.WoLh16gyDp8y9WOZ'), // Ancestral Longevity
+    createTrainedSkillDaily('ageless', 'Compendium.pf2e.feats-srd.Item.wylnETwIz32Au46y'), // Ageless Spirit
+    createTrainedSkillDaily('memories', 'Compendium.pf2e.feats-srd.Item.ptEOt3lqjxUnAW62'), // Ancient Memories
+    createTrainedSkillDaily('studies', 'Compendium.pf2e.feats-srd.Item.9bgl6qYWKHzqWZj0'), // Flexible Studies
+    createTrainedLoreDaily('study', 'Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW'), // Quick Study
+    createLanguageDaily('linguistics', 'Compendium.pf2e.feats-srd.Item.eCWQU16hRLfN1KaX'), // Ancestral Linguistics
+    createLanguageDaily('borts', 'Compendium.pf2e.equipment-srd.Item.iS7hAQMAaThHYE8g'), // Bort's Blessing
     createResistancelDaily(
         'elementalist',
-        'Compendium.pf2e.feats-srd.tx9pkrpmtqe4FnvS',
+        'Compendium.pf2e.feats-srd.Item.tx9pkrpmtqe4FnvS',
         ['air', 'earth', 'fire', 'water'],
         'half',
         'elementalist'
     ), // Elementalist Dedication
     createResistancelDaily(
         'ganzi',
-        'Compendium.pf2e.heritages.3reGfXH0S82hM7Gp',
+        'Compendium.pf2e.heritages.Item.3reGfXH0S82hM7Gp',
         ['acid', 'electricity', 'sonic'],
         'half',
         'ganzi',
         true
     ), // Ganzi
-    createFeatDaily('metamagical', 'Compendium.pf2e.classfeatures.89zWKD2CN7nRu2xp', {
+    createFeatDaily('metamagical', 'Compendium.pf2e.classfeatures.Item.89zWKD2CN7nRu2xp', {
         category: ['class'],
         traits: { selected: ['metamagic', 'wizard'], conjunction: 'and' },
         level: 'half',
@@ -47,14 +47,14 @@ const BUILTINS = [
     combatFlexibility,
     scrollSavant,
     createScrollChain('esoterica', [
-        'Compendium.pf2e.feats-srd.OqObuRB8oVSAEKFR', // Scroll Esoterica
-        'Compendium.pf2e.feats-srd.nWd7m0yRcIEVUy7O', // Elaborate Scroll Esoterica
-        'Compendium.pf2e.feats-srd.LHjPTV5vP3MOsPPJ', // Grand Scroll Esoterica
+        'Compendium.pf2e.feats-srd.Item.OqObuRB8oVSAEKFR', // Scroll Esoterica
+        'Compendium.pf2e.feats-srd.Item.nWd7m0yRcIEVUy7O', // Elaborate Scroll Esoterica
+        'Compendium.pf2e.feats-srd.Item.LHjPTV5vP3MOsPPJ', // Grand Scroll Esoterica
     ]),
     createScrollChain('trickster', [
-        'Compendium.pf2e.feats-srd.ROAUR1GhC19Pjk9C', // Basic Scroll Cache
-        'Compendium.pf2e.feats-srd.UrOj9TROtn8nuxPf', // Expert Scroll Cache
-        'Compendium.pf2e.feats-srd.lIg5Gzz7W70jfbk1', // Master Scroll Cache
+        'Compendium.pf2e.feats-srd.Item.ROAUR1GhC19Pjk9C', // Basic Scroll Cache
+        'Compendium.pf2e.feats-srd.Item.UrOj9TROtn8nuxPf', // Expert Scroll Cache
+        'Compendium.pf2e.feats-srd.Item.lIg5Gzz7W70jfbk1', // Master Scroll Cache
     ]),
     TricksterAce,
     mindSmith,

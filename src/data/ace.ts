@@ -4,7 +4,7 @@ import { createSpellDaily, SpellGenerics } from './spell'
 export const TricksterAce = (() => {
     const daily = createSpellDaily(
         'ace',
-        'Compendium.pf2e.feats-srd.POrE3ZgBRdBL9MsW',
+        'Compendium.pf2e.feats-srd.Item.POrE3ZgBRdBL9MsW',
         {
             category: ['cantrip', 'spell'],
             level: 4,

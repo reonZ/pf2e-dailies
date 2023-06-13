@@ -5,12 +5,12 @@ type FlexibilityGenerics = [FlexibilityRow, {}, FlexibilityChild]
 export const combatFlexibility: Daily<FlexibilityGenerics> = {
     key: 'flexibility',
     item: {
-        uuid: 'Compendium.pf2e.classfeatures.8g6HzARbhfcgilP8', // Combat Flexibility
+        uuid: 'Compendium.pf2e.classfeatures.Item.8g6HzARbhfcgilP8', // Combat Flexibility
     },
     children: [
         {
             slug: 'improved',
-            uuid: 'Compendium.pf2e.classfeatures.W2rwudMNcAxs8VoX', // Improved Flexibility
+            uuid: 'Compendium.pf2e.classfeatures.Item.W2rwudMNcAxs8VoX', // Improved Flexibility
         },
     ],
     rows: [

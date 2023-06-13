@@ -6,17 +6,17 @@ type TomeGenerics = [TomeRow, TomeCustom, TomeChild]
 export const thaumaturgeTome: Daily<TomeGenerics> = {
     key: 'tome',
     item: {
-        uuid: 'Compendium.pf2e.classfeatures.MyN1cQgE0HsLF20e', // Tome
+        uuid: 'Compendium.pf2e.classfeatures.Item.MyN1cQgE0HsLF20e', // Tome
     },
     children: [
         {
             slug: 'adept',
-            uuid: 'Compendium.pf2e.classfeatures.Obm4ItMIIr0whYeO', // Implement Adept
+            uuid: 'Compendium.pf2e.classfeatures.Item.Obm4ItMIIr0whYeO', // Implement Adept
             condition: createChildCondition('adept'),
         },
         {
             slug: 'second',
-            uuid: 'Compendium.pf2e.classfeatures.ZEUxZ4Ta1kDPHiq5', // Second Adept
+            uuid: 'Compendium.pf2e.classfeatures.Item.ZEUxZ4Ta1kDPHiq5', // Second Adept
             condition: createChildCondition('adept'),
         },
         {
@@ -25,7 +25,7 @@ export const thaumaturgeTome: Daily<TomeGenerics> = {
         },
         {
             slug: 'paragon',
-            uuid: 'Compendium.pf2e.classfeatures.QEtgbY8N2V4wTbsI', // Implement Paragon
+            uuid: 'Compendium.pf2e.classfeatures.Item.QEtgbY8N2V4wTbsI', // Implement Paragon
             condition: createChildCondition('paragon'),
         },
     ],

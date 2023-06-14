@@ -134,7 +134,7 @@ export const mindSmith: Daily<MindGenerics> = {
             const field = fields.advanced ?? fields.runic
             const selected = field.value as WeaponPropertyRuneType
 
-            if (!weapon.system.runes.property.includes(selected)) {
+            if (freeSlot && !weapon.system.runes.property.includes(selected)) {
                 updateItem({ _id: weapon.id, [`system.${freeSlot}.value`]: selected, [`flags.${MODULE_ID}.runeSlot`]: freeSlot })
                 messages.add('mindsmith', {
                     selected: utils.weaponPropertyRunesLabel(selected),

@@ -3,7 +3,7 @@
 }
 #pf2e-dailies-interface .window-content {
   position: relative;
-  background: url(/ui/parchment.jpg) repeat;
+  background: url(../../../ui/parchment.jpg) repeat;
 }
 #pf2e-dailies-interface .window-content .content {
   display: grid;
@@ -104,11 +104,11 @@
   box-shadow: none;
 }
 #pf2e-dailies-interface .window-content input:not(:disabled, :-moz-read-only) {
-  background: url(/ui/parchment.jpg) repeat;
+  background: url(../../../ui/parchment.jpg) repeat;
   background-color: #d9d9cd;
 }
 #pf2e-dailies-interface .window-content input:not(:disabled, :read-only) {
-  background: url(/ui/parchment.jpg) repeat;
+  background: url(../../../ui/parchment.jpg) repeat;
   background-color: #d9d9cd;
 }
 #pf2e-dailies-interface .window-content .buttons {
@@ -132,17 +132,8 @@
   border-radius: 50%;
   height: min(25%, 8em);
   aspect-ratio: 1/1;
-  -webkit-animation: spin 2s linear infinite;
-          animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
   margin-top: -10px;
-}
-@-webkit-keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 @keyframes spin {
   from {

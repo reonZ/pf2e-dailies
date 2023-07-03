@@ -3,7 +3,7 @@
 
     .window-content {
         position: relative;
-        background: url(/ui/parchment.jpg) repeat;
+        background: url(../../../ui/parchment.jpg) repeat;
 
         .content {
             display: grid;
@@ -113,7 +113,7 @@
             }
 
             &:not(:disabled, :read-only) {
-                background: url(/ui/parchment.jpg) repeat;
+                background: url(../../../ui/parchment.jpg) repeat;
                 background-color: #d9d9cd;
             }
         }

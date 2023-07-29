@@ -3,7 +3,7 @@ export const mind = [
     "/** @typedef {'weapon' | 'mental' | 'runic' | 'advanced'} MindChild */",
     '/** @typedef {[MindRow, {}, MindChild]} MindGenerics */',
     '',
-    "const MIND_WEAPON_UUID = 'Compendium.pf2e-dailies.equipment.VpmEozw21aRxX15P'",
+    "const MIND_WEAPON_UUID = 'Compendium.pf2e-dailies.equipment.Item.VpmEozw21aRxX15P'",
     '',
     'const WEAPON_BASE_TYPES = {',
     "    0: { die: 'd4', traits: ['finesse', 'agile'], usage: 'held-in-one-hand' },",

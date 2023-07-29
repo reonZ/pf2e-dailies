@@ -21,7 +21,7 @@ export const thaumaturgeTome: Daily<TomeGenerics> = {
         },
         {
             slug: 'intense',
-            uuid: 'Compendium.pf2e.feats-srd.yRRM1dsY6jakEMaC', // Intense Implement
+            uuid: 'Compendium.pf2e.feats-srd.Item.yRRM1dsY6jakEMaC', // Intense Implement
         },
         {
             slug: 'paragon',

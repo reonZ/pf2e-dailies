@@ -6,7 +6,7 @@ type MindRow = 'alert' | 'smith' | 'mental' | 'runic' | 'advanced'
 type MindChild = 'weapon' | 'mental' | 'runic' | 'advanced'
 type MindGenerics = [MindRow, {}, MindChild]
 
-const MIND_WEAPON_UUID = 'Compendium.pf2e-dailies.equipment.VpmEozw21aRxX15P'
+const MIND_WEAPON_UUID = 'Compendium.pf2e-dailies.equipment.Item.VpmEozw21aRxX15P'
 
 const WEAPON_BASE_TYPES = {
     '0': { die: 'd4', traits: ['finesse', 'agile'], usage: 'held-in-one-hand' },

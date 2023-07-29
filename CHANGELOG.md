@@ -1,6 +1,6 @@
 # 2.9.2
 
--   fixed UUIDs that slept through the crack in 2.9.0 and weren't converted to the v11 version
+-   fixed UUIDs that slipped through the crack in 2.9.0 and weren't converted to the v11 version
 
 # 2.9.1
 

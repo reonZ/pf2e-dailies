@@ -238,6 +238,10 @@ export class DailiesInterface extends Application {
         html.find<HTMLAnchorElement>('[data-action=alert]').on('click', this.#onAlert.bind(this))
     }
 
+    protected _canDragDrop(selector: string): boolean {
+        return true
+    }
+
     protected async _onDrop(event: ElementDragEvent) {
         const localize = subLocalize('interface.error.drop')
         let target = event.target as HTMLInputElement | HTMLLabelElement

@@ -1,3 +1,7 @@
+# 2.9.3
+
+-   fixed players being unable to drop items onto the preparations interface (how long as it been an issue ?)
+
 # 2.9.2
 
 -   fixed UUIDs that slipped through the crack in 2.9.0 and weren't converted to the v11 version

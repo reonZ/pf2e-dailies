@@ -6,4 +6,5 @@ release.mjs
 package*.json
 *.code-workspace
 tsconfig.json
+jsconfig.json
 webpack*.*

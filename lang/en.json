@@ -143,7 +143,11 @@
             "runicmind": "Runic Smithing",
             "familiar": "Familiar Abilities",
             "ability": "Ability #{nb}",
-            "metamagical": "Metamagical"
+            "metamagical": "Metamagical",
+            "blade": {
+                "weapon": "Weapon",
+                "rune": "Property Rune"
+            }
         },
         "sheet": {
             "title": "Daily Preparations"
@@ -192,6 +196,7 @@
             "familiar": "Has selected the familiar abilities:",
             "feats": "Learned the feats:",
             "scrolls": "Created the temporary scrolls:",
+            "blade": "Imbued their spirit into their weapon:",
             "rations": {
                 "used": "Consumed one of their {name} and has {nb} remaining.",
                 "last": "Consumed the last of their {name}.",

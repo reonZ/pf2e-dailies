@@ -20,7 +20,7 @@ export const bladeAlly = {
         },
         {
             slug: 'paladin',
-            uuid: 'Compendium.pf2e.classfeatures.Item.peEXunfbSD8WcMFk', // paladin
+            uuid: 'Compendium.pf2e.classfeatures.Item.peEXunfbSD8WcMFk', // Paladin
         },
         {
             slug: 'antipaladin',

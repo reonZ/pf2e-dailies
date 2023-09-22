@@ -58,6 +58,19 @@ Mind Smith Dedication
     -   [Runic Mind Smithing](https://2e.aonprd.com/Feats.aspx?ID=3870)
     -   [Advanced Runic Mind-Smithing](https://2e.aonprd.com/Feats.aspx?ID=3872)
 
+Divine Ally
+
+-   [Blade Ally](https://2e.aonprd.com/Classes.aspx?ID=4)
+    -   [The Tenets of Good](https://2e.aonprd.com/Tenets.aspx)
+    -   [The Tenets of Evil](https://2e.aonprd.com/Tenets.aspx)
+    -   [Liberator](https://2e.aonprd.com/ClassSamples.aspx?ID=8)
+    -   [Paladin](https://2e.aonprd.com/Causes.aspx?ID=1)
+    -   [Antipaladin](https://2e.aonprd.com/Causes.aspx?ID=6)
+    -   [Tyrant](https://2e.aonprd.com/Causes.aspx?ID=4)
+    -   [Radiant Blade Spirit](https://2e.aonprd.com/Feats.aspx?ID=240)
+    -   [Radiant Blade Master](https://2e.aonprd.com/Feats.aspx?ID=262)
+    -   The system's `Effect: Blade Ally` isn't needed anymore
+
 # Sheet Icon
 
 ![](./readme/icon.webp)

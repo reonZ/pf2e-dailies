@@ -1,3 +1,15 @@
+# 2.10.0
+
+-   added support for `Blade Ally` (there is no more use for the system's `Effect: Blade Ally`)
+    -   The Tenets of Good
+    -   The Tenets of Evil
+    -   Liberator
+    -   Paladin
+    -   Antipaladin
+    -   Tyrant
+    -   Radiant Blade Spirit
+    -   Radiant Blade Master
+
 # 2.9.3
 
 -   fixed players being unable to drop items onto the preparations interface (how long as it been an issue ?)

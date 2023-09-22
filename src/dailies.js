@@ -1,4 +1,6 @@
-import { TricksterAce } from './data/ace'
+import { utils } from './api'
+import { tricksterAce } from './data/ace'
+import { bladeAlly } from './data/blade'
 import { createScrollChain } from './data/chain'
 import { createFeatDaily } from './data/feat'
 import { combatFlexibility } from './data/flexibility'
@@ -10,7 +12,6 @@ import { scrollSavant } from './data/savant'
 import { createTrainedLoreDaily, createTrainedSkillDaily } from './data/skill'
 import { thaumaturgeTome } from './data/tome'
 import { AsyncFunction, error, getSetting, getSourceId } from './module'
-import { utils } from './api'
 
 const BUILTINS = [
     thaumaturgeTome,
@@ -53,8 +54,9 @@ const BUILTINS = [
         'Compendium.pf2e.feats-srd.Item.UrOj9TROtn8nuxPf', // Expert Scroll Cache
         'Compendium.pf2e.feats-srd.Item.lIg5Gzz7W70jfbk1', // Master Scroll Cache
     ]),
-    TricksterAce,
+    tricksterAce,
     mindSmith,
+    bladeAlly,
 ]
 
 const BUILTINS_UUIDS = parseDailies(BUILTINS, 'dailies')

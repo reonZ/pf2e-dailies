@@ -1,3 +1,7 @@
+# 2.12.1
+
+-   fixed `utils.skillNames` error (again)
+
 # 2.12.0
 
 -   the `Party Members Only` now look for all parties the character is a member of instead of just the active one, it will also pull all member actors from the party when enabled, while only player owned actors will be pulled from the world actors list when disabled

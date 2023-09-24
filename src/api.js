@@ -5,10 +5,14 @@ import { createSpellScroll } from './pf2e/spell'
 
 const halfLevelString = 'max(1,floor(@actor.level/2))'
 
+let SKILLNAMES
+let LANGUAGES
+
 export const utils = {
     // Skills
     get skillNames() {
-        return Object.keys(CONFIG.PF2E.skillList).slice()
+        SKILLNAMES ??= Object.keys(CONFIG.PF2E.skillList).filter(s => s !== 'lore')
+        return SKILLNAMES.slice()
     },
     skillLabel: skill => {
         return game.i18n.localize(CONFIG.PF2E.skillList[skill])
@@ -34,7 +38,8 @@ export const utils = {
     },
     // Languages
     get languageNames() {
-        return Object.keys(CONFIG.PF2E.languages).slice()
+        LANGUAGES ??= Object.keys(CONFIG.PF2E.languages)
+        return LANGUAGES.slice()
     },
     languageLabel: language => {
         return game.i18n.localize(CONFIG.PF2E.languages[language])

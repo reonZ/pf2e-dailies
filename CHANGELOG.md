@@ -1,3 +1,9 @@
+# 2.12.0
+
+-   the `Party Members Only` now look for all parties the character is a member of instead of just the active one, it will also pull all member actors from the party when enabled, while only player owned actors will be pulled from the world actors list when disabled
+-   the module doesn't try to check for active dailies anymore before rendering the coffee cup icon in the character sheet
+-   the daily interface will now display a message when no active dailies are available
+
 # 2.11.0
 
 -   added `Party Members Only` user setting, when a collection of players actors is retrieved in the module and if the character is a member of a party, should those actors only be pulled from said party or not

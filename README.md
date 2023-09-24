@@ -71,6 +71,10 @@ Divine Ally
     -   [Radiant Blade Master](https://2e.aonprd.com/Feats.aspx?ID=262)
     -   The system's `Effect: Blade Ally` isn't needed anymore
 
+Others
+
+-   [Root Magic](https://2e.aonprd.com/Feats.aspx?ID=2147)
+
 # Sheet Icon
 
 ![](./readme/icon.webp)
@@ -125,7 +129,7 @@ The module will randomly pick an option when necessary.
 
 ![](./readme/random.webp)
 
-_A die icon will displayed in the interface window to point out which options are randomly picked, the different options will also loop over inside the field._
+_A die icon will be displayed in the interface window to point out which options are randomly picked, the different options will also loop over inside the field._
 
 ![](./readme/random-chat.webp)
 

@@ -1,19 +1,3439 @@
-(()=>{var _t=Object.defineProperty;var l=(t,e)=>_t(t,"name",{value:e,configurable:!0});var Nt=(t,e,r)=>{if(!e.has(t))throw TypeError("Cannot "+r)};var ze=(t,e,r)=>(Nt(t,e,"read from private field"),r?r.call(t):e.get(t)),We=(t,e,r)=>{if(e.has(t))throw TypeError("Cannot add the same private member more than once");e instanceof WeakSet?e.add(t):e.set(t,r)};var v="pf2e-dailies",oe=async function(){}.constructor;function O(t){return game.settings.get(v,t)}l(O,"getSetting");function ae(t,e){return game.settings.set(v,t,e)}l(ae,"setSetting");function G(...t){return`${v}.settings.${t.join(".")}`}l(G,"getSettingLocalizationPath");function X(t){let e=t.name;t.scope=t.scope??"world",t.config=t.config??!1,t.config&&(t.name=G(e,"name"),t.hint=G(e,"hint")),Array.isArray(t.choices)&&(t.choices=t.choices.reduce((r,i)=>(r[i]=G(e,"choices",i),r),{})),game.settings.register(v,e,t)}l(X,"registerSetting");function Ge(t){let e=t.name;t.name=G("menus",e,"name"),t.label=G("menus",e,"label"),t.hint=G("menus",e,"hint"),t.restricted=t.restricted??!0,t.icon=t.icon??"fas fa-cogs",game.settings.registerMenu(v,e,t)}l(Ge,"registerSettingMenu");function le(...t){return t=t.filter(e=>typeof e=="string"),`modules/${v}/templates/${t.join("/")}`}l(le,"templatePath");function x(t,e,r){return t.getFlag(v,e)??r}l(x,"getFlag");function Be(t,e,r){return t.setFlag(v,e,r)}l(Be,"setFlag");function S(...t){let[e,r]=t;return e=`${v}.${e}`,r?game.i18n.format(e,r):game.i18n.localize(e)}l(S,"localize");function Z(t){return game.i18n.has(`${v}.${t}`,!1)}l(Z,"hasLocalization");function ke(t){return`${v}.${t}`}l(ke,"localizePath");function C(t){let e=l((...r)=>S(`${t}.${r[0]}`,r[1]),"fn");return Object.defineProperties(e,{warn:{value:(...r)=>D(`${t}.${r[0]}`,r[1],r[2]),enumerable:!1,configurable:!1},info:{value:(...r)=>$t(`${t}.${r[0]}`,r[1],r[2]),enumerable:!1,configurable:!1},error:{value:(...r)=>L(`${t}.${r[0]}`,r[1],r[2]),enumerable:!1,configurable:!1},has:{value:r=>Z(`${t}.${r}`),enumerable:!1,configurable:!1},path:{value:r=>ke(`${t}.${r}`),enumerable:!1,configurable:!1},template:{value:(r,{hash:i})=>e(r,i),enumerable:!1,configurable:!1}}),e}l(C,"subLocalize");function qe(){return CONFIG.ChatMessage.documentClass}l(qe,"getChatMessageClass");function xe(t,e,r,i){let s=typeof e=="string"?e:"info",n=typeof e=="object"?e:typeof r=="object"?r:void 0,a=typeof e=="boolean"?e:typeof r=="boolean"?r:i??!1;ui.notifications.notify(S(t,n),s,{permanent:a})}l(xe,"notify");function D(...t){let[e,r,i]=t;xe(e,"warning",r,i)}l(D,"warn");function $t(...t){let[e,r,i]=t;xe(e,"info",r,i)}l($t,"info");function L(...t){let[e,r,i]=t;xe(e,"error",r,i)}l(L,"error");function B(t){return t.getFlag("core","sourceId")}l(B,"getSourceId");function Mt(t,e){let r=B(t);return r?e.includes(r):!1}l(Mt,"includesSourceId");function Ut(t){return Array.isArray(t)?e=>Mt(e,t):e=>B(e)===t}l(Ut,"getItemSourceIdCondition");function jt(t,e){return e?e.flatMap(r=>t.itemTypes[r]):t.items}l(jt,"getItems");function Ve(t,e,r){return jt(t,r).find(Ut(e))}l(Ve,"findItemWithSourceId");function ce(t,e){let r=[];if(t<=e)for(let i=t;i<=e;i++)r.push(i);else for(let i=t;i>=e;i--)r.push(i);return r}l(ce,"sequenceArray");function ue(t){return t?t[0].toUpperCase()+t.slice(1):""}l(ue,"capitalize");function Q(t,e){return e?`@UUID[${t}]{${e}}`:`@UUID[${t}]`}l(Q,"chatUUID");function He(t){return`<span style="background: #DDD;
+(() => {
+  var __defProp = Object.defineProperty;
+  var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+  var __accessCheck = (obj, member, msg) => {
+    if (!member.has(obj))
+      throw TypeError("Cannot " + msg);
+  };
+  var __privateGet = (obj, member, getter) => {
+    __accessCheck(obj, member, "read from private field");
+    return getter ? getter.call(obj) : member.get(obj);
+  };
+  var __privateAdd = (obj, member, value) => {
+    if (member.has(obj))
+      throw TypeError("Cannot add the same private member more than once");
+    member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
+  };
+
+  // src/module.js
+  var MODULE_ID = "pf2e-dailies";
+  var AsyncFunction = async function() {
+  }.constructor;
+  function getSetting(key) {
+    return game.settings.get(MODULE_ID, key);
+  }
+  __name(getSetting, "getSetting");
+  function setSetting(key, value) {
+    return game.settings.set(MODULE_ID, key, value);
+  }
+  __name(setSetting, "setSetting");
+  function getSettingLocalizationPath(...path) {
+    return `${MODULE_ID}.settings.${path.join(".")}`;
+  }
+  __name(getSettingLocalizationPath, "getSettingLocalizationPath");
+  function registerSetting(options) {
+    const name = options.name;
+    options.scope = options.scope ?? "world";
+    options.config = options.config ?? false;
+    if (options.config) {
+      options.name = getSettingLocalizationPath(name, "name");
+      options.hint = getSettingLocalizationPath(name, "hint");
+    }
+    if (Array.isArray(options.choices)) {
+      options.choices = options.choices.reduce((choices, choice) => {
+        choices[choice] = getSettingLocalizationPath(name, "choices", choice);
+        return choices;
+      }, {});
+    }
+    game.settings.register(MODULE_ID, name, options);
+  }
+  __name(registerSetting, "registerSetting");
+  function registerSettingMenu(options) {
+    const name = options.name;
+    options.name = getSettingLocalizationPath("menus", name, "name");
+    options.label = getSettingLocalizationPath("menus", name, "label");
+    options.hint = getSettingLocalizationPath("menus", name, "hint");
+    options.restricted = options.restricted ?? true;
+    options.icon = options.icon ?? "fas fa-cogs";
+    game.settings.registerMenu(MODULE_ID, name, options);
+  }
+  __name(registerSettingMenu, "registerSettingMenu");
+  function templatePath(...path) {
+    path = path.filter((x) => typeof x === "string");
+    return `modules/${MODULE_ID}/templates/${path.join("/")}`;
+  }
+  __name(templatePath, "templatePath");
+  function getFlag(doc, key, fallback) {
+    return doc.getFlag(MODULE_ID, key) ?? fallback;
+  }
+  __name(getFlag, "getFlag");
+  function setFlag(doc, key, value) {
+    return doc.setFlag(MODULE_ID, key, value);
+  }
+  __name(setFlag, "setFlag");
+  function localize(...args) {
+    let [key, data] = args;
+    key = `${MODULE_ID}.${key}`;
+    if (data)
+      return game.i18n.format(key, data);
+    return game.i18n.localize(key);
+  }
+  __name(localize, "localize");
+  function hasLocalization(key) {
+    return game.i18n.has(`${MODULE_ID}.${key}`, false);
+  }
+  __name(hasLocalization, "hasLocalization");
+  function localizePath(key) {
+    return `${MODULE_ID}.${key}`;
+  }
+  __name(localizePath, "localizePath");
+  function subLocalize(subKey) {
+    const fn = /* @__PURE__ */ __name((...args) => localize(`${subKey}.${args[0]}`, args[1]), "fn");
+    Object.defineProperties(fn, {
+      warn: {
+        value: (...args) => warn(`${subKey}.${args[0]}`, args[1], args[2]),
+        enumerable: false,
+        configurable: false
+      },
+      info: {
+        value: (...args) => info(`${subKey}.${args[0]}`, args[1], args[2]),
+        enumerable: false,
+        configurable: false
+      },
+      error: {
+        value: (...args) => error(`${subKey}.${args[0]}`, args[1], args[2]),
+        enumerable: false,
+        configurable: false
+      },
+      has: {
+        value: (key) => hasLocalization(`${subKey}.${key}`),
+        enumerable: false,
+        configurable: false
+      },
+      path: {
+        value: (key) => localizePath(`${subKey}.${key}`),
+        enumerable: false,
+        configurable: false
+      },
+      template: {
+        value: (key, { hash }) => fn(key, hash),
+        enumerable: false,
+        configurable: false
+      }
+    });
+    return fn;
+  }
+  __name(subLocalize, "subLocalize");
+  function getChatMessageClass() {
+    return CONFIG.ChatMessage.documentClass;
+  }
+  __name(getChatMessageClass, "getChatMessageClass");
+  function notify(str, arg1, arg2, arg3) {
+    const type = typeof arg1 === "string" ? arg1 : "info";
+    const data = typeof arg1 === "object" ? arg1 : typeof arg2 === "object" ? arg2 : void 0;
+    const permanent = typeof arg1 === "boolean" ? arg1 : typeof arg2 === "boolean" ? arg2 : arg3 ?? false;
+    ui.notifications.notify(localize(str, data), type, { permanent });
+  }
+  __name(notify, "notify");
+  function warn(...args) {
+    const [str, arg1, arg2] = args;
+    notify(str, "warning", arg1, arg2);
+  }
+  __name(warn, "warn");
+  function info(...args) {
+    const [str, arg1, arg2] = args;
+    notify(str, "info", arg1, arg2);
+  }
+  __name(info, "info");
+  function error(...args) {
+    const [str, arg1, arg2] = args;
+    notify(str, "error", arg1, arg2);
+  }
+  __name(error, "error");
+  function getSourceId(doc) {
+    return doc.getFlag("core", "sourceId");
+  }
+  __name(getSourceId, "getSourceId");
+  function includesSourceId(doc, list) {
+    const sourceId = getSourceId(doc);
+    return sourceId ? list.includes(sourceId) : false;
+  }
+  __name(includesSourceId, "includesSourceId");
+  function getItemSourceIdCondition(sourceId) {
+    return Array.isArray(sourceId) ? (item) => includesSourceId(item, sourceId) : (item) => getSourceId(item) === sourceId;
+  }
+  __name(getItemSourceIdCondition, "getItemSourceIdCondition");
+  function getItems(actor, itemTypes) {
+    return itemTypes ? itemTypes.flatMap((type) => actor.itemTypes[type]) : actor.items;
+  }
+  __name(getItems, "getItems");
+  function findItemWithSourceId(actor, sourceId, itemTypes) {
+    return getItems(actor, itemTypes).find(getItemSourceIdCondition(sourceId));
+  }
+  __name(findItemWithSourceId, "findItemWithSourceId");
+  function sequenceArray(start, end) {
+    const levels = [];
+    if (start <= end) {
+      for (let i = start; i <= end; i++)
+        levels.push(i);
+    } else {
+      for (let i = start; i >= end; i--)
+        levels.push(i);
+    }
+    return levels;
+  }
+  __name(sequenceArray, "sequenceArray");
+  function capitalize(str) {
+    if (!str)
+      return "";
+    return str[0].toUpperCase() + str.slice(1);
+  }
+  __name(capitalize, "capitalize");
+  function chatUUID(uuid, name) {
+    if (name)
+      return `@UUID[${uuid}]{${name}}`;
+    return `@UUID[${uuid}]`;
+  }
+  __name(chatUUID, "chatUUID");
+  function fakeChatUUID(name) {
+    return `<span style="background: #DDD;
     padding: 1px 4px;
     border: 1px solid var(--color-border-dark-tertiary);
     border-radius: 2px;
     white-space: nowrap;
-    word-break: break-all;">${t}</span>`}l(He,"fakeChatUUID");function de(t,e,r={},i,s){return{key:t,label:s,item:{uuid:e},rows:[{type:"drop",slug:"spell",filter:{type:"spell",search:r}}],process:async({addSpell:a,utils:o,fields:c,messages:u})=>{let d=c.spell.uuid,m=await o.createSpellSource(d),b=`${m.name} (Level ${i||m.system.level.value})`;a(m,i),u.add("spells",{uuid:d,label:b})}}}l(de,"createSpellDaily");function Ye(){let t=de("ace","Compendium.pf2e.feats-srd.Item.POrE3ZgBRdBL9MsW",{category:["cantrip","spell"],level:4},4),e=t.rows[0];return e.filter.drop=r=>{let i=r.system.time.value;return i.includes("hour")||i.includes("min")&&parseInt(i)>10?{error:ke("interface.error.drop.wrongSpellTime"),data:{time:"10 min"}}:!0},t}l(Ye,"tricksterAce");var Xe={key:"blade",item:{uuid:"Compendium.pf2e.classfeatures.Item.EtltLdiy9kNfHU0c"},children:[{slug:"good",uuid:"Compendium.pf2e.classfeatures.Item.nxZYP3KGfTSkaW6J"},{slug:"evil",uuid:"Compendium.pf2e.classfeatures.Item.JiY2ZB4FkK8RJm4T"},{slug:"liberator",uuid:"Compendium.pf2e.classfeatures.Item.FCoMFUsth4xB4veC"},{slug:"paladin",uuid:"Compendium.pf2e.classfeatures.Item.peEXunfbSD8WcMFk"},{slug:"antipaladin",uuid:"Compendium.pf2e.classfeatures.Item.EQ6DVIQHAUXUhY6Y"},{slug:"tyrant",uuid:"Compendium.pf2e.classfeatures.Item.HiIvez0TqESbleB5"},{slug:"spirit",uuid:"Compendium.pf2e.feats-srd.Item.h5ksUZlrVGBjq6p4"},{slug:"master",uuid:"Compendium.pf2e.feats-srd.Item.jYEMVfrXJLpXS6aC"}],rows:[{type:"select",slug:"weapon",label:()=>S("label.blade.weapon"),options:({actor:t})=>t.itemTypes.weapon.filter(e=>!e.isAlchemical).map(e=>({value:e.id,label:e.name}))},{type:"select",slug:"rune",label:()=>S("label.blade.rune"),options:({children:t})=>{let e=["returning","shifting"],{antipaladin:r,evil:i,good:s,liberator:n,master:a,paladin:o,spirit:c,tyrant:u}=t;return c&&(e.push("flaming"),s&&e.push("holy"),i&&e.push("unholy"),(n||r)&&e.push("anarchic"),(o||u)&&e.push("axiomatic")),s&&e.push("disrupting","ghost-touch"),a&&e.push("greater-disrupting","keen"),i&&e.push("fearsome"),e.map(d=>({value:d,label:Je(d)})).sort((d,m)=>d.label.localeCompare(m.label))},condition:({actor:t})=>t.itemTypes.weapon.filter(e=>!e.isAlchemical).length}],process:async({actor:t,fields:e,addRule:r,messages:i})=>{let s=e.weapon.value,n=e.rune.value,a=t.items.get(s);if(!a)return;r({definition:[`item:id:${s}`],key:"AdjustStrike",mode:"add",property:"property-runes",value:n},a),r({key:"CriticalSpecialization",predicate:[{or:[`item:category:${a.category}`,`item:id:${s}`]}]},a);let o=a.name!==a._source.name?`... ${a._source.name}`:a.name;i.addGroup("blade"),i.add("blade",{uuid:a.uuid,label:o,selected:Je(n)})}};function Je(t){let e=t.replace(/-\w/,r=>r[1].toUpperCase());return game.i18n.localize(`PF2E.WeaponPropertyRune.${e}.Name`)}l(Je,"localizeRune");var zt=["first","second","third","fourth","fifth","sixth","seventh"];function Ie(t,e,r){return{key:t,label:r,item:{uuid:e[0]},children:[{slug:"expert",uuid:e[1]},{slug:"master",uuid:e[2]}],rows:[M("first",1),M("second",2,8),M("third",3,void 0,"expert"),M("fourth",4,14,"expert"),M("fifth",5,16,"expert"),M("sixth",6,void 0,"master"),M("seventh",7,20,"master")],process:async({utils:s,fields:n,addItem:a,messages:o})=>{for(let c of Object.values(n)){let u=c.uuid,d=zt.indexOf(c.row)+1,m=await s.createSpellScrollSource({uuid:u,level:d});a(m),o.add("scrolls",{uuid:u,label:m.name})}}}}l(Ie,"createScrollChain");function M(t,e,r,i){let s={type:"drop",slug:t,label:`PF2E.SpellLevel${e}`,filter:{type:"spell",search:{category:["spell"],level:e}}};return r&&(s.condition=({actor:n})=>n.level>=r),i&&(s.childPredicate=[i]),s}l(M,"createRow");function pe(t,e,r={},i){return{key:t,label:i,item:{uuid:e},rows:[{type:"drop",slug:"feat",filter:{type:"feat",search:r}}],process:async({utils:n,fields:a,addFeat:o,messages:c})=>{let u=a.feat.uuid,d=await n.createFeatSource(u);o(d),c.add("feats",{uuid:u})}}}l(pe,"createFeatDaily");var Qe={key:"flexibility",item:{uuid:"Compendium.pf2e.classfeatures.Item.8g6HzARbhfcgilP8"},children:[{slug:"improved",uuid:"Compendium.pf2e.classfeatures.Item.W2rwudMNcAxs8VoX"}],rows:[Ze("flexibility",8),Ze("improved",14,"improved")],process:async({utils:t,fields:e,addFeat:r,messages:i,children:s})=>{let n=e.flexibility.uuid,a=await t.createFeatSource(n);if(r(a),i.add("feats",{uuid:n}),s.improved){let o=e.improved.uuid,c=await t.createFeatSource(o);r(c,s.improved),i.add("feats",{uuid:o})}}};function Ze(t,e,r){let i={type:"drop",label:`PF2E.Level${e}`,slug:t,filter:{type:"feat",search:{category:["class"],traits:["fighter"],level:e}}};return r&&(i.childPredicate=[r]),i}l(Ze,"createRow");function K(t,e,r){return{key:t,label:r,item:{uuid:e},rows:[{type:"select",slug:"language",options:({actor:i,utils:s})=>{let n=i.system.traits.languages.value;return s.languageNames.filter(a=>!n.includes(a)).sort()},labelizer:({utils:i})=>i.languageLabel}],process:({addRule:i,utils:s,fields:n,messages:a})=>{let o=n.language.value,c=s.createLanguageRuleElement({language:o});i(c),a.add("languages",{uuid:e,selected:s.languageLabel(o),label:r})}}}l(K,"createLanguageDaily");var Ce="Compendium.pf2e-dailies.equipment.Item.VpmEozw21aRxX15P",Wt={0:{die:"d4",traits:["finesse","agile"],usage:"held-in-one-hand"},1:{die:"d6",traits:["finesse"],usage:"held-in-one-hand"},2:{die:"d8",traits:[],usage:"held-in-one-hand"},3:{die:"d10",traits:["reach"],usage:"held-in-two-hands"}},et={slashing:"sword",piercing:"spear",bludgeoning:"club"},Ke=["grapple","nonlethal","shove","trip","modular"],Gt=Object.keys(et),Bt=["corrosive","disrupting","flaming","frost","shock","thundering"],qt=["anarchic","axiomatic","greaterCorrosive","greaterDisrupting","greaterFlaming","greaterFrost","greaterShock","greaterThundering","holy","unholy"],tt={key:"mindsmith",item:{uuid:"Compendium.pf2e.feats-srd.Item.juikoiIA0Jy8PboY"},children:[{slug:"weapon",uuid:Ce},{slug:"mental",uuid:"Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky"},{slug:"runic",uuid:"Compendium.pf2e.feats-srd.Item.2uQbQgz1AbjzcFSp"},{slug:"advanced",uuid:"Compendium.pf2e.feats-srd.Item.fgnfXwFcn9jZlXGD"}],rows:[{type:"alert",slug:"alert",message:()=>S("interface.alert.weapon"),fix:Vt,childPredicate:[{not:"weapon"}]},{type:"select",slug:"smith",label:()=>S("label.mindsmith"),options:Gt,labelizer:({utils:t})=>t.damageLabel,childPredicate:["weapon"]},{type:"select",slug:"mental",label:()=>S("label.mentalforge"),options:Ke,labelizer:({utils:t})=>t.weaponTraitLabel,childPredicate:["weapon","mental"]},{type:"select",slug:"runic",label:()=>S("label.runicmind"),options:Bt,labelizer:({utils:t})=>t.weaponPropertyRunesLabel,childPredicate:["weapon","runic",{not:"advanced"}],condition:({children:t,utils:e})=>e.hasFreePropertySlot(t.weapon)},{type:"select",slug:"advanced",label:()=>S("label.runicmind"),options:qt,labelizer:({utils:t})=>t.weaponPropertyRunesLabel,childPredicate:["weapon","advanced"],condition:({children:t,utils:e})=>e.hasFreePropertySlot(t.weapon)}],process:({children:t,updateItem:e,fields:r,messages:i,item:s,utils:n})=>{let a=t.weapon;if(!a)return;i.addGroup("mindsmith");let o=r.smith.value;if(e({_id:a.id,"system.damage.damageType":o,"system.group":et[o]}),i.add("mindsmith",{selected:n.damageLabel(o),uuid:s.uuid,label:"mindsmith"}),t.mental){let c=r.mental.value,u=deepClone(a._source.system.traits?.value??[]);u.includes(c)||u.push(c),e({_id:a.id,"system.traits.value":u}),i.add("mindsmith",{selected:n.weaponTraitLabel(c),uuid:t.mental.uuid,label:"mentalforge"})}if((t.advanced||t.runic)&&n.hasFreePropertySlot(a)){let c=t.advanced??t.runic,u=n.getFreePropertyRuneSlot(a),m=(r.advanced??r.runic).value;u&&!a.system.runes.property.includes(m)&&(e({_id:a.id,[`system.${u}.value`]:m,[`flags.${v}.runeSlot`]:u}),i.add("mindsmith",{selected:n.weaponPropertyRunesLabel(m),uuid:c.uuid,label:"runicmind"}))}},rest:({item:t,sourceId:e,updateItem:r})=>{if(e!==Ce)return;let i=t._source.system.traits?.value??[];i=i.filter(n=>!Ke.includes(n)),r({_id:t.id,"system.traits.value":i});let s=x(t,"runeSlot");s&&r({_id:t.id,[`system.${s}.value`]:null,[`flags.${v}.-=runeSlot`]:!0})}};async function Vt({actor:t}){let e=C("dialog.weapon"),r=e("flavor");for(let s of["0","1","2","3"]){let n=e(`option.${s}`);r+=`<label><input type="radio" name="type" value="${s}">${n}</label>`}let i=await Dialog.wait({title:e("title"),content:r,buttons:{yes:{icon:'<i class="fas fa-save"></i>',label:e("accept"),callback:Ht},no:{icon:'<i class="fas fa-times"></i>',label:e("cancel"),callback:()=>null}},close:()=>null},{},{id:"pf2e-dailies-weapon",width:600});return i?(await t.createEmbeddedDocuments("Item",[i]),!0):!1}l(Vt,"fix");async function Ht(t){let e=C("dialog.weapon"),r=t.find("[name=type]:checked").val();if(!r){e.warn("error.noSelection");return}let i=(await fromUuid(Ce))?.toObject();if(!i){e.warn("error.missing");return}let s=Wt[r];return setProperty(i,"system.damage.die",s.die),setProperty(i,"system.traits.value",s.traits.slice()),setProperty(i,"system.usage.value",s.usage),i}l(Ht,"onWeaponSelected");var Yt="Compendium.pf2e.equipment-srd.Item.L9ZV076913otGtiB";function q(t){return Ve(t,Yt)}l(q,"getRations");function ee(t,e,r,i,s,n){return{key:t,label:s,item:{uuid:e},rows:[{type:n?"random":"select",slug:"resistance",options:r,labelizer:({utils:o})=>o.resistanceLabel}],process:async({utils:o,fields:c,actor:u,addRule:d,messages:m})=>{let b=n?await o.randomOption(r):c.resistance.value,p=typeof i=="number"?i:i==="half"?o.halfLevelValue(u):u.level,y=o.createResistanceRuleElement({type:b,value:p});d(y),m.add("resistances",{uuid:e,selected:o.resistanceLabel(b,p),label:s,random:n})}}}l(ee,"createResistancelDaily");var Jt="Compendium.pf2e.feat-effects.Item.jO7wMhnjT7yoAtQg",rt={key:"root",item:{uuid:"Compendium.pf2e.feats-srd.Item.22P7IFyhrF7Fbw8B"},rows:[{type:"select",slug:"target",options:({actor:t,utils:e})=>e.getPlayersActors(t).map(i=>({value:i.id,label:i.name}))}],process:({fields:t,messages:e})=>{let r=t.target.value,i=game.actors.get(r);i&&(e.addGroup("root"),e.add("root",{uuid:Jt,selected:i.name}))}};var it={key:"savant",item:{uuid:"Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ"},prepare:({actor:t})=>{let{maxSlot:e,maxTradition:r}=Xt(t,"arcane");return{first:{level:e-2,condition:!0},second:{level:e-3,condition:!0},third:{level:e-4,condition:r>=3&&e>=5},fourth:{level:e-5,condition:r>=4&&e>=6}}},rows:["first","second","third","fourth"].map(t=>({type:"drop",slug:t,label:({custom:r})=>`PF2E.SpellLevel${r[t].level}`,filter:{type:"spell",search:({custom:r})=>({category:["spell"],traditions:["arcane"],level:r[t].level})},condition:({custom:r})=>r[t].condition})),process:async({utils:t,fields:e,custom:r,addItem:i,messages:s})=>{for(let n of Object.values(e)){let a=n.uuid,o=await t.createSpellScrollSource({uuid:a,level:r[n.row].level});i(o),s.add("scrolls",{uuid:a,label:o.name})}}};function Xt(t,e){let r=1,i=0;for(let s of t.spellcasting.regular){if(s.flags&&"pf2e-staves"in s.flags)continue;let n=s.system.slots;for(let a in n)n[a].max&&(r=Math.max(r,Number(a.slice(4))));s.tradition===e&&(i=Math.max(i,s.rank))}return{maxSlot:Math.min(r,10),maxTradition:i}}l(Xt,"getSpellcastingTraditionDetails");function U(t,e,r){return{key:t,label:r,item:{uuid:e},rows:[{type:"combo",slug:"skill",options:({actor:s,utils:n})=>{let a=s.skills;return n.skillNames.filter(o=>a[o].rank<1)},labelizer:({utils:s})=>s.skillLabel}],process:({fields:s,addItem:n,addRule:a,utils:o,messages:c})=>{let u=s.skill.value;if(s.skill.input==="true"){let d=o.createLoreSource({name:u,rank:1});n(d)}else{let d=o.createSkillRuleElement({skill:u,value:1});u=o.skillLabel(u),a(d)}c.add("skills",{uuid:e,selected:u,label:r})}}}l(U,"createTrainedSkillDaily");function fe(t,e,r){return{key:t,label:r,item:{uuid:e},rows:[{type:"input",slug:"skill"}],process:({addItem:s,utils:n,fields:a,messages:o})=>{let c=a.skill.value,u=n.createLoreSource({name:c,rank:1});s(u),o.add("skills",{uuid:e,selected:c,label:r})}}}l(fe,"createTrainedLoreDaily");var st={key:"tome",item:{uuid:"Compendium.pf2e.classfeatures.Item.MyN1cQgE0HsLF20e"},children:[{slug:"adept",uuid:"Compendium.pf2e.classfeatures.Item.Obm4ItMIIr0whYeO",condition:De("adept")},{slug:"second",uuid:"Compendium.pf2e.classfeatures.Item.ZEUxZ4Ta1kDPHiq5",condition:De("adept")},{slug:"intense",uuid:"Compendium.pf2e.feats-srd.Item.yRRM1dsY6jakEMaC"},{slug:"paragon",uuid:"Compendium.pf2e.classfeatures.Item.QEtgbY8N2V4wTbsI",condition:De("paragon")}],prepare:({utils:t,actor:e,children:r})=>{let i=t.skillNames,s=e.level,n=e.skills,a={first:{options:[],rank:1},second:{options:[],rank:1}};if(r.paragon){let o=i.filter(c=>n[c].rank<4);a.first={rank:4,options:o},a.second={rank:4,options:o}}else if(r.intense||r.adept||r.second){let o=i.filter(c=>n[c].rank<3);if(s>=9)a.first={rank:3,options:o},a.second={rank:3,options:o};else{let c=i.filter(u=>n[u].rank<2);a.first={rank:2,options:c},a.second={rank:3,options:o}}}else if(s>=5){let o=i.filter(c=>n[c].rank<2);a.first={rank:2,options:o},a.second={rank:2,options:o}}else if(s>=3){let o=i.filter(u=>n[u].rank<1),c=i.filter(u=>n[u].rank<2);a.first={rank:1,options:o},a.second={rank:2,options:c}}else{let o=i.filter(c=>n[c].rank<1);a.first={rank:1,options:o},a.second={rank:1,options:o}}return a},rows:["first","second"].map(t=>({type:"combo",slug:t,label:({custom:r,utils:i})=>i.proficiencyLabel(r[t].rank),options:({custom:r})=>r[t].options,labelizer:({utils:r})=>r.skillLabel})),process:({custom:t,fields:e,utils:r,messages:i,addItem:s,addRule:n})=>{i.addGroup("tome",65);for(let a of["first","second"]){let o=t[a].rank,c=e[a].value;if(e[a].input==="true"){let u=r.createLoreSource({name:c,rank:o});s(u)}else{let u=r.createSkillRuleElement({skill:c,value:o});c=r.skillLabel(c),n(u)}i.add("tome",{label:r.proficiencyLabel(o),selected:c})}}};function De(t){return function({item:e,utils:r}){return r.getChoiSetRuleSelection(e,t)==="tome"}}l(De,"createChildCondition");var Zt=["root-magic"],Oe=[st,U("longevity","Compendium.pf2e.feats-srd.Item.WoLh16gyDp8y9WOZ"),U("ageless","Compendium.pf2e.feats-srd.Item.wylnETwIz32Au46y"),U("memories","Compendium.pf2e.feats-srd.Item.ptEOt3lqjxUnAW62"),U("studies","Compendium.pf2e.feats-srd.Item.9bgl6qYWKHzqWZj0"),fe("study","Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW"),K("linguistics","Compendium.pf2e.feats-srd.Item.eCWQU16hRLfN1KaX"),K("borts","Compendium.pf2e.equipment-srd.Item.iS7hAQMAaThHYE8g"),ee("elementalist","Compendium.pf2e.feats-srd.Item.tx9pkrpmtqe4FnvS",["air","earth","fire","water"],"half","elementalist"),ee("ganzi","Compendium.pf2e.heritages.Item.3reGfXH0S82hM7Gp",["acid","electricity","sonic"],"half","ganzi",!0),pe("metamagical","Compendium.pf2e.classfeatures.Item.89zWKD2CN7nRu2xp",{category:["class"],traits:{selected:["metamagic","wizard"],conjunction:"and"},level:"half"}),Qe,it,Ie("esoterica",["Compendium.pf2e.feats-srd.Item.OqObuRB8oVSAEKFR","Compendium.pf2e.feats-srd.Item.nWd7m0yRcIEVUy7O","Compendium.pf2e.feats-srd.Item.LHjPTV5vP3MOsPPJ"]),Ie("trickster",["Compendium.pf2e.feats-srd.Item.ROAUR1GhC19Pjk9C","Compendium.pf2e.feats-srd.Item.UrOj9TROtn8nuxPf","Compendium.pf2e.feats-srd.Item.lIg5Gzz7W70jfbk1"]),Ye(),tt,Xe,rt],Qt=me(Oe,"dailies"),te=new Map;function me(t,e){let r=new Map;for(let i of t){let s=deepClone(i);try{let n=`${e}.${s.key}`;if(r.set(s.item.uuid,{daily:s,condition:s.item.condition}),s.key=n,s.children)for(let a=0;a<s.children.length;a++){let{uuid:o,condition:c}=s.children[a];r.set(o,{daily:s,index:a,condition:c})}}catch(n){L("error.unexpected"),console.error(n),console.error(`The error occured during data gathering of ${e}.${s.key}`)}}return r}l(me,"prepareDailies");var re=[];async function Ee(){te.clear(),re=[];let t=O("customDailies");for(let{key:r,code:i}of t)try{let n=await new oe(i)();if(!Ae(n,!0))continue;re.push(n)}catch(s){L("error.unexpected"),console.error(s),console.error(`The error occured during call of custom function for ${r}`)}for(let[r,i]of Qt.entries())te.set(r,i);let e=me(re,"custom");for(let[r,i]of e.entries())te.set(r,i)}l(Ee,"parseCustomDailies");function Ae(t,e=!1){return Zt.includes(t.key)?(e&&game.user.isGM&&D("deprecated.custom.key",{name:t.label.trim()||t.key},!0),!1):!0}l(Ae,"checkCustomDaily");function Te(t){let e={};for(let r of t.items){let i=B(r);if(!i||r.isOfType("physical")&&r.isInvested===!1)continue;let s=te.get(i);if(!s)continue;let{daily:n,index:a,condition:o}=s;try{if(typeof o=="function"&&!o({actor:t,item:r,utils:V}))continue;e[n.key]??=deepClone(n),a===void 0?e[n.key].item=r:e[n.key].children[a].item=r}catch(c){L("error.unexpected"),console.error(c),console.error(`The error occured during data gathering of ${n.key}`)}}return Object.values(e).filter(r=>r.item&&r.item instanceof Item)}l(Te,"getDailies");function nt(t){return te.get(t)?.daily}l(nt,"getDailyFromSourceId");function ge(t){return t.familiar||q(t)?.uses.value||Te(t).length}l(ge,"hasAnyDaily");function ye(){return game.packs.get("pf2e.familiar-abilities")}l(ye,"getFamiliarPack");function ot(t){return`Compendium.pf2e.familiar-abilities.Item.${t}`}l(ot,"familiarUUID");function at(t){return Error(`PF2e System | ${t}`)}l(at,"ErrorPF2e");function Fe(t){return typeof t=="object"&&t!==null}l(Fe,"isObject");var A=class extends Array{constructor(...e){super(...Array.isArray(e[0])?e[0]:e),this.isValid=A.isValid(this)}static isValid(e){return this.isArray(e)}static isArray(e){return super.isArray(e)&&e.every(r=>j.isStatement(r))}static test(e=[],r){return e instanceof A?e.test(r):new A(...e).test(r)}test(e){if(this.length===0)return!0;if(!this.isValid)return console.warn("PF2e System | The provided predicate set is malformed."),!1;let r=e instanceof Set?e:new Set(e);return this.every(i=>this.#e(i,r))}toObject(){return deepClone([...this])}clone(){return new A(this.toObject())}#e(e,r){return typeof e=="string"&&r.has(e)||j.isBinaryOp(e)&&this.#i(e,r)||j.isCompound(e)&&this.#r(e,r)}#i(e,r){if("eq"in e)return r.has(`${e.eq[0]}:${e.eq[1]}`);{let i=Object.keys(e)[0],[s,n]=Object.values(e)[0],a=Array.from(r),o=l(d=>{let m=Number(d);if(!Number.isNaN(m))return[m];let b=new RegExp(String.raw`^${d}:([^:]+)$`),p=a.map(y=>Number(b.exec(y)?.[1]||NaN)).filter(y=>!Number.isNaN(y));return p.length>0?p:[NaN]},"getValues"),c=o(s),u=o(n);switch(i){case"gt":return c.some(d=>u.every(m=>d>m));case"gte":return c.some(d=>u.every(m=>d>=m));case"lt":return c.some(d=>u.every(m=>d<m));case"lte":return c.some(d=>u.every(m=>d<=m));default:return console.warn("PF2e System | Malformed binary operation encountered"),!1}}}#r(e,r){return"and"in e&&e.and.every(i=>this.#e(i,r))||"nand"in e&&!e.nand.every(i=>this.#e(i,r))||"or"in e&&e.or.some(i=>this.#e(i,r))||"xor"in e&&e.xor.filter(i=>this.#e(i,r)).length===1||"nor"in e&&!e.nor.some(i=>this.#e(i,r))||"not"in e&&!this.#e(e.not,r)||"if"in e&&!(this.#e(e.if,r)&&!this.#e(e.then,r))}};l(A,"PredicatePF2e");var he,j=class{static isStatement(e){return e instanceof Object?this.isCompound(e)||this.isBinaryOp(e):typeof e=="string"?this.isAtomic(e):!1}static isAtomic(e){return typeof e=="string"&&e.length>0||this.isBinaryOp(e)}static isBinaryOp(e){if(!Fe(e))return!1;let r=Object.entries(e);if(r.length>1)return!1;let[i,s]=r[0];return ze(this,he).has(i)&&Array.isArray(s)&&s.length===2&&typeof s[0]=="string"&&["string","number"].includes(typeof s[1])}static isCompound(e){return Fe(e)&&(this.isAnd(e)||this.isOr(e)||this.isNand(e)||this.isXor(e)||this.isNor(e)||this.isNot(e)||this.isIf(e))}static isAnd(e){return Object.keys(e).length===1&&Array.isArray(e.and)&&e.and.every(r=>this.isStatement(r))}static isNand(e){return Object.keys(e).length===1&&Array.isArray(e.nand)&&e.nand.every(r=>this.isStatement(r))}static isOr(e){return Object.keys(e).length===1&&Array.isArray(e.or)&&e.or.every(r=>this.isStatement(r))}static isXor(e){return Object.keys(e).length===1&&Array.isArray(e.xor)&&e.xor.every(r=>this.isStatement(r))}static isNor(e){return Object.keys(e).length===1&&Array.isArray(e.nor)&&e.nor.every(r=>this.isStatement(r))}static isNot(e){return Object.keys(e).length===1&&!!e.not&&this.isStatement(e.not)}static isIf(e){return Object.keys(e).length===2&&this.isStatement(e.if)&&this.isStatement(e.then)}};l(j,"StatementValidator"),he=new WeakMap,We(j,he,new Set(["eq","gt","gte","lt","lte"]));var Kt={select:100,combo:80,random:60,alert:40,input:20,drop:0};async function ct({children:t=[],key:e,item:r,prepare:i,label:s,rows:n=[]}){let a=this.actor,o=this.saved[e]=x(a,e)??{},c=this.rows[e]={},u=this.children[e]=t.reduce((f,{slug:w,item:I})=>(f[w]=I,f),{}),d={actor:a,item:r,children:u,utils:V},m=this.custom[e]=i&&await i(d)||{},b=this.dailyArgs[e]={...d,custom:m},p=await Le(s,b),y=p?`label.${p}`:e.startsWith("dailies.")?`label.${e.slice(8)}`:void 0;y&&Z(y)&&(p=S(y));let h=this.predicate[e]=t.filter(f=>f.item).map(f=>f.slug),g={label:p?game.i18n.localize(p):r.name,rows:[]};for(let f of n){c[f.slug]=f;let{type:w,slug:I,childPredicate:P=[],condition:F,label:Lt,save:Rt}=f;if(P.length&&!A.test(P,h)||F&&!await F(b))continue;let _=Rt===!1||w==="random"?void 0:o[I],Ue=await Le(Lt,b),Pt=_===void 0?"":typeof _!="object"?_:"name"in _?_.name:_.selected,E={label:Ue?game.i18n.localize(Ue):"",value:Pt,order:Kt[w],data:{type:w,daily:e,row:I}};if(lt(f)||er(f)||tr(f)){let Se=await Le(f.options,b)??[];if(w!=="combo"&&!Se.length)continue;let je=typeof f.labelizer=="function"&&f.labelizer(b)||(W=>ue(W));E.options=Se.map(W=>typeof W=="string"?{value:W,label:je(W)}:W),lt(f)&&(E.selected=E.value,E.data.input=_?.input??!0,!E.data.input&&Se.includes(E.selected)&&(E.value=je(E.selected)))}else rr(f)?E.data.uuid=_?.uuid??"":ir(f)&&(E.value=typeof f.message=="function"?await f.message(b):f.message);g.rows.push(E)}return g}l(ct,"getTemplate");async function Le(t,e){return typeof t=="function"?await t(e):t}l(Le,"getProcessedValue");function lt(t){return t.type==="combo"}l(lt,"isComboRow");function er(t){return t.type==="select"}l(er,"isSelectRow");function tr(t){return t.type==="random"}l(tr,"isRandomRow");function rr(t){return t.type==="drop"}l(rr,"isDropRow");function ir(t){return t.type==="alert"}l(ir,"isAlerRow");function ut(){return Object.entries(CONFIG.PF2E.skillList).reduce((t,[e,r])=>({...t,[e]:game.i18n.localize(r).toLocaleLowerCase(game.i18n.lang)}),{})}l(ut,"getTranslatedSkills");var be=String.raw`[\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Join_Control}]`,Re=String.raw`[^\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Join_Control}]`,sr=new RegExp(Re,"gu"),nr=String.raw`(?:${be})(?=${Re})|(?:${Re})(?=${be})`,or=String.raw`(?:${be})(?=${be})`,dt=String.raw`\p{Lowercase_Letter}`,pt=String.raw`\p{Uppercase_Letter}`,ar=new RegExp(`(${dt})(${pt}${or})`,"gu"),lr=/[^-\p{White_Space}\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Join_Control}]/gu,cr=new RegExp(`${pt}|(?:${nr})${dt}`,"gu");function N(t,{camel:e=null}={}){if(typeof t!="string")return console.warn("Non-string argument passed to `sluggify`"),"";switch(e){case null:return t.replace(ar,"$1-$2").toLowerCase().replace(/['’]/g,"").replace(sr," ").trim().replace(/[-\s]+/g,"-");case"bactrian":{let r=N(t,{camel:"dromedary"});return r.charAt(0).toUpperCase()+r.slice(1)}case"dromedary":return t.replace(lr,"").replace(/[-_]+/g," ").replace(cr,(r,i)=>i===0?r.toLowerCase():r.toUpperCase()).replace(/\s+/g,"");default:throw at("I don't think that's a real camel.")}}l(N,"sluggify");function we(t,e,r){if(e===void 0)return r;if(typeof e=="number")return e;if(e==="level")return t.level;if(e==="half")return Math.max(1,Math.floor(t.level/2));let i=Number(e);return isNaN(i)?r:i}l(we,"getSimplifiableValue");async function ft(t){return{type:t.type,search:await(t.type==="feat"?dr(this.actor,t.search):ur(this.actor,t.search)),drop:t.drop}}l(ft,"parseFilter");function T(t,e){t?.length&&(e.selected=t,e.isExpanded=!0,t.forEach(r=>e.options[r].selected=!0))}l(T,"checkFilter");function mt(t,e){let r=ve(t);r?.selected.length&&(e.conjunction=r.conjunction,e.selected=r.selected)}l(mt,"setTraits");function ve(t){if(!t)return;let e=Array.isArray(t)?t:t.selected;if(e?.length)return{selected:e.map(r=>typeof r=="string"?{value:r}:r),conjunction:!Array.isArray(t)&&t.conjunction||"and"}}l(ve,"getFilterTraits");async function ur(t,e){let r=await game.pf2e.compendiumBrowser.tabs.spell.getFilterData();T(e.category,r.checkboxes.category),T(e.school,r.checkboxes.school),T(e.traditions,r.checkboxes.traditions),T(e.rarity,r.checkboxes.rarity),T(e.source,r.checkboxes.source),mt(e.traits,r.multiselects.traits);let i=Pe(t,e.level);return i?.length&&T(i,r.checkboxes.level),r}l(ur,"parseSpellFilter");async function dr(t,e){let r=await game.pf2e.compendiumBrowser.tabs.feat.getFilterData();T(e.category,r.checkboxes.category),T(e.skills,r.checkboxes.skills),T(e.rarity,r.checkboxes.rarity),T(e.source,r.checkboxes.source),mt(e.traits,r.multiselects.traits);let i=_e(t,e.level);return i&&(r.sliders.level.values.min=i.min,r.sliders.level.values.max=i.max,r.sliders.level.isExpanded=!0),r}l(dr,"parseFeatFilter");function Pe(t,e){if(Array.isArray(e))return e;let r=we(t,e);if(r)return ce(1,r)}l(Pe,"getSpellFilterLevel");function _e(t,e){if(e!==void 0)return typeof e=="object"?{min:we(t,e.min,0),max:we(t,e.min,20)}:{min:0,max:we(t,e,20)}}l(_e,"getFeatFilterLevel");var k=C("interface.error.drop");async function gt(t,e,r){if(!t.isOfType("feat"))return k("notFeat");let{search:i,drop:s}=r;if(i.category?.length&&!i.category.includes(t.category))return k.warn("wrongType",{types:H("featCategories",i.category)});if(i.traits){let a=ve(i.traits);if(a?.selected.length){let o=a.conjunction==="or"?"some":"every";if(!a.selected[o](u=>Number(u.not??!1)-Number(t.traits.has(u.value))))return k.warn("wrongTraits")}}if(i.skills?.length){let a=ut(),o=t.system.prerequisites.value.map(u=>u.value.toLocaleLowerCase());if(!i.skills.some(u=>o.some(d=>d.includes(u)||d.includes(a[u]))))return k.warn("wrongSkill",{skills:H("skillList",i.skills)})}if(i.rarity?.length&&!i.rarity.includes(t.system.traits.rarity))return k.warn("wrongRarity",{rarities:H("rarityTraits",i.rarity)});if(i.source?.length&&!i.source.includes(N(t.system.source.value)))return k.warn("wrongSource",{sources:i.source.join(", ")});let n=_e(this.actor,i.level);if(n){let a=t.level;if(a<n.min)return k.warn("wrongLevelLow",{level:`min: ${n.min}`});if(a>n.max)return k.warn("wrongLevelHigh",{level:`max: ${n.max}`})}if(s){let a=this.dailyArgs[e.dataset.daily];if(a){let o=await s(t,a);if(typeof o=="object")return o.data?game.i18n.format(o.error,o.data):game.i18n.localize(o.error);if(o===!1)return k.warn("wrongCustom")}}ie(t,e)}l(gt,"onDropFeat");async function yt(t,e,r){if(!t.isOfType("spell"))return k("notSpell");let{search:i,drop:s}=r;if(i.category?.length){let a=i.category.map(o=>game.i18n.localize(o==="cantrip"?"PF2E.SpellCantripLabel":CONFIG.PF2E.spellCategories[o])).join(", ");if(t.isCantrip&&!i.category.includes("cantrip")||t.isFocusSpell&&!i.category.includes("focus")||t.isRitual&&!i.category.includes("ritual")||!t.isCantrip&&!t.isFocusSpell&&!t.isRitual&&!i.category.includes("spell"))return k.warn("wrongCategory",{categories:a})}if(i.traits){let a=ve(i.traits);if(a?.selected.length){let o=a.conjunction==="or"?"some":"every";if(!a.selected[o](u=>Number(u.not??!1)-Number(t.traits.has(u.value))))return k.warn("wrongTraits")}}if(i.traditions?.length&&!i.traditions.some(a=>t.traditions.has(a)))return k.warn("wrongTradition",{traditions:H("magicTraditions",i.traditions)});let n=Pe(this.actor,i.level);if(n?.length&&!n.includes(t.level))return k.warn("wrongLevel",{levels:n.join(", ")});if(i.school?.length&&!i.school.includes(t.school))return k.warn("wrongSchool",{schools:H("magicSchools",i.school)});if(i.rarity?.length&&!i.rarity.includes(t.system.traits.rarity))return k.warn("wrongRarity",{rarities:H("rarityTraits",i.rarity)});if(i.source?.length&&!i.source.includes(N(t.system.source.value)))return k.warn("wrongSource",{sources:i.source.join(", ")});if(s){let a=this.dailyArgs[e.dataset.daily];if(a){let o=await s(t,a);if(typeof o=="object")return o.data?ui.notifications.warn(game.i18n.format(o.error,o.data)):ui.notifications.warn(game.i18n.localize(o.error));if(o===!1)return k.warn("wrongCustom")}}ie(t,e)}l(yt,"onDropSpell");function H(t,e){return e.map(i=>game.i18n.localize(CONFIG.PF2E[t][i])).join(", ")}l(H,"localizeAll");function ie(t,e){e.value=t.name,e.dataset.uuid=t.uuid,e.nextElementSibling.nextElementSibling.classList.remove("disabled")}l(ie,"onDropItem");async function ht(){let t=this.actor,e=this.dailies,r=fr.call(this),i=[],s=new Map,n=[],a={},o=C("message"),c=!1,u="",d=l(p=>{let y=p.id,h=s.get(y);if(h)return h;let g=deepClone(p._source.system.rules);for(let f=g.length-1;f>=0;f--)v in g[f]&&g.splice(f,1);return s.set(y,g),g},"getRules"),m={languages:{order:80,messages:[]},skills:{order:70,messages:[]},resistances:{order:60,messages:[]},feats:{order:50,messages:[]},spells:{order:40,messages:[]},scrolls:{order:30,messages:[]}},b={add:(p,y)=>{m[p]??={order:0,messages:[]},m[p].messages.push(y)},addGroup:(p,y=1,h)=>{m[p]??={label:h,order:y,messages:[]}}};if(t.familiar&&r["dailies.familiar"]){let p=t.familiar,y=ye(),h=[],g=p.itemTypes.action.map(f=>f.id);g.length&&p.deleteEmbeddedDocuments("Item",g),b.addGroup("familiar",20);for(let f of Object.values(r["dailies.familiar"])){let w=f.value,I=w.includes("."),P=await(I?fromUuid(w):y.getDocument(w));if(!P||!P.isOfType("action"))continue;let F=P.toObject();F&&(h.push(F),b.add("familiar",{uuid:I?w:ot(w)}))}h.length&&p.createEmbeddedDocuments("Item",h)}if(r["dailies.rations"]?.rations.value==="true"){let p=q(t);if(p?.uses.value){let y=p.quantity,{value:h,max:g}=p.uses;h<=1?y<=1?p.delete():n.push({_id:p.id,"system.quantity":Math.max(p.quantity-1,0),"system.charges.value":g}):n.push({_id:p.id,"system.charges.value":Math.max(h-1,0)});let f=(y-1)*g+h,w=f<=1?He(p.name):Q(p.uuid);f<=1?u+=o("rations.last",{name:w}):f<=3?u+=o("rations.almost",{name:w,nb:f-1}):u+=o("rations.used",{name:w,nb:f-1})}}for(let{item:p,key:y,process:h}of e){if(!r[y])continue;let g=this.dailyArgs[y];try{await h({...g,fields:r[y],messages:b,addItem:f=>i.push(f),updateItem:f=>n.push(f),addRule:(f,w)=>{f[v]=!0,d(w??p).push(f)},addFeat:(f,w)=>{if(w??=p,w.isOfType("feat")){let I=w.id;setProperty(f,"flags.pf2e.grantedBy",{id:I,onDelete:"cascade"}),setProperty(f,`flags.${v}.grantedBy`,I)}i.push(f)},addSpell:(f,w)=>{setProperty(f,`flags.${v}.entry`,{level:w}),i.push(f),c=!0}})}catch(f){L("error.unexpected"),console.error(f),console.error(`The error occured during processing of ${y}`)}}for(let[p,y]of Object.entries(r)){let h=this.rows[p];if(h)for(let{row:g,type:f,input:w,value:I,uuid:P}of Object.values(y)){if(f==="random"||h[g]?.save===!1)continue;let F=a[p]??={};f==="combo"?F[g]={input:w==="true",selected:I}:f==="drop"?F[g]={uuid:P,name:I}:F[g]=I}}for(let[p,y]of s)n.push({_id:p,"system.rules":y});if(c){let p={type:"spellcastingEntry",name:S("spellEntry.name"),system:{prepared:{value:"innate"},showSlotlessLevels:{value:!1},showUnpreparedSpells:{value:!1},proficiency:{value:1,slug:t.classDC?.slug||t.class?.slug||void 0}}};i.push(p)}for(let p of i)getProperty(p,"system.temporary")===!0||setProperty(p,`flags.${v}.temporary`,!0);if(i.length){let p=await t.createEmbeddedDocuments("Item",i);for(let y of p)if(y.isOfType("feat")){let h=x(y,"grantedBy");if(h){let f=`flags.pf2e.itemGrants.${N(y.name,{camel:"dromedary"})}`;n.push({_id:h,[f]:{id:y.id,onDelete:"detach"}})}}else if(y.isOfType("spellcastingEntry")){let h=p.filter(g=>g.isOfType("spell")&&x(g,"entry"));for(let g of h){let{level:f}=x(g,"entry"),w={_id:g.id,"system.location.value":y.id};f!==void 0&&(w["system.location.heightenedLevel"]=f),n.push(w)}}}await t.update({[`flags.${v}`]:{...expandObject(a),rested:!1}}),n.length&&await t.updateEmbeddedDocuments("Item",n),u=pr(m,u),u=u?`${o("changes")}<hr />${u}`:o("noChanges"),ChatMessage.create({content:u,speaker:ChatMessage.getSpeaker({actor:t})})}l(ht,"processData");function pr(t,e){let r=C("message"),i=Object.entries(t).map(([s,n])=>(n.label??=r.has(s)?r(s):r("gained",{type:s}),n));i.sort((s,n)=>n.order-s.order);for(let{label:s,messages:n}of i)if(n.length){e&&(e+="<hr />"),s&&(e+=`<p><strong>${s}</strong></p>`);for(let{uuid:a,selected:o,label:c,random:u}of n){let d=`label.${c}`;c=c&&Z(d)?S(d):c||"",e+="<p>",e+=a?`${Q(a,c)}`:`<strong>${c}</strong>`,o&&(e+=` <span>${o}</span>`),u&&(e+=' <i class="fa-solid fa-dice-d20"></i>'),e+="</p>"}}return e}l(pr,"parseMessages");function fr(){let t=this.element.find(".window-content .content").find("input:not(.alert), select[data-type]").toArray(),e={};for(let r of t){let i={...r.dataset,value:r.value};if(i.type==="combo"&&i.input==="false"){let s=r.previousElementSibling;i.value=s.value}e[i.daily]??={},e[i.daily][i.row]=i}return e}l(fr,"getFields");var z=C("interface"),se=class extends Application{constructor(e,r){super(r),this._actor=e,this._dailies=[],this._dailyArgs={},this._saved={},this._children={},this._custom={},this._predicate={},this._rows={}}static get defaultOptions(){return mergeObject(super.defaultOptions,{id:"pf2e-dailies-interface",template:le("interface.hbs"),height:"auto",width:400,submitOnClose:!1,submitOnChange:!1,dragDrop:[{dropSelector:'[data-droppable="true"]'}]})}get actor(){return this._actor}get dailies(){return this._dailies}get dailyArgs(){return this._dailyArgs}get saved(){return this._saved}get children(){return this._children}get custom(){return this._custom}get predicate(){return this._predicate}get rows(){return this._rows}async getData(e){let r=[],i=this._actor;if(this._dailies=Te(i),i.familiar){let o="dailies.familiar",c=C("label"),u=i.attributes.familiarAbilities.value,d=ye(),m=x(i,o)??{},b={label:c("familiar"),rows:[]},p=d.index.map(({_id:h,name:g})=>({value:h,label:g})),y=O("familiar").split(",");for(let h of y){h=h.trim();let g=await fromUuid(h);g&&g.isOfType("action")&&p.push({value:h,label:g.name})}p.sort((h,g)=>h.label<g.label?-1:g.label<h.label?1:0);for(let h=0;h<u;h++)b.rows.push({label:c("ability",{nb:h+1}),value:m[`${h}`]??"",order:100,options:p,data:{type:"select",daily:o,row:h.toString()}});b.rows.length&&(this._rows[o]=b.rows.reduce((h,{data:g})=>(h[g.row]={save:!0},h),{}),r.push(b))}let s=q(i);if(s?.uses.value){let o="dailies.rations",c="rations",{value:u,max:d}=s.uses,b=(s.quantity-1)*d+u,p=b<=1,y=[{value:"false",label:z("rations.no")},{value:"true",label:p?z("rations.last"):z("rations.yes",{nb:b})}];r.push({label:s.name,rows:[{label:"",order:200,value:"false",options:y,data:{type:"select",daily:o,row:c}}]}),this._rows[o]={[c]:{save:!1}}}for(let o of this._dailies)try{let c=await ct.call(this,o);r.push(c)}catch(c){z.error("error.unexpected"),console.error(c),console.error(`The error occured during templating of ${o.key}`)}let n=[],a=[];for(let o of r)o.rows.length>1?a.push(o):o.rows.length&&n.push(o);return n.sort((o,c)=>c.rows[0].order-o.rows[0].order),a.sort((o,c)=>o.rows.length-c.rows.length),mergeObject(super.getData(e),{i18n:z,dump:({value:o,placeholder:c,data:u})=>{let d="";return o&&(d+=` value="${o}"`),c&&(d+=` placeholder="${c}"`),Object.entries(u).forEach(([m,b])=>d+=` data-${m}="${b}"`),d&&(d+=" "),d},rows:n,groups:a})}render(e,r){return this._randomInterval&&clearInterval(this._randomInterval),this.element.find("select.random")&&(this._randomInterval=setInterval(()=>{this.element.find("select.random").each((s,n)=>{n.selectedIndex=(n.selectedIndex+1)%n.options.length})},2e3)),super.render(e,r)}close(e){return this._randomInterval&&clearInterval(this._randomInterval),super.close(e)}activateListeners(e){super.activateListeners(e),e.find("[data-action=clear]").on("click",this.#c.bind(this)),e.find("[data-action=accept]").on("click",this.#l.bind(this)),e.find("[data-action=cancel]").on("click",this.#u.bind(this)),e.find(".combo select").on("change",this.#s.bind(this)),e.find(".combo input").on("change",this.#n.bind(this)),e.find("[data-action=search]").on("click",this.#i.bind(this)),e.find("[data-action=alert]").on("click",this.#e.bind(this))}_canDragDrop(e){return!0}async _onDrop(e){let r=C("interface.error.drop"),i=e.target;i instanceof HTMLLabelElement&&(i=i.nextElementSibling);try{let s=e.dataTransfer?.getData("text/plain"),n=JSON.parse(s);if(!n||n.type!=="Item"||typeof n.uuid!="string")return r.warn("wrongDataType");let a=await fromUuid(n.uuid);if(!a)return r.warn("wrongDataType");let o=await this.#r(i);if(!o)return ie(a,i);o.type==="feat"?gt.call(this,a,i,o):o.type==="spell"?yt.call(this,a,i,o):ie(a,i)}catch(s){r.error("error.unexpected"),console.error(s),console.error("The error occured during _onDrop")}}async#e(e){e.preventDefault(),this.#t();let r=e.currentTarget.dataset,i=this.rows[r.daily][r.row],s=this.dailyArgs[r.daily],n;try{n=await i.fix(s)}catch(a){z.error("error.unexpected"),console.error(a),console.error(`The error occured during an alert fix of '${r.daily}'`)}this.#o(),n&&this.render()}async#i(e){e.preventDefault();let r=await this.#r(e.currentTarget,!0);r?game.pf2e.compendiumBrowser.openTab(r.type,r.search):game.pf2e.compendiumBrowser.render(!0)}async#r(e,r){let{daily:i,row:s}=e.dataset,n=this.rows[i]?.[s]?.filter,a=this.dailyArgs[i];if(!(!a||!n))return typeof n.search=="function"&&(n.search=await n.search(a)),r?ft.call(this,n):n}#s(e){let r=e.currentTarget,i=r.nextElementSibling;i.dataset.input="false",i.value=r.options[r.selectedIndex].text}#n(e){let r=e.currentTarget,i=r.previousElementSibling,s=r.value.toLowerCase(),a=Array.from(i.options).map(o=>o.value).indexOf(s);a!==-1?(i.value=s,r.value=i.options[a].text,r.dataset.input="false"):(i.value="",r.dataset.input="true")}#t(){this.element.addClass("disabled")}#o(){this.element.removeClass("disabled")}#a(){let e=[],r=this.element.find("input").filter((s,n)=>!n.value),i=this.element.find("input.alert");return r.length&&e.push("error.empty"),i.length&&e.push("error.unattended"),e.forEach(s=>z.warn(s)),!e.length}async#l(e){e.preventDefault(),this.#a()&&(this.#t(),await ht.call(this),this.close())}#c(e){e.preventDefault();let r=$(e.currentTarget),i=r.prevAll("input").first();i.val(""),i.attr("value",""),i.attr("data-uuid",""),r.addClass("disabled")}#u(e){e.preventDefault(),this.close()}};l(se,"DailiesInterface");function bt(t,e){x(t,"isWatch")&&e.find(".message-content button").on("click",()=>Y())}l(bt,"renderChatMessage");function wt(){let t=`<div>${S("message.dailiesRequest.content")}</div>`;t+=`<button type="button" style="margin-top: 8px;">${S("message.dailiesRequest.button")}</button>`,qe().create({content:t,flags:{[v]:{isWatch:!0}}})}l(wt,"createWatchChatMessage");var mr={1:"RjuupS9xyXDLgyIr",2:"Y7UD64foDbDMV9sx",3:"ZmefGBXGJF3CFDbn",4:"QSQZJ5BC3DeHv153",5:"tjLvRWklAylFhBHQ",6:"4sGIy77COooxhQuC",7:"fomEZZ4MxVVK3uVu",8:"iPki3yuoucnj7bIt",9:"cFHomF3tty8Wi1e5",10:"o1XIHJ4MJyroAHfF"},vt=[];async function St(t,e,r=!1){let i=(await fromUuid(t))?.toObject();if(!i)return null;e===!1&&(e=i.system.level.value);let s=gr(e);vt[e]??=await fromUuid(s);let n=vt[e]?.toObject();if(!n)return null;i.system.location.heightenedLevel=e,n.name=`Scroll of ${i.name} (Level ${e})`,n.system.temporary=r,n.system.spell=i,n.system.traits.value.push(...i.system.traditions.value);let a=i.flags.core?.sourceId;return a&&(n.system.description.value=`${Q(a)}
-<hr />${n.system.description.value}`),n}l(St,"createSpellScroll");function gr(t){return`Compendium.pf2e.equipment-srd.Item.${mr[t]}`}l(gr,"getScrollCompendiumUUID");var kt="max(1,floor(@actor.level/2))",V={get skillNames(){return Object.keys(CONFIG.PF2E.skillList).slice()},skillLabel:t=>game.i18n.localize(CONFIG.PF2E.skillList[t]),createSkillRuleElement:({skill:t,value:e,mode:r="upgrade",predicate:i})=>{let s={key:"ActiveEffectLike",mode:r,path:`system.skills.${t}.rank`,value:e};return i&&i.length&&(s.predicate=i),s},createLoreSource:({name:t,rank:e})=>({type:"lore",img:"systems/pf2e/icons/default-icons/lore.svg",name:t,system:{proficient:{value:e}}}),get languageNames(){return Object.keys(CONFIG.PF2E.languages).slice()},languageLabel:t=>game.i18n.localize(CONFIG.PF2E.languages[t]),createLanguageRuleElement:({language:t,mode:e="add",predicate:r})=>{let i={key:"ActiveEffectLike",mode:e,path:"system.traits.languages.value",value:t};return r&&r.length&&(i.predicate=r),i},resistanceLabel:(t,e)=>{let r=game.i18n.localize(`PF2E.Trait${ue(t)}`);return e&&(r+=` ${e}`),r},createResistanceRuleElement:({type:t,value:e,predicate:r})=>{e==="half"&&(e=kt);let i={key:"Resistance",type:t,value:e};return r&&r.length&&(i.predicate=r),i},createFeatSource:async t=>{let e=(await fromUuid(t))?.toObject();if(!e)throw new Error(`An error occured while trying to create a feat source with uuid: ${t}`);return e},createSpellScrollSource:async({uuid:t,level:e})=>{let r=await St(t,e??!1,!0);if(!r)throw new Error(`An error occured while trying to create a spell scroll source with uuid: ${t}`);return r},createSpellSource:async t=>{let e=(await fromUuid(t))?.toObject();if(!e)throw new Error(`An error occured while trying to create a spell source with uuid: ${t}`);return e},get halfLevelString(){return kt},getChoiSetRuleSelection:(t,e)=>t._source.system.rules.find(s=>s.key==="ChoiceSet"&&s.rollOption===e)?.selection,proficiencyLabel:t=>game.i18n.localize(CONFIG.PF2E.proficiencyLevels[t]),randomOption:async t=>{let e=(await new Roll(`1d${t.length}`).evaluate({async:!0})).total,r=t[e-1];return typeof r=="string"?r:r.value},halfLevelValue:t=>Math.max(1,Math.floor(t.level/2)),sequenceArray:ce,damageLabel:t=>game.i18n.localize(CONFIG.PF2E.weaponDamage[t]),weaponTraitLabel:t=>game.i18n.localize(CONFIG.PF2E.weaponTraits[t]),weaponPropertyRunesLabel:t=>game.i18n.localize(CONFIG.PF2E.weaponPropertyRunes[t]),hasFreePropertySlot:t=>{let e=t.system.runes.potency;return e>0&&t.system.runes.property.length<e},getFreePropertyRuneSlot:t=>{let e=t.system.potencyRune.value;if(e===null)return null;for(let r=0;r<e;r++){let i=RUNE_PROPERTY_KEYS[r];if(!t.system[i].value)return i}return null},getPlayersActors:(t,...e)=>{e.length||(e=["creature"]);let r=game.actors;if(t){if(O("members")){let i=game.actors.party?.members;i?.includes(t)&&(r=i)}t instanceof Actor&&(r=r.filter(i=>i!==t))}return r.filter(i=>i.hasPlayerOwner&&i.isOfType(...e))}};function Y(t,e){if((!t||!t.isOfType("character")||!t.isOwner)&&(t=canvas.tokens.controlled.find(i=>i.actor?.isOfType("character")&&i.actor.isOwner)?.actor,t||(t=game.user.character)),!t||!t.isOfType("character")||!t.isOwner)return D("error.noCharacterSelected");if(x(t,"rested")!==!0)return D("error.unrested");if(!e&&!ge(t))return D("error.noDailies");new se(t,{title:S("interface.title",{name:t.name})}).render(!0)}l(Y,"openDailiesInterface");function xt(){if(!game.user.isGM)return D("error.notGM");wt()}l(xt,"requestDailies");async function It(){let t=(await this.getCraftingEntries()).filter(s=>s.isDailyPrep),r=t.filter(s=>s.isAlchemical).reduce((s,n)=>s+n.reagentCost,0),i=(this.system.resources.crafting.infusedReagents.value||0)-r;if(i<0){ui.notifications.warn(game.i18n.localize("PF2E.CraftingTab.Alerts.MissingReagents"));return}else await this.update({"system.resources.crafting.infusedReagents.value":i});for(let s of t)for(let n of s.preparedCraftingFormulas){let a=n.item.toObject();a.system.quantity=n.quantity,a.system.temporary=!0,a.system.size=this.ancestry?.size==="tiny"?"tiny":"med",s.isAlchemical&&(a.type==="consumable"||a.type==="weapon"||a.type==="equipment")&&a.system.traits.value.push("infused"),await this.addToInventory(a)}}l(It,"onPerformDailyCrafting");function Ct(t,e){let r=t.actor;if(!r.isOwner||!ge(r))return;e.find("aside .sidebar .hitpoints .hp-small").append(`<a class="roll-icon dailies" data-tooltip="${S("sheet.title")}"><i class="fas fa-mug-saucer"></i></a>`).find(".dailies").on("click",()=>Y(r,!0))}l(Ct,"renderCharacterSheetPF2e");var Dt=["/** @typedef {'flexibility' | 'improved'} FlexibilityRow */","/** @typedef {'improved'} FlexibilityChild */","/** @typedef {[FlexibilityRow, {}, FlexibilityChild]} FlexibilityGenerics */","","/**"," * @param {FlexibilityRow} slug"," * @param {number} level"," * @param {FlexibilityChild} [child]"," */","function createRow(slug, level, child) {","    /** @type {DailyRowDrop<FlexibilityGenerics>} */","    const row = {","        type: 'drop',","        label: `PF2E.Level${level}`,","        slug,","        filter: {","            type: 'feat',","            search: {","                category: ['class'],","                traits: {","                    values: ['fighter'],","                },","                level,","            },","        },","    }","    if (child) row.childPredicate = [child]","    return row","}","","/** @type {Daily<FlexibilityGenerics>} */","const combatFlexibility = {","    key: 'flexibility',","    item: {","        uuid: 'Compendium.pf2e.classfeatures.Item.8g6HzARbhfcgilP8', // Combat Flexibility","    },","    children: [","        {","            slug: 'improved',","            uuid: 'Compendium.pf2e.classfeatures.Item.W2rwudMNcAxs8VoX', // Improved Flexibility","        },","    ],","    rows: [","        createRow('flexibility', 8), //","        createRow('improved', 14, 'improved'),","    ],","    process: async ({ utils, fields, addFeat, messages, children }) => {","        const uuid = fields.flexibility.uuid","        const source = await utils.createFeatSource(uuid)","        addFeat(source)","        messages.add('feats', { uuid })","","        if (children.improved) {","            const uuid = fields.improved.uuid","            const source = await utils.createFeatSource(uuid)","            addFeat(source, children.improved)","            messages.add('feats', { uuid })","        }","    },","}","","return combatFlexibility"].join(`
-`);var Ot=["/** @typedef {'alert' | 'smith' | 'mental' | 'runic' | 'advanced'} MindRow */","/** @typedef {'weapon' | 'mental' | 'runic' | 'advanced'} MindChild */","/** @typedef {[MindRow, {}, MindChild]} MindGenerics */","","const MIND_WEAPON_UUID = 'Compendium.pf2e-dailies.equipment.Item.VpmEozw21aRxX15P'","","const WEAPON_BASE_TYPES = {","    0: { die: 'd4', traits: ['finesse', 'agile'], usage: 'held-in-one-hand' },","    1: { die: 'd6', traits: ['finesse'], usage: 'held-in-one-hand' },","    2: { die: 'd8', traits: [], usage: 'held-in-one-hand' },","    3: { die: 'd10', traits: ['reach'], usage: 'held-in-two-hands' },","}","","const WEAPON_GROUPS = /** @type {Record<WeaponDamage, string>} */ {","    slashing: 'sword',","    piercing: 'spear',","    bludgeoning: 'club',","}","","const WEAPON_TRAITS = ['grapple', 'nonlethal', 'shove', 'trip', 'modular']","","const WEAPON_DAMAGE_TYPES = Object.keys(WEAPON_GROUPS)","","const WEAPON_RUNES = ['corrosive', 'disrupting', 'flaming', 'frost', 'shock', 'thundering']","","const WEAPON_GREATER_RUNES = [","    'anarchic',","    'axiomatic',","    'greaterCorrosive',","    'greaterDisrupting',","    'greaterFlaming',","    'greaterFrost',","    'greaterShock',","    'greaterThundering',","    'holy',","    'unholy',","]","","/** @type {Daily<MindGenerics>} */","const mindSmith = {","    key: 'mindsmith',","    item: {","        uuid: 'Compendium.pf2e.feats-srd.Item.juikoiIA0Jy8PboY', // Mind Smith Dedication","    },","    children: [","        {","            slug: 'weapon',","            uuid: MIND_WEAPON_UUID, // Mind Weapon","        },","        {","            slug: 'mental',","            uuid: 'Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky', // Malleable Mental Forge","        },","        {","            slug: 'runic',","            uuid: 'Compendium.pf2e.feats-srd.Item.2uQbQgz1AbjzcFSp', // Runic Mind Smithing","        },","        {","            slug: 'advanced',","            uuid: 'Compendium.pf2e.feats-srd.Item.fgnfXwFcn9jZlXGD', // Advanced Runic Mind Smithing","        },","    ],","    rows: [","        {","            type: 'alert',","            slug: 'alert',","            message: 'Missing Mind Weapon',","            fix,","            childPredicate: [{ not: 'weapon' }],","        },","        {","            type: 'select',","            slug: 'smith',","            label: 'Mind Smith',","            options: WEAPON_DAMAGE_TYPES,","            labelizer: ({ utils }) => utils.damageLabel,","            childPredicate: ['weapon'],","        },","        {","            type: 'select',","            slug: 'mental',","            label: 'Mental Forge',","            options: WEAPON_TRAITS,","            labelizer: ({ utils }) => utils.weaponTraitLabel,","            childPredicate: ['weapon', 'mental'],","        },","        {","            type: 'select',","            slug: 'runic',","            label: 'Runic Smithing',","            options: WEAPON_RUNES,","            labelizer: ({ utils }) => utils.weaponPropertyRunesLabel,","            childPredicate: ['weapon', 'runic', { not: 'advanced' }],","            condition: ({ children, utils }) => utils.hasFreePropertySlot(children.weapon),","        },","        {","            type: 'select',","            slug: 'advanced',","            label: 'Runic Smithing',","            options: WEAPON_GREATER_RUNES,","            labelizer: ({ utils }) => utils.weaponPropertyRunesLabel,","            childPredicate: ['weapon', 'advanced'],","            condition: ({ children, utils }) => utils.hasFreePropertySlot(children.weapon),","        },","    ],","    process: ({ children, updateItem, fields, messages, item, utils }) => {","        const weapon = children.weapon","        if (!weapon) return","","        messages.addGroup('mindsmith')","","        const selected = /** @type {WeaponDamage} */ fields.smith.value","        updateItem({ _id: weapon.id, 'system.damage.damageType': selected, 'system.group': WEAPON_GROUPS[selected] })","        messages.add('mindsmith', { selected: utils.damageLabel(selected), uuid: item.uuid, label: 'mindsmith' })","","        if (children.mental) {","            const selected = fields.mental.value","            const traits = deepClone(weapon._source.system.traits?.value ?? [])","            if (!traits.includes(selected)) traits.push(selected)","            updateItem({ _id: weapon.id, 'system.traits.value': traits })","            messages.add('mindsmith', {","                selected: utils.weaponTraitLabel(selected),","                uuid: children.mental.uuid,","                label: 'mentalforge',","            })","        }","","        if ((children.advanced || children.runic) && utils.hasFreePropertySlot(weapon)) {","            const child = children.advanced ?? children.runic","            const freeSlot = utils.getFreePropertyRuneSlot(weapon)","            const field = fields.advanced ?? fields.runic","            const selected = field.value","","            if (!weapon.system.runes.property.includes(selected)) {","                updateItem({ _id: weapon.id, [`system.${freeSlot}.value`]: selected, [`flags.world.runeSlot`]: freeSlot })","                messages.add('mindsmith', {","                    selected: utils.weaponPropertyRunesLabel(selected),","                    uuid: child.uuid,","                    label: 'runicmind',","                })","            }","        }","    },","    rest: ({ item, sourceId, updateItem }) => {","        if (sourceId !== MIND_WEAPON_UUID) return","","        let traits = item._source.system.traits?.value ?? []","        traits = traits.filter(trait => !WEAPON_TRAITS.includes(trait))","        updateItem({ _id: item.id, 'system.traits.value': traits })","","        const runeSlot = item.getFlag('world', 'runeSlot')","        if (runeSlot) {","            updateItem({ _id: item.id, [`system.${runeSlot}.value`]: null, [`flags.world.-=runeSlot`]: true })","        }","    },","}","","const OPTIONS = {","    0: 'A one-handed weapon that deals <strong>1d4</strong> damage and has the <strong>agile</strong> and <strong>finesse</strong> traits',","    1: 'A one-handed weapon that deals <strong>1d6</strong> damage and has the <strong>finesse</strong> trait',","    2: 'A one-handed weapon that deals <strong>1d8</strong> damage',","    3: 'A two-handed weapon that deals <strong>1d10</strong> damage and has the <strong>reach</strong> trait',","}","","/** * @param {DailyValueArgs<MindGenerics>} args */","async function fix({ actor }) {","    let content =","        `<p>This character doesn't have a mind weapon in their inventory.</p><p>Please select one of the following options to create one.</p>`","","    for (const [key, label] of Object.entries(OPTIONS)) {","        content += `<label><input type='radio' name='type' value='${key}'>${label}</label>`","    }","","    const weapon = await Dialog.wait(","        {","            title: 'Mind Weapon',","            content,","            buttons: {","                yes: {","                    icon: `<i class='fas fa-save'></i>`,","                    label: 'Accept',","                    callback: onWeaponSelected,","                },","                no: {","                    icon: `<i class='fas fa-times'></i>`,","                    label: 'Cancel',","                    callback: () => null,","                },","            },","            close: () => null,","        },","        {},","        { id: 'pf2e-dailies-weapon', width: 600 }","    )","","    if (weapon) {","        await actor.createEmbeddedDocuments('Item', [weapon])","        return true","    }","","    return false","}","","/** @params {JQuery} html */","async function onWeaponSelected(html) {","    const selection = html.find('[name=type]:checked').val()","    if (!selection) {","        ui.notifications.warn('You must select one weapon base type.')","        return","    }","","    const weapon = (await fromUuid(MIND_WEAPON_UUID))?.toObject()","    if (!weapon) {","        ui.notifications.warn(`The weapon couldn't be found in the compendium.`)","        return","    }","","    const stats = WEAPON_BASE_TYPES[selection]","","    setProperty(weapon, 'system.damage.die', stats.die)","    setProperty(weapon, 'system.traits.value', stats.traits.slice())","    setProperty(weapon, 'system.usage.value', stats.usage)","","    return weapon","}","","return mindSmith"].join(`
-`);var Et=["/** @typedef {'first' | 'second' | 'third' | 'fourth'} SavantRow */","/** @typedef {Record<SavantRow, { level: number; condition: boolean }>} SavantCustom */","/** @typedef {[SavantRow, SavantCustom, '']} SavantGenerics */","","const ROWS = /** @type {const} */ (['first', 'second', 'third', 'fourth'])","","/**"," * @param {CharacterPF2e} actor"," * @param {MagicTradition} tradition"," */","function getSpellcastingTraditionDetails(actor, tradition) {","    let maxSlot = 1","    let maxTradition = 0","","    for (const entry of actor.spellcasting.regular) {","        if ('pf2e-staves' in entry.flags) continue // we skip staff entries","","        const slots = entry.system.slots","        for (const key in slots) {","            const slot = slots[key]","            if (slot.max) maxSlot = Math.max(maxSlot, Number(key.slice(4)))","        }","","        if (entry.tradition === tradition) maxTradition = Math.max(maxTradition, entry.rank)","    }","","    return { maxSlot: Math.min(maxSlot, 10), maxTradition }","}","","/** @type {Daily<SavantGenerics>} */","const scrollSavant = {","    key: 'savant',","    item: {","        uuid: 'Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ', // Scroll Savant","    },","    prepare: ({ actor }) => {","        const { maxSlot, maxTradition } = getSpellcastingTraditionDetails(actor, 'arcane')","        return {","            first: { level: maxSlot - 2, condition: true },","            second: { level: maxSlot - 3, condition: true },","            third: { level: maxSlot - 4, condition: maxTradition >= 3 && maxSlot >= 5 },","            fourth: { level: maxSlot - 5, condition: maxTradition >= 4 && maxSlot >= 6 },","        }","    },","    rows: ROWS.map(rowName => {","        /** @type {DailyRowDrop<SavantGenerics>} */","        const row = {","            type: 'drop',","            slug: rowName,","            label: ({ custom }) => `PF2E.SpellLevel${custom[rowName].level}`,","            filter: {","                type: 'spell',","                search: ({ custom }) => ({","                    category: ['spell'],","                    traditions: ['arcane'],","                    level: custom[rowName].level,","                }),","            },","            condition: ({ custom }) => custom[rowName].condition,","        }","        return row","    }),","    process: async ({ utils, fields, custom, addItem, messages }) => {","        for (const field of Object.values(fields)) {","            const uuid = field.uuid","            const source = await utils.createSpellScrollSource({ uuid, level: custom[field.row].level })","            addItem(source)","            messages.add('scrolls', { uuid, label: source.name })","        }","    },","}","","return scrollSavant"].join(`
-`);var At=["/** @typedef {typeof ROWS[number]} TomeRow */","/** @typedef {'adept' | 'second' | 'intense' | 'paragon'} TomeChild */","/** @typedef {Record<TomeRow, { rank: OneToFour; options: string[] }>} TomeCustom */","/** @typedef {[TomeRow, TomeCustom, TomeChild]} TomeGenerics */","","const ROWS = /** @type {const} */ (['first', 'second'])","","/** @param {'adept' | 'paragon'} option */","function createChildCondition(option) {","    /** @type { BaseDailyConditionFunction<TomeGenerics>} */","    const condition = ({ item, utils }) => {","        return utils.getChoiSetRuleSelection(item, option) === 'tome'","    }","    return condition","}","","/** @type {Daily<TomeGenerics>} */","const thaumaturgeTome = {","    key: 'tome',","    item: {","        uuid: 'Compendium.pf2e.classfeatures.Item.MyN1cQgE0HsLF20e', // Tome","    },","    children: [","        {","            slug: 'adept',","            uuid: 'Compendium.pf2e.classfeatures.Item.Obm4ItMIIr0whYeO', // Implement Adept","            condition: createChildCondition('adept'),","        },","        {","            slug: 'second',","            uuid: 'Compendium.pf2e.classfeatures.Item.ZEUxZ4Ta1kDPHiq5', // Second Adept","            condition: createChildCondition('adept'),","        },","        {","            slug: 'intense',","            uuid: 'Compendium.pf2e.feats-srd.Item.yRRM1dsY6jakEMaC', // Intense Implement","        },","        {","            slug: 'paragon',","            uuid: 'Compendium.pf2e.classfeatures.Item.QEtgbY8N2V4wTbsI', // Implement Paragon","            condition: createChildCondition('paragon'),","        },","    ],","    prepare: ({ utils, actor, children }) => {","        const skillNames = utils.skillNames","        const actorLevel = actor.level","        const actorSkills = /** @type {Record<SkillLongForm, { rank: ZeroToFour }>} */ (actor.skills)","","        /** @type {TomeCustom} */","        const custom = {","            first: { options: [], rank: 1 },","            second: { options: [], rank: 1 },","        }","","        // Implement Paragon","        if (children.paragon) {","            const skills = skillNames.filter(x => actorSkills[x].rank < 4)","            custom.first = { rank: 4, options: skills }","            custom.second = { rank: 4, options: skills }","        }","        // Intense Implement or Second Adept or Implement Adept","        else if (children.intense || children.adept || children.second) {","            const masters = skillNames.filter(x => actorSkills[x].rank < 3)","","            if (actorLevel >= 9) {","                custom.first = { rank: 3, options: masters }","                custom.second = { rank: 3, options: masters }","            } else {","                const experts = skillNames.filter(x => actorSkills[x].rank < 2)","                custom.first = { rank: 2, options: experts }","                custom.second = { rank: 3, options: masters }","            }","        }","        // Tome","        else {","            if (actorLevel >= 5) {","                const experts = skillNames.filter(x => actorSkills[x].rank < 2)","                custom.first = { rank: 2, options: experts }","                custom.second = { rank: 2, options: experts }","            } else if (actorLevel >= 3) {","                const trained = skillNames.filter(x => actorSkills[x].rank < 1)","                const experts = skillNames.filter(x => actorSkills[x].rank < 2)","                custom.first = { rank: 1, options: trained }","                custom.second = { rank: 2, options: experts }","            } else {","                const trained = skillNames.filter(x => actorSkills[x].rank < 1)","                custom.first = { rank: 1, options: trained }","                custom.second = { rank: 1, options: trained }","            }","        }","","        return custom","    },","    rows: ROWS.map(rowName => {","        /** @type {DailyRowCombo<TomeGenerics>} */","        const row = {","            type: 'combo',","            slug: rowName,","            label: ({ custom, utils }) => utils.proficiencyLabel(custom[rowName].rank),","            options: ({ custom }) => custom[rowName].options,","            labelizer: ({ utils }) => utils.skillLabel,","        }","        return row","    }),","    process: ({ custom, fields, utils, messages, addItem, addRule }) => {","        messages.addGroup('tome', 65)","","        for (const rowName of ROWS) {","            const rank = custom[rowName].rank","            let value = fields[rowName].value","","            if (fields[rowName].input === 'true') {","                const source = utils.createLoreSource({ name: value, rank })","                addItem(source)","            } else {","                const source = utils.createSkillRuleElement({ skill: value, value: rank })","                value = utils.skillLabel(value)","                addRule(source)","            }","","            messages.add('tome', { label: utils.proficiencyLabel(rank), selected: value })","        }","    },","}","","return thaumaturgeTome"].join(`
-`);var R=C("customs"),yr=["default","trainedSkill","trainedLore","language","resistance","feat","spell"],Ne=["flexibility","savant","tome","mind"],ne=class extends FormApplication{static get defaultOptions(){return mergeObject(super.defaultOptions,{id:"pf2e-dailies-customs",title:R("title"),template:le("customs.hbs"),submitOnChange:!1,submitOnClose:!1,closeOnSubmit:!1,scrollY:[".left .list"]})}async _updateObject(e,r){}async getData(e){let r=O("customDailies"),i=r.find(o=>o.key===this._selectedDaily)?.code,s=this._selectedTemplate,n=game.modules.get("pf2e-dailies-ext"),a=n?.active&&isNewerVersion(Me,n.version)?{version:Me}:"";return mergeObject(super.getData(e),{i18n:R,template:s,templates:yr,daily:this._selectedDaily,code:i,customs:r,examples:Ne,isExample:Ne.includes(s),monaco:n?.active,newVersion:a})}activateListeners(e){super.activateListeners(e),this._monaco?.dispose();let r=game.modules.get("pf2e-dailies-ext")?.api,i=e.find(".code")[0];if(r&&i){let s=e.find(".monaco .placeholder")[0];this._monaco=r.createEditor(s,i.value),this._monaco.onDidChangeModelContent(debounce(()=>i.value=this._monaco.getValue(),200))}else this._monaco=null;e.find("[data-action=select-template]").on("change",this.#o.bind(this)),e.find("[data-action=create-template]").on("click",this.#n.bind(this)),e.find("[data-action=create-daily]").on("click",this.#r.bind(this)),e.find(".row[data-key]").on("click",this.#s.bind(this)),e.find("[data-action=delete-daily]").on("click",this.#i.bind(this)),e.find("[data-action=save-code]").on("click",this.#e.bind(this))}get code(){return this.form.querySelector(".window-content .code")?.value}async#e(e){e.preventDefault();let r=this.code,i=this._selectedDaily;if(!i||!r)return;let s=O("customDailies"),n=s.filter(a=>a.key!==i);try{let c=(await new oe(r)()).key;if(typeof c!="string")return D("invalidKey");if(n.find(d=>d.key===c))return D("duplicate");let u=s.findIndex(d=>d.key===i);if(u<0)return;s.splice(u,1,{key:c,code:r}),await ae("customDailies",s),R.info("saved",{daily:c}),this._selectedDaily=c,this.render()}catch(a){L("error.unexpected"),console.error(a),console.error(`The error occured while testing the custom daily ${i}`)}}async#i(e){if(e.preventDefault(),e.stopPropagation(),!await Dialog.confirm({title:R("delete.title"),content:R("delete.content")}))return;let i=e.currentTarget.dataset.key,s=O("customDailies").filter(n=>n.key!==i);await ae("customDailies",s),R.info("deleted",{daily:i}),this.#r()}#r(){this._selectedDaily="",this._selectedTemplate="default",this.render()}#s(e){e.preventDefault(),this._selectedDaily=e.currentTarget.dataset.key,this.render()}async#n(e){e.preventDefault();let r=this._selectedTemplate,i=O("customDailies"),s=new FormData(this.form),n=Object.fromEntries(s),a=Ne.includes(r),{key:o,uuid:c,label:u}=n;if(a)o=r;else if(!o||!c)return R.warn("template.noEmpty");if(i.find(m=>m.key===o))return D("error.duplicate");let d;if(r==="trainedSkill"){let m=U(o,c,u);d=this.#t(m,{key:o,uuid:c,label:u},"SkillGenerics")}else if(r==="trainedLore"){let m=fe(o,c,u);d=this.#t(m,{key:o,uuid:c,label:u},"SkillGenerics")}else if(r==="language"){let m=K(o,c,u);d=this.#t(m,{key:o,uuid:c,label:u},"LanguageGenerics")}else if(r==="resistance"){let m=$e(n.resistance),b=J(n.resistances);if(m===""||!b.length)return R.warn("template.noEmpty");if(typeof m=="number"&&m<1)return R.warn("template.badResistance");let p=ee(o,c,b,m,u);d=this.#t(p,{key:o,uuid:c,label:u,resistance:m,resistances:b},"ResistanceGenerics")}else if(r==="feat"){let m=J(n.traits),b={category:J(n.category),level:$e(n.level)||{min:0,max:20}};m.length&&(b.traits=m);let p=pe(o,c,b,u);d=this.#t(p,{key:o,uuid:c,label:u},"FeatGenerics")}else if(r==="spell"){let m=Number(n.level)||void 0,b=J(n.traits),p=n.levels.split(",").map(g=>g.trim());p.length===1?p=$e(p[0]):p=p.filter(g=>g).map(g=>Number(g)).filter(g=>!isNaN(g));let y={category:J(n.category),traditions:J(n.traditions),level:p||[]};b.length&&(y.traits=b);let h=de(o,c,y,m,u);d=this.#t(h,{key:o,uuid:c,label:u,level:m},"SpellGenerics")}else if(r==="tome")d=At;else if(r==="flexibility")d=Dt;else if(r==="savant")d=Et;else if(r==="mind")d=Ot;else{let m={key:o,label:u,item:{uuid:c},rows:[],process:()=>{}};d=this.#t(m,{key:o,uuid:c,label:u})}i.push({key:o,code:d}),await ae("customDailies",i),this._selectedDaily=o,this.render()}#t(e,r,i){let s="____PLACEHOLDER____",n=[],a=JSON.stringify(e,(u,d)=>typeof d=="function"?(n.push(d),s):d,4);a=a.replace(new RegExp('"'+s+'"',"g"),()=>n.shift()?.toString()?.replace(/( {5,})/g,d=>d.slice(4))??"");let o="";for(let[u,d]of Object.entries(r))typeof d=="string"?o+=`const ${u} = '${d}';
-`:typeof d=="object"?o+=`const ${u} = ${JSON.stringify(d)};
-`:o+=`const ${u} = ${d};
-`;let c=i?`Daily<${i}>`:"Daily";return`${o}
-/** @type {${c}} */
-const daily = ${a};
+    word-break: break-all;">${name}</span>`;
+  }
+  __name(fakeChatUUID, "fakeChatUUID");
 
-return daily;`}#o(e){e.preventDefault(),this._selectedDaily="",this._selectedTemplate=e.currentTarget.value,this.render()}};l(ne,"DailyCustoms");function J(t){return t.split(",").map(e=>e.trim()).filter(e=>e)}l(J,"splitList");function $e(t){if(typeof t=="number"||(t=t.trim(),t==="level"||t==="half"))return t;let e=Number(t);return isNaN(e)?"":e}l($e,"simplyfiable");async function Tt(t){let e=[],r=[];for(let i of t.items){if(x(i,"temporary")){if(r.push(i.id),i.isOfType("feat")){let o=x(i,"grantedBy");if(o){let u=`flags.pf2e.itemGrants.-=${N(i.name,{camel:"dromedary"})}`;e.push({_id:o,[u]:!0})}}continue}let s=B(i);if(s){let o=nt(s);o?.rest&&await o.rest({item:i,sourceId:s,updateItem:c=>e.push(c)})}let n=deepClone(i._source.system.rules),a=!1;for(let o=n.length-1;o>=0;o--)v in n[o]&&(n.splice(o,1),a=!0);a&&e.push({_id:i.id,"system.rules":n})}e.length&&await t.updateEmbeddedDocuments("Item",e),r.length&&await t.deleteEmbeddedDocuments("Item",r),await Be(t,"rested",!0)}l(Tt,"restForTheNight");var Me="1.3.0",hr="CONFIG.PF2E.Actor.documentClasses.character.prototype.performDailyCrafting";Hooks.once("setup",()=>{X({name:"customDailies",type:Array,default:[],onChange:Ee}),X({name:"familiar",type:String,default:"",config:!0}),X({name:"watch",type:Boolean,default:!1,config:!0,onChange:Ft}),X({name:"members",type:Boolean,default:!0,config:!0,scope:"user"}),Ge({name:"customs",type:ne}),game.modules.get(v).api={openDailiesInterface:t=>Y(t),requestDailies:xt,getBuiltinDailies:()=>deepClone(Oe),getCustomDailies:()=>deepClone(re),prepareDailies:me,checkCustomDaily:Ae,getUtils:()=>deepClone(V)},O("watch")&&Ft(!0)});Hooks.once("ready",async()=>{if(await Ee(),!game.modules.get("lib-wrapper")?.active&&game.user.isGM){D("error.noLibwrapper",!0);return}libWrapper.register(v,hr,It,"OVERRIDE")});Hooks.on("pf2e.restForTheNight",Tt);Hooks.on("renderCharacterSheetPF2e",Ct);function Ft(t){Hooks[t?"on":"off"]("renderChatMessage",bt)}l(Ft,"enableWatchHook");})();
+  // src/data/spell.js
+  function createSpellDaily(key, uuid, filter = {}, level, label) {
+    const daily = {
+      key,
+      label,
+      item: {
+        uuid
+      },
+      rows: [
+        {
+          type: "drop",
+          slug: "spell",
+          filter: {
+            type: "spell",
+            search: filter
+          }
+        }
+      ],
+      process: async ({ addSpell, utils: utils2, fields, messages }) => {
+        const uuid2 = fields.spell.uuid;
+        const source = await utils2.createSpellSource(uuid2);
+        const label2 = `${source.name} (Level ${level || source.system.level.value})`;
+        addSpell(source, level);
+        messages.add("spells", { uuid: uuid2, label: label2 });
+      }
+    };
+    return daily;
+  }
+  __name(createSpellDaily, "createSpellDaily");
+
+  // src/data/ace.js
+  function tricksterAce() {
+    const daily = createSpellDaily(
+      "ace",
+      "Compendium.pf2e.feats-srd.Item.POrE3ZgBRdBL9MsW",
+      {
+        category: ["cantrip", "spell"],
+        level: 4
+      },
+      4
+    );
+    const row = daily.rows[0];
+    row.filter.drop = (item) => {
+      const castTime = item.system.time.value;
+      if (castTime.includes("hour") || castTime.includes("min") && parseInt(castTime) > 10) {
+        return { error: localizePath("interface.error.drop.wrongSpellTime"), data: { time: "10 min" } };
+      }
+      return true;
+    };
+    return daily;
+  }
+  __name(tricksterAce, "tricksterAce");
+
+  // src/data/blade.js
+  var bladeAlly = {
+    key: "blade",
+    item: {
+      uuid: "Compendium.pf2e.classfeatures.Item.EtltLdiy9kNfHU0c"
+      // Blade Ally
+    },
+    children: [
+      {
+        slug: "good",
+        uuid: "Compendium.pf2e.classfeatures.Item.nxZYP3KGfTSkaW6J"
+        // The Tenets of Good
+      },
+      {
+        slug: "evil",
+        uuid: "Compendium.pf2e.classfeatures.Item.JiY2ZB4FkK8RJm4T"
+        // The Tenets of Evil
+      },
+      {
+        slug: "liberator",
+        uuid: "Compendium.pf2e.classfeatures.Item.FCoMFUsth4xB4veC"
+        // Liberator
+      },
+      {
+        slug: "paladin",
+        uuid: "Compendium.pf2e.classfeatures.Item.peEXunfbSD8WcMFk"
+        // Paladin
+      },
+      {
+        slug: "antipaladin",
+        uuid: "Compendium.pf2e.classfeatures.Item.EQ6DVIQHAUXUhY6Y"
+        // Antipaladin
+      },
+      {
+        slug: "tyrant",
+        uuid: "Compendium.pf2e.classfeatures.Item.HiIvez0TqESbleB5"
+        // Tyrant
+      },
+      {
+        slug: "spirit",
+        uuid: "Compendium.pf2e.feats-srd.Item.h5ksUZlrVGBjq6p4"
+        // Radiant Blade Spirit
+      },
+      {
+        slug: "master",
+        uuid: "Compendium.pf2e.feats-srd.Item.jYEMVfrXJLpXS6aC"
+        // Radiant Blade Master
+      }
+    ],
+    rows: [
+      {
+        type: "select",
+        slug: "weapon",
+        label: () => localize("label.blade.weapon"),
+        options: ({ actor }) => {
+          return actor.itemTypes.weapon.filter((weapon) => !weapon.isAlchemical).map((weapon) => ({ value: weapon.id, label: weapon.name }));
+        }
+      },
+      {
+        type: "select",
+        slug: "rune",
+        label: () => localize("label.blade.rune"),
+        options: ({ children }) => {
+          const runes = ["returning", "shifting"];
+          const { antipaladin, evil, good, liberator, master, paladin, spirit, tyrant } = children;
+          if (spirit) {
+            runes.push("flaming");
+            if (good)
+              runes.push("holy");
+            if (evil)
+              runes.push("unholy");
+            if (liberator || antipaladin)
+              runes.push("anarchic");
+            if (paladin || tyrant)
+              runes.push("axiomatic");
+          }
+          if (good)
+            runes.push("disrupting", "ghost-touch");
+          if (master)
+            runes.push("greater-disrupting", "keen");
+          if (evil)
+            runes.push("fearsome");
+          return runes.map((value) => ({
+            value,
+            label: localizeRune(value)
+          }));
+        },
+        condition: ({ actor }) => actor.itemTypes.weapon.filter((weapon) => !weapon.isAlchemical).length
+      }
+    ],
+    process: async ({ actor, fields, addRule, messages }) => {
+      const weaponId = fields.weapon.value;
+      const rune = fields.rune.value;
+      const weapon = actor.items.get(weaponId);
+      if (!weapon)
+        return;
+      addRule(
+        {
+          definition: [`item:id:${weaponId}`],
+          key: "AdjustStrike",
+          mode: "add",
+          property: "property-runes",
+          value: rune
+        },
+        weapon
+      );
+      addRule(
+        {
+          key: "CriticalSpecialization",
+          predicate: [
+            {
+              or: [`item:category:${weapon.category}`, `item:id:${weaponId}`]
+            }
+          ]
+        },
+        weapon
+      );
+      const name = weapon.name !== weapon._source.name ? `... ${weapon._source.name}` : weapon.name;
+      messages.addGroup("blade");
+      messages.add("blade", {
+        uuid: weapon.uuid,
+        label: name,
+        selected: localizeRune(rune)
+      });
+    }
+  };
+  function localizeRune(value) {
+    const slugged = value.replace(/-\w/, (match) => match[1].toUpperCase());
+    return game.i18n.localize(`PF2E.WeaponPropertyRune.${slugged}.Name`);
+  }
+  __name(localizeRune, "localizeRune");
+
+  // src/data/chain.js
+  var rows = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh"];
+  function createScrollChain(key, uuids, label) {
+    const daily = {
+      key,
+      label,
+      item: {
+        uuid: uuids[0]
+      },
+      children: [
+        {
+          slug: "expert",
+          uuid: uuids[1]
+        },
+        {
+          slug: "master",
+          uuid: uuids[2]
+        }
+      ],
+      rows: [
+        createRow("first", 1),
+        //
+        createRow("second", 2, 8),
+        createRow("third", 3, void 0, "expert"),
+        //
+        createRow("fourth", 4, 14, "expert"),
+        createRow("fifth", 5, 16, "expert"),
+        createRow("sixth", 6, void 0, "master"),
+        //
+        createRow("seventh", 7, 20, "master")
+      ],
+      process: async ({ utils: utils2, fields, addItem, messages }) => {
+        for (const field of Object.values(fields)) {
+          const uuid = field.uuid;
+          const level = rows.indexOf(field.row) + 1;
+          const source = await utils2.createSpellScrollSource({ uuid, level });
+          addItem(source);
+          messages.add("scrolls", { uuid, label: source.name });
+        }
+      }
+    };
+    return daily;
+  }
+  __name(createScrollChain, "createScrollChain");
+  function createRow(slug, level, minActorLevel, child) {
+    const row = {
+      type: "drop",
+      slug,
+      label: `PF2E.SpellLevel${level}`,
+      filter: {
+        type: "spell",
+        search: {
+          category: ["spell"],
+          level
+        }
+      }
+    };
+    if (minActorLevel)
+      row.condition = ({ actor }) => actor.level >= minActorLevel;
+    if (child)
+      row.childPredicate = [child];
+    return row;
+  }
+  __name(createRow, "createRow");
+
+  // src/data/feat.js
+  function createFeatDaily(key, uuid, filter = {}, label) {
+    const daily = {
+      key,
+      label,
+      item: {
+        uuid
+      },
+      rows: [
+        {
+          type: "drop",
+          slug: "feat",
+          filter: {
+            type: "feat",
+            search: filter
+          }
+        }
+      ],
+      process: async ({ utils: utils2, fields, addFeat, messages }) => {
+        const uuid2 = fields.feat.uuid;
+        const source = await utils2.createFeatSource(uuid2);
+        addFeat(source);
+        messages.add("feats", { uuid: uuid2 });
+      }
+    };
+    return daily;
+  }
+  __name(createFeatDaily, "createFeatDaily");
+
+  // src/data/flexibility.js
+  var combatFlexibility = {
+    key: "flexibility",
+    item: {
+      uuid: "Compendium.pf2e.classfeatures.Item.8g6HzARbhfcgilP8"
+      // Combat Flexibility
+    },
+    children: [
+      {
+        slug: "improved",
+        uuid: "Compendium.pf2e.classfeatures.Item.W2rwudMNcAxs8VoX"
+        // Improved Flexibility
+      }
+    ],
+    rows: [
+      createRow2("flexibility", 8),
+      //
+      createRow2("improved", 14, "improved")
+    ],
+    process: async ({ utils: utils2, fields, addFeat, messages, children }) => {
+      const uuid = fields.flexibility.uuid;
+      const source = await utils2.createFeatSource(uuid);
+      addFeat(source);
+      messages.add("feats", { uuid });
+      if (children.improved) {
+        const uuid2 = fields.improved.uuid;
+        const source2 = await utils2.createFeatSource(uuid2);
+        addFeat(source2, children.improved);
+        messages.add("feats", { uuid: uuid2 });
+      }
+    }
+  };
+  function createRow2(slug, level, child) {
+    const row = {
+      type: "drop",
+      label: `PF2E.Level${level}`,
+      slug,
+      filter: {
+        type: "feat",
+        search: {
+          category: ["class"],
+          traits: ["fighter"],
+          level
+        }
+      }
+    };
+    if (child)
+      row.childPredicate = [child];
+    return row;
+  }
+  __name(createRow2, "createRow");
+
+  // src/data/language.js
+  function createLanguageDaily(key, uuid, label) {
+    return {
+      key,
+      label,
+      item: {
+        uuid
+      },
+      rows: [
+        {
+          type: "select",
+          slug: "language",
+          options: ({ actor, utils: utils2 }) => {
+            const actorLanguages = actor.system.traits.languages.value;
+            return utils2.languageNames.filter((x) => !actorLanguages.includes(x)).sort();
+          },
+          labelizer: ({ utils: utils2 }) => utils2.languageLabel
+        }
+      ],
+      process: ({ addRule, utils: utils2, fields, messages }) => {
+        const value = fields.language.value;
+        const source = utils2.createLanguageRuleElement({ language: value });
+        addRule(source);
+        messages.add("languages", { uuid, selected: utils2.languageLabel(value), label });
+      }
+    };
+  }
+  __name(createLanguageDaily, "createLanguageDaily");
+
+  // src/data/mind.js
+  var MIND_WEAPON_UUID = "Compendium.pf2e-dailies.equipment.Item.VpmEozw21aRxX15P";
+  var WEAPON_BASE_TYPES = {
+    0: { die: "d4", traits: ["finesse", "agile"], usage: "held-in-one-hand" },
+    1: { die: "d6", traits: ["finesse"], usage: "held-in-one-hand" },
+    2: { die: "d8", traits: [], usage: "held-in-one-hand" },
+    3: { die: "d10", traits: ["reach"], usage: "held-in-two-hands" }
+  };
+  var WEAPON_GROUPS = {
+    slashing: "sword",
+    piercing: "spear",
+    bludgeoning: "club"
+  };
+  var WEAPON_TRAITS = ["grapple", "nonlethal", "shove", "trip", "modular"];
+  var WEAPON_DAMAGE_TYPES = Object.keys(WEAPON_GROUPS);
+  var WEAPON_RUNES = ["corrosive", "disrupting", "flaming", "frost", "shock", "thundering"];
+  var WEAPON_GREATER_RUNES = [
+    "anarchic",
+    "axiomatic",
+    "greaterCorrosive",
+    "greaterDisrupting",
+    "greaterFlaming",
+    "greaterFrost",
+    "greaterShock",
+    "greaterThundering",
+    "holy",
+    "unholy"
+  ];
+  var mindSmith = {
+    key: "mindsmith",
+    item: {
+      uuid: "Compendium.pf2e.feats-srd.Item.juikoiIA0Jy8PboY"
+      // Mind Smith Dedication
+    },
+    children: [
+      {
+        slug: "weapon",
+        uuid: MIND_WEAPON_UUID
+        // Mind Weapon
+      },
+      {
+        slug: "mental",
+        uuid: "Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky"
+        // Malleable Mental Forge
+      },
+      {
+        slug: "runic",
+        uuid: "Compendium.pf2e.feats-srd.Item.2uQbQgz1AbjzcFSp"
+        // Runic Mind Smithing
+      },
+      {
+        slug: "advanced",
+        uuid: "Compendium.pf2e.feats-srd.Item.fgnfXwFcn9jZlXGD"
+        // Advanced Runic Mind Smithing
+      }
+    ],
+    rows: [
+      {
+        type: "alert",
+        slug: "alert",
+        message: () => localize("interface.alert.weapon"),
+        fix,
+        childPredicate: [{ not: "weapon" }]
+      },
+      {
+        type: "select",
+        slug: "smith",
+        label: () => localize("label.mindsmith"),
+        options: WEAPON_DAMAGE_TYPES,
+        labelizer: ({ utils: utils2 }) => utils2.damageLabel,
+        childPredicate: ["weapon"]
+      },
+      {
+        type: "select",
+        slug: "mental",
+        label: () => localize("label.mentalforge"),
+        options: WEAPON_TRAITS,
+        labelizer: ({ utils: utils2 }) => utils2.weaponTraitLabel,
+        childPredicate: ["weapon", "mental"]
+      },
+      {
+        type: "select",
+        slug: "runic",
+        label: () => localize("label.runicmind"),
+        options: WEAPON_RUNES,
+        labelizer: ({ utils: utils2 }) => utils2.weaponPropertyRunesLabel,
+        childPredicate: ["weapon", "runic", { not: "advanced" }],
+        condition: ({ children, utils: utils2 }) => utils2.hasFreePropertySlot(children.weapon)
+      },
+      {
+        type: "select",
+        slug: "advanced",
+        label: () => localize("label.runicmind"),
+        options: WEAPON_GREATER_RUNES,
+        labelizer: ({ utils: utils2 }) => utils2.weaponPropertyRunesLabel,
+        childPredicate: ["weapon", "advanced"],
+        condition: ({ children, utils: utils2 }) => utils2.hasFreePropertySlot(children.weapon)
+      }
+    ],
+    process: ({ children, updateItem, fields, messages, item, utils: utils2 }) => {
+      const weapon = children.weapon;
+      if (!weapon)
+        return;
+      messages.addGroup("mindsmith");
+      const selected = fields.smith.value;
+      updateItem({ _id: weapon.id, "system.damage.damageType": selected, "system.group": WEAPON_GROUPS[selected] });
+      messages.add("mindsmith", { selected: utils2.damageLabel(selected), uuid: item.uuid, label: "mindsmith" });
+      if (children.mental) {
+        const selected2 = fields.mental.value;
+        const traits = deepClone(weapon._source.system.traits?.value ?? []);
+        if (!traits.includes(selected2))
+          traits.push(selected2);
+        updateItem({ _id: weapon.id, "system.traits.value": traits });
+        messages.add("mindsmith", {
+          selected: utils2.weaponTraitLabel(selected2),
+          uuid: children.mental.uuid,
+          label: "mentalforge"
+        });
+      }
+      if ((children.advanced || children.runic) && utils2.hasFreePropertySlot(weapon)) {
+        const child = children.advanced ?? children.runic;
+        const freeSlot = utils2.getFreePropertyRuneSlot(weapon);
+        const field = fields.advanced ?? fields.runic;
+        const selected2 = field.value;
+        if (freeSlot && !weapon.system.runes.property.includes(selected2)) {
+          updateItem({ _id: weapon.id, [`system.${freeSlot}.value`]: selected2, [`flags.${MODULE_ID}.runeSlot`]: freeSlot });
+          messages.add("mindsmith", {
+            selected: utils2.weaponPropertyRunesLabel(selected2),
+            uuid: child.uuid,
+            label: "runicmind"
+          });
+        }
+      }
+    },
+    rest: ({ item, sourceId, updateItem }) => {
+      if (sourceId !== MIND_WEAPON_UUID)
+        return;
+      let traits = item._source.system.traits?.value ?? [];
+      traits = traits.filter((trait) => !WEAPON_TRAITS.includes(trait));
+      updateItem({ _id: item.id, "system.traits.value": traits });
+      const runeSlot = getFlag(item, "runeSlot");
+      if (runeSlot) {
+        updateItem({ _id: item.id, [`system.${runeSlot}.value`]: null, [`flags.${MODULE_ID}.-=runeSlot`]: true });
+      }
+    }
+  };
+  async function fix({ actor }) {
+    const localize5 = subLocalize("dialog.weapon");
+    let content = localize5("flavor");
+    for (const key of ["0", "1", "2", "3"]) {
+      const label = localize5(`option.${key}`);
+      content += `<label><input type="radio" name="type" value="${key}">${label}</label>`;
+    }
+    const weapon = await Dialog.wait(
+      {
+        title: localize5("title"),
+        content,
+        buttons: {
+          yes: {
+            icon: '<i class="fas fa-save"></i>',
+            label: localize5("accept"),
+            callback: onWeaponSelected
+          },
+          no: {
+            icon: '<i class="fas fa-times"></i>',
+            label: localize5("cancel"),
+            callback: () => null
+          }
+        },
+        close: () => null
+      },
+      {},
+      { id: "pf2e-dailies-weapon", width: 600 }
+    );
+    if (weapon) {
+      await actor.createEmbeddedDocuments("Item", [weapon]);
+      return true;
+    }
+    return false;
+  }
+  __name(fix, "fix");
+  async function onWeaponSelected(html) {
+    const localize5 = subLocalize("dialog.weapon");
+    const selection = html.find("[name=type]:checked").val();
+    if (!selection) {
+      localize5.warn("error.noSelection");
+      return;
+    }
+    const weapon = (await fromUuid(MIND_WEAPON_UUID))?.toObject();
+    if (!weapon) {
+      localize5.warn("error.missing");
+      return;
+    }
+    const stats = WEAPON_BASE_TYPES[selection];
+    setProperty(weapon, "system.damage.die", stats.die);
+    setProperty(weapon, "system.traits.value", stats.traits.slice());
+    setProperty(weapon, "system.usage.value", stats.usage);
+    return weapon;
+  }
+  __name(onWeaponSelected, "onWeaponSelected");
+
+  // src/data/resistance.js
+  function createResistancelDaily(key, uuid, resistances, resistance, label, random) {
+    const daily = {
+      key,
+      label,
+      item: {
+        uuid
+      },
+      rows: [
+        {
+          type: random ? "random" : "select",
+          slug: "resistance",
+          options: resistances,
+          labelizer: ({ utils: utils2 }) => utils2.resistanceLabel
+        }
+      ],
+      process: async ({ utils: utils2, fields, actor, addRule, messages }) => {
+        const type = random ? await utils2.randomOption(resistances) : fields.resistance.value;
+        const value = typeof resistance === "number" ? resistance : resistance === "half" ? utils2.halfLevelValue(actor) : actor.level;
+        const rule = utils2.createResistanceRuleElement({ type, value });
+        addRule(rule);
+        messages.add("resistances", { uuid, selected: utils2.resistanceLabel(type, value), label, random });
+      }
+    };
+    return daily;
+  }
+  __name(createResistancelDaily, "createResistancelDaily");
+
+  // src/data/root.js
+  var effectUUID = "Compendium.pf2e.feat-effects.Item.jO7wMhnjT7yoAtQg";
+  var rootMagic = {
+    key: "root",
+    item: {
+      uuid: "Compendium.pf2e.feats-srd.Item.22P7IFyhrF7Fbw8B"
+    },
+    rows: [
+      {
+        type: "select",
+        slug: "target",
+        options: ({ actor, utils: utils2 }) => {
+          const actors = utils2.getPlayersActors(actor);
+          return actors.map((a) => ({ value: a.id, label: a.name }));
+        }
+      }
+    ],
+    process: ({ fields, messages }) => {
+      const actorId = fields.target.value;
+      const actor = game.actors.get(actorId);
+      if (!actor)
+        return;
+      messages.addGroup("root");
+      messages.add("root", { uuid: effectUUID, selected: actor.name });
+    }
+  };
+
+  // src/data/savant.js
+  var scrollSavant = {
+    key: "savant",
+    item: {
+      uuid: "Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ"
+      // Scroll Savant
+    },
+    prepare: ({ actor }) => {
+      const { maxSlot, maxTradition } = getSpellcastingTraditionDetails(actor, "arcane");
+      const custom = {
+        first: { level: maxSlot - 2, condition: true },
+        second: { level: maxSlot - 3, condition: true },
+        third: { level: maxSlot - 4, condition: maxTradition >= 3 && maxSlot >= 5 },
+        fourth: { level: maxSlot - 5, condition: maxTradition >= 4 && maxSlot >= 6 }
+      };
+      return custom;
+    },
+    rows: ["first", "second", "third", "fourth"].map((rowName) => {
+      const row = {
+        type: "drop",
+        slug: rowName,
+        label: ({ custom }) => `PF2E.SpellLevel${custom[rowName].level}`,
+        filter: {
+          type: "spell",
+          search: ({ custom }) => ({
+            category: ["spell"],
+            traditions: ["arcane"],
+            level: custom[rowName].level
+          })
+        },
+        condition: ({ custom }) => custom[rowName].condition
+      };
+      return row;
+    }),
+    process: async ({ utils: utils2, fields, custom, addItem, messages }) => {
+      for (const field of Object.values(fields)) {
+        const uuid = field.uuid;
+        const source = await utils2.createSpellScrollSource({ uuid, level: custom[field.row].level });
+        addItem(source);
+        messages.add("scrolls", { uuid, label: source.name });
+      }
+    }
+  };
+  function getSpellcastingTraditionDetails(actor, tradition) {
+    let maxSlot = 1;
+    let maxTradition = 0;
+    for (const entry of actor.spellcasting.regular) {
+      if (entry.flags && "pf2e-staves" in entry.flags)
+        continue;
+      const slots = entry.system.slots;
+      for (const key in slots) {
+        const slot = slots[key];
+        if (slot.max)
+          maxSlot = Math.max(maxSlot, Number(key.slice(4)));
+      }
+      if (entry.tradition === tradition)
+        maxTradition = Math.max(maxTradition, entry.rank);
+    }
+    return { maxSlot: Math.min(maxSlot, 10), maxTradition };
+  }
+  __name(getSpellcastingTraditionDetails, "getSpellcastingTraditionDetails");
+
+  // src/data/skill.js
+  function createTrainedSkillDaily(key, uuid, label) {
+    const daily = {
+      key,
+      label,
+      item: {
+        uuid
+      },
+      rows: [
+        {
+          type: "combo",
+          slug: "skill",
+          options: ({ actor, utils: utils2 }) => {
+            const actorSkills = actor.skills;
+            return utils2.skillNames.filter((x) => actorSkills[x].rank < 1);
+          },
+          labelizer: ({ utils: utils2 }) => utils2.skillLabel
+        }
+      ],
+      process: ({ fields, addItem, addRule, utils: utils2, messages }) => {
+        let value = fields.skill.value;
+        if (fields.skill.input === "true") {
+          const source = utils2.createLoreSource({ name: value, rank: 1 });
+          addItem(source);
+        } else {
+          const source = utils2.createSkillRuleElement({ skill: value, value: 1 });
+          value = utils2.skillLabel(value);
+          addRule(source);
+        }
+        messages.add("skills", { uuid, selected: value, label });
+      }
+    };
+    return daily;
+  }
+  __name(createTrainedSkillDaily, "createTrainedSkillDaily");
+  function createTrainedLoreDaily(key, uuid, label) {
+    const daily = {
+      key,
+      label,
+      item: {
+        uuid
+      },
+      rows: [
+        {
+          type: "input",
+          slug: "skill"
+        }
+      ],
+      process: ({ addItem, utils: utils2, fields, messages }) => {
+        const value = fields.skill.value;
+        const source = utils2.createLoreSource({ name: value, rank: 1 });
+        addItem(source);
+        messages.add("skills", { uuid, selected: value, label });
+      }
+    };
+    return daily;
+  }
+  __name(createTrainedLoreDaily, "createTrainedLoreDaily");
+
+  // src/data/tome.js
+  var thaumaturgeTome = {
+    key: "tome",
+    item: {
+      uuid: "Compendium.pf2e.classfeatures.Item.MyN1cQgE0HsLF20e"
+      // Tome
+    },
+    children: [
+      {
+        slug: "adept",
+        uuid: "Compendium.pf2e.classfeatures.Item.Obm4ItMIIr0whYeO",
+        // Implement Adept
+        condition: createChildCondition("adept")
+      },
+      {
+        slug: "second",
+        uuid: "Compendium.pf2e.classfeatures.Item.ZEUxZ4Ta1kDPHiq5",
+        // Second Adept
+        condition: createChildCondition("adept")
+      },
+      {
+        slug: "intense",
+        uuid: "Compendium.pf2e.feats-srd.Item.yRRM1dsY6jakEMaC"
+        // Intense Implement
+      },
+      {
+        slug: "paragon",
+        uuid: "Compendium.pf2e.classfeatures.Item.QEtgbY8N2V4wTbsI",
+        // Implement Paragon
+        condition: createChildCondition("paragon")
+      }
+    ],
+    prepare: ({ utils: utils2, actor, children }) => {
+      const skillNames = utils2.skillNames;
+      const actorLevel = actor.level;
+      const actorSkills = actor.skills;
+      const custom = {
+        first: { options: [], rank: 1 },
+        second: { options: [], rank: 1 }
+      };
+      if (children.paragon) {
+        const skills = skillNames.filter((x) => actorSkills[x].rank < 4);
+        custom.first = { rank: 4, options: skills };
+        custom.second = { rank: 4, options: skills };
+      } else if (children.intense || children.adept || children.second) {
+        const masters = skillNames.filter((x) => actorSkills[x].rank < 3);
+        if (actorLevel >= 9) {
+          custom.first = { rank: 3, options: masters };
+          custom.second = { rank: 3, options: masters };
+        } else {
+          const experts = skillNames.filter((x) => actorSkills[x].rank < 2);
+          custom.first = { rank: 2, options: experts };
+          custom.second = { rank: 3, options: masters };
+        }
+      } else {
+        if (actorLevel >= 5) {
+          const experts = skillNames.filter((x) => actorSkills[x].rank < 2);
+          custom.first = { rank: 2, options: experts };
+          custom.second = { rank: 2, options: experts };
+        } else if (actorLevel >= 3) {
+          const trained = skillNames.filter((x) => actorSkills[x].rank < 1);
+          const experts = skillNames.filter((x) => actorSkills[x].rank < 2);
+          custom.first = { rank: 1, options: trained };
+          custom.second = { rank: 2, options: experts };
+        } else {
+          const trained = skillNames.filter((x) => actorSkills[x].rank < 1);
+          custom.first = { rank: 1, options: trained };
+          custom.second = { rank: 1, options: trained };
+        }
+      }
+      return custom;
+    },
+    rows: ["first", "second"].map((rowName) => {
+      const row = {
+        type: "combo",
+        slug: rowName,
+        label: ({ custom, utils: utils2 }) => utils2.proficiencyLabel(custom[rowName].rank),
+        options: ({ custom }) => custom[rowName].options,
+        labelizer: ({ utils: utils2 }) => utils2.skillLabel
+      };
+      return row;
+    }),
+    process: ({ custom, fields, utils: utils2, messages, addItem, addRule }) => {
+      messages.addGroup("tome", 65);
+      for (const rowName of ["first", "second"]) {
+        const rank = custom[rowName].rank;
+        let value = fields[rowName].value;
+        if (fields[rowName].input === "true") {
+          const source = utils2.createLoreSource({ name: value, rank });
+          addItem(source);
+        } else {
+          const source = utils2.createSkillRuleElement({ skill: value, value: rank });
+          value = utils2.skillLabel(value);
+          addRule(source);
+        }
+        messages.add("tome", { label: utils2.proficiencyLabel(rank), selected: value });
+      }
+    }
+  };
+  function createChildCondition(option) {
+    return function({ item, utils: utils2 }) {
+      return utils2.getChoiSetRuleSelection(item, option) === "tome";
+    };
+  }
+  __name(createChildCondition, "createChildCondition");
+
+  // src/dailies.js
+  var DEPRECATED_CUSTOM_DAILIES = ["root-magic"];
+  var BUILTINS_DAILIES = [
+    thaumaturgeTome,
+    createTrainedSkillDaily("longevity", "Compendium.pf2e.feats-srd.Item.WoLh16gyDp8y9WOZ"),
+    // Ancestral Longevity
+    createTrainedSkillDaily("ageless", "Compendium.pf2e.feats-srd.Item.wylnETwIz32Au46y"),
+    // Ageless Spirit
+    createTrainedSkillDaily("memories", "Compendium.pf2e.feats-srd.Item.ptEOt3lqjxUnAW62"),
+    // Ancient Memories
+    createTrainedSkillDaily("studies", "Compendium.pf2e.feats-srd.Item.9bgl6qYWKHzqWZj0"),
+    // Flexible Studies
+    createTrainedLoreDaily("study", "Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW"),
+    // Quick Study
+    createLanguageDaily("linguistics", "Compendium.pf2e.feats-srd.Item.eCWQU16hRLfN1KaX"),
+    // Ancestral Linguistics
+    createLanguageDaily("borts", "Compendium.pf2e.equipment-srd.Item.iS7hAQMAaThHYE8g"),
+    // Bort's Blessing
+    createResistancelDaily(
+      "elementalist",
+      "Compendium.pf2e.feats-srd.Item.tx9pkrpmtqe4FnvS",
+      ["air", "earth", "fire", "water"],
+      "half",
+      "elementalist"
+    ),
+    // Elementalist Dedication
+    createResistancelDaily(
+      "ganzi",
+      "Compendium.pf2e.heritages.Item.3reGfXH0S82hM7Gp",
+      ["acid", "electricity", "sonic"],
+      "half",
+      "ganzi",
+      true
+    ),
+    // Ganzi
+    createFeatDaily("metamagical", "Compendium.pf2e.classfeatures.Item.89zWKD2CN7nRu2xp", {
+      category: ["class"],
+      traits: { selected: ["metamagic", "wizard"], conjunction: "and" },
+      level: "half"
+    }),
+    // Metamagical Experimentation
+    combatFlexibility,
+    scrollSavant,
+    createScrollChain("esoterica", [
+      "Compendium.pf2e.feats-srd.Item.OqObuRB8oVSAEKFR",
+      // Scroll Esoterica
+      "Compendium.pf2e.feats-srd.Item.nWd7m0yRcIEVUy7O",
+      // Elaborate Scroll Esoterica
+      "Compendium.pf2e.feats-srd.Item.LHjPTV5vP3MOsPPJ"
+      // Grand Scroll Esoterica
+    ]),
+    createScrollChain("trickster", [
+      "Compendium.pf2e.feats-srd.Item.ROAUR1GhC19Pjk9C",
+      // Basic Scroll Cache
+      "Compendium.pf2e.feats-srd.Item.UrOj9TROtn8nuxPf",
+      // Expert Scroll Cache
+      "Compendium.pf2e.feats-srd.Item.lIg5Gzz7W70jfbk1"
+      // Master Scroll Cache
+    ]),
+    tricksterAce(),
+    mindSmith,
+    bladeAlly,
+    rootMagic
+  ];
+  var BUILTINS_UUIDS = prepareDailies(BUILTINS_DAILIES, "dailies");
+  var UUIDS = /* @__PURE__ */ new Map();
+  function prepareDailies(dailies, prefix) {
+    const uuids = /* @__PURE__ */ new Map();
+    for (const original of dailies) {
+      const daily = deepClone(original);
+      try {
+        const keyWithPrefix = `${prefix}.${daily.key}`;
+        uuids.set(daily.item.uuid, { daily, condition: daily.item.condition });
+        daily.key = keyWithPrefix;
+        if (daily.children) {
+          for (let i = 0; i < daily.children.length; i++) {
+            const { uuid, condition } = daily.children[i];
+            uuids.set(uuid, { daily, index: i, condition });
+          }
+        }
+      } catch (err) {
+        error("error.unexpected");
+        console.error(err);
+        console.error(`The error occured during data gathering of ${prefix}.${daily.key}`);
+      }
+    }
+    return uuids;
+  }
+  __name(prepareDailies, "prepareDailies");
+  var CUSTOM_DAILIES = [];
+  async function parseCustomDailies() {
+    UUIDS.clear();
+    CUSTOM_DAILIES = [];
+    const customs = getSetting("customDailies");
+    for (const { key, code } of customs) {
+      try {
+        const fn = new AsyncFunction(code);
+        const daily = await fn();
+        if (!checkCustomDaily(daily, true))
+          continue;
+        CUSTOM_DAILIES.push(daily);
+      } catch (err) {
+        error("error.unexpected");
+        console.error(err);
+        console.error(`The error occured during call of custom function for ${key}`);
+      }
+    }
+    for (const [uuid, daily] of BUILTINS_UUIDS.entries()) {
+      UUIDS.set(uuid, daily);
+    }
+    const CUSTOM_UUIDS = prepareDailies(CUSTOM_DAILIES, "custom");
+    for (const [uuid, daily] of CUSTOM_UUIDS.entries()) {
+      UUIDS.set(uuid, daily);
+    }
+  }
+  __name(parseCustomDailies, "parseCustomDailies");
+  function checkCustomDaily(daily, warning = false) {
+    if (!DEPRECATED_CUSTOM_DAILIES.includes(daily.key))
+      return true;
+    if (warning && game.user.isGM)
+      warn("deprecated.custom.key", { name: daily.label.trim() || daily.key }, true);
+    return false;
+  }
+  __name(checkCustomDaily, "checkCustomDaily");
+  function getDailies(actor) {
+    const dailies = {};
+    for (const item of actor.items) {
+      const sourceId = getSourceId(item);
+      if (!sourceId || item.isOfType("physical") && item.isInvested === false)
+        continue;
+      const entry = UUIDS.get(sourceId);
+      if (!entry)
+        continue;
+      const { daily, index, condition } = entry;
+      try {
+        if (typeof condition === "function" && !condition({ actor, item, utils }))
+          continue;
+        dailies[daily.key] ??= deepClone(daily);
+        if (index === void 0)
+          dailies[daily.key].item = item;
+        else
+          dailies[daily.key].children[index].item = item;
+      } catch (err) {
+        error("error.unexpected");
+        console.error(err);
+        console.error(`The error occured during data gathering of ${daily.key}`);
+      }
+    }
+    return Object.values(dailies).filter((daily) => daily.item && daily.item instanceof Item);
+  }
+  __name(getDailies, "getDailies");
+  function getDailyFromSourceId(sourceId) {
+    return UUIDS.get(sourceId)?.daily;
+  }
+  __name(getDailyFromSourceId, "getDailyFromSourceId");
+
+  // src/data/familiar.js
+  function getFamiliarPack() {
+    return game.packs.get("pf2e.familiar-abilities");
+  }
+  __name(getFamiliarPack, "getFamiliarPack");
+  function familiarUUID(id) {
+    return `Compendium.pf2e.familiar-abilities.Item.${id}`;
+  }
+  __name(familiarUUID, "familiarUUID");
+
+  // src/data/rations.js
+  var RATION_UUID = "Compendium.pf2e.equipment-srd.Item.L9ZV076913otGtiB";
+  function getRations(actor) {
+    return findItemWithSourceId(actor, RATION_UUID);
+  }
+  __name(getRations, "getRations");
+
+  // src/pf2e/utils.js
+  function ErrorPF2e(message) {
+    return Error(`PF2e System | ${message}`);
+  }
+  __name(ErrorPF2e, "ErrorPF2e");
+  function isObject(value) {
+    return typeof value === "object" && value !== null;
+  }
+  __name(isObject, "isObject");
+
+  // src/pf2e/predicate.js
+  var PredicatePF2e = class extends Array {
+    constructor(...statements) {
+      super(...Array.isArray(statements[0]) ? statements[0] : statements);
+      this.isValid = PredicatePF2e.isValid(this);
+    }
+    /** Structurally validate the predicates */
+    static isValid(statements) {
+      return this.isArray(statements);
+    }
+    /** Is this an array of predicatation statements? */
+    static isArray(statements) {
+      return super.isArray(statements) && statements.every((s) => StatementValidator.isStatement(s));
+    }
+    /** Test if the given predicate passes for the given list of options. */
+    static test(predicate = [], options) {
+      return predicate instanceof PredicatePF2e ? predicate.test(options) : new PredicatePF2e(...predicate).test(options);
+    }
+    /** Test this predicate against a domain of discourse */
+    test(options) {
+      if (this.length === 0) {
+        return true;
+      } else if (!this.isValid) {
+        console.warn("PF2e System | The provided predicate set is malformed.");
+        return false;
+      }
+      const domain = options instanceof Set ? options : new Set(options);
+      return this.every((s) => this.#isTrue(s, domain));
+    }
+    toObject() {
+      return deepClone([...this]);
+    }
+    clone() {
+      return new PredicatePF2e(this.toObject());
+    }
+    /** Is the provided statement true? */
+    #isTrue(statement, domain) {
+      return typeof statement === "string" && domain.has(statement) || StatementValidator.isBinaryOp(statement) && this.#testBinaryOp(statement, domain) || StatementValidator.isCompound(statement) && this.#testCompound(statement, domain);
+    }
+    #testBinaryOp(statement, domain) {
+      if ("eq" in statement) {
+        return domain.has(`${statement.eq[0]}:${statement.eq[1]}`);
+      } else {
+        const operator = Object.keys(statement)[0];
+        const [left, right] = Object.values(statement)[0];
+        const domainArray = Array.from(domain);
+        const getValues = /* @__PURE__ */ __name((operand) => {
+          const maybeNumber = Number(operand);
+          if (!Number.isNaN(maybeNumber))
+            return [maybeNumber];
+          const pattern = new RegExp(String.raw`^${operand}:([^:]+)$`);
+          const values = domainArray.map((s) => Number(pattern.exec(s)?.[1] || NaN)).filter((v) => !Number.isNaN(v));
+          return values.length > 0 ? values : [NaN];
+        }, "getValues");
+        const leftValues = getValues(left);
+        const rightValues = getValues(right);
+        switch (operator) {
+          case "gt":
+            return leftValues.some((l) => rightValues.every((r) => l > r));
+          case "gte":
+            return leftValues.some((l) => rightValues.every((r) => l >= r));
+          case "lt":
+            return leftValues.some((l) => rightValues.every((r) => l < r));
+          case "lte":
+            return leftValues.some((l) => rightValues.every((r) => l <= r));
+          default:
+            console.warn("PF2e System | Malformed binary operation encountered");
+            return false;
+        }
+      }
+    }
+    /** Is the provided compound statement true? */
+    #testCompound(statement, domain) {
+      return "and" in statement && statement.and.every((subProp) => this.#isTrue(subProp, domain)) || "nand" in statement && !statement.nand.every((subProp) => this.#isTrue(subProp, domain)) || "or" in statement && statement.or.some((subProp) => this.#isTrue(subProp, domain)) || "xor" in statement && statement.xor.filter((subProp) => this.#isTrue(subProp, domain)).length === 1 || "nor" in statement && !statement.nor.some((subProp) => this.#isTrue(subProp, domain)) || "not" in statement && !this.#isTrue(statement.not, domain) || "if" in statement && !(this.#isTrue(statement.if, domain) && !this.#isTrue(statement.then, domain));
+    }
+  };
+  __name(PredicatePF2e, "PredicatePF2e");
+  var _binaryOperators;
+  var StatementValidator = class {
+    static isStatement(statement) {
+      return statement instanceof Object ? this.isCompound(statement) || this.isBinaryOp(statement) : typeof statement === "string" ? this.isAtomic(statement) : false;
+    }
+    static isAtomic(statement) {
+      return typeof statement === "string" && statement.length > 0 || this.isBinaryOp(statement);
+    }
+    static isBinaryOp(statement) {
+      if (!isObject(statement))
+        return false;
+      const entries = Object.entries(statement);
+      if (entries.length > 1)
+        return false;
+      const [operator, operands] = entries[0];
+      return __privateGet(this, _binaryOperators).has(operator) && Array.isArray(operands) && operands.length === 2 && typeof operands[0] === "string" && ["string", "number"].includes(typeof operands[1]);
+    }
+    static isCompound(statement) {
+      return isObject(statement) && (this.isAnd(statement) || this.isOr(statement) || this.isNand(statement) || this.isXor(statement) || this.isNor(statement) || this.isNot(statement) || this.isIf(statement));
+    }
+    static isAnd(statement) {
+      return Object.keys(statement).length === 1 && Array.isArray(statement.and) && statement.and.every((subProp) => this.isStatement(subProp));
+    }
+    static isNand(statement) {
+      return Object.keys(statement).length === 1 && Array.isArray(statement.nand) && statement.nand.every((subProp) => this.isStatement(subProp));
+    }
+    static isOr(statement) {
+      return Object.keys(statement).length === 1 && Array.isArray(statement.or) && statement.or.every((subProp) => this.isStatement(subProp));
+    }
+    static isXor(statement) {
+      return Object.keys(statement).length === 1 && Array.isArray(statement.xor) && statement.xor.every((subProp) => this.isStatement(subProp));
+    }
+    static isNor(statement) {
+      return Object.keys(statement).length === 1 && Array.isArray(statement.nor) && statement.nor.every((subProp) => this.isStatement(subProp));
+    }
+    static isNot(statement) {
+      return Object.keys(statement).length === 1 && !!statement.not && this.isStatement(statement.not);
+    }
+    static isIf(statement) {
+      return Object.keys(statement).length === 2 && this.isStatement(statement.if) && this.isStatement(statement.then);
+    }
+  };
+  __name(StatementValidator, "StatementValidator");
+  _binaryOperators = new WeakMap();
+  __privateAdd(StatementValidator, _binaryOperators, /* @__PURE__ */ new Set(["eq", "gt", "gte", "lt", "lte"]));
+
+  // src/apps/interface/data.js
+  var templateOrders = {
+    select: 100,
+    combo: 80,
+    random: 60,
+    alert: 40,
+    input: 20,
+    drop: 0
+  };
+  async function getTemplate({ children = [], key, item, prepare, label, rows: rows2 = [] }) {
+    const actor = this.actor;
+    const saved = this.saved[key] = getFlag(actor, key) ?? {};
+    const rowsObj = this.rows[key] = {};
+    const childrenObj = this.children[key] = children.reduce((children2, { slug, item: item2 }) => {
+      children2[slug] = item2;
+      return children2;
+    }, {});
+    const prepareArgs = {
+      actor,
+      item,
+      children: childrenObj,
+      utils
+    };
+    const custom = this.custom[key] = prepare && await prepare(prepareArgs) || {};
+    const dailyArgs = this.dailyArgs[key] = {
+      ...prepareArgs,
+      custom
+    };
+    let groupLabel = await getProcessedValue(label, dailyArgs);
+    const labeled = groupLabel ? `label.${groupLabel}` : key.startsWith("dailies.") ? `label.${key.slice(8)}` : void 0;
+    if (labeled && hasLocalization(labeled))
+      groupLabel = localize(labeled);
+    const predicates = this.predicate[key] = children.filter((child) => child.item).map((child) => child.slug);
+    const template = {
+      label: groupLabel ? game.i18n.localize(groupLabel) : item.name,
+      rows: []
+    };
+    for (const row of rows2) {
+      rowsObj[row.slug] = row;
+      const { type, slug, childPredicate = [], condition, label: label2, save } = row;
+      if (childPredicate.length && !PredicatePF2e.test(childPredicate, predicates))
+        continue;
+      if (condition && !await condition(dailyArgs))
+        continue;
+      const savedRow = save === false || type === "random" ? void 0 : saved[slug];
+      const rowLabel = await getProcessedValue(label2, dailyArgs);
+      const value = savedRow === void 0 ? "" : typeof savedRow !== "object" ? savedRow : "name" in savedRow ? savedRow.name : savedRow.selected;
+      const rowTemplate = {
+        label: rowLabel ? game.i18n.localize(rowLabel) : "",
+        value,
+        order: templateOrders[type],
+        data: {
+          type,
+          daily: key,
+          row: slug
+        }
+      };
+      if (isComboRow(row) || isSelectRow(row) || isRandomRow(row)) {
+        const tmp = await getProcessedValue(row.options, dailyArgs) ?? [];
+        if (type !== "combo" && !tmp.length)
+          continue;
+        const labelize = typeof row.labelizer === "function" && row.labelizer(dailyArgs) || ((value2) => capitalize(value2));
+        rowTemplate.options = tmp.map((value2) => typeof value2 === "string" ? { value: value2, label: labelize(value2) } : value2);
+        if (isComboRow(row)) {
+          rowTemplate.selected = rowTemplate.value;
+          rowTemplate.data.input = savedRow?.input ?? true;
+          if (!rowTemplate.data.input && tmp.includes(rowTemplate.selected)) {
+            rowTemplate.value = labelize(rowTemplate.selected);
+          }
+        }
+      } else if (isDropRow(row)) {
+        rowTemplate.data.uuid = savedRow?.uuid ?? "";
+      } else if (isAlerRow(row)) {
+        rowTemplate.value = typeof row.message === "function" ? await row.message(dailyArgs) : row.message;
+      }
+      template.rows.push(rowTemplate);
+    }
+    return template;
+  }
+  __name(getTemplate, "getTemplate");
+  async function getProcessedValue(obj, args) {
+    if (typeof obj === "function")
+      return await obj(args);
+    return obj;
+  }
+  __name(getProcessedValue, "getProcessedValue");
+  function isComboRow(row) {
+    return row.type === "combo";
+  }
+  __name(isComboRow, "isComboRow");
+  function isSelectRow(row) {
+    return row.type === "select";
+  }
+  __name(isSelectRow, "isSelectRow");
+  function isRandomRow(row) {
+    return row.type === "random";
+  }
+  __name(isRandomRow, "isRandomRow");
+  function isDropRow(row) {
+    return row.type === "drop";
+  }
+  __name(isDropRow, "isDropRow");
+  function isAlerRow(row) {
+    return row.type === "alert";
+  }
+  __name(isAlerRow, "isAlerRow");
+
+  // src/pf2e/skills.js
+  function getTranslatedSkills() {
+    return Object.entries(CONFIG.PF2E.skillList).reduce((result, [key, value]) => {
+      return {
+        ...result,
+        [key]: game.i18n.localize(value).toLocaleLowerCase(game.i18n.lang)
+      };
+    }, {});
+  }
+  __name(getTranslatedSkills, "getTranslatedSkills");
+
+  // src/pf2e/sluggify.js
+  var wordCharacter = String.raw`[\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Join_Control}]`;
+  var nonWordCharacter = String.raw`[^\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Join_Control}]`;
+  var nonWordCharacterRE = new RegExp(nonWordCharacter, "gu");
+  var wordBoundary = String.raw`(?:${wordCharacter})(?=${nonWordCharacter})|(?:${nonWordCharacter})(?=${wordCharacter})`;
+  var nonWordBoundary = String.raw`(?:${wordCharacter})(?=${wordCharacter})`;
+  var lowerCaseLetter = String.raw`\p{Lowercase_Letter}`;
+  var upperCaseLetter = String.raw`\p{Uppercase_Letter}`;
+  var lowerCaseThenUpperCaseRE = new RegExp(`(${lowerCaseLetter})(${upperCaseLetter}${nonWordBoundary})`, "gu");
+  var nonWordCharacterHyphenOrSpaceRE = /[^-\p{White_Space}\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Join_Control}]/gu;
+  var upperOrWordBoundariedLowerRE = new RegExp(`${upperCaseLetter}|(?:${wordBoundary})${lowerCaseLetter}`, "gu");
+  function sluggify(text, { camel = null } = {}) {
+    if (typeof text !== "string") {
+      console.warn("Non-string argument passed to `sluggify`");
+      return "";
+    }
+    switch (camel) {
+      case null:
+        return text.replace(lowerCaseThenUpperCaseRE, "$1-$2").toLowerCase().replace(/['’]/g, "").replace(nonWordCharacterRE, " ").trim().replace(/[-\s]+/g, "-");
+      case "bactrian": {
+        const dromedary = sluggify(text, { camel: "dromedary" });
+        return dromedary.charAt(0).toUpperCase() + dromedary.slice(1);
+      }
+      case "dromedary":
+        return text.replace(nonWordCharacterHyphenOrSpaceRE, "").replace(/[-_]+/g, " ").replace(upperOrWordBoundariedLowerRE, (part, index) => index === 0 ? part.toLowerCase() : part.toUpperCase()).replace(/\s+/g, "");
+      default:
+        throw ErrorPF2e("I don't think that's a real camel.");
+    }
+  }
+  __name(sluggify, "sluggify");
+
+  // src/apps/interface/shared.js
+  function getSimplifiableValue(actor, value, fallback) {
+    if (value === void 0)
+      return fallback;
+    if (typeof value === "number")
+      return value;
+    if (value === "level")
+      return actor.level;
+    if (value === "half")
+      return Math.max(1, Math.floor(actor.level / 2));
+    const numbered = Number(value);
+    return isNaN(numbered) ? fallback : numbered;
+  }
+  __name(getSimplifiableValue, "getSimplifiableValue");
+  async function parseFilter(filter) {
+    return {
+      type: filter.type,
+      search: await (filter.type === "feat" ? parseFeatFilter(this.actor, filter.search) : parseSpellFilter(this.actor, filter.search)),
+      drop: filter.drop
+    };
+  }
+  __name(parseFilter, "parseFilter");
+  function checkFilter(selected, checkbox) {
+    if (!selected?.length)
+      return;
+    checkbox.selected = selected;
+    checkbox.isExpanded = true;
+    selected.forEach((x) => checkbox.options[x].selected = true);
+  }
+  __name(checkFilter, "checkFilter");
+  function setTraits(searchTraits, dataTraits) {
+    const traits = getFilterTraits(searchTraits);
+    if (traits?.selected.length) {
+      dataTraits.conjunction = traits.conjunction;
+      dataTraits.selected = traits.selected;
+    }
+  }
+  __name(setTraits, "setTraits");
+  function getFilterTraits(traits) {
+    if (!traits)
+      return;
+    const selected = Array.isArray(traits) ? traits : traits.selected;
+    if (!selected?.length)
+      return;
+    return {
+      selected: selected.map((x) => typeof x === "string" ? { value: x } : x),
+      conjunction: !Array.isArray(traits) && traits.conjunction || "and"
+    };
+  }
+  __name(getFilterTraits, "getFilterTraits");
+  async function parseSpellFilter(actor, search) {
+    const data = await game.pf2e.compendiumBrowser.tabs.spell.getFilterData();
+    checkFilter(search.category, data.checkboxes.category);
+    checkFilter(search.school, data.checkboxes.school);
+    checkFilter(search.traditions, data.checkboxes.traditions);
+    checkFilter(search.rarity, data.checkboxes.rarity);
+    checkFilter(search.source, data.checkboxes.source);
+    setTraits(search.traits, data.multiselects.traits);
+    const level = getSpellFilterLevel(actor, search.level);
+    if (level?.length)
+      checkFilter(level, data.checkboxes.level);
+    return data;
+  }
+  __name(parseSpellFilter, "parseSpellFilter");
+  async function parseFeatFilter(actor, search) {
+    const data = await game.pf2e.compendiumBrowser.tabs.feat.getFilterData();
+    checkFilter(search.category, data.checkboxes.category);
+    checkFilter(search.skills, data.checkboxes.skills);
+    checkFilter(search.rarity, data.checkboxes.rarity);
+    checkFilter(search.source, data.checkboxes.source);
+    setTraits(search.traits, data.multiselects.traits);
+    const level = getFeatFilterLevel(actor, search.level);
+    if (level) {
+      data.sliders.level.values.min = level.min;
+      data.sliders.level.values.max = level.max;
+      data.sliders.level.isExpanded = true;
+    }
+    return data;
+  }
+  __name(parseFeatFilter, "parseFeatFilter");
+  function getSpellFilterLevel(actor, level) {
+    if (Array.isArray(level))
+      return level;
+    const simplified = getSimplifiableValue(actor, level);
+    if (simplified)
+      return sequenceArray(1, simplified);
+  }
+  __name(getSpellFilterLevel, "getSpellFilterLevel");
+  function getFeatFilterLevel(actor, level) {
+    if (level === void 0)
+      return;
+    if (typeof level === "object") {
+      return {
+        min: getSimplifiableValue(actor, level.min, 0),
+        max: getSimplifiableValue(actor, level.min, 20)
+      };
+    } else {
+      return { min: 0, max: getSimplifiableValue(actor, level, 20) };
+    }
+  }
+  __name(getFeatFilterLevel, "getFeatFilterLevel");
+
+  // src/apps/interface/drop.js
+  var localize2 = subLocalize("interface.error.drop");
+  async function onDropFeat(item, target, filter) {
+    if (!item.isOfType("feat"))
+      return localize2("notFeat");
+    const { search, drop } = filter;
+    if (search.category?.length && !search.category.includes(item.category)) {
+      return localize2.warn("wrongType", { types: localizeAll("featCategories", search.category) });
+    }
+    if (search.traits) {
+      const traits = getFilterTraits(search.traits);
+      if (traits?.selected.length) {
+        const testFn = traits.conjunction === "or" ? "some" : "every";
+        const test = traits.selected[testFn]((trait) => Number(trait.not ?? false) - Number(item.traits.has(trait.value)));
+        if (!test)
+          return localize2.warn("wrongTraits");
+      }
+    }
+    if (search.skills?.length) {
+      const translatedSkills = getTranslatedSkills();
+      const prerequisites = item.system.prerequisites.value.map((prerequisite) => prerequisite.value.toLocaleLowerCase());
+      const test = search.skills.some(
+        (skill) => prerequisites.some((prerequisite) => prerequisite.includes(skill) || prerequisite.includes(translatedSkills[skill]))
+      );
+      if (!test)
+        return localize2.warn("wrongSkill", { skills: localizeAll("skillList", search.skills) });
+    }
+    if (search.rarity?.length && !search.rarity.includes(item.system.traits.rarity)) {
+      return localize2.warn("wrongRarity", { rarities: localizeAll("rarityTraits", search.rarity) });
+    }
+    if (search.source?.length && !search.source.includes(sluggify(item.system.source.value))) {
+      return localize2.warn("wrongSource", { sources: search.source.join(", ") });
+    }
+    const level = getFeatFilterLevel(this.actor, search.level);
+    if (level) {
+      const itemLevel = item.level;
+      if (itemLevel < level.min)
+        return localize2.warn("wrongLevelLow", { level: `min: ${level.min}` });
+      else if (itemLevel > level.max)
+        return localize2.warn("wrongLevelHigh", { level: `max: ${level.max}` });
+    }
+    if (drop) {
+      const args = this.dailyArgs[target.dataset.daily];
+      if (args) {
+        const result = await drop(item, args);
+        if (typeof result === "object") {
+          if (result.data)
+            return game.i18n.format(result.error, result.data);
+          else
+            return game.i18n.localize(result.error);
+        } else if (result === false) {
+          return localize2.warn("wrongCustom");
+        }
+      }
+    }
+    onDropItem(item, target);
+  }
+  __name(onDropFeat, "onDropFeat");
+  async function onDropSpell(item, target, filter) {
+    if (!item.isOfType("spell"))
+      return localize2("notSpell");
+    const { search, drop } = filter;
+    if (search.category?.length) {
+      const categories = search.category.map((x) => game.i18n.localize(x === "cantrip" ? "PF2E.SpellCantripLabel" : CONFIG.PF2E.spellCategories[x])).join(", ");
+      if (item.isCantrip && !search.category.includes("cantrip") || item.isFocusSpell && !search.category.includes("focus") || item.isRitual && !search.category.includes("ritual") || !item.isCantrip && !item.isFocusSpell && !item.isRitual && !search.category.includes("spell")) {
+        return localize2.warn("wrongCategory", { categories });
+      }
+    }
+    if (search.traits) {
+      const traits = getFilterTraits(search.traits);
+      if (traits?.selected.length) {
+        const testFn = traits.conjunction === "or" ? "some" : "every";
+        const test = traits.selected[testFn]((trait) => Number(trait.not ?? false) - Number(item.traits.has(trait.value)));
+        if (!test)
+          return localize2.warn("wrongTraits");
+      }
+    }
+    if (search.traditions?.length) {
+      if (!search.traditions.some((tradition) => item.traditions.has(tradition))) {
+        return localize2.warn("wrongTradition", { traditions: localizeAll("magicTraditions", search.traditions) });
+      }
+    }
+    const level = getSpellFilterLevel(this.actor, search.level);
+    if (level?.length && !level.includes(item.level)) {
+      return localize2.warn("wrongLevel", { levels: level.join(", ") });
+    }
+    if (search.school?.length && !search.school.includes(item.school)) {
+      return localize2.warn("wrongSchool", { schools: localizeAll("magicSchools", search.school) });
+    }
+    if (search.rarity?.length && !search.rarity.includes(item.system.traits.rarity)) {
+      return localize2.warn("wrongRarity", { rarities: localizeAll("rarityTraits", search.rarity) });
+    }
+    if (search.source?.length && !search.source.includes(sluggify(item.system.source.value))) {
+      return localize2.warn("wrongSource", { sources: search.source.join(", ") });
+    }
+    if (drop) {
+      const args = this.dailyArgs[target.dataset.daily];
+      if (args) {
+        const result = await drop(item, args);
+        if (typeof result === "object") {
+          if (result.data)
+            return ui.notifications.warn(game.i18n.format(result.error, result.data));
+          else
+            return ui.notifications.warn(game.i18n.localize(result.error));
+        } else if (result === false) {
+          return localize2.warn("wrongCustom");
+        }
+      }
+    }
+    onDropItem(item, target);
+  }
+  __name(onDropSpell, "onDropSpell");
+  function localizeAll(config, list) {
+    const localized = list.map((key) => game.i18n.localize(CONFIG.PF2E[config][key]));
+    return localized.join(", ");
+  }
+  __name(localizeAll, "localizeAll");
+  function onDropItem(item, target) {
+    target.value = item.name;
+    target.dataset.uuid = item.uuid;
+    target.nextElementSibling.nextElementSibling.classList.remove("disabled");
+  }
+  __name(onDropItem, "onDropItem");
+
+  // src/apps/interface/process.js
+  async function processData() {
+    const actor = this.actor;
+    const dailies = this.dailies;
+    const fields = getFields.call(this);
+    const addItems = [];
+    const addRules = /* @__PURE__ */ new Map();
+    const updateItems = [];
+    const flags = {};
+    const msg = subLocalize("message");
+    let addedSpells = false;
+    let message = "";
+    const getRules = /* @__PURE__ */ __name((item) => {
+      const id = item.id;
+      const existing = addRules.get(id);
+      if (existing)
+        return existing;
+      const rules = deepClone(item._source.system.rules);
+      for (let i = rules.length - 1; i >= 0; i--) {
+        if (MODULE_ID in rules[i])
+          rules.splice(i, 1);
+      }
+      addRules.set(id, rules);
+      return rules;
+    }, "getRules");
+    const messages = {
+      languages: { order: 80, messages: [] },
+      skills: { order: 70, messages: [] },
+      resistances: { order: 60, messages: [] },
+      feats: { order: 50, messages: [] },
+      spells: { order: 40, messages: [] },
+      scrolls: { order: 30, messages: [] }
+    };
+    const messageObj = {
+      add: (group, options) => {
+        messages[group] ??= { order: 0, messages: [] };
+        messages[group].messages.push(options);
+      },
+      addGroup: (group, order = 1, label) => {
+        messages[group] ??= { label, order, messages: [] };
+      }
+    };
+    if (actor.familiar && fields["dailies.familiar"]) {
+      const familiar = actor.familiar;
+      const pack = getFamiliarPack();
+      const abilities = [];
+      const ids = familiar.itemTypes.action.map((item) => item.id);
+      if (ids.length)
+        familiar.deleteEmbeddedDocuments("Item", ids);
+      messageObj.addGroup("familiar", 20);
+      for (const field of Object.values(fields["dailies.familiar"])) {
+        const value = field.value;
+        const isCustom = value.includes(".");
+        const item = await (isCustom ? fromUuid(value) : pack.getDocument(value));
+        if (!item || !item.isOfType("action"))
+          continue;
+        const source = item.toObject();
+        if (source) {
+          abilities.push(source);
+          messageObj.add("familiar", { uuid: isCustom ? value : familiarUUID(value) });
+        }
+      }
+      if (abilities.length)
+        familiar.createEmbeddedDocuments("Item", abilities);
+    }
+    if (fields["dailies.rations"]?.rations.value === "true") {
+      const rations = getRations(actor);
+      if (rations?.uses.value) {
+        const quantity = rations.quantity;
+        const { value, max } = rations.uses;
+        if (value <= 1) {
+          if (quantity <= 1) {
+            rations.delete();
+          } else {
+            updateItems.push({
+              _id: rations.id,
+              "system.quantity": Math.max(rations.quantity - 1, 0),
+              "system.charges.value": max
+            });
+          }
+        } else {
+          updateItems.push({
+            _id: rations.id,
+            "system.charges.value": Math.max(value - 1, 0)
+          });
+        }
+        const remaining = (quantity - 1) * max + value;
+        const name = remaining <= 1 ? fakeChatUUID(rations.name) : chatUUID(rations.uuid);
+        if (remaining <= 1)
+          message += msg("rations.last", { name });
+        else if (remaining <= 3)
+          message += msg("rations.almost", { name, nb: remaining - 1 });
+        else
+          message += msg("rations.used", { name, nb: remaining - 1 });
+      }
+    }
+    for (const { item, key, process } of dailies) {
+      if (!fields[key])
+        continue;
+      const dailyArgs = this.dailyArgs[key];
+      try {
+        await process({
+          ...dailyArgs,
+          fields: fields[key],
+          messages: messageObj,
+          addItem: (source) => addItems.push(source),
+          updateItem: (data) => updateItems.push(data),
+          addRule: (source, parent) => {
+            source[MODULE_ID] = true;
+            getRules(parent ?? item).push(source);
+          },
+          addFeat: (source, parent) => {
+            parent ??= item;
+            if (parent.isOfType("feat")) {
+              const parentId = parent.id;
+              setProperty(source, "flags.pf2e.grantedBy", { id: parentId, onDelete: "cascade" });
+              setProperty(source, `flags.${MODULE_ID}.grantedBy`, parentId);
+            }
+            addItems.push(source);
+          },
+          addSpell: (source, level) => {
+            setProperty(source, `flags.${MODULE_ID}.entry`, { level });
+            addItems.push(source);
+            addedSpells = true;
+          }
+        });
+      } catch (err) {
+        error("error.unexpected");
+        console.error(err);
+        console.error(`The error occured during processing of ${key}`);
+      }
+    }
+    for (const [key, rowFields] of Object.entries(fields)) {
+      const rows2 = this.rows[key];
+      if (!rows2)
+        continue;
+      for (const { row, type, input, value, uuid } of Object.values(rowFields)) {
+        if (type === "random" || rows2[row]?.save === false)
+          continue;
+        const flag = flags[key] ??= {};
+        if (type === "combo") {
+          flag[row] = { input: input === "true", selected: value };
+        } else if (type === "drop") {
+          flag[row] = { uuid, name: value };
+        } else {
+          flag[row] = value;
+        }
+      }
+    }
+    for (const [id, rules] of addRules) {
+      updateItems.push({ _id: id, "system.rules": rules });
+    }
+    if (addedSpells) {
+      const entry = {
+        type: "spellcastingEntry",
+        name: localize("spellEntry.name"),
+        system: {
+          prepared: { value: "innate" },
+          showSlotlessLevels: { value: false },
+          showUnpreparedSpells: { value: false },
+          proficiency: { value: 1, slug: actor.classDC?.slug || actor.class?.slug || void 0 }
+        }
+      };
+      addItems.push(entry);
+    }
+    for (const source of addItems) {
+      const alreadyTemp = getProperty(source, "system.temporary") === true;
+      if (!alreadyTemp)
+        setProperty(source, `flags.${MODULE_ID}.temporary`, true);
+    }
+    if (addItems.length) {
+      const items = await actor.createEmbeddedDocuments("Item", addItems);
+      for (const item of items) {
+        if (item.isOfType("feat")) {
+          const parentId = getFlag(item, "grantedBy");
+          if (parentId) {
+            const slug = sluggify(item.name, { camel: "dromedary" });
+            const path = `flags.pf2e.itemGrants.${slug}`;
+            updateItems.push({ _id: parentId, [path]: { id: item.id, onDelete: "detach" } });
+          }
+        } else if (item.isOfType("spellcastingEntry")) {
+          const spells = items.filter((item2) => item2.isOfType("spell") && getFlag(item2, "entry"));
+          for (const spell of spells) {
+            const { level } = getFlag(spell, "entry");
+            const data = { _id: spell.id, "system.location.value": item.id };
+            if (level !== void 0)
+              data["system.location.heightenedLevel"] = level;
+            updateItems.push(data);
+          }
+        }
+      }
+    }
+    await actor.update({ [`flags.${MODULE_ID}`]: { ...expandObject(flags), rested: false } });
+    if (updateItems.length)
+      await actor.updateEmbeddedDocuments("Item", updateItems);
+    message = parseMessages(messages, message);
+    message = message ? `${msg("changes")}<hr />${message}` : msg("noChanges");
+    ChatMessage.create({ content: message, speaker: ChatMessage.getSpeaker({ actor }) });
+  }
+  __name(processData, "processData");
+  function parseMessages(messages, message) {
+    const msg = subLocalize("message");
+    const messageList = Object.entries(messages).map(([type, options]) => {
+      options.label ??= msg.has(type) ? msg(type) : msg("gained", { type });
+      return options;
+    });
+    messageList.sort((a, b) => b.order - a.order);
+    for (const { label, messages: messages2 } of messageList) {
+      if (!messages2.length)
+        continue;
+      if (message)
+        message += "<hr />";
+      if (label)
+        message += `<p><strong>${label}</strong></p>`;
+      for (let { uuid, selected, label: label2, random } of messages2) {
+        const key = `label.${label2}`;
+        label2 = label2 && hasLocalization(key) ? localize(key) : label2 || "";
+        message += "<p>";
+        message += uuid ? `${chatUUID(uuid, label2)}` : `<strong>${label2}</strong>`;
+        if (selected)
+          message += ` <span>${selected}</span>`;
+        if (random)
+          message += ' <i class="fa-solid fa-dice-d20"></i>';
+        message += "</p>";
+      }
+    }
+    return message;
+  }
+  __name(parseMessages, "parseMessages");
+  function getFields() {
+    const elements = this.element.find(".window-content .content").find("input:not(.alert), select[data-type]").toArray();
+    const fields = {};
+    for (const element of elements) {
+      const field = {
+        ...element.dataset,
+        value: element.value
+      };
+      if (field.type === "combo" && field.input === "false") {
+        const select = element.previousElementSibling;
+        field.value = select.value;
+      }
+      fields[field.daily] ??= {};
+      fields[field.daily][field.row] = field;
+    }
+    return fields;
+  }
+  __name(getFields, "getFields");
+
+  // src/apps/interface.js
+  var localize3 = subLocalize("interface");
+  var DailiesInterface = class extends Application {
+    constructor(actor, options) {
+      super(options);
+      this._actor = actor;
+      this._dailies = [];
+      this._dailyArgs = {};
+      this._saved = {};
+      this._children = {};
+      this._custom = {};
+      this._predicate = {};
+      this._rows = {};
+    }
+    static get defaultOptions() {
+      return mergeObject(super.defaultOptions, {
+        id: "pf2e-dailies-interface",
+        template: templatePath("interface.hbs"),
+        height: "auto",
+        width: 400,
+        submitOnClose: false,
+        submitOnChange: false,
+        dragDrop: [
+          {
+            dropSelector: '[data-droppable="true"]'
+          }
+        ]
+      });
+    }
+    get actor() {
+      return this._actor;
+    }
+    get dailies() {
+      return this._dailies;
+    }
+    get dailyArgs() {
+      return this._dailyArgs;
+    }
+    get saved() {
+      return this._saved;
+    }
+    get children() {
+      return this._children;
+    }
+    get custom() {
+      return this._custom;
+    }
+    get predicate() {
+      return this._predicate;
+    }
+    get rows() {
+      return this._rows;
+    }
+    async getData(options) {
+      const templates = [];
+      const actor = this._actor;
+      this._dailies = getDailies(actor);
+      if (actor.familiar) {
+        const type = "dailies.familiar";
+        const localize5 = subLocalize("label");
+        const nbAbilityies = actor.attributes.familiarAbilities.value;
+        const pack = getFamiliarPack();
+        const flags = getFlag(actor, type) ?? {};
+        const template = {
+          label: localize5("familiar"),
+          rows: []
+        };
+        const options2 = pack.index.map(({ _id, name }) => ({ value: _id, label: name }));
+        const customUUIDS = getSetting("familiar").split(",");
+        for (let uuid of customUUIDS) {
+          uuid = uuid.trim();
+          const item = await fromUuid(uuid);
+          if (item && item.isOfType("action"))
+            options2.push({ value: uuid, label: item.name });
+        }
+        options2.sort((a, b) => a.label.localeCompare(b.label));
+        for (let index = 0; index < nbAbilityies; index++) {
+          template.rows.push({
+            label: localize5("ability", { nb: index + 1 }),
+            value: flags[`${index}`] ?? "",
+            order: 100,
+            options: options2,
+            data: {
+              type: "select",
+              daily: type,
+              row: index.toString()
+            }
+          });
+        }
+        if (template.rows.length) {
+          this._rows[type] = template.rows.reduce((rows3, { data }) => {
+            rows3[data.row] = { save: true };
+            return rows3;
+          }, {});
+          templates.push(template);
+        }
+      }
+      const rations = getRations(actor);
+      if (rations?.uses.value) {
+        const type = "dailies.rations";
+        const row = "rations";
+        const { value, max } = rations.uses;
+        const quantity = rations.quantity;
+        const remaining = (quantity - 1) * max + value;
+        const last = remaining <= 1;
+        const options2 = [
+          {
+            value: "false",
+            label: localize3("rations.no")
+          },
+          {
+            value: "true",
+            label: last ? localize3("rations.last") : localize3("rations.yes", { nb: remaining })
+          }
+        ];
+        templates.push({
+          label: rations.name,
+          rows: [
+            {
+              label: "",
+              order: 200,
+              value: "false",
+              options: options2,
+              data: {
+                type: "select",
+                daily: type,
+                row
+              }
+            }
+          ]
+        });
+        this._rows[type] = { [row]: { save: false } };
+      }
+      for (const daily of this._dailies) {
+        try {
+          const template = await getTemplate.call(this, daily);
+          templates.push(template);
+        } catch (error2) {
+          localize3.error("error.unexpected");
+          console.error(error2);
+          console.error(`The error occured during templating of ${daily.key}`);
+        }
+      }
+      const rows2 = [];
+      const groups = [];
+      for (const template of templates) {
+        if (template.rows.length > 1)
+          groups.push(template);
+        else if (template.rows.length)
+          rows2.push(template);
+      }
+      rows2.sort((a, b) => b.rows[0].order - a.rows[0].order);
+      groups.sort((a, b) => a.rows.length - b.rows.length);
+      return mergeObject(super.getData(options), {
+        i18n: localize3,
+        dump: ({ value, placeholder, data }) => {
+          let msg = "";
+          if (value)
+            msg += ` value="${value}"`;
+          if (placeholder)
+            msg += ` placeholder="${placeholder}"`;
+          Object.entries(data).forEach(([key, value2]) => msg += ` data-${key}="${value2}"`);
+          if (msg)
+            msg += " ";
+          return msg;
+        },
+        rows: rows2,
+        groups,
+        hasDailies: rows2.length || groups.length
+      });
+    }
+    render(force, options) {
+      if (this._randomInterval)
+        clearInterval(this._randomInterval);
+      if (this.element.find("select.random")) {
+        this._randomInterval = setInterval(() => {
+          const randoms = this.element.find("select.random");
+          randoms.each((_, select) => {
+            select.selectedIndex = (select.selectedIndex + 1) % select.options.length;
+          });
+        }, 2e3);
+      }
+      return super.render(force, options);
+    }
+    close(options) {
+      if (this._randomInterval)
+        clearInterval(this._randomInterval);
+      return super.close(options);
+    }
+    activateListeners(html) {
+      super.activateListeners(html);
+      html.find("[data-action=clear]").on("click", this.#onClear.bind(this));
+      html.find("[data-action=accept]").on("click", this.#onAccept.bind(this));
+      html.find("[data-action=cancel]").on("click", this.#onCancel.bind(this));
+      html.find(".combo select").on("change", this.#onComboSelectChange.bind(this));
+      html.find(".combo input").on("change", this.#onComboInputChange.bind(this));
+      html.find("[data-action=search]").on("click", this.#onSearch.bind(this));
+      html.find("[data-action=alert]").on("click", this.#onAlert.bind(this));
+    }
+    _canDragDrop(selector) {
+      return true;
+    }
+    async _onDrop(event) {
+      const localize5 = subLocalize("interface.error.drop");
+      let target = event.target;
+      if (target instanceof HTMLLabelElement)
+        target = target.nextElementSibling;
+      try {
+        const dataString = event.dataTransfer?.getData("text/plain");
+        const data = JSON.parse(dataString);
+        if (!data || data.type !== "Item" || typeof data.uuid !== "string")
+          return localize5.warn("wrongDataType");
+        const item = await fromUuid(data.uuid);
+        if (!item)
+          return localize5.warn("wrongDataType");
+        const filter = await this.#getfilterFromElement(target);
+        if (!filter)
+          return onDropItem(item, target);
+        if (filter.type === "feat")
+          onDropFeat.call(this, item, target, filter);
+        else if (filter.type === "spell")
+          onDropSpell.call(this, item, target, filter);
+        else
+          onDropItem(item, target);
+      } catch (error2) {
+        localize5.error("error.unexpected");
+        console.error(error2);
+        console.error(`The error occured during _onDrop`);
+      }
+    }
+    async #onAlert(event) {
+      event.preventDefault();
+      this.#lock();
+      const data = event.currentTarget.dataset;
+      const row = this.rows[data.daily][data.row];
+      const args = this.dailyArgs[data.daily];
+      let fixed;
+      try {
+        fixed = await row.fix(args);
+      } catch (error2) {
+        localize3.error("error.unexpected");
+        console.error(error2);
+        console.error(`The error occured during an alert fix of '${data.daily}'`);
+      }
+      this.#unlock();
+      if (fixed)
+        this.render();
+    }
+    async #onSearch(event) {
+      event.preventDefault();
+      const filter = await this.#getfilterFromElement(event.currentTarget, true);
+      if (filter)
+        game.pf2e.compendiumBrowser.openTab(filter.type, filter.search);
+      else
+        game.pf2e.compendiumBrowser.render(true);
+    }
+    async #getfilterFromElement(element, parsed) {
+      const { daily, row } = element.dataset;
+      const filter = this.rows[daily]?.[row]?.filter;
+      const args = this.dailyArgs[daily];
+      if (!args || !filter)
+        return;
+      if (typeof filter.search === "function")
+        filter.search = await filter.search(args);
+      if (!parsed)
+        return filter;
+      return parseFilter.call(this, filter);
+    }
+    #onComboSelectChange(event) {
+      const select = event.currentTarget;
+      const input = select.nextElementSibling;
+      input.dataset.input = "false";
+      input.value = select.options[select.selectedIndex].text;
+    }
+    #onComboInputChange(event) {
+      const input = event.currentTarget;
+      const select = input.previousElementSibling;
+      const value = input.value.toLowerCase();
+      const options = Array.from(select.options).map((x) => x.value);
+      const index = options.indexOf(value);
+      if (index !== -1) {
+        select.value = value;
+        input.value = select.options[index].text;
+        input.dataset.input = "false";
+      } else {
+        select.value = "";
+        input.dataset.input = "true";
+      }
+    }
+    #lock() {
+      this.element.addClass("disabled");
+    }
+    #unlock() {
+      this.element.removeClass("disabled");
+    }
+    #validate() {
+      const warns = [];
+      const emptyInputs = this.element.find("input").filter((_, input) => !input.value);
+      const alertInputs = this.element.find("input.alert");
+      if (emptyInputs.length)
+        warns.push("error.empty");
+      if (alertInputs.length)
+        warns.push("error.unattended");
+      warns.forEach((x) => localize3.warn(x));
+      return !warns.length;
+    }
+    async #onAccept(event) {
+      event.preventDefault();
+      if (!this.#validate())
+        return;
+      this.#lock();
+      await processData.call(this);
+      this.close();
+    }
+    #onClear(event) {
+      event.preventDefault();
+      const target = $(event.currentTarget);
+      const input = target.prevAll("input").first();
+      input.val("");
+      input.attr("value", "");
+      input.attr("data-uuid", "");
+      target.addClass("disabled");
+    }
+    #onCancel(event) {
+      event.preventDefault();
+      this.close();
+    }
+  };
+  __name(DailiesInterface, "DailiesInterface");
+
+  // src/chat.js
+  function renderChatMessage(message, html) {
+    const flag = getFlag(message, "isWatch");
+    if (!flag)
+      return;
+    html.find(".message-content button").on("click", () => openDailiesInterface());
+  }
+  __name(renderChatMessage, "renderChatMessage");
+  function createWatchChatMessage() {
+    let content = `<div>${localize("message.dailiesRequest.content")}</div>`;
+    content += `<button type="button" style="margin-top: 8px;">${localize("message.dailiesRequest.button")}</button>`;
+    getChatMessageClass().create({ content, flags: { [MODULE_ID]: { isWatch: true } } });
+  }
+  __name(createWatchChatMessage, "createWatchChatMessage");
+
+  // src/pf2e/spell.js
+  var scrollCompendiumIds = {
+    1: "RjuupS9xyXDLgyIr",
+    // Compendium.pf2e.equipment-srd.Item.RjuupS9xyXDLgyIr
+    2: "Y7UD64foDbDMV9sx",
+    3: "ZmefGBXGJF3CFDbn",
+    4: "QSQZJ5BC3DeHv153",
+    5: "tjLvRWklAylFhBHQ",
+    6: "4sGIy77COooxhQuC",
+    7: "fomEZZ4MxVVK3uVu",
+    8: "iPki3yuoucnj7bIt",
+    9: "cFHomF3tty8Wi1e5",
+    10: "o1XIHJ4MJyroAHfF"
+  };
+  var scrolls = [];
+  async function createSpellScroll(uuid, level, temp = false) {
+    const spell = (await fromUuid(uuid))?.toObject();
+    if (!spell)
+      return null;
+    if (level === false)
+      level = spell.system.level.value;
+    const scrollUUID = getScrollCompendiumUUID(level);
+    scrolls[level] ??= await fromUuid(scrollUUID);
+    const scroll = scrolls[level]?.toObject();
+    if (!scroll)
+      return null;
+    spell.system.location.heightenedLevel = level;
+    scroll.name = `Scroll of ${spell.name} (Level ${level})`;
+    scroll.system.temporary = temp;
+    scroll.system.spell = spell;
+    scroll.system.traits.value.push(...spell.system.traditions.value);
+    const sourceId = spell.flags.core?.sourceId;
+    if (sourceId)
+      scroll.system.description.value = `${chatUUID(sourceId)}
+<hr />${scroll.system.description.value}`;
+    return scroll;
+  }
+  __name(createSpellScroll, "createSpellScroll");
+  function getScrollCompendiumUUID(level) {
+    return `Compendium.pf2e.equipment-srd.Item.${scrollCompendiumIds[level]}`;
+  }
+  __name(getScrollCompendiumUUID, "getScrollCompendiumUUID");
+
+  // src/api.js
+  var halfLevelString = "max(1,floor(@actor.level/2))";
+  var utils = {
+    // Skills
+    get skillNames() {
+      return Object.keys(CONFIG.PF2E.skillList).slice();
+    },
+    skillLabel: (skill) => {
+      return game.i18n.localize(CONFIG.PF2E.skillList[skill]);
+    },
+    createSkillRuleElement: ({ skill, value, mode = "upgrade", predicate }) => {
+      const rule = {
+        key: "ActiveEffectLike",
+        mode,
+        path: `system.skills.${skill}.rank`,
+        value
+      };
+      if (predicate && predicate.length)
+        rule.predicate = predicate;
+      return rule;
+    },
+    createLoreSource: ({ name, rank }) => {
+      const data = {
+        type: "lore",
+        img: "systems/pf2e/icons/default-icons/lore.svg",
+        name,
+        system: { proficient: { value: rank } }
+      };
+      return data;
+    },
+    // Languages
+    get languageNames() {
+      return Object.keys(CONFIG.PF2E.languages).slice();
+    },
+    languageLabel: (language) => {
+      return game.i18n.localize(CONFIG.PF2E.languages[language]);
+    },
+    createLanguageRuleElement: ({ language, mode = "add", predicate }) => {
+      const rule = {
+        key: "ActiveEffectLike",
+        mode,
+        path: "system.traits.languages.value",
+        value: language
+      };
+      if (predicate && predicate.length)
+        rule.predicate = predicate;
+      return rule;
+    },
+    // resistances
+    resistanceLabel: (resistance, value) => {
+      let str = game.i18n.localize(`PF2E.Trait${capitalize(resistance)}`);
+      if (value)
+        str += ` ${value}`;
+      return str;
+    },
+    createResistanceRuleElement: ({ type, value, predicate }) => {
+      if (value === "half")
+        value = halfLevelString;
+      const rule = {
+        key: "Resistance",
+        type,
+        value
+      };
+      if (predicate && predicate.length)
+        rule.predicate = predicate;
+      return rule;
+    },
+    // feats
+    createFeatSource: async (uuid) => {
+      const source = (await fromUuid(uuid))?.toObject();
+      if (!source)
+        throw new Error(`An error occured while trying to create a feat source with uuid: ${uuid}`);
+      return source;
+    },
+    // spells
+    createSpellScrollSource: async ({ uuid, level }) => {
+      const source = await createSpellScroll(uuid, level ?? false, true);
+      if (!source)
+        throw new Error(`An error occured while trying to create a spell scroll source with uuid: ${uuid}`);
+      return source;
+    },
+    createSpellSource: async (uuid) => {
+      const source = (await fromUuid(uuid))?.toObject();
+      if (!source)
+        throw new Error(`An error occured while trying to create a spell source with uuid: ${uuid}`);
+      return source;
+    },
+    // Rule Elements
+    get halfLevelString() {
+      return halfLevelString;
+    },
+    getChoiSetRuleSelection: (item, option) => {
+      const rules = item._source.system.rules;
+      const rule = rules.find((rule2) => rule2.key === "ChoiceSet" && rule2.rollOption === option);
+      return rule?.selection;
+    },
+    //
+    proficiencyLabel: (rank) => {
+      return game.i18n.localize(CONFIG.PF2E.proficiencyLevels[rank]);
+    },
+    randomOption: async (options) => {
+      const roll = (await new Roll(`1d${options.length}`).evaluate({ async: true })).total;
+      const result = options[roll - 1];
+      if (typeof result === "string")
+        return result;
+      return result.value;
+    },
+    halfLevelValue: (actor) => Math.max(1, Math.floor(actor.level / 2)),
+    sequenceArray,
+    // equipment
+    damageLabel: (damage) => {
+      return game.i18n.localize(CONFIG.PF2E.weaponDamage[damage]);
+    },
+    weaponTraitLabel: (trait) => {
+      return game.i18n.localize(CONFIG.PF2E.weaponTraits[trait]);
+    },
+    weaponPropertyRunesLabel: (rune) => {
+      return game.i18n.localize(CONFIG.PF2E.weaponPropertyRunes[rune]);
+    },
+    hasFreePropertySlot: (item) => {
+      const potency = item.system.runes.potency;
+      return potency > 0 && item.system.runes.property.length < potency;
+    },
+    getFreePropertyRuneSlot: (item) => {
+      const potency = item.system.potencyRune.value;
+      if (potency === null)
+        return null;
+      for (let i = 0; i < potency; i++) {
+        const property = RUNE_PROPERTY_KEYS[i];
+        if (!item.system[property].value)
+          return property;
+      }
+      return null;
+    },
+    // actor
+    getPlayersActors: (member, ...types) => {
+      if (!types.length)
+        types = ["creature"];
+      let actors = game.actors;
+      if (member) {
+        const members = getSetting("members") ? Array.from(member.parties ?? []).flatMap((p) => p.members) : null;
+        if (members)
+          actors = members;
+        else
+          actors = actors.filter((a) => a.hasPlayerOwner);
+        if (member instanceof Actor)
+          actors = actors.filter((a) => a !== member);
+      } else
+        actors = actors.filter((a) => a.hasPlayerOwner);
+      return actors.filter((a) => a.isOfType(...types));
+    }
+  };
+  function openDailiesInterface(actor) {
+    if (!actor || !actor.isOfType("character") || !actor.isOwner) {
+      const controlled = canvas.tokens.controlled;
+      actor = controlled.find((token) => token.actor?.isOfType("character") && token.actor.isOwner)?.actor;
+      if (!actor)
+        actor = game.user.character;
+    }
+    if (!actor || !actor.isOfType("character") || !actor.isOwner)
+      return warn("error.noCharacterSelected");
+    if (getFlag(actor, "rested") !== true)
+      return warn("error.unrested");
+    new DailiesInterface(actor, { title: localize("interface.title", { name: actor.name }) }).render(true);
+  }
+  __name(openDailiesInterface, "openDailiesInterface");
+  function requestDailies() {
+    if (!game.user.isGM)
+      return warn("error.notGM");
+    createWatchChatMessage();
+  }
+  __name(requestDailies, "requestDailies");
+
+  // src/actor.js
+  async function onPerformDailyCrafting() {
+    const entries = (await this.getCraftingEntries()).filter((e) => e.isDailyPrep);
+    const alchemicalEntries = entries.filter((e) => e.isAlchemical);
+    const reagentCost = alchemicalEntries.reduce((sum, entry) => sum + entry.reagentCost, 0);
+    const reagentValue = (this.system.resources.crafting.infusedReagents.value || 0) - reagentCost;
+    if (reagentValue < 0) {
+      ui.notifications.warn(game.i18n.localize("PF2E.CraftingTab.Alerts.MissingReagents"));
+      return;
+    } else {
+      await this.update({ "system.resources.crafting.infusedReagents.value": reagentValue });
+    }
+    for (const entry of entries) {
+      for (const formula of entry.preparedCraftingFormulas) {
+        const itemSource = formula.item.toObject();
+        itemSource.system.quantity = formula.quantity;
+        itemSource.system.temporary = true;
+        itemSource.system.size = this.ancestry?.size === "tiny" ? "tiny" : "med";
+        if (entry.isAlchemical && (itemSource.type === "consumable" || itemSource.type === "weapon" || itemSource.type === "equipment")) {
+          itemSource.system.traits.value.push("infused");
+        }
+        await this.addToInventory(itemSource);
+      }
+    }
+  }
+  __name(onPerformDailyCrafting, "onPerformDailyCrafting");
+  function renderCharacterSheetPF2e(sheet, html) {
+    const actor = sheet.actor;
+    if (!actor.isOwner)
+      return;
+    const small = html.find("aside .sidebar .hitpoints .hp-small");
+    small.append(`<a class="roll-icon dailies" data-tooltip="${localize("sheet.title")}"><i class="fas fa-mug-saucer"></i></a>`).find(".dailies").on("click", () => openDailiesInterface(actor));
+  }
+  __name(renderCharacterSheetPF2e, "renderCharacterSheetPF2e");
+
+  // src/apps/custom/flexibility.js
+  var flexibility = [
+    "/** @typedef {'flexibility' | 'improved'} FlexibilityRow */",
+    "/** @typedef {'improved'} FlexibilityChild */",
+    "/** @typedef {[FlexibilityRow, {}, FlexibilityChild]} FlexibilityGenerics */",
+    "",
+    "/**",
+    " * @param {FlexibilityRow} slug",
+    " * @param {number} level",
+    " * @param {FlexibilityChild} [child]",
+    " */",
+    "function createRow(slug, level, child) {",
+    "    /** @type {DailyRowDrop<FlexibilityGenerics>} */",
+    "    const row = {",
+    "        type: 'drop',",
+    "        label: `PF2E.Level${level}`,",
+    "        slug,",
+    "        filter: {",
+    "            type: 'feat',",
+    "            search: {",
+    "                category: ['class'],",
+    "                traits: {",
+    "                    values: ['fighter'],",
+    "                },",
+    "                level,",
+    "            },",
+    "        },",
+    "    }",
+    "    if (child) row.childPredicate = [child]",
+    "    return row",
+    "}",
+    "",
+    "/** @type {Daily<FlexibilityGenerics>} */",
+    "const combatFlexibility = {",
+    "    key: 'flexibility',",
+    "    item: {",
+    "        uuid: 'Compendium.pf2e.classfeatures.Item.8g6HzARbhfcgilP8', // Combat Flexibility",
+    "    },",
+    "    children: [",
+    "        {",
+    "            slug: 'improved',",
+    "            uuid: 'Compendium.pf2e.classfeatures.Item.W2rwudMNcAxs8VoX', // Improved Flexibility",
+    "        },",
+    "    ],",
+    "    rows: [",
+    "        createRow('flexibility', 8), //",
+    "        createRow('improved', 14, 'improved'),",
+    "    ],",
+    "    process: async ({ utils, fields, addFeat, messages, children }) => {",
+    "        const uuid = fields.flexibility.uuid",
+    "        const source = await utils.createFeatSource(uuid)",
+    "        addFeat(source)",
+    "        messages.add('feats', { uuid })",
+    "",
+    "        if (children.improved) {",
+    "            const uuid = fields.improved.uuid",
+    "            const source = await utils.createFeatSource(uuid)",
+    "            addFeat(source, children.improved)",
+    "            messages.add('feats', { uuid })",
+    "        }",
+    "    },",
+    "}",
+    "",
+    "return combatFlexibility"
+  ].join("\n");
+
+  // src/apps/custom/mind.js
+  var mind = [
+    "/** @typedef {'alert' | 'smith' | 'mental' | 'runic' | 'advanced'} MindRow */",
+    "/** @typedef {'weapon' | 'mental' | 'runic' | 'advanced'} MindChild */",
+    "/** @typedef {[MindRow, {}, MindChild]} MindGenerics */",
+    "",
+    "const MIND_WEAPON_UUID = 'Compendium.pf2e-dailies.equipment.Item.VpmEozw21aRxX15P'",
+    "",
+    "const WEAPON_BASE_TYPES = {",
+    "    0: { die: 'd4', traits: ['finesse', 'agile'], usage: 'held-in-one-hand' },",
+    "    1: { die: 'd6', traits: ['finesse'], usage: 'held-in-one-hand' },",
+    "    2: { die: 'd8', traits: [], usage: 'held-in-one-hand' },",
+    "    3: { die: 'd10', traits: ['reach'], usage: 'held-in-two-hands' },",
+    "}",
+    "",
+    "const WEAPON_GROUPS = /** @type {Record<WeaponDamage, string>} */ {",
+    "    slashing: 'sword',",
+    "    piercing: 'spear',",
+    "    bludgeoning: 'club',",
+    "}",
+    "",
+    "const WEAPON_TRAITS = ['grapple', 'nonlethal', 'shove', 'trip', 'modular']",
+    "",
+    "const WEAPON_DAMAGE_TYPES = Object.keys(WEAPON_GROUPS)",
+    "",
+    "const WEAPON_RUNES = ['corrosive', 'disrupting', 'flaming', 'frost', 'shock', 'thundering']",
+    "",
+    "const WEAPON_GREATER_RUNES = [",
+    "    'anarchic',",
+    "    'axiomatic',",
+    "    'greaterCorrosive',",
+    "    'greaterDisrupting',",
+    "    'greaterFlaming',",
+    "    'greaterFrost',",
+    "    'greaterShock',",
+    "    'greaterThundering',",
+    "    'holy',",
+    "    'unholy',",
+    "]",
+    "",
+    "/** @type {Daily<MindGenerics>} */",
+    "const mindSmith = {",
+    "    key: 'mindsmith',",
+    "    item: {",
+    "        uuid: 'Compendium.pf2e.feats-srd.Item.juikoiIA0Jy8PboY', // Mind Smith Dedication",
+    "    },",
+    "    children: [",
+    "        {",
+    "            slug: 'weapon',",
+    "            uuid: MIND_WEAPON_UUID, // Mind Weapon",
+    "        },",
+    "        {",
+    "            slug: 'mental',",
+    "            uuid: 'Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky', // Malleable Mental Forge",
+    "        },",
+    "        {",
+    "            slug: 'runic',",
+    "            uuid: 'Compendium.pf2e.feats-srd.Item.2uQbQgz1AbjzcFSp', // Runic Mind Smithing",
+    "        },",
+    "        {",
+    "            slug: 'advanced',",
+    "            uuid: 'Compendium.pf2e.feats-srd.Item.fgnfXwFcn9jZlXGD', // Advanced Runic Mind Smithing",
+    "        },",
+    "    ],",
+    "    rows: [",
+    "        {",
+    "            type: 'alert',",
+    "            slug: 'alert',",
+    "            message: 'Missing Mind Weapon',",
+    "            fix,",
+    "            childPredicate: [{ not: 'weapon' }],",
+    "        },",
+    "        {",
+    "            type: 'select',",
+    "            slug: 'smith',",
+    "            label: 'Mind Smith',",
+    "            options: WEAPON_DAMAGE_TYPES,",
+    "            labelizer: ({ utils }) => utils.damageLabel,",
+    "            childPredicate: ['weapon'],",
+    "        },",
+    "        {",
+    "            type: 'select',",
+    "            slug: 'mental',",
+    "            label: 'Mental Forge',",
+    "            options: WEAPON_TRAITS,",
+    "            labelizer: ({ utils }) => utils.weaponTraitLabel,",
+    "            childPredicate: ['weapon', 'mental'],",
+    "        },",
+    "        {",
+    "            type: 'select',",
+    "            slug: 'runic',",
+    "            label: 'Runic Smithing',",
+    "            options: WEAPON_RUNES,",
+    "            labelizer: ({ utils }) => utils.weaponPropertyRunesLabel,",
+    "            childPredicate: ['weapon', 'runic', { not: 'advanced' }],",
+    "            condition: ({ children, utils }) => utils.hasFreePropertySlot(children.weapon),",
+    "        },",
+    "        {",
+    "            type: 'select',",
+    "            slug: 'advanced',",
+    "            label: 'Runic Smithing',",
+    "            options: WEAPON_GREATER_RUNES,",
+    "            labelizer: ({ utils }) => utils.weaponPropertyRunesLabel,",
+    "            childPredicate: ['weapon', 'advanced'],",
+    "            condition: ({ children, utils }) => utils.hasFreePropertySlot(children.weapon),",
+    "        },",
+    "    ],",
+    "    process: ({ children, updateItem, fields, messages, item, utils }) => {",
+    "        const weapon = children.weapon",
+    "        if (!weapon) return",
+    "",
+    "        messages.addGroup('mindsmith')",
+    "",
+    "        const selected = /** @type {WeaponDamage} */ fields.smith.value",
+    "        updateItem({ _id: weapon.id, 'system.damage.damageType': selected, 'system.group': WEAPON_GROUPS[selected] })",
+    "        messages.add('mindsmith', { selected: utils.damageLabel(selected), uuid: item.uuid, label: 'mindsmith' })",
+    "",
+    "        if (children.mental) {",
+    "            const selected = fields.mental.value",
+    "            const traits = deepClone(weapon._source.system.traits?.value ?? [])",
+    "            if (!traits.includes(selected)) traits.push(selected)",
+    "            updateItem({ _id: weapon.id, 'system.traits.value': traits })",
+    "            messages.add('mindsmith', {",
+    "                selected: utils.weaponTraitLabel(selected),",
+    "                uuid: children.mental.uuid,",
+    "                label: 'mentalforge',",
+    "            })",
+    "        }",
+    "",
+    "        if ((children.advanced || children.runic) && utils.hasFreePropertySlot(weapon)) {",
+    "            const child = children.advanced ?? children.runic",
+    "            const freeSlot = utils.getFreePropertyRuneSlot(weapon)",
+    "            const field = fields.advanced ?? fields.runic",
+    "            const selected = field.value",
+    "",
+    "            if (!weapon.system.runes.property.includes(selected)) {",
+    "                updateItem({ _id: weapon.id, [`system.${freeSlot}.value`]: selected, [`flags.world.runeSlot`]: freeSlot })",
+    "                messages.add('mindsmith', {",
+    "                    selected: utils.weaponPropertyRunesLabel(selected),",
+    "                    uuid: child.uuid,",
+    "                    label: 'runicmind',",
+    "                })",
+    "            }",
+    "        }",
+    "    },",
+    "    rest: ({ item, sourceId, updateItem }) => {",
+    "        if (sourceId !== MIND_WEAPON_UUID) return",
+    "",
+    "        let traits = item._source.system.traits?.value ?? []",
+    "        traits = traits.filter(trait => !WEAPON_TRAITS.includes(trait))",
+    "        updateItem({ _id: item.id, 'system.traits.value': traits })",
+    "",
+    "        const runeSlot = item.getFlag('world', 'runeSlot')",
+    "        if (runeSlot) {",
+    "            updateItem({ _id: item.id, [`system.${runeSlot}.value`]: null, [`flags.world.-=runeSlot`]: true })",
+    "        }",
+    "    },",
+    "}",
+    "",
+    "const OPTIONS = {",
+    "    0: 'A one-handed weapon that deals <strong>1d4</strong> damage and has the <strong>agile</strong> and <strong>finesse</strong> traits',",
+    "    1: 'A one-handed weapon that deals <strong>1d6</strong> damage and has the <strong>finesse</strong> trait',",
+    "    2: 'A one-handed weapon that deals <strong>1d8</strong> damage',",
+    "    3: 'A two-handed weapon that deals <strong>1d10</strong> damage and has the <strong>reach</strong> trait',",
+    "}",
+    "",
+    "/** * @param {DailyValueArgs<MindGenerics>} args */",
+    "async function fix({ actor }) {",
+    "    let content =",
+    "        `<p>This character doesn't have a mind weapon in their inventory.</p><p>Please select one of the following options to create one.</p>`",
+    "",
+    "    for (const [key, label] of Object.entries(OPTIONS)) {",
+    "        content += `<label><input type='radio' name='type' value='${key}'>${label}</label>`",
+    "    }",
+    "",
+    "    const weapon = await Dialog.wait(",
+    "        {",
+    "            title: 'Mind Weapon',",
+    "            content,",
+    "            buttons: {",
+    "                yes: {",
+    "                    icon: `<i class='fas fa-save'></i>`,",
+    "                    label: 'Accept',",
+    "                    callback: onWeaponSelected,",
+    "                },",
+    "                no: {",
+    "                    icon: `<i class='fas fa-times'></i>`,",
+    "                    label: 'Cancel',",
+    "                    callback: () => null,",
+    "                },",
+    "            },",
+    "            close: () => null,",
+    "        },",
+    "        {},",
+    "        { id: 'pf2e-dailies-weapon', width: 600 }",
+    "    )",
+    "",
+    "    if (weapon) {",
+    "        await actor.createEmbeddedDocuments('Item', [weapon])",
+    "        return true",
+    "    }",
+    "",
+    "    return false",
+    "}",
+    "",
+    "/** @params {JQuery} html */",
+    "async function onWeaponSelected(html) {",
+    "    const selection = html.find('[name=type]:checked').val()",
+    "    if (!selection) {",
+    "        ui.notifications.warn('You must select one weapon base type.')",
+    "        return",
+    "    }",
+    "",
+    "    const weapon = (await fromUuid(MIND_WEAPON_UUID))?.toObject()",
+    "    if (!weapon) {",
+    "        ui.notifications.warn(`The weapon couldn't be found in the compendium.`)",
+    "        return",
+    "    }",
+    "",
+    "    const stats = WEAPON_BASE_TYPES[selection]",
+    "",
+    "    setProperty(weapon, 'system.damage.die', stats.die)",
+    "    setProperty(weapon, 'system.traits.value', stats.traits.slice())",
+    "    setProperty(weapon, 'system.usage.value', stats.usage)",
+    "",
+    "    return weapon",
+    "}",
+    "",
+    "return mindSmith"
+  ].join("\n");
+
+  // src/apps/custom/savant.js
+  var savant = [
+    "/** @typedef {'first' | 'second' | 'third' | 'fourth'} SavantRow */",
+    "/** @typedef {Record<SavantRow, { level: number; condition: boolean }>} SavantCustom */",
+    "/** @typedef {[SavantRow, SavantCustom, '']} SavantGenerics */",
+    "",
+    "const ROWS = /** @type {const} */ (['first', 'second', 'third', 'fourth'])",
+    "",
+    "/**",
+    " * @param {CharacterPF2e} actor",
+    " * @param {MagicTradition} tradition",
+    " */",
+    "function getSpellcastingTraditionDetails(actor, tradition) {",
+    "    let maxSlot = 1",
+    "    let maxTradition = 0",
+    "",
+    "    for (const entry of actor.spellcasting.regular) {",
+    "        if ('pf2e-staves' in entry.flags) continue // we skip staff entries",
+    "",
+    "        const slots = entry.system.slots",
+    "        for (const key in slots) {",
+    "            const slot = slots[key]",
+    "            if (slot.max) maxSlot = Math.max(maxSlot, Number(key.slice(4)))",
+    "        }",
+    "",
+    "        if (entry.tradition === tradition) maxTradition = Math.max(maxTradition, entry.rank)",
+    "    }",
+    "",
+    "    return { maxSlot: Math.min(maxSlot, 10), maxTradition }",
+    "}",
+    "",
+    "/** @type {Daily<SavantGenerics>} */",
+    "const scrollSavant = {",
+    "    key: 'savant',",
+    "    item: {",
+    "        uuid: 'Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ', // Scroll Savant",
+    "    },",
+    "    prepare: ({ actor }) => {",
+    "        const { maxSlot, maxTradition } = getSpellcastingTraditionDetails(actor, 'arcane')",
+    "        return {",
+    "            first: { level: maxSlot - 2, condition: true },",
+    "            second: { level: maxSlot - 3, condition: true },",
+    "            third: { level: maxSlot - 4, condition: maxTradition >= 3 && maxSlot >= 5 },",
+    "            fourth: { level: maxSlot - 5, condition: maxTradition >= 4 && maxSlot >= 6 },",
+    "        }",
+    "    },",
+    "    rows: ROWS.map(rowName => {",
+    "        /** @type {DailyRowDrop<SavantGenerics>} */",
+    "        const row = {",
+    "            type: 'drop',",
+    "            slug: rowName,",
+    "            label: ({ custom }) => `PF2E.SpellLevel${custom[rowName].level}`,",
+    "            filter: {",
+    "                type: 'spell',",
+    "                search: ({ custom }) => ({",
+    "                    category: ['spell'],",
+    "                    traditions: ['arcane'],",
+    "                    level: custom[rowName].level,",
+    "                }),",
+    "            },",
+    "            condition: ({ custom }) => custom[rowName].condition,",
+    "        }",
+    "        return row",
+    "    }),",
+    "    process: async ({ utils, fields, custom, addItem, messages }) => {",
+    "        for (const field of Object.values(fields)) {",
+    "            const uuid = field.uuid",
+    "            const source = await utils.createSpellScrollSource({ uuid, level: custom[field.row].level })",
+    "            addItem(source)",
+    "            messages.add('scrolls', { uuid, label: source.name })",
+    "        }",
+    "    },",
+    "}",
+    "",
+    "return scrollSavant"
+  ].join("\n");
+
+  // src/apps/custom/tome.js
+  var tome = [
+    "/** @typedef {typeof ROWS[number]} TomeRow */",
+    "/** @typedef {'adept' | 'second' | 'intense' | 'paragon'} TomeChild */",
+    "/** @typedef {Record<TomeRow, { rank: OneToFour; options: string[] }>} TomeCustom */",
+    "/** @typedef {[TomeRow, TomeCustom, TomeChild]} TomeGenerics */",
+    "",
+    "const ROWS = /** @type {const} */ (['first', 'second'])",
+    "",
+    "/** @param {'adept' | 'paragon'} option */",
+    "function createChildCondition(option) {",
+    "    /** @type { BaseDailyConditionFunction<TomeGenerics>} */",
+    "    const condition = ({ item, utils }) => {",
+    "        return utils.getChoiSetRuleSelection(item, option) === 'tome'",
+    "    }",
+    "    return condition",
+    "}",
+    "",
+    "/** @type {Daily<TomeGenerics>} */",
+    "const thaumaturgeTome = {",
+    "    key: 'tome',",
+    "    item: {",
+    "        uuid: 'Compendium.pf2e.classfeatures.Item.MyN1cQgE0HsLF20e', // Tome",
+    "    },",
+    "    children: [",
+    "        {",
+    "            slug: 'adept',",
+    "            uuid: 'Compendium.pf2e.classfeatures.Item.Obm4ItMIIr0whYeO', // Implement Adept",
+    "            condition: createChildCondition('adept'),",
+    "        },",
+    "        {",
+    "            slug: 'second',",
+    "            uuid: 'Compendium.pf2e.classfeatures.Item.ZEUxZ4Ta1kDPHiq5', // Second Adept",
+    "            condition: createChildCondition('adept'),",
+    "        },",
+    "        {",
+    "            slug: 'intense',",
+    "            uuid: 'Compendium.pf2e.feats-srd.Item.yRRM1dsY6jakEMaC', // Intense Implement",
+    "        },",
+    "        {",
+    "            slug: 'paragon',",
+    "            uuid: 'Compendium.pf2e.classfeatures.Item.QEtgbY8N2V4wTbsI', // Implement Paragon",
+    "            condition: createChildCondition('paragon'),",
+    "        },",
+    "    ],",
+    "    prepare: ({ utils, actor, children }) => {",
+    "        const skillNames = utils.skillNames",
+    "        const actorLevel = actor.level",
+    "        const actorSkills = /** @type {Record<SkillLongForm, { rank: ZeroToFour }>} */ (actor.skills)",
+    "",
+    "        /** @type {TomeCustom} */",
+    "        const custom = {",
+    "            first: { options: [], rank: 1 },",
+    "            second: { options: [], rank: 1 },",
+    "        }",
+    "",
+    "        // Implement Paragon",
+    "        if (children.paragon) {",
+    "            const skills = skillNames.filter(x => actorSkills[x].rank < 4)",
+    "            custom.first = { rank: 4, options: skills }",
+    "            custom.second = { rank: 4, options: skills }",
+    "        }",
+    "        // Intense Implement or Second Adept or Implement Adept",
+    "        else if (children.intense || children.adept || children.second) {",
+    "            const masters = skillNames.filter(x => actorSkills[x].rank < 3)",
+    "",
+    "            if (actorLevel >= 9) {",
+    "                custom.first = { rank: 3, options: masters }",
+    "                custom.second = { rank: 3, options: masters }",
+    "            } else {",
+    "                const experts = skillNames.filter(x => actorSkills[x].rank < 2)",
+    "                custom.first = { rank: 2, options: experts }",
+    "                custom.second = { rank: 3, options: masters }",
+    "            }",
+    "        }",
+    "        // Tome",
+    "        else {",
+    "            if (actorLevel >= 5) {",
+    "                const experts = skillNames.filter(x => actorSkills[x].rank < 2)",
+    "                custom.first = { rank: 2, options: experts }",
+    "                custom.second = { rank: 2, options: experts }",
+    "            } else if (actorLevel >= 3) {",
+    "                const trained = skillNames.filter(x => actorSkills[x].rank < 1)",
+    "                const experts = skillNames.filter(x => actorSkills[x].rank < 2)",
+    "                custom.first = { rank: 1, options: trained }",
+    "                custom.second = { rank: 2, options: experts }",
+    "            } else {",
+    "                const trained = skillNames.filter(x => actorSkills[x].rank < 1)",
+    "                custom.first = { rank: 1, options: trained }",
+    "                custom.second = { rank: 1, options: trained }",
+    "            }",
+    "        }",
+    "",
+    "        return custom",
+    "    },",
+    "    rows: ROWS.map(rowName => {",
+    "        /** @type {DailyRowCombo<TomeGenerics>} */",
+    "        const row = {",
+    "            type: 'combo',",
+    "            slug: rowName,",
+    "            label: ({ custom, utils }) => utils.proficiencyLabel(custom[rowName].rank),",
+    "            options: ({ custom }) => custom[rowName].options,",
+    "            labelizer: ({ utils }) => utils.skillLabel,",
+    "        }",
+    "        return row",
+    "    }),",
+    "    process: ({ custom, fields, utils, messages, addItem, addRule }) => {",
+    "        messages.addGroup('tome', 65)",
+    "",
+    "        for (const rowName of ROWS) {",
+    "            const rank = custom[rowName].rank",
+    "            let value = fields[rowName].value",
+    "",
+    "            if (fields[rowName].input === 'true') {",
+    "                const source = utils.createLoreSource({ name: value, rank })",
+    "                addItem(source)",
+    "            } else {",
+    "                const source = utils.createSkillRuleElement({ skill: value, value: rank })",
+    "                value = utils.skillLabel(value)",
+    "                addRule(source)",
+    "            }",
+    "",
+    "            messages.add('tome', { label: utils.proficiencyLabel(rank), selected: value })",
+    "        }",
+    "    },",
+    "}",
+    "",
+    "return thaumaturgeTome"
+  ].join("\n");
+
+  // src/apps/custom.js
+  var localize4 = subLocalize("customs");
+  var TEMPLATES = ["default", "trainedSkill", "trainedLore", "language", "resistance", "feat", "spell"];
+  var EXAMPLES = ["flexibility", "savant", "tome", "mind"];
+  var DailyCustoms = class extends FormApplication {
+    static get defaultOptions() {
+      return mergeObject(super.defaultOptions, {
+        id: "pf2e-dailies-customs",
+        title: localize4("title"),
+        template: templatePath("customs.hbs"),
+        submitOnChange: false,
+        submitOnClose: false,
+        closeOnSubmit: false,
+        scrollY: [".left .list"]
+      });
+    }
+    async _updateObject(event, formData) {
+    }
+    async getData(options) {
+      const customs = getSetting("customDailies");
+      const code = customs.find((custom) => custom.key === this._selectedDaily)?.code;
+      const template = this._selectedTemplate;
+      const extension = game.modules.get("pf2e-dailies-ext");
+      const newVersion = extension?.active && isNewerVersion(EXT_VERSION, extension.version) ? { version: EXT_VERSION } : "";
+      return mergeObject(super.getData(options), {
+        i18n: localize4,
+        template,
+        templates: TEMPLATES,
+        daily: this._selectedDaily,
+        code,
+        customs,
+        examples: EXAMPLES,
+        isExample: EXAMPLES.includes(template),
+        monaco: extension?.active,
+        newVersion
+      });
+    }
+    activateListeners(html) {
+      super.activateListeners(html);
+      this._monaco?.dispose();
+      const monaco = game.modules.get("pf2e-dailies-ext")?.api;
+      const area = html.find(".code")[0];
+      if (monaco && area) {
+        const element = html.find(".monaco .placeholder")[0];
+        this._monaco = monaco.createEditor(element, area.value);
+        this._monaco.onDidChangeModelContent(debounce(() => area.value = this._monaco.getValue(), 200));
+      } else {
+        this._monaco = null;
+      }
+      html.find("[data-action=select-template]").on("change", this.#onSelectTemplate.bind(this));
+      html.find("[data-action=create-template]").on("click", this.#onCreateTemplate.bind(this));
+      html.find("[data-action=create-daily]").on("click", this.#onCreateDaily.bind(this));
+      html.find(".row[data-key]").on("click", this.#onSelectDaily.bind(this));
+      html.find("[data-action=delete-daily]").on("click", this.#onDeleteDaily.bind(this));
+      html.find("[data-action=save-code]").on("click", this.#onSaveCode.bind(this));
+    }
+    get code() {
+      const element = this.form.querySelector(".window-content .code");
+      return element?.value;
+    }
+    async #onSaveCode(event) {
+      event.preventDefault();
+      const code = this.code;
+      const selected = this._selectedDaily;
+      if (!selected || !code)
+        return;
+      const customs = getSetting("customDailies");
+      const stipped = customs.filter((custom) => custom.key !== selected);
+      try {
+        const fn = new AsyncFunction(code);
+        const daily = await fn();
+        const key = daily.key;
+        if (typeof key !== "string")
+          return warn("invalidKey");
+        if (stipped.find((custom) => custom.key === key))
+          return warn("duplicate");
+        const index = customs.findIndex((custom) => custom.key === selected);
+        if (index < 0)
+          return;
+        customs.splice(index, 1, { key, code });
+        await setSetting("customDailies", customs);
+        localize4.info("saved", { daily: key });
+        this._selectedDaily = key;
+        this.render();
+      } catch (err) {
+        error("error.unexpected");
+        console.error(err);
+        console.error(`The error occured while testing the custom daily ${selected}`);
+      }
+    }
+    async #onDeleteDaily(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const remove = await Dialog.confirm({
+        title: localize4("delete.title"),
+        content: localize4("delete.content")
+      });
+      if (!remove)
+        return;
+      const key = event.currentTarget.dataset.key;
+      const customs = getSetting("customDailies").filter((custom) => custom.key !== key);
+      await setSetting("customDailies", customs);
+      localize4.info("deleted", { daily: key });
+      this.#onCreateDaily();
+    }
+    #onCreateDaily() {
+      this._selectedDaily = "";
+      this._selectedTemplate = "default";
+      this.render();
+    }
+    #onSelectDaily(event) {
+      event.preventDefault();
+      this._selectedDaily = event.currentTarget.dataset.key;
+      this.render();
+    }
+    async #onCreateTemplate(event) {
+      event.preventDefault();
+      const template = this._selectedTemplate;
+      const customs = getSetting("customDailies");
+      const formData = new FormData(this.form);
+      const data = Object.fromEntries(formData);
+      const isExample = EXAMPLES.includes(template);
+      let { key, uuid, label } = data;
+      if (isExample) {
+        key = template;
+      } else if (!key || !uuid) {
+        return localize4.warn("template.noEmpty");
+      }
+      if (customs.find((custom) => custom.key === key))
+        return warn("error.duplicate");
+      let code;
+      if (template === "trainedSkill") {
+        const daily = createTrainedSkillDaily(key, uuid, label);
+        code = this.#stringifyDaily(daily, { key, uuid, label }, "SkillGenerics");
+      } else if (template === "trainedLore") {
+        const daily = createTrainedLoreDaily(key, uuid, label);
+        code = this.#stringifyDaily(daily, { key, uuid, label }, "SkillGenerics");
+      } else if (template === "language") {
+        const daily = createLanguageDaily(key, uuid, label);
+        code = this.#stringifyDaily(daily, { key, uuid, label }, "LanguageGenerics");
+      } else if (template === "resistance") {
+        const resistance = simplyfiable(data.resistance);
+        const resistances = splitList(data.resistances);
+        if (resistance === "" || !resistances.length)
+          return localize4.warn("template.noEmpty");
+        if (typeof resistance === "number" && resistance < 1)
+          return localize4.warn("template.badResistance");
+        const daily = createResistancelDaily(key, uuid, resistances, resistance, label);
+        code = this.#stringifyDaily(daily, { key, uuid, label, resistance, resistances }, "ResistanceGenerics");
+      } else if (template === "feat") {
+        const traits = splitList(data.traits);
+        const filter = {
+          category: splitList(data.category),
+          level: simplyfiable(data.level) || { min: 0, max: 20 }
+        };
+        if (traits.length)
+          filter.traits = traits;
+        const daily = createFeatDaily(key, uuid, filter, label);
+        code = this.#stringifyDaily(daily, { key, uuid, label }, "FeatGenerics");
+      } else if (template === "spell") {
+        const level = Number(data.level) || void 0;
+        const traits = splitList(data.traits);
+        let levels = data.levels.split(",").map((x) => x.trim());
+        if (levels.length === 1) {
+          levels = simplyfiable(levels[0]);
+        } else {
+          levels = levels.filter((x) => x).map((x) => Number(x)).filter((x) => !isNaN(x));
+        }
+        const filter = {
+          category: splitList(data.category),
+          traditions: splitList(data.traditions),
+          level: levels || []
+        };
+        if (traits.length)
+          filter.traits = traits;
+        const daily = createSpellDaily(key, uuid, filter, level, label);
+        code = this.#stringifyDaily(daily, { key, uuid, label, level }, "SpellGenerics");
+      } else if (template === "tome") {
+        code = tome;
+      } else if (template === "flexibility") {
+        code = flexibility;
+      } else if (template === "savant") {
+        code = savant;
+      } else if (template === "mind") {
+        code = mind;
+      } else {
+        const daily = { key, label, item: { uuid }, rows: [], process: () => {
+        } };
+        code = this.#stringifyDaily(daily, { key, uuid, label });
+      }
+      customs.push({ key, code });
+      await setSetting("customDailies", customs);
+      this._selectedDaily = key;
+      this.render();
+    }
+    #stringifyDaily(daily, args, type) {
+      const placeholder = "____PLACEHOLDER____";
+      const fns = [];
+      let str = JSON.stringify(
+        daily,
+        (_, value) => {
+          if (typeof value === "function") {
+            fns.push(value);
+            return placeholder;
+          }
+          return value;
+        },
+        4
+      );
+      str = str.replace(new RegExp('"' + placeholder + '"', "g"), () => {
+        const fn = fns.shift()?.toString();
+        return fn?.replace(/( {5,})/g, (match) => match.slice(4)) ?? "";
+      });
+      let strArgs = "";
+      for (const [key, value] of Object.entries(args)) {
+        if (typeof value === "string")
+          strArgs += `const ${key} = '${value}';
+`;
+        else if (typeof value === "object")
+          strArgs += `const ${key} = ${JSON.stringify(value)};
+`;
+        else
+          strArgs += `const ${key} = ${value};
+`;
+      }
+      const typing = type ? `Daily<${type}>` : "Daily";
+      return `${strArgs}
+/** @type {${typing}} */
+const daily = ${str};
+
+return daily;`;
+    }
+    #onSelectTemplate(event) {
+      event.preventDefault();
+      this._selectedDaily = "";
+      this._selectedTemplate = event.currentTarget.value;
+      this.render();
+    }
+  };
+  __name(DailyCustoms, "DailyCustoms");
+  function splitList(list) {
+    return list.split(",").map((x) => x.trim()).filter((x) => x);
+  }
+  __name(splitList, "splitList");
+  function simplyfiable(value) {
+    if (typeof value === "number")
+      return value;
+    value = value.trim();
+    if (value === "level" || value === "half")
+      return value;
+    const numbered = Number(value);
+    return isNaN(numbered) ? "" : numbered;
+  }
+  __name(simplyfiable, "simplyfiable");
+
+  // src/rest.js
+  async function restForTheNight(actor) {
+    const update = [];
+    const remove = [];
+    for (const item of actor.items) {
+      if (getFlag(item, "temporary")) {
+        remove.push(item.id);
+        if (item.isOfType("feat")) {
+          const parentId = getFlag(item, "grantedBy");
+          if (parentId) {
+            const slug = sluggify(item.name, { camel: "dromedary" });
+            const path = `flags.pf2e.itemGrants.-=${slug}`;
+            update.push({ _id: parentId, [path]: true });
+          }
+        }
+        continue;
+      }
+      const sourceId = getSourceId(item);
+      if (sourceId) {
+        const daily = getDailyFromSourceId(sourceId);
+        if (daily?.rest) {
+          await daily.rest({ item, sourceId, updateItem: (data) => update.push(data) });
+        }
+      }
+      const rules = deepClone(item._source.system.rules);
+      let modifiedRules = false;
+      for (let i = rules.length - 1; i >= 0; i--) {
+        if (MODULE_ID in rules[i]) {
+          rules.splice(i, 1);
+          modifiedRules = true;
+        }
+      }
+      if (modifiedRules)
+        update.push({ _id: item.id, "system.rules": rules });
+    }
+    if (update.length)
+      await actor.updateEmbeddedDocuments("Item", update);
+    if (remove.length)
+      await actor.deleteEmbeddedDocuments("Item", remove);
+    await setFlag(actor, "rested", true);
+  }
+  __name(restForTheNight, "restForTheNight");
+
+  // src/main.js
+  var EXT_VERSION = "1.3.0";
+  var DAILY_CRAFTING = "CONFIG.PF2E.Actor.documentClasses.character.prototype.performDailyCrafting";
+  Hooks.once("setup", () => {
+    registerSetting({
+      name: "customDailies",
+      type: Array,
+      default: [],
+      onChange: parseCustomDailies
+    });
+    registerSetting({
+      name: "familiar",
+      type: String,
+      default: "",
+      config: true
+    });
+    registerSetting({
+      name: "watch",
+      type: Boolean,
+      default: false,
+      config: true,
+      onChange: enableWatchHook
+    });
+    registerSetting({
+      name: "members",
+      type: Boolean,
+      default: true,
+      config: true,
+      scope: "user"
+    });
+    registerSettingMenu({
+      name: "customs",
+      type: DailyCustoms
+    });
+    game.modules.get(MODULE_ID).api = {
+      openDailiesInterface: (actor) => openDailiesInterface(actor),
+      requestDailies,
+      getBuiltinDailies: () => deepClone(BUILTINS_DAILIES),
+      getCustomDailies: () => deepClone(CUSTOM_DAILIES),
+      prepareDailies,
+      checkCustomDaily,
+      getUtils: () => deepClone(utils)
+    };
+    if (getSetting("watch"))
+      enableWatchHook(true);
+  });
+  Hooks.once("ready", async () => {
+    await parseCustomDailies();
+    if (!game.modules.get("lib-wrapper")?.active && game.user.isGM) {
+      warn("error.noLibwrapper", true);
+      return;
+    }
+    libWrapper.register(MODULE_ID, DAILY_CRAFTING, onPerformDailyCrafting, "OVERRIDE");
+  });
+  Hooks.on("pf2e.restForTheNight", restForTheNight);
+  Hooks.on("renderCharacterSheetPF2e", renderCharacterSheetPF2e);
+  function enableWatchHook(enabled) {
+    Hooks[enabled ? "on" : "off"]("renderChatMessage", renderChatMessage);
+  }
+  __name(enableWatchHook, "enableWatchHook");
+})();
 //# sourceMappingURL=main.js.map

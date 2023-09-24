@@ -228,7 +228,7 @@
             },
             "members": {
                 "name": "Party Members Only",
-                "hint": "When a collection of players actors is retrieved in the module and if the character is a member of a party, should those actors only be pulled from said party or not."
+                "hint": "When a collection of players actors is retrieved in the module and if the character is a member of a party, should those actors be pulled from said party or be any player owned actor."
             }
         },
         "deprecated": {

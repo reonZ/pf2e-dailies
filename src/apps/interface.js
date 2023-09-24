@@ -96,7 +96,7 @@ export class DailiesInterface extends Application {
                 if (item && item.isOfType('action')) options.push({ value: uuid, label: item.name })
             }
 
-            options.sort((a, b) => (a.label < b.label ? -1 : b.label < a.label ? 1 : 0))
+            options.sort((a, b) => a.label.localeCompare(b.label))
 
             for (let index = 0; index < nbAbilityies; index++) {
                 template.rows.push({
@@ -220,8 +220,6 @@ export class DailiesInterface extends Application {
 
     activateListeners(html) {
         super.activateListeners(html)
-
-        console.log(html)
 
         html.find('[data-action=clear]').on('click', this.#onClear.bind(this))
         html.find('[data-action=accept]').on('click', this.#onAccept.bind(this))

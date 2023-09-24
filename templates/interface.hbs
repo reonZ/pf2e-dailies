@@ -57,8 +57,12 @@
 
 {{#*inline 'selectRow'}}
 <label>{{label}}</label>
-<select {{{@root.dump entry}}}>
-    {{selectOptions entry.options selected=entry.value nameAttr='value' labelAttr='label'}}
+<select {{{@root.dump entry}}} {{disabled (lte entry.options.length 1)}}>
+    {{#select entry.value}}
+    {{#each entry.options as |option|}}
+    <option value="{{option.value}}">{{option.label}}</option>
+    {{/each}}
+    {{/select}}
 </select>
 {{/inline}}
 

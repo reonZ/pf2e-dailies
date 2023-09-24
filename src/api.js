@@ -135,15 +135,15 @@ export const utils = {
         let actors = game.actors
 
         if (member) {
-            if (getSetting('members')) {
-                const members = Array.from(member.parties ?? []).flatMap(party => party.members)
-                if (members.includes(member)) actors = members
-            }
+            const members = getSetting('members') ? Array.from(member.parties ?? []).flatMap(p => p.members) : null
+
+            if (members) actors = members
+            else actors = actors.filter(a => a.hasPlayerOwner)
 
             if (member instanceof Actor) actors = actors.filter(a => a !== member)
-        }
+        } else actors = actors.filter(a => a.hasPlayerOwner)
 
-        return actors.filter(a => a.hasPlayerOwner && a.isOfType(...types))
+        return actors.filter(a => a.isOfType(...types))
     },
 }
 

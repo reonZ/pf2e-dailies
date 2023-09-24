@@ -11,7 +11,9 @@ import { createResistancelDaily } from './data/resistance'
 import { scrollSavant } from './data/savant'
 import { createTrainedLoreDaily, createTrainedSkillDaily } from './data/skill'
 import { thaumaturgeTome } from './data/tome'
-import { AsyncFunction, error, getSetting, getSourceId } from './module'
+import { AsyncFunction, error, getSetting, getSourceId, warn } from './module'
+
+const DEPRECATED_CUSTOM_DAILIES = ['root-magic']
 
 export const BUILTINS_DAILIES = [
     thaumaturgeTome,
@@ -103,6 +105,7 @@ export async function parseCustomDailies() {
         try {
             const fn = new AsyncFunction(code)
             const daily = await fn()
+            if (!checkCustomDaily(daily, true)) continue
             CUSTOM_DAILIES.push(daily)
         } catch (err) {
             error('error.unexpected')
@@ -119,6 +122,12 @@ export async function parseCustomDailies() {
     for (const [uuid, daily] of CUSTOM_UUIDS.entries()) {
         UUIDS.set(uuid, daily)
     }
+}
+
+export function checkCustomDaily(daily, warning = false) {
+    if (!DEPRECATED_CUSTOM_DAILIES.includes(daily.key)) return true
+    if (warning) warn('deprecated.custom.key', { name: daily.label.trim() || daily.key }, true)
+    return false
 }
 
 export function getDailies(actor) {

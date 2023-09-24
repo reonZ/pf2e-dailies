@@ -223,6 +223,11 @@
                 "name": "Watch For Request",
                 "hint": "Enable this option if you plan on using the 'requestDailies' api function, otherwise clicking on the button in the chat message will not be functional."
             }
+        },
+        "deprecated": {
+            "custom": {
+                "key": "The <strong>{name}</strong> daily has been implemented directly into <strong>PF2e Dailies</strong>, the custom daily has been skipped and can be safely deleted."
+            }
         }
     }
 }

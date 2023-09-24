@@ -1,7 +1,7 @@
 import { DailiesInterface } from './apps/interface'
 import { createWatchChatMessage } from './chat'
 import { hasAnyDaily } from './dailies'
-import { capitalize, getFlag, localize, sequenceArray, warn } from './module'
+import { capitalize, getFlag, getSetting, localize, sequenceArray, warn } from './module'
 import { createSpellScroll } from './pf2e/spell'
 
 const halfLevelString = 'max(1,floor(@actor.level/2))'
@@ -132,11 +132,14 @@ export const utils = {
     // actor
     getPlayersActors: (member, ...types) => {
         if (!types.length) types = ['creature']
+
         let actors = game.actors
 
         if (member) {
-            const members = game.actors.party?.members
-            if (members?.includes(member)) actors = members
+            if (getSetting('members')) {
+                const members = game.actors.party?.members
+                if (members?.includes(member)) actors = members
+            }
 
             if (member instanceof Actor) actors = actors.filter(a => a !== member)
         }

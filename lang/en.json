@@ -224,6 +224,10 @@
             "watch": {
                 "name": "Watch For Request",
                 "hint": "Enable this option if you plan on using the 'requestDailies' api function, otherwise clicking on the button in the chat message will not be functional."
+            },
+            "members": {
+                "name": "Party Members Only",
+                "hint": "When a collection of players actors is retrieved in the module and if the character is a member of a party, should those actors only be pulled from said party or not."
             }
         },
         "deprecated": {

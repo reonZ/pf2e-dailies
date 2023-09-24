@@ -33,6 +33,14 @@ Hooks.once('setup', () => {
         onChange: enableWatchHook,
     })
 
+    registerSetting({
+        name: 'members',
+        type: Boolean,
+        default: true,
+        config: true,
+        scope: 'user',
+    })
+
     registerSettingMenu({
         name: 'customs',
         type: DailyCustoms,

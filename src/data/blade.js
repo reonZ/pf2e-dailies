@@ -78,9 +78,10 @@ export const bladeAlly = {
                     }))
                     .sort((a, b) => a.label.localeCompare(b.label))
             },
+            condition: ({ actor }) => actor.itemTypes.weapon.filter(weapon => !weapon.isAlchemical).length,
         },
     ],
-    process: async ({ actor, fields, addRule, messages, updateItem }) => {
+    process: async ({ actor, fields, addRule, messages }) => {
         const weaponId = fields.weapon.value
         const rune = fields.rune.value
 

@@ -1,7 +1,7 @@
 import { localizePath } from '../module'
 import { createSpellDaily } from './spell'
 
-export const tricksterAce = (() => {
+export function tricksterAce() {
     const daily = createSpellDaily(
         'ace',
         'Compendium.pf2e.feats-srd.Item.POrE3ZgBRdBL9MsW',
@@ -22,4 +22,4 @@ export const tricksterAce = (() => {
     }
 
     return daily
-})()
+}

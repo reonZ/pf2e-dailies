@@ -1,3 +1,12 @@
+# 2.11.0
+
+-   added `Party Members Only` user setting, when a collection of players actors is retrieved in the module and if the character is a member of a party, should those actors only be pulled from said party or not
+-   added support for the `Root Magic` feat (this will use the new `Party Members Only` setting), GMs will be warned if they have the `Root Magic` custom daily in their world (it can be deleted safely)
+-   daily menu select fields will now be disabled if only one option is available
+-   prevent `Blade Ally` from showing up if no weapon is available
+-   exposed new (mostly for debugging) functions to the API
+-   fixed `utils.skillNames` error
+
 # 2.10.0
 
 -   added support for `Blade Ally` (there is no more use for the system's `Effect: Blade Ally`)

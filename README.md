@@ -183,6 +183,46 @@ function openDailiesInterface(actor?: CharacterPF2e): void
 function requestDailies(): void
 ```
 
+### The following functions are not really meant to be used and more there for debugging purpose
+
+```js
+/**
+ * @returns {Utils} a copy of the utils passed as argument in the different functions of a Daily
+ */
+function getUtils(): Utils
+```
+
+```js
+/**
+ * @returns {Daily[]} a copy of the built-in dailies' raw data
+ */
+function getBuiltinDailies(): Daily[]
+```
+
+```js
+/**
+ * @returns {Daily[]} a copy of the custom dailies' raw data
+ */
+function getCustomDailies(): Daily[]
+```
+
+```js
+/**
+ * @param {Daily[]} dailies
+ * @returns {Map<uuid, {daily: Daily, condition: (...args) => boolean}>} map of all the usable item uuids
+ */
+function prepareDailies(dailies: Daily[]): Map<uuid, {daily: Daily, condition: (...args) => boolean}>
+```
+
+```js
+/**
+ * @param {Daily} daily
+ * @param {boolean} [warning] will show a warning notification on screen when true
+ * @returns {boolean} true if the custom daily isn't skipped
+ */
+function checkCustomDaily(daily: Daily, warning?: boolean): boolean
+```
+
 # CHANGELOG
 
 You can see the changelog [HERE](./CHANGELOG.md)

@@ -1,5 +1,5 @@
 export function createLanguageDaily(key, uuid, label) {
-    const daily = {
+    return {
         key,
         label,
         item: {
@@ -23,5 +23,4 @@ export function createLanguageDaily(key, uuid, label) {
             messages.add('languages', { uuid, selected: utils.languageLabel(value), label })
         },
     }
-    return daily
 }

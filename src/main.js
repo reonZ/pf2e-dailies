@@ -2,7 +2,7 @@ import { onPerformDailyCrafting, renderCharacterSheetPF2e } from './actor'
 import { openDailiesInterface, requestDailies } from './api'
 import { DailyCustoms } from './apps/custom'
 import { renderChatMessage } from './chat'
-import { BUILTINS_DAILIES, CUSTOM_DAILIES, parseCustomDailies, prepareDailies } from './dailies'
+import { BUILTINS_DAILIES, CUSTOM_DAILIES, checkCustomDaily, parseCustomDailies, prepareDailies } from './dailies'
 import { MODULE_ID, getSetting, registerSetting, registerSettingMenu, warn } from './module'
 import { restForTheNight } from './rest'
 
@@ -44,6 +44,7 @@ Hooks.once('setup', () => {
         getBuiltinDailies: () => deepClone(BUILTINS_DAILIES),
         getCustomDailies: () => deepClone(CUSTOM_DAILIES),
         prepareDailies,
+        checkCustomDaily,
     }
 
     if (getSetting('watch')) enableWatchHook(true)

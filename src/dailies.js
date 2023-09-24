@@ -6,7 +6,6 @@ import { createFeatDaily } from './data/feat'
 import { combatFlexibility } from './data/flexibility'
 import { createLanguageDaily } from './data/language'
 import { mindSmith } from './data/mind'
-import { getRations } from './data/rations'
 import { createResistancelDaily } from './data/resistance'
 import { rootMagic } from './data/root'
 import { scrollSavant } from './data/savant'
@@ -162,8 +161,4 @@ export function getDailies(actor) {
 
 export function getDailyFromSourceId(sourceId) {
     return UUIDS.get(sourceId)?.daily
-}
-
-export function hasAnyDaily(actor) {
-    return actor.familiar || getRations(actor)?.uses.value || getDailies(actor).length
 }

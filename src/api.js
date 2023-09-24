@@ -1,6 +1,5 @@
 import { DailiesInterface } from './apps/interface'
 import { createWatchChatMessage } from './chat'
-import { hasAnyDaily } from './dailies'
 import { capitalize, getFlag, getSetting, localize, sequenceArray, warn } from './module'
 import { createSpellScroll } from './pf2e/spell'
 
@@ -148,7 +147,7 @@ export const utils = {
     },
 }
 
-export function openDailiesInterface(actor, force) {
+export function openDailiesInterface(actor) {
     if (!actor || !actor.isOfType('character') || !actor.isOwner) {
         const controlled = canvas.tokens.controlled
         actor = controlled.find(token => token.actor?.isOfType('character') && token.actor.isOwner)?.actor
@@ -158,7 +157,6 @@ export function openDailiesInterface(actor, force) {
     if (!actor || !actor.isOfType('character') || !actor.isOwner) return warn('error.noCharacterSelected')
 
     if (getFlag(actor, 'rested') !== true) return warn('error.unrested')
-    if (!force && !hasAnyDaily(actor)) return warn('error.noDailies')
 
     new DailiesInterface(actor, { title: localize('interface.title', { name: actor.name }) }).render(true)
 }

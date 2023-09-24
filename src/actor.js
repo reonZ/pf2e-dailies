@@ -1,5 +1,4 @@
 import { openDailiesInterface } from './api'
-import { hasAnyDaily } from './dailies'
 import { localize } from './module'
 
 export async function onPerformDailyCrafting() {
@@ -36,11 +35,11 @@ export async function onPerformDailyCrafting() {
 
 export function renderCharacterSheetPF2e(sheet, html) {
     const actor = sheet.actor
-    if (!actor.isOwner || !hasAnyDaily(actor)) return
+    if (!actor.isOwner) return
 
     const small = html.find('aside .sidebar .hitpoints .hp-small')
     small
         .append(`<a class="roll-icon dailies" data-tooltip="${localize('sheet.title')}"><i class="fas fa-mug-saucer"></i></a>`)
         .find('.dailies')
-        .on('click', () => openDailiesInterface(actor, true))
+        .on('click', () => openDailiesInterface(actor))
 }

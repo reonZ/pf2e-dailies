@@ -137,8 +137,8 @@ export const utils = {
 
         if (member) {
             if (getSetting('members')) {
-                const members = game.actors.party?.members
-                if (members?.includes(member)) actors = members
+                const members = Array.from(member.parties ?? []).flatMap(party => party.members)
+                if (members.includes(member)) actors = members
             }
 
             if (member instanceof Actor) actors = actors.filter(a => a !== member)

@@ -144,6 +144,7 @@
             "familiar": "Familiar Abilities",
             "ability": "Ability #{nb}",
             "metamagical": "Metamagical",
+            "root": "Root Magic",
             "blade": {
                 "weapon": "Weapon",
                 "rune": "Property Rune"
@@ -197,6 +198,7 @@
             "feats": "Learned the feats:",
             "scrolls": "Created the temporary scrolls:",
             "blade": "Imbued their spirit into their weapon:",
+            "root": "Has prepared a small pouch with bits of herbs and gives it to an ally:",
             "rations": {
                 "used": "Consumed one of their {name} and has {nb} remaining.",
                 "last": "Consumed the last of their {name}.",

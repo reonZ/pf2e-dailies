@@ -8,6 +8,7 @@ import { createLanguageDaily } from './data/language'
 import { mindSmith } from './data/mind'
 import { getRations } from './data/rations'
 import { createResistancelDaily } from './data/resistance'
+import { rootMagic } from './data/root'
 import { scrollSavant } from './data/savant'
 import { createTrainedLoreDaily, createTrainedSkillDaily } from './data/skill'
 import { thaumaturgeTome } from './data/tome'
@@ -59,6 +60,7 @@ export const BUILTINS_DAILIES = [
     tricksterAce(),
     mindSmith,
     bladeAlly,
+    rootMagic,
 ]
 
 const BUILTINS_UUIDS = prepareDailies(BUILTINS_DAILIES, 'dailies')

@@ -15,6 +15,12 @@
             }
         }
 
+        .nothing {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
         .group {
             display: grid;
             gap: 0.2em 1em;
@@ -119,10 +125,13 @@
         }
 
         .buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
             margin-top: 1em;
-            column-gap: 0.3em;
+
+            &:not(.no-dailies) {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                column-gap: 0.3em;
+            }
         }
     }
 

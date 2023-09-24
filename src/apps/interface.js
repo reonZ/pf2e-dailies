@@ -194,6 +194,7 @@ export class DailiesInterface extends Application {
             },
             rows,
             groups,
+            hasDailies: rows.length || groups.length,
         })
     }
 
@@ -219,6 +220,8 @@ export class DailiesInterface extends Application {
 
     activateListeners(html) {
         super.activateListeners(html)
+
+        console.log(html)
 
         html.find('[data-action=clear]').on('click', this.#onClear.bind(this))
         html.find('[data-action=accept]').on('click', this.#onAccept.bind(this))

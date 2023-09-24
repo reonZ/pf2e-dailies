@@ -1,4 +1,6 @@
 <div class="content">
+    {{#if hasDailies}}
+
     {{#if rows.length}}
     <div class="group rows">
         {{#each rows as | group |}}
@@ -15,11 +17,20 @@
         {{/each}}
     </div>
     {{/each}}
+
+    {{else}}
+
+    <div class="nothing">
+        {{i18n 'noDailies'}}
+    </div>
+
+    {{/if}}
 </div>
 
-
-<div class="buttons">
+<div class="buttons {{#unless hasDailies}}no-dailies{{/unless}}">
+    {{#if hasDailies}}
     <button data-action="accept"><i class="fas fa-save"></i> {{i18n 'accept'}}</button>
+    {{/if}}
     <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
 </div>
 

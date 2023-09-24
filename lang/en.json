@@ -2,6 +2,7 @@
     "pf2e-dailies": {
         "interface": {
             "title": "{name}'s daily preparations",
+            "noDailies": "This character doesn't have any daily",
             "accept": "Accept",
             "cancel": "Cancel",
             "alert": {

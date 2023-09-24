@@ -71,12 +71,10 @@ export const bladeAlly = {
                 if (master) runes.push('greater-disrupting', 'keen')
                 if (evil) runes.push('fearsome')
 
-                return runes
-                    .map(value => ({
-                        value,
-                        label: localizeRune(value),
-                    }))
-                    .sort((a, b) => a.label.localeCompare(b.label))
+                return runes.map(value => ({
+                    value,
+                    label: localizeRune(value),
+                }))
             },
             condition: ({ actor }) => actor.itemTypes.weapon.filter(weapon => !weapon.isAlchemical).length,
         },

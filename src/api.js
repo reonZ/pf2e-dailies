@@ -9,7 +9,7 @@ const halfLevelString = 'max(1,floor(@actor.level/2))'
 export const utils = {
     // Skills
     get skillNames() {
-        return Object.key(CONFIG.PF2E.skillList).slice()
+        return Object.keys(CONFIG.PF2E.skillList).slice()
     },
     skillLabel: skill => {
         return game.i18n.localize(CONFIG.PF2E.skillList[skill])

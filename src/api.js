@@ -129,6 +129,20 @@ export const utils = {
 
         return null
     },
+    // actor
+    getPlayersActors: (member, ...types) => {
+        if (!types.length) types = ['creature']
+        let actors = game.actors
+
+        if (member) {
+            const members = game.actors.party?.members
+            if (members?.includes(member)) actors = members
+
+            if (member instanceof Actor) actors = actors.filter(a => a !== member)
+        }
+
+        return actors.filter(a => a.hasPlayerOwner && a.isOfType(...types))
+    },
 }
 
 export function openDailiesInterface(actor, force) {

@@ -13,7 +13,7 @@ import { createTrainedLoreDaily, createTrainedSkillDaily } from './data/skill'
 import { thaumaturgeTome } from './data/tome'
 import { AsyncFunction, error, getSetting, getSourceId } from './module'
 
-const BUILTINS = [
+export const BUILTINS_DAILIES = [
     thaumaturgeTome,
     createTrainedSkillDaily('longevity', 'Compendium.pf2e.feats-srd.Item.WoLh16gyDp8y9WOZ'), // Ancestral Longevity
     createTrainedSkillDaily('ageless', 'Compendium.pf2e.feats-srd.Item.wylnETwIz32Au46y'), // Ageless Spirit
@@ -54,15 +54,15 @@ const BUILTINS = [
         'Compendium.pf2e.feats-srd.Item.UrOj9TROtn8nuxPf', // Expert Scroll Cache
         'Compendium.pf2e.feats-srd.Item.lIg5Gzz7W70jfbk1', // Master Scroll Cache
     ]),
-    tricksterAce,
+    tricksterAce(),
     mindSmith,
     bladeAlly,
 ]
 
-const BUILTINS_UUIDS = parseDailies(BUILTINS, 'dailies')
+const BUILTINS_UUIDS = prepareDailies(BUILTINS_DAILIES, 'dailies')
 const UUIDS = new Map()
 
-function parseDailies(dailies, prefix) {
+export function prepareDailies(dailies, prefix) {
     const uuids = new Map()
 
     for (const original of dailies) {
@@ -91,10 +91,12 @@ function parseDailies(dailies, prefix) {
     return uuids
 }
 
+export let CUSTOM_DAILIES = []
+
 export async function parseCustomDailies() {
     UUIDS.clear()
 
-    const CUSTOM_DAILIES = []
+    CUSTOM_DAILIES = []
 
     const customs = getSetting('customDailies')
     for (const { key, code } of customs) {
@@ -113,7 +115,7 @@ export async function parseCustomDailies() {
         UUIDS.set(uuid, daily)
     }
 
-    const CUSTOM_UUIDS = parseDailies(CUSTOM_DAILIES, 'custom')
+    const CUSTOM_UUIDS = prepareDailies(CUSTOM_DAILIES, 'custom')
     for (const [uuid, daily] of CUSTOM_UUIDS.entries()) {
         UUIDS.set(uuid, daily)
     }

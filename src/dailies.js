@@ -128,7 +128,7 @@ export async function parseCustomDailies() {
 
 export function checkCustomDaily(daily, warning = false) {
     if (!DEPRECATED_CUSTOM_DAILIES.includes(daily.key)) return true
-    if (warning) warn('deprecated.custom.key', { name: daily.label.trim() || daily.key }, true)
+    if (warning && game.user.isGM) warn('deprecated.custom.key', { name: daily.label.trim() || daily.key }, true)
     return false
 }
 

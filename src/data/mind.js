@@ -1,6 +1,7 @@
-import { MODULE_ID, getFlag, localize, subLocalize } from '../module'
+import { MODULE_ID, findItemWithSourceId, getFlag, localize, subLocalize } from '../module'
 
 const MIND_WEAPON_UUID = 'Compendium.pf2e-dailies.equipment.Item.VpmEozw21aRxX15P'
+const MALLEABLE_MENTAL_FORGE_UUID = 'Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky'
 
 const WEAPON_BASE_TYPES = {
     0: { die: 'd4', traits: ['finesse', 'agile'], usage: 'held-in-one-hand' },
@@ -46,7 +47,7 @@ export const mindSmith = {
         },
         {
             slug: 'mental',
-            uuid: 'Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky', // Malleable Mental Forge
+            uuid: MALLEABLE_MENTAL_FORGE_UUID, // Malleable Mental Forge
         },
         {
             slug: 'runic',
@@ -73,14 +74,14 @@ export const mindSmith = {
             labelizer: ({ utils }) => utils.damageLabel,
             childPredicate: ['weapon'],
         },
-        {
+        ...[1, 2].map(nb => ({
             type: 'select',
-            slug: 'mental',
-            label: () => localize('label.mentalforge'),
+            slug: `mental${nb}`,
+            label: () => localize('label.mentalforge', { nb }),
             options: WEAPON_TRAITS,
             labelizer: ({ utils }) => utils.weaponTraitLabel,
             childPredicate: ['weapon', 'mental'],
-        },
+        })),
         {
             type: 'select',
             slug: 'runic',
@@ -111,15 +112,18 @@ export const mindSmith = {
         messages.add('mindsmith', { selected: utils.damageLabel(selected), uuid: item.uuid, label: 'mindsmith' })
 
         if (children.mental) {
-            const selected = fields.mental.value
             const traits = deepClone(weapon._source.system.traits?.value ?? [])
-            if (!traits.includes(selected)) traits.push(selected)
-            updateItem({ _id: weapon.id, 'system.traits.value': traits })
-            messages.add('mindsmith', {
-                selected: utils.weaponTraitLabel(selected),
-                uuid: children.mental.uuid,
-                label: 'mentalforge',
-            })
+
+            for (const nb of [1, 2]) {
+                const selected = fields[`mental${nb}`].value
+                if (!traits.includes(selected)) traits.push(selected)
+                updateItem({ _id: weapon.id, 'system.traits.value': traits })
+                messages.add('mindsmith', {
+                    selected: utils.weaponTraitLabel(selected),
+                    uuid: children.mental.uuid,
+                    label: localize('label.mentalforge', { nb }),
+                })
+            }
         }
 
         if ((children.advanced || children.runic) && utils.hasFreePropertySlot(weapon)) {
@@ -138,12 +142,15 @@ export const mindSmith = {
             }
         }
     },
-    rest: ({ item, sourceId, updateItem }) => {
+    rest: ({ item, sourceId, updateItem, actor }) => {
         if (sourceId !== MIND_WEAPON_UUID) return
 
-        let traits = item._source.system.traits?.value ?? []
-        traits = traits.filter(trait => !WEAPON_TRAITS.includes(trait))
-        updateItem({ _id: item.id, 'system.traits.value': traits })
+        const mental = findItemWithSourceId(actor, MALLEABLE_MENTAL_FORGE_UUID)
+        if (mental) {
+            let traits = item._source.system.traits?.value ?? []
+            traits = traits.filter(trait => !WEAPON_TRAITS.includes(trait))
+            updateItem({ _id: item.id, 'system.traits.value': traits })
+        }
 
         const runeSlot = getFlag(item, 'runeSlot')
         if (runeSlot) {

@@ -140,7 +140,7 @@
             "ganzi": "Ganzi Heritage",
             "tome": "Thaumaturgy Tome",
             "mindsmith": "Mind Smith",
-            "mentalforge": "Mental Forge",
+            "mentalforge": "Mental Forge {nb}",
             "runicmind": "Runic Smithing",
             "familiar": "Familiar Abilities",
             "ability": "Ability #{nb}",

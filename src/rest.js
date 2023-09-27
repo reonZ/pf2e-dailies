@@ -31,7 +31,7 @@ export async function restForTheNight(actor) {
         if (sourceId) {
             const daily = getDailyFromSourceId(sourceId)
             if (daily?.rest) {
-                await daily.rest({ item, sourceId, updateItem })
+                await daily.rest({ item, sourceId, updateItem, actor })
             }
         }
 

@@ -1,14 +1,15 @@
+import { createUpdateCollection } from './api'
 import { getDailyFromSourceId } from './dailies'
 import { MODULE_ID, getFlag, getSourceId, setFlag } from './module'
 import { sluggify } from './pf2e/sluggify'
 
 export async function restForTheNight(actor) {
-    const update = []
-    const remove = []
+    const removeItems = []
+    const [updateItems, updateItem] = createUpdateCollection()
 
     for (const item of actor.items) {
         if (getFlag(item, 'temporary')) {
-            remove.push(item.id)
+            removeItems.push(item.id)
 
             // we remove the itemGrants flag from the parent feat
             if (item.isOfType('feat')) {
@@ -16,7 +17,7 @@ export async function restForTheNight(actor) {
                 if (parentId) {
                     const slug = sluggify(item.name, { camel: 'dromedary' })
                     const path = `flags.pf2e.itemGrants.-=${slug}`
-                    update.push({ _id: parentId, [path]: true })
+                    updateItem({ _id: parentId, [path]: true })
                 }
             }
 
@@ -30,7 +31,7 @@ export async function restForTheNight(actor) {
         if (sourceId) {
             const daily = getDailyFromSourceId(sourceId)
             if (daily?.rest) {
-                await daily.rest({ item, sourceId, updateItem: data => update.push(data) })
+                await daily.rest({ item, sourceId, updateItem })
             }
         }
 
@@ -43,11 +44,11 @@ export async function restForTheNight(actor) {
                 modifiedRules = true
             }
         }
-        if (modifiedRules) update.push({ _id: item.id, 'system.rules': rules })
+        if (modifiedRules) updateItem({ _id: item.id, 'system.rules': rules })
     }
 
-    if (update.length) await actor.updateEmbeddedDocuments('Item', update)
-    if (remove.length) await actor.deleteEmbeddedDocuments('Item', remove)
+    if (updateItems.size) await actor.updateEmbeddedDocuments('Item', updateItems.contents)
+    if (removeItems.length) await actor.deleteEmbeddedDocuments('Item', removeItems)
 
     await setFlag(actor, 'rested', true)
 }

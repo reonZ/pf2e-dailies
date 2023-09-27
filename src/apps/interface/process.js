@@ -1,3 +1,4 @@
+import { createUpdateCollection } from '../../api'
 import { familiarUUID, getFamiliarPack } from '../../data/familiar'
 import { getRations } from '../../data/rations'
 import { MODULE_ID, chatUUID, error, fakeChatUUID, getFlag, hasLocalization, localize, subLocalize } from '../../module'
@@ -9,7 +10,7 @@ export async function processData() {
     const fields = getFields.call(this)
     const addItems = []
     const addRules = new Map()
-    const updateItems = []
+    const [updateItems, updateItem] = createUpdateCollection()
     const flags = {}
     const msg = subLocalize('message')
 
@@ -88,14 +89,14 @@ export async function processData() {
                 if (quantity <= 1) {
                     rations.delete()
                 } else {
-                    updateItems.push({
+                    updateItem({
                         _id: rations.id,
                         'system.quantity': Math.max(rations.quantity - 1, 0),
                         'system.charges.value': max,
                     })
                 }
             } else {
-                updateItems.push({
+                updateItem({
                     _id: rations.id,
                     'system.charges.value': Math.max(value - 1, 0),
                 })
@@ -121,7 +122,7 @@ export async function processData() {
                 fields: fields[key],
                 messages: messageObj,
                 addItem: source => addItems.push(source),
-                updateItem: data => updateItems.push(data),
+                updateItem,
                 addRule: (source, parent) => {
                     source[MODULE_ID] = true
                     getRules(parent ?? item).push(source)
@@ -168,7 +169,7 @@ export async function processData() {
     }
 
     for (const [id, rules] of addRules) {
-        updateItems.push({ _id: id, 'system.rules': rules })
+        updateItem({ _id: id, 'system.rules': rules })
     }
 
     if (addedSpells) {
@@ -200,7 +201,7 @@ export async function processData() {
                 if (parentId) {
                     const slug = sluggify(item.name, { camel: 'dromedary' })
                     const path = `flags.pf2e.itemGrants.${slug}`
-                    updateItems.push({ _id: parentId, [path]: { id: item.id, onDelete: 'detach' } })
+                    updateItem({ _id: parentId, [path]: { id: item.id, onDelete: 'detach' } })
                 }
             } else if (item.isOfType('spellcastingEntry')) {
                 // we add all the newly created spells with 'addSpell' to this spellcasting entry
@@ -209,7 +210,7 @@ export async function processData() {
                     const { level } = getFlag(spell, 'entry')
                     const data = { _id: spell.id, 'system.location.value': item.id }
                     if (level !== undefined) data['system.location.heightenedLevel'] = level
-                    updateItems.push(data)
+                    updateItem(data)
                 }
             }
         }
@@ -217,7 +218,7 @@ export async function processData() {
 
     await actor.update({ [`flags.${MODULE_ID}`]: { ...expandObject(flags), rested: false } })
 
-    if (updateItems.length) await actor.updateEmbeddedDocuments('Item', updateItems)
+    if (updateItems.size) await actor.updateEmbeddedDocuments('Item', updateItems.contents)
 
     message = parseMessages(messages, message)
     message = message ? `${msg('changes')}<hr />${message}` : msg('noChanges')

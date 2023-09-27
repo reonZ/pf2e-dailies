@@ -5,6 +5,8 @@ import { createSpellScroll } from './pf2e/spell'
 
 const halfLevelString = 'max(1,floor(@actor.level/2))'
 
+const RUNE_PROPERTY_KEYS = ['propertyRune1', 'propertyRune2', 'propertyRune3', 'propertyRune4']
+
 let SKILLNAMES
 let LANGUAGES
 
@@ -110,13 +112,14 @@ export const utils = {
     sequenceArray,
     // equipment
     damageLabel: damage => {
-        return game.i18n.localize(CONFIG.PF2E.weaponDamage[damage])
+        return game.i18n.localize(CONFIG.PF2E.damageTypes[damage])
     },
     weaponTraitLabel: trait => {
         return game.i18n.localize(CONFIG.PF2E.weaponTraits[trait])
     },
     weaponPropertyRunesLabel: rune => {
-        return game.i18n.localize(CONFIG.PF2E.weaponPropertyRunes[rune])
+        const key = `PF2E.WeaponPropertyRune.${rune}.Name`
+        return game.i18n.localize(key)
     },
     hasFreePropertySlot: item => {
         const potency = item.system.runes.potency
@@ -169,4 +172,17 @@ export function openDailiesInterface(actor) {
 export function requestDailies() {
     if (!game.user.isGM) return warn('error.notGM')
     createWatchChatMessage()
+}
+
+export function createUpdateCollection() {
+    const collection = new Collection()
+    return [
+        collection,
+        data => {
+            const id = data._id
+            if (!id) return
+            const update = collection.get(id) ?? {}
+            collection.set(id, mergeObject(update, data))
+        },
+    ]
 }

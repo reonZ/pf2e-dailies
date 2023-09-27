@@ -1,3 +1,9 @@
+# 2.12.3
+
+-   traits manually selected for your `Mind Weapon` are no longer removed if you don't have the `Malleable Mental Forge` feat
+-   you can now properly select two traits with the `Malleable Mental Forge` feats
+-   the owning actor is now passed to the `rest` daily function
+
 # 2.12.2
 
 -   fixed lingering issues with system changes that were never reported

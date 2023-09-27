@@ -10,5 +10,6 @@ jsconfig.json
 webpack*.*
 *.log
 CURRENT
-LOG
+LOCK
+LOG*
 MANIFEST*

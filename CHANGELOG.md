@@ -1,3 +1,8 @@
+# 2.12.2
+
+-   fixed lingering issues with system changes that were never reported
+-   fixed underlying issue with how multiple updates on a single item could sometimes result in some not working
+
 # 2.12.1
 
 -   fixed `utils.skillNames` error (again)

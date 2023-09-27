@@ -8,3 +8,7 @@ package*.json
 tsconfig.json
 jsconfig.json
 webpack*.*
+*.log
+CURRENT
+LOG
+MANIFEST*

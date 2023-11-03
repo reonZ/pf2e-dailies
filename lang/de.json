@@ -1,0 +1,240 @@
+{
+    "pf2e-dailies": {
+        "interface": {
+            "title": "{name}s tägliche Vorbereitungen",
+            "noDailies": "Dieser Charakter hat keine täglichen Vorbereitungen",
+            "accept": "Akzeptieren",
+            "cancel": "Abbrechen",
+            "alert": {
+                "weapon": "Fehlende Geistwaffe"
+            },
+            "error": {
+                "unexpected": "Ein unerwarteter Fehler ist während der täglichen Vorbereitungen aufgetreten. Siehe Konsole (F12) für Details.",
+                "empty": "Alle Felder müssen ausgefüllt sein.",
+                "unattended": "Einige Warnungen wurden noch nicht beachtet. Bitte klicken Sie auf die Warndreiecke, um sie zu klären.",
+                "drop": {
+                    "wrongDataType": "Ungültiger Datentyp abgelegt.",
+                    "wrongType": "Das abgelegte Element hat nicht den richtigen Typ (benötigt: {types}).",
+                    "wrongCategory": "Das abgelegte Element hat nicht die richtige Kategorie (benötigt: {categories}).",
+                    "wrongTradition": "Das abgelegte Element hat nicht die richtige Tradition (benötigt: {traditions}).",
+                    "wrongSchool": "Das abgelegte Element hat nicht die richtige Schule (benötigt: {schools}).",
+                    "wrongLevel": "Das abgelegte Element hat nicht das richtige Level (benötigt: {levels}).",
+                    "wrongLevelLow": "Das Level des abgelegten Elements ist zu niedrig für diesen Slot ({level}).",
+                    "wrongLevelHigh": "Das Level des abgelegten Elements ist zu hoch für diesen Slot ({level}).",
+                    "wrongTraitAnd": "Das abgelegte Element hat nicht alle Eigenschaften (benötigt alle: {traits}).",
+                    "wrongTraitOr": "Das abgelegte Element hat keines der Eigenschaften (benötigt irgendeines: {traits}).",
+                    "wrongTraits": "Das abgelegte Element hat nicht übereinstimmende Eigenschaften.",
+                    "wrongSkill": "Dem abgelegten Element fehlen die erforderlichen Fertigkeiten ({skills}).",
+                    "wrongRarity": "Das abgelegte Element hat nicht die richtige Seltenheit ({rarities}).",
+                    "wrongSource": "Das abgelegte Element stammt nicht aus der richtigen Quelle ({sources}).",
+                    "wrongCustom": "Das abgelegte Element entspricht nicht den Filtern.",
+                    "notFeat": "Hier können nur Talente abgelegt werden.",
+                    "notSpell": "Hier können nur Zauber abgelegt werden.",
+                    "wrongSpellTime": "Die Zauberzeit des abgelegten Zaubers überschreitet {time}."
+                },
+                "input": {
+                    "proficiency": "Sie sind bereits {rank} in {proficiency}."
+                }
+            },
+            "tooltip": {
+                "random": "Dies wird zufällig ausgewählt",
+                "alert": "Klicken Sie hier, um dies zu beheben",
+                "search": "Öffnen Sie den Kompendium-Browser",
+                "clear": "Auswahl löschen",
+                "noSelect": "Keine Optionen verfügbar"
+            },
+            "rations": {
+                "yes": "Verbrauchen ({nb} verbleibend)",
+                "no": "Keine Ration verbrauchen",
+                "last": "Letzte Ration verbrauchen"
+            }
+        },
+        "customs": {
+            "title": "Benutzerdefinierte tägliche Vorbereitungen",
+            "saved": "Die tägliche Vorbereitung '{daily}' wurde erfolgreich gespeichert.",
+            "deleted": "Die tägliche Vorbereitung '{daily}' wurde erfolgreich gelöscht.",
+            "list": {
+                "create": "Neue tägliche Vorbereitung"
+            },
+            "code": {
+                "save": "Tägliche Vorbereitung speichern",
+                "newVersion": "Es gibt eine neue Version <strong>{version}</strong> der Erweiterung, die zum Download bereitsteht.  Wenn sie nicht aktualisiert wird, könnten Probleme auftreten. Sie können die Erweiterung hier finden: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>",
+                "notify": "Wenn Sie eine benutzerdefinierte tägliche Vorbereitung erstellen möchten, gibt es eine Erweiterung für das Modul, die dies durch einen sehr leistungsstarken Texteditor ersetzt, der alle Typen des Moduls enthält.<br>Die Erweiterung ist nicht beim Foundry registriert, aber Sie können sie hier finden: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>"
+            },
+            "delete": {
+                "title": "Tägliche Vorbereitung löschen",
+                "content": "Möchten Sie diese tägliche Vorbereitung wirklich löschen?"
+            },
+            "template": {
+                "template": "Vorlage",
+                "templates": "Vorlagen",
+                "create": "Tägliche Vorbereitung erstellen",
+                "noEmpty": "Manche Felder sind nicht optional, bitte stellen Sie sicher, dass Sie Einträge für alle Felder bereitstellen, die nicht als '(optional)' gekennzeichnet sind.",
+                "badResistance": "Ein Resistenzwert muss größer als 0 sein.",
+                "tooltips": {
+                    "key": "Ein eindeutiger Schlüssel für Ihre tägliche Vorbereitung.",
+                    "label": "(optional) Bezeichnung, die im Vorbereitungsfenster und der Chat-Nachricht verwendet wird. Wenn es leer gelassen wird, wird stattdessen der Name des Stammelements verwendet.",
+                    "uuid": "Die uuid des Stammelements (Talent, Ausrüstung usw.), das entscheidet, ob diese tägliche Vorbereitung verwendet wird oder nicht (wenn der Charakter das genannte Element hat).",
+                    "resistances": "Komma-separierte Liste von Resistenzen, aus denen der Benutzer auswählen kann.",
+                    "resistance": "Der Wert der gewählten Resistenz.",
+                    "feattype": "(optional) Komma-separierte Liste der im Filter verwendeten Talenttypen.",
+                    "feattraits": "(optional) Komma-separierte Liste der im Filter verwendeten Talenteigenschaften.",
+                    "featlevel": "(optional) Das maximale Talentlevel, das im Filter verwendet wird. Kann eine Zahl oder eine der Abkürzungen 'level' und 'half' sein, die jeweils das Level des Charakters oder die Hälfte seines Werts verwenden.",
+                    "spelllevel": "(optional) Das Level, auf das der Zauber erhöht wird. Kann leer gelassen werden, um das ursprüngliche Level des Zaubers zu verwenden.",
+                    "spellcategory": "(optional) Komma-separierte Liste der im Filter verwendeten Zauberkategorien.",
+                    "spelltraits": "(optional) Komma-separierte Liste der im Filter verwendeten Zaubereigenschaften.",
+                    "traditions": "(optional) Komma-separierte Liste der im Filter verwendeten Zaubertraditionen.",
+                    "spelllevels": "(optional) Komma-separierte Liste der im Filter verwendeten Zauberlevel. Wenn eine einzelne Zahl angegeben wird, wird sie als oberer Bereichswert verwendet. Kann eine der Abkürzungen 'level' und 'half' sein, die jeweils das Level des Charakters oder die Hälfte seines Werts verwenden."
+                },
+                "default": {
+                    "label": "Standard",
+                    "hint": "Dies ist die Standardvorlage."
+                },
+                "trainedSkill": {
+                    "label": "Geübte Fertigkeit",
+                    "hint": "Diese Vorlage wurde für Talente wie <strong>Anwendbare Erfahrungen</strong> oder <strong>Alterslose Seele</strong> verwendet, um eine Fertigkeit zu verbessern oder eine neue Kenntnisfertigkeit mit dem Kompetenzgrad <strong>Geübt</strong> zu erstellen."
+                },
+                "trainedLore": {
+                    "label": "Geübte Kenntnisfertigkeit",
+                    "hint": "Diese Vorlage wurde für Talente wie <strong>Schnelles Studium</strong> verwendet, um eine neue Kenntnisfertigkeit mit dem Kompetenzgrad <strong>Geübt</strong> zu erstellen."
+                },
+                "language": {
+                    "label": "Sprache",
+                    "hint": "Diese Vorlage wurde mit dem Talent <strong>Sprachenkundler</strong> und dem Ring <strong>Borts Segen</strong> verwendet, um eine neue Sprache hinzuzufügen."
+                },
+                "resistance": {
+                    "label": "Resistenz",
+                    "hint": "Diese Vorlage wurde für den <strong>Elementarzauberer-Zugang</strong> und der <strong>Ganzi</strong> Abstammung verwendet, um eine neue Resistenz aus einer vordefinierten Liste hinzuzufügen."
+                },
+                "feat": {
+                    "label": "Talent",
+                    "hint": "Diese Vorlage wurde für das Talent <strong>Metamagische Versuche</strong> verwendet, um ein neues Talent zu erstellen."
+                },
+                "spell": {
+                    "label": "Zauber",
+                    "hint": "Diese Vorlage erlaubt die Erstellung eines neuen Zaubers, der als ein tempoärer Zauber eingetragen wird."
+                },
+                "example": "Beispiel",
+                "examples": "Beispiele",
+                "tome": {
+                    "label": "Thaumaturgen Buch",
+                    "hint": "So würde der Code aussehen, wenn das <strong>Buch</strong> Paraphernum der Thaumaturg-Klasse eine selbstgemachte tägliche Vorbereitung wäre. Es hebt die Verwendung von Unterobjekten mit Bedingungen und die Verwendung der <u>prepare</u>-Funktion hervor."
+                },
+                "flexibility": {
+                    "label": "Kämpferflexibilität",
+                    "hint": "So würde der Code aussehen, wenn das <strong>Kämpferflexibilität</strong> Talent eine selbstgemachte tägliche Vorbereitung wäre. Es ist ein einfaches Beispiel für die Verwendung von <u>drop rows</u> mit <u>spell filters</u> und <u>child predicate</u>."
+                },
+                "savant": {
+                    "label": "Schriftrollenspezialist",
+                    "hint": "So würde der Code aussehen, wenn das <strong>Schriftrollenspezialist</strong> Talent eine selbstgemachte tägliche Vorbereitung wäre. Wir sammeln einige einfache Daten in der <u>prepare</u>-Funktion und verwenden sie für die <u>condition</u>-Funktion der verschiedenen Zeilen."
+                },
+                "mind": {
+                    "label": "Geistschmied",
+                    "hint": "So würde der Code aussehen, wenn der <strong>Geistschmied</strong> Zugang eine selbstgemachte tägliche Vorbereitung wäre. Es hebt die Verwendung von <u>child predicates</u> und <u>condition</u> hervor, alles fällt auseinander, wenn der Charakter keine Geistwaffe hat (die Waffe ist in einem Kompendiumspaket) und deshalb verwenden wir die <u>alert</u> Zeile, um diese Waffe bei Bedarf zu erstellen. Es verwendet auch die <u>rest</u> Funktion, um die Geistwaffe zu bereinigen."
+                }
+            }
+        },
+        "label": {
+            "elementalist": "Elementarzauberer",
+            "trickster": "Schriftrollenspezialisten",
+            "ganzi": "Ganzi Abstammung",
+            "tome": "Thaumaturgen Buch",
+            "mindsmith": "Geistschmied",
+            "mentalforge": "Geistschmiede {nb}",
+            "runicmind": "Runengeistschmiede",
+            "familiar": "Vertrautenfähigkeiten",
+            "ability": "Fähigkeit #{nb}",
+            "metamagical": "Metamagisch",
+            "root": "Schutzmagie",
+            "blade": {
+                "weapon": "Waffe",
+                "rune": "Eigenschaftsrune"
+            }
+        },
+        "sheet": {
+            "title": "Tägliche Vorbereitungen"
+        },
+        "dialog": {
+            "weapon": {
+                "title": "Geistwaffe",
+                "flavor": "<p>Dieser Charakter hat keine Geistwaffe in seinem Inventar.</p><p>Bitte wählen Sie eine der folgenden Optionen, um eine zu erstellen.</p>",
+                "accept": "Akzeptieren",
+                "cancel": "Abbrechen",
+                "option": {
+                    "0": "Eine einhändige Waffe, die <strong>1W4</strong> Schaden verursacht und die Eigenschaften <strong>Agil</strong> und <strong>Finesse</strong> hat",
+                    "1": "Eine einhändige Waffe, die <strong>1W6</strong> Schaden verursacht und die Eigenschaft <strong>Finesse</strong> hat",
+                    "2": "Eine einhändige Waffe, die <strong>1W8</strong> Schaden verursacht",
+                    "3": "Eine zweihändige Waffe, die <strong>1W10</strong> Schaden verursacht und die Eigenschaft <strong>Reichweite</strong> hat"
+                },
+                "error": {
+                    "noSelection": "Sie müssen einen Waffentyp auswählen.",
+                    "missing": "Die Waffe konnte im Kompendium nicht gefunden werden."
+                }
+            }
+        },
+        "error": {
+            "unexpected": "Ein unerwarteter Fehler ist während der täglichen Vorbereitungen aufgetreten. Siehe Konsole (F12) für Details.",
+            "unrested": "Sie müssen sich ausruhen, bevor Sie Ihre täglichen Vorbereitungen treffen.",
+            "duplicate": "Eine tägliche Vorbereitung mit diesem Schlüssel existiert bereits.",
+            "invalidKey": "Der tägliche Schlüssel muss eine gültige Zeichenfolge sein.",
+            "noLibwrapper": "Dieses Modul benötigt das Modul 'libwrapper', um optimal zu funktionieren.",
+            "noCharacterSelected": "Es wurden keine <strong>Charaktere</strong> an die Funktion <strong>openDailyInterface</strong> übergeben.",
+            "noDailies": "Dieser Charakter hat keine täglichen Vorbereitungen.",
+            "notGM": "Nur der SL kann das tun."
+        },
+        "spellEntry": {
+            "name": "Temporäre Zauber"
+        },
+        "message": {
+            "changes": "Hat während seiner/ihrer täglichen Vorbereitungen die folgenden Änderungen vorgenommen.",
+            "noChanges": "Hat während seiner/ihrer täglichen Vorbereitungen keine Änderungen vorgenommen.",
+            "gained": "Hat die temporäre {type} erhalten:",
+            "resistance": "Hat die Resistenz erhalten:",
+            "languages": "Hat gelernt foglende Sprache(n) zu lesen und zu sprechen:",
+            "skills": "Ist in folgenden Fertigkeiten geübt:",
+            "tome": "Hat sein Thaumaturgen Buch studiert:",
+            "spells": "Hat die folgenden Zauber vorbereitet:",
+            "mindsmith": "Konzenriert sich auf die Geistwaffe:",
+            "familiar": "Hat die folgenden Vertrautenfähigkeiten ausgewählt:",
+            "feats": "Hat die folgenden Talente erlernt:",
+            "scrolls": "Hat die folgenden temporären Schriftrollen erstellt:",
+            "blade": "Hat die folgenden Eigenschaftsrune(n) auf seine/ihre Waffe(n) angewendet:",
+            "root": "Hat eine kleine Tasche mit Kräutern vorbereitet und einem Verbündeten gegeben:",
+            "rations": {
+                "used": "Verbraucht eine seiner/ihrer {name} und hat noch {nb} übrig.",
+                "last": "Verbraucht die letzte seiner/ihrer {name}.",
+                "almost": "Verbraucht eine seiner/ihrer {name} und hat nur noch {nb} übrig."
+            },
+            "dailiesRequest": {
+                "content": "Es ist Zeit für die täglichen Vorbereitungen, bitte treffen Sie Ihre Auswahl.",
+                "button": "Tägliche Vorbereitungen"
+            }
+        },
+        "settings": {
+            "familiar": {
+                "name": "Vertrautenfähigkeiten",
+                "hint": "Komma-separierte Effekt UUIDs. Diese werden der Liste der Vertrautenfähigkeiten hinzugefügt."
+            },
+            "menus": {
+                "customs": {
+                    "name": "Benutzerdefinierte tägliche Vorbereitungen",
+                    "hint": "Registrieren Sie Ihre eigenen täglichen Vorbereitungen im Modul.",
+                    "label": "Registrieren"
+                }
+            },
+            "watch": {
+                "name": "Auf Anfrage achten",
+                "hint": "Aktivieren Sie diese Option, wenn Sie die 'requestDailies' API-Funktion verwenden möchten. Andernfalls wird der Button in der Chat-Nachricht nicht funktionieren."
+            },
+            "members": {
+                "name": "Nur Gruppenmitglieder",
+                "hint": "Wenn in dem Modul eine Sammlung von Spielercharakteren abgerufen wird und wenn der Charakter Mitglied einer Gruppe ist, sollten diese Charaktere dann aus dieser Gruppe genommen werden oder irgendeinem beliebigen Spieler gehören?"
+            }
+        },
+        "deprecated": {
+            "custom": {
+                "key": "Die <strong>{name}</strong> tägliche Vorbereitung wurde direkt in <strong>PF2e Dailies</strong> implementiert, die benutzerdefinierte tägliche Vorbereitung wurde übersprungen und kann sicher gelöscht werden."
+            }
+        }
+    }
+}

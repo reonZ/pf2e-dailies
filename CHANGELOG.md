@@ -1,3 +1,7 @@
+# 2.13.0
+
+-   added german localization (thanks to [Tim Segger](https://github.com/timsegger))
+
 # 2.12.3
 
 -   traits manually selected for your `Mind Weapon` are no longer removed if you don't have the `Malleable Mental Forge` feat

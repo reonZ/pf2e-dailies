@@ -71,7 +71,7 @@ export async function onDropSpell(item, target, filter) {
 
     if (search.category?.length) {
         const categories = search.category
-            .map(x => game.i18n.localize(x === 'cantrip' ? 'PF2E.SpellCantripLabel' : CONFIG.PF2E.spellCategories[x]))
+            .map(x => game.i18n.localize(x === 'cantrip' ? 'PF2E.SpellCantripLabel' : CONFIG.PF2E.preparationType[x]))
             .join(', ')
 
         if (

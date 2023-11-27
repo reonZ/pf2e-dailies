@@ -59,7 +59,7 @@ async function parseSpellFilter(actor, search) {
     setTraits(search.traits, data.multiselects.traits)
 
     const level = getSpellFilterLevel(actor, search.level)
-    if (level?.length) checkFilter(level, data.checkboxes.level)
+    if (level?.length) checkFilter(level, data.checkboxes.rank)
 
     return data
 }

@@ -89,6 +89,9 @@ export const utils = {
         if (!source) throw new Error(`An error occured while trying to create a spell source with uuid: ${uuid}`)
         return source
     },
+    spellRankLabel: rank => {
+        return game.i18n.format('PF2E.Item.Spell.Rank.Ordinal', { rank: ordinalString(rank) })
+    },
     // Rule Elements
     get halfLevelString() {
         return halfLevelString
@@ -153,6 +156,12 @@ export const utils = {
 
         return actors.filter(a => a.isOfType(...types))
     },
+}
+
+export function ordinalString(value) {
+    const pluralRules = new Intl.PluralRules(game.i18n.lang, { type: 'ordinal' })
+    const suffix = game.i18n.localize(`PF2E.OrdinalSuffixes.${pluralRules.select(value)}`)
+    return game.i18n.format('PF2E.OrdinalNumber', { value, suffix })
 }
 
 export function openDailiesInterface(actor) {

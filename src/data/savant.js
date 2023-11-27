@@ -1,7 +1,7 @@
 export const scrollSavant = {
     key: 'savant',
     item: {
-        uuid: 'Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ', // Scroll Savant
+        uuid: 'Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ', // Scroll Adept
     },
     prepare: ({ actor }) => {
         const { maxSlot, maxTradition } = getSpellcastingTraditionDetails(actor, 'arcane')
@@ -19,7 +19,7 @@ export const scrollSavant = {
         const row = {
             type: 'drop',
             slug: rowName,
-            label: ({ custom }) => `PF2E.SpellLevel${custom[rowName].level}`,
+            label: ({ custom, utils }) => utils.spellRankLabel(custom[rowName].level),
             filter: {
                 type: 'spell',
                 search: ({ custom }) => ({

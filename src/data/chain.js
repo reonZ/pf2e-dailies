@@ -43,7 +43,7 @@ function createRow(slug, level, minActorLevel, child) {
     const row = {
         type: 'drop',
         slug,
-        label: `PF2E.SpellLevel${level}`,
+        label: ({ utils }) => utils.spellRankLabel(level),
         filter: {
             type: 'spell',
             search: {

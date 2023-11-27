@@ -41,9 +41,9 @@ export const BUILTINS_DAILIES = [
     ), // Ganzi
     createFeatDaily('metamagical', 'Compendium.pf2e.classfeatures.Item.89zWKD2CN7nRu2xp', {
         category: ['class'],
-        traits: { selected: ['metamagic', 'wizard'], conjunction: 'and' },
+        traits: { selected: ['spellshape', 'wizard'], conjunction: 'and' },
         level: 'half',
-    }), // Metamagical Experimentation
+    }), // Experimental Spellshaping
     combatFlexibility,
     scrollSavant,
     createScrollChain('esoterica', [

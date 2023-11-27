@@ -13,33 +13,48 @@ const scrollCompendiumIds = {
     10: 'o1XIHJ4MJyroAHfF',
 }
 
+const MAGIC_TRADITIONS = new Set(['arcane', 'divine', 'occult', 'primal'])
+
 const scrolls = []
 
 export async function createSpellScroll(uuid, level, temp = false) {
-    const spell = (await fromUuid(uuid))?.toObject()
+    const spell = await fromUuid(uuid)
     if (!spell) return null
 
     if (level === false) level = spell.system.level.value
 
-    const scrollUUID = getScrollCompendiumUUID(level)
+    const scrollUUID = `Compendium.pf2e.equipment-srd.Item.${scrollCompendiumIds[level]}`
     scrolls[level] ??= await fromUuid(scrollUUID)
 
-    const scroll = scrolls[level]?.toObject()
-    if (!scroll) return null
+    const scrollSource = scrolls[level]?.toObject()
+    if (!scrollSource) return null
 
-    spell.system.location.heightenedLevel = level
+    const traits = scrollSource.system.traits
+    traits.value = Array.from(new Set([...traits.value, ...spell.traits]))
+    traits.rarity = spell.rarity
+    if (traits.value.includes('magical') && traits.value.some(trait => MAGIC_TRADITIONS.has(trait))) {
+        traits.value.splice(traits.value.indexOf('magical'), 1)
+    }
+    traits.value.sort()
 
-    scroll.name = `Scroll of ${spell.name} (Level ${level})`
-    scroll.system.temporary = temp
-    scroll.system.spell = spell
-    scroll.system.traits.value.push(...spell.system.traditions.value)
+    scrollSource._id = null
+    scrollSource.name = game.i18n.format('PF2E.Item.Physical.FromSpell.Scroll', { name: spell.name, level })
 
-    const sourceId = spell.flags.core?.sourceId
-    if (sourceId) scroll.system.description.value = `${chatUUID(sourceId)}\n<hr />${scroll.system.description.value}`
+    const description = scrollSource.system.description.value
+    scrollSource.system.description.value = (() => {
+        const paragraphElement = document.createElement('p')
+        paragraphElement.append(spell.sourceId ? `@UUID[${spell.sourceId}]{${spell.name}}` : spell.description)
 
-    return scroll
-}
+        const containerElement = document.createElement('div')
+        const hrElement = document.createElement('hr')
+        containerElement.append(paragraphElement, hrElement)
+        hrElement.insertAdjacentHTML('afterend', description)
 
-function getScrollCompendiumUUID(level) {
-    return `Compendium.pf2e.equipment-srd.Item.${scrollCompendiumIds[level]}`
+        return containerElement.innerHTML
+    })()
+
+    scrollSource.system.temporary = temp
+    scrollSource.system.spell = spell.clone({ 'system.location.heightenedLevel': level }).toObject()
+
+    return scrollSource
 }

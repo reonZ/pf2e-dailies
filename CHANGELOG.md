@@ -1,3 +1,11 @@
+# 2.14.0
+
+-   this is a `5.9.5` release
+-   fixed `Experimental Spellshaping` using `spellshape` trait instead of `metamagic`
+-   fixed not being able to open the compendium browser for spells with level filters
+-   fixed not being able to drop a spell in a field that had a level filter
+-   fixed spell scrolls creation (also added the spell traits and rarity to the scroll)
+
 # 2.13.0
 
 -   added german localization (thanks to [Tim Segger](https://github.com/timsegger))

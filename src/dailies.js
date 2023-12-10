@@ -1,6 +1,7 @@
 import { utils } from './api'
 import { tricksterAce } from './data/ace'
 import { bladeAlly } from './data/blade'
+import { ceremonialKnife } from './data/ceremonial'
 import { createScrollChain } from './data/chain'
 import { createFeatDaily } from './data/feat'
 import { combatFlexibility } from './data/flexibility'
@@ -60,6 +61,7 @@ export const BUILTINS_DAILIES = [
     mindSmith,
     bladeAlly,
     rootMagic,
+    ceremonialKnife,
 ]
 
 const BUILTINS_UUIDS = prepareDailies(BUILTINS_DAILIES, 'dailies')

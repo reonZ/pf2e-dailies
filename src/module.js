@@ -186,3 +186,13 @@ export function fakeChatUUID(name) {
     white-space: nowrap;
     word-break: break-all;">${name}</span>`
 }
+
+export function isInstanceOf(obj, name) {
+    if (typeof obj !== 'object') return false
+
+    while ((obj = Reflect.getPrototypeOf(obj))) {
+        if (obj.constructor.name === name) return true
+    }
+
+    return false
+}

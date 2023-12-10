@@ -199,6 +199,7 @@
             "feats": "Learned the feats:",
             "scrolls": "Created the temporary scrolls:",
             "blade": "Imbued their spirit into their weapon:",
+            "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell:",
             "root": "Has prepared a small pouch with bits of herbs and gives it to an ally:",
             "rations": {
                 "used": "Consumed one of their {name} and has {nb} remaining.",

@@ -1,7 +1,7 @@
 import { DailiesInterface } from './apps/interface'
 import { createWatchChatMessage } from './chat'
 import { capitalize, getFlag, getSetting, localize, sequenceArray, warn } from './module'
-import { createSpellScroll } from './pf2e/spell'
+import { createConsumableFromSpell } from './pf2e/spell'
 
 const halfLevelString = 'max(1,floor(@actor.level/2))'
 
@@ -79,9 +79,14 @@ export const utils = {
         return source
     },
     // spells
-    createSpellScrollSource: async ({ uuid, level }) => {
-        const source = await createSpellScroll(uuid, level ?? false, true)
+    createSpellScrollSource: async ({ uuid, level, itemName, itemImg }) => {
+        const source = await createConsumableFromSpell(uuid, 'scroll', { heightenedLevel: level, temp: true, itemName, itemImg })
         if (!source) throw new Error(`An error occured while trying to create a spell scroll source with uuid: ${uuid}`)
+        return source
+    },
+    createWandSource: async ({ uuid, level, itemName, itemImg }) => {
+        const source = await createConsumableFromSpell(uuid, 'wand', { heightenedLevel: level, temp: true, itemName, itemImg })
+        if (!source) throw new Error(`An error occured while trying to create a wand source with uuid: ${uuid}`)
         return source
     },
     createSpellSource: async uuid => {

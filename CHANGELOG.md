@@ -1,3 +1,17 @@
+# 2.15.0
+
+-   this is a `5.10.5` release
+-   added support for `Ceremonial Knife`
+    -   the character needs to have an actual "knife" in their inventory
+    -   nothing will happen to the "knife" weapon itself
+    -   it will create a new `Ceremonial Knife` consumable (repurposed wand)
+-   added support for `Preparing a Staff`
+    -   it replaces the module `PF2e Staves`, you won't need to do anything to transition between the modules, any spellcasting entry that was created by `PF2e Staves` will work and be removed on the next long rest
+    -   the character needs to be able to cast spells, the module uses `Items Only - All Magic Items`, `Prepared` and `Spontaneous` spellcasting entries to determine that
+    -   the character will have the opportunity to expend a prepared spell to add extra charges during daily preparations
+    -   the character will have the opportunity to expend a spontaneous spell slot while casting a spell from a staff
+    -   the character needs to hold the staff to cast a spell from it
+
 # 2.14.0
 
 -   this is a `5.9.5` release

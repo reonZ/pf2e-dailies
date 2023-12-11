@@ -12,6 +12,13 @@ Familiar Abilities
 
 -   If the character has a familiar, the module will offer the ability to select its abilities.
 
+Preparing a Staff
+
+-   the character needs to be able to cast spells, the module have a special exception for the kineticist's `Kinetic Activation`
+-   the character will have the opportunity to expend a prepared spell to add extra charges during daily preparations
+-   the character will have the opportunity to expend a spontaneous spell slot while casting a spell from a staff
+-   the character needs to hold the staff to cast a spell from it
+
 Language related
 
 -   [Ancestral Linguistics](https://2e.aonprd.com/Feats.aspx?ID=1407)
@@ -74,6 +81,7 @@ Divine Ally
 Others
 
 -   [Root Magic](https://2e.aonprd.com/Feats.aspx?ID=2147)
+-   Ceremonial Knife
 
 # Sheet Icon
 
@@ -89,9 +97,9 @@ The interface will look different depending on the feats and items present on th
 
 The interface allows the user to open the compendium browser (with the right settings) and directly drag & drop the appropriate items.
 
-## Scrolls
+## Scrolls/Wands
 
-When a spell is dropped in a spell slot, a temporary spell scroll will be created with the appropriate hightened level directly in the character's inventory.
+Drop a spell is dropped in a spell slot, a temporary spell scroll/wand will be created with the appropriate hightened level directly in the character's inventory.
 
 ## Spells
 
@@ -225,6 +233,31 @@ function prepareDailies(dailies: Daily[]): Map<uuid, {daily: Daily, condition: (
  * @returns {boolean} true if the custom daily isn't skipped
  */
 function checkCustomDaily(daily: Daily, warning?: boolean): boolean
+```
+
+```js
+/**
+ * @param {SpellcastingEntryPF2e} entry
+ * @returns {{charges: number, overcharge?: number, staveID: string} | undefined}
+ */
+function getSpellcastingEntryStaffFlags(entry: SpellcastingEntryPF2e): {charges: number, overcharge?: number, staveID: string} | undefined
+```
+
+```js
+/**
+ * @param {SpellcastingEntryPF2e} entry
+ * @returns {{charges: number, overcharge: number, staveID: string, max: number} | undefined}
+ */
+function getSpellcastingEntryStaffData(entry: SpellcastingEntryPF2e): {charges: number, overcharge: number, staveID: string, max: number} | undefined
+```
+
+```js
+/**
+ * @param {SpellcastingEntryPF2e} entry
+ * @param {number} value
+ * @returns {Promise<SpellcastingEntryPF2e | undefined>}
+ */
+function updateEntryCharges(entry: SpellcastingEntryPF2e, value: number): Promise<SpellcastingEntryPF2e | undefined>
 ```
 
 # CHANGELOG

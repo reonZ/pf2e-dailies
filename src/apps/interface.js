@@ -1,7 +1,16 @@
+import { utils } from '../api'
 import { getDailies } from '../dailies'
 import { getFamiliarPack } from '../data/familiar'
 import { getRations } from '../data/rations'
-import { getFlag, getSetting, subLocalize, templatePath } from '../module'
+import {
+    getFlag,
+    getMaxStaffCharges,
+    getPreparedSpells,
+    getSetting,
+    isPF2eStavesActive,
+    subLocalize,
+    templatePath,
+} from '../module'
 import { getTemplate } from './interface/data'
 import { onDropFeat, onDropItem, onDropSpell } from './interface/drop'
 import { processData } from './interface/process'
@@ -121,44 +130,114 @@ export class DailiesInterface extends Application {
             }
         }
 
-        const rations = getRations(actor)
-        if (rations?.uses.value) {
-            const type = 'dailies.rations'
-            const row = 'rations'
-            const { value, max } = rations.uses
-            const quantity = rations.quantity
-            const remaining = (quantity - 1) * max + value
-            const last = remaining <= 1
+        {
+            const rations = getRations(actor)
+            if (rations?.uses.value) {
+                const type = 'dailies.rations'
+                const row = 'rations'
+                const { value, max } = rations.uses
+                const quantity = rations.quantity
+                const remaining = (quantity - 1) * max + value
+                const last = remaining <= 1
 
-            const options = [
-                {
-                    value: 'false',
-                    label: localize('rations.no'),
-                },
-                {
-                    value: 'true',
-                    label: last ? localize('rations.last') : localize('rations.yes', { nb: remaining }),
-                },
-            ]
-
-            templates.push({
-                label: rations.name,
-                rows: [
+                const options = [
                     {
-                        label: '',
-                        order: 200,
                         value: 'false',
+                        label: localize('rations.no'),
+                    },
+                    {
+                        value: 'true',
+                        label: last ? localize('rations.last') : localize('rations.yes', { nb: remaining }),
+                    },
+                ]
+
+                templates.push({
+                    label: rations.name,
+                    rows: [
+                        {
+                            label: '',
+                            order: 200,
+                            value: 'false',
+                            options,
+                            data: {
+                                type: 'select',
+                                daily: type,
+                                row: row,
+                            },
+                        },
+                    ],
+                })
+
+                this._rows[type] = { [row]: { save: false } }
+            }
+        }
+
+        if (!isPF2eStavesActive()) {
+            const staves = actor.itemTypes.weapon.filter(weapon => {
+                const traits = weapon.system.traits?.value
+                if (!traits || !traits.includes('staff')) return false
+                return traits.includes('coda') || traits.includes('magical')
+            })
+
+            const maxStaffCharges = getMaxStaffCharges(actor)
+
+            if (maxStaffCharges && staves.length) {
+                const type = 'dailies.staff'
+                const flags = getFlag(actor, type) ?? {}
+                const options = staves.map(staff => ({
+                    value: staff.id,
+                    label: staff.name,
+                }))
+                options.sort((a, b) => a.label.localeCompare(b.label))
+
+                const template = {
+                    label: localize('staves.prepare'),
+                    rows: [
+                        {
+                            label: localize('staves.staff'),
+                            value: flags.staffID ?? '',
+                            order: 100,
+                            options,
+                            data: {
+                                type: 'select',
+                                daily: type,
+                                row: 'staffID',
+                            },
+                        },
+                    ],
+                }
+
+                const preparedSpells = getPreparedSpells(actor)
+                if (preparedSpells.length) {
+                    preparedSpells.sort((a, b) => a.rank - b.rank)
+
+                    const options = preparedSpells.map(spell => ({
+                        value: spell.id,
+                        label: `${spell.name} (${utils.spellRankLabel(spell.rank)})`,
+                    }))
+
+                    options.unshift({ value: '', label: '' })
+
+                    template.rows.push({
+                        label: localize('staves.expend'),
+                        value: '',
+                        order: 100,
                         options,
                         data: {
                             type: 'select',
                             daily: type,
-                            row: row,
+                            row: 'expend',
                         },
-                    },
-                ],
-            })
+                    })
+                }
 
-            this._rows[type] = { [row]: { save: false } }
+                templates.push(template)
+
+                this._rows[type] = {
+                    staffID: { save: true },
+                    overcharge: { save: false },
+                }
+            }
         }
 
         for (const daily of this._dailies) {

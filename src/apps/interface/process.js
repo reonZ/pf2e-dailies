@@ -1,7 +1,20 @@
-import { createUpdateCollection } from '../../api'
+import { createUpdateCollection, utils } from '../../api'
 import { familiarUUID, getFamiliarPack } from '../../data/familiar'
 import { getRations } from '../../data/rations'
-import { MODULE_ID, chatUUID, error, fakeChatUUID, getFlag, hasLocalization, localize, subLocalize } from '../../module'
+import {
+    MODULE_ID,
+    chatUUID,
+    error,
+    fakeChatUUID,
+    getBestSpellcastingEntry,
+    getFlag,
+    getMaxStaffCharges,
+    getNotExpendedPreparedSpellSlot,
+    hasLocalization,
+    isPF2eStavesActive,
+    localize,
+    subLocalize,
+} from '../../module'
 import { sluggify } from '../../pf2e/sluggify'
 
 export async function processData() {
@@ -111,6 +124,84 @@ export async function processData() {
         }
     }
 
+    if (fields['dailies.staff'] && !isPF2eStavesActive()) {
+        const staffID = fields['dailies.staff'].staffID.value
+        const staff = actor.items.get(staffID)
+        const maxStaffCharges = getMaxStaffCharges(actor)
+        if (!maxStaffCharges) return
+
+        let uuids = []
+
+        let rankMatch
+        const ranksRegex = /<strong>(?<rank>[a-zA-Z0-9]+)<\/strong>.+?(?<uuids>@UUID\[[a-zA-Z0-9-.]+\].+?)\n/g
+        while ((rankMatch = ranksRegex.exec(staff.description)) !== null) {
+            const rank = parseInt(rankMatch.groups.rank.trim()) || 0
+
+            let uuidMatch
+            const uuidRegex = /@UUID\[([a-zA-Z0-9-.]+)\]/g
+            while ((uuidMatch = uuidRegex.exec(rankMatch.groups.uuids)) !== null) {
+                uuids.push({ rank, uuid: uuidMatch[1] })
+            }
+        }
+
+        if (uuids.length) {
+            let overcharge = 0
+
+            const expendedSpellID = fields['dailies.staff'].expend?.value
+            const expendedSpell = actor.items.get(expendedSpellID)
+            const expendedSlot = getNotExpendedPreparedSpellSlot(expendedSpell)
+            if (expendedSlot) {
+                const { entry, rank, slot } = expendedSlot
+                overcharge = rank
+                updateItem({ _id: entry.id, [`system.slots.slot${rank}.prepared.${slot}.expended`]: true })
+            }
+
+            const { attribute, tradition, rank, slug } = getBestSpellcastingEntry(actor) ?? {}
+
+            const entrySource = {
+                type: 'spellcastingEntry',
+                name: staff.name,
+                system: {
+                    ability: { value: attribute ?? '' },
+                    prepared: { value: 'charge' },
+                    showSlotlessLevels: { value: false },
+                    showUnpreparedSpells: { value: false },
+                    proficiency: { value: rank ?? 1, slug },
+                    tradition: { value: tradition ?? '' },
+                },
+                flags: {
+                    [MODULE_ID]: {
+                        type: 'staff',
+                        staff: {
+                            charges: maxStaffCharges + overcharge,
+                            staveID: staffID,
+                            overcharge,
+                        },
+                    },
+                },
+            }
+            addItems.push(entrySource)
+
+            await Promise.all(
+                uuids.map(async ({ rank, uuid }) => {
+                    const source = await utils.createSpellSource(uuid)
+                    setProperty(source, `flags.${MODULE_ID}.entry`, { level: rank, type: 'staff' })
+                    addItems.push(source)
+                })
+            )
+
+            const msgGroup = overcharge ? 'staff.withExpend' : 'staff.noExpend'
+            messageObj.addGroup(msgGroup, 45)
+            messageObj.add(msgGroup, { uuid: staff.uuid })
+            if (overcharge) {
+                messageObj.add(msgGroup, {
+                    uuid: expendedSpell.uuid,
+                    label: `${expendedSpell.name} (${utils.spellRankLabel(expendedSlot.rank)})`,
+                })
+            }
+        }
+    }
+
     for (const { item, key, process } of dailies) {
         if (!fields[key]) continue
 
@@ -137,7 +228,7 @@ export async function processData() {
                     addItems.push(source)
                 },
                 addSpell: (source, level) => {
-                    setProperty(source, `flags.${MODULE_ID}.entry`, { level: level })
+                    setProperty(source, `flags.${MODULE_ID}.entry`, { level: level, type: 'fallback' })
                     addItems.push(source)
                     addedSpells = true
                 },
@@ -173,7 +264,7 @@ export async function processData() {
     }
 
     if (addedSpells) {
-        const entry = {
+        const entrySource = {
             type: 'spellcastingEntry',
             name: localize('spellEntry.name'),
             system: {
@@ -182,8 +273,13 @@ export async function processData() {
                 showUnpreparedSpells: { value: false },
                 proficiency: { value: 1, slug: actor.classDC?.slug || actor.class?.slug || undefined },
             },
+            flags: {
+                [MODULE_ID]: {
+                    type: 'fallback',
+                },
+            },
         }
-        addItems.push(entry)
+        addItems.push(entrySource)
     }
 
     for (const source of addItems) {
@@ -205,7 +301,8 @@ export async function processData() {
                 }
             } else if (item.isOfType('spellcastingEntry')) {
                 // we add all the newly created spells with 'addSpell' to this spellcasting entry
-                const spells = items.filter(item => item.isOfType('spell') && getFlag(item, 'entry'))
+                const entryType = getFlag(item, 'type')
+                const spells = items.filter(item => item.isOfType('spell') && getFlag(item, 'entry')?.type === entryType)
                 for (const spell of spells) {
                     const { level } = getFlag(spell, 'entry')
                     const data = { _id: spell.id, 'system.location.value': item.id }

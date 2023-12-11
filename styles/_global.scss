@@ -1,0 +1,95 @@
+.actor.sheet.character {
+    .sheet-body {
+        .sheet-content {
+            [data-tab='spellcasting'] .spellcastingEntry-list {
+                .item {
+                    .spell-ability-data {
+                        .pf2e-dailies-charges {
+                            display: flex;
+                            gap: 0.5em;
+                            margin-left: auto;
+
+                            label {
+                                font-weight: bold;
+                            }
+
+                            input {
+                                background: var(--alt);
+                                border-radius: 3px;
+                                border: 1px solid var(--sub);
+                                color: var(--text-light);
+                                font: var(--font-size-12) var(--sans-serif);
+                                height: unset;
+                                text-align: center;
+                                width: 2em;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .crb-style aside .sidebar a.roll-icon.dailies {
+        padding: 4px 0 0 0;
+
+        i {
+            font-size: 1.1rem;
+        }
+    }
+}
+
+.app.dialog {
+    .pf2e-dailies-spontaneous {
+        text-align: center;
+        margin-bottom: 0.7em;
+
+        strong {
+            white-space: nowrap;
+        }
+    }
+
+    .pf2e-dailies-spontaneous-multi {
+        .hint {
+            text-align: center;
+
+            strong {
+                white-space: nowrap;
+            }
+        }
+
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3em;
+            margin-bottom: 0.7em;
+
+            input {
+                margin-right: 0.3em;
+            }
+        }
+    }
+}
+
+#pf2e-dailies-weapon {
+    .window-content {
+        .dialog-content {
+            p {
+                text-align: center;
+            }
+
+            input {
+                margin-right: 0.5em;
+            }
+
+            label:not(:first-child) {
+                margin-top: 0.5em;
+                display: block;
+            }
+        }
+
+        .dialog-buttons {
+            margin-top: 1em;
+        }
+    }
+}

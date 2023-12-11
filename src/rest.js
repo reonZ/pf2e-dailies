@@ -1,11 +1,12 @@
 import { createUpdateCollection } from './api'
 import { getDailyFromSourceId } from './dailies'
-import { MODULE_ID, getFlag, getSourceId, setFlag } from './module'
+import { MODULE_ID, getFlag, getSourceId, isPF2eStavesActive, setFlag } from './module'
 import { sluggify } from './pf2e/sluggify'
 
 export async function restForTheNight(actor) {
     const removeItems = []
     const [updateItems, updateItem] = createUpdateCollection()
+    const pf2eStavesActive = isPF2eStavesActive()
 
     for (const item of actor.items) {
         if (getFlag(item, 'temporary')) {
@@ -22,6 +23,12 @@ export async function restForTheNight(actor) {
             }
 
             // we don't need to do more work because the item is being deleted
+            continue
+        }
+
+        // we remove the spellcasting entries from pf2e staves
+        if (!pf2eStavesActive && item.isOfType('spellcastingEntry') && item.system.prepared.value === 'charge') {
+            removeItems.push(item.id)
             continue
         }
 

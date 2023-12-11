@@ -3,11 +3,13 @@ import { openDailiesInterface, requestDailies, utils } from './api'
 import { DailyCustoms } from './apps/custom'
 import { renderChatMessage } from './chat'
 import { BUILTINS_DAILIES, CUSTOM_DAILIES, checkCustomDaily, parseCustomDailies, prepareDailies } from './dailies'
-import { MODULE_ID, getSetting, registerSetting, registerSettingMenu, warn } from './module'
+import { MODULE_ID, getSetting, isPF2eStavesActive, registerSetting, registerSettingMenu, warn } from './module'
 import { restForTheNight } from './rest'
+import { onSpellcastingEntryCast } from './spellcasting'
 
 export const EXT_VERSION = '1.3.0'
 
+const SPELLCASTING_ENTRY_CAST = 'CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.cast'
 const DAILY_CRAFTING = 'CONFIG.PF2E.Actor.documentClasses.character.prototype.performDailyCrafting'
 
 Hooks.once('setup', () => {
@@ -57,9 +59,18 @@ Hooks.once('setup', () => {
     }
 
     if (getSetting('watch')) enableWatchHook(true)
+
+    if (!isPF2eStavesActive()) {
+        CONFIG.PF2E.preparationType.charge = 'Charge'
+        libWrapper.register(MODULE_ID, SPELLCASTING_ENTRY_CAST, onSpellcastingEntryCast)
+    }
 })
 
 Hooks.once('ready', async () => {
+    if (isPF2eStavesActive()) {
+        warn('staves.conflict', true)
+    }
+
     await parseCustomDailies()
 
     if (!game.modules.get('lib-wrapper')?.active && game.user.isGM) {

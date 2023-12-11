@@ -1,3 +1,5 @@
+import { getMaxEntrySlotRank, getValidSpellcastingList } from '../module'
+
 export const scrollSavant = {
     key: 'savant',
     item: {
@@ -46,14 +48,10 @@ function getSpellcastingTraditionDetails(actor, tradition) {
     let maxSlot = 1
     let maxTradition = 0
 
-    for (const entry of actor.spellcasting.regular) {
-        if (entry.flags && 'pf2e-staves' in entry.flags) continue // we skip staff entries
-
-        const slots = entry.system.slots
-        for (const key in slots) {
-            const slot = slots[key]
-            if (slot.max) maxSlot = Math.max(maxSlot, Number(key.slice(4)))
-        }
+    const entries = getValidSpellcastingList(actor)
+    for (const entry of entries) {
+        const entryMaxSlot = getMaxEntrySlotRank(entry)
+        if (entryMaxSlot > maxSlot) maxSlot = entryMaxSlot
 
         if (entry.tradition === tradition) maxTradition = Math.max(maxTradition, entry.rank)
     }

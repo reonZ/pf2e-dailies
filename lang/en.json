@@ -47,6 +47,11 @@
                 "yes": "Consume ({nb} remaining)",
                 "no": "Do not consume any",
                 "last": "Consume last available"
+            },
+            "staves": {
+                "prepare": "Prepare a Staff",
+                "staff": "Staff",
+                "expend": "Expend Spell"
             }
         },
         "customs": {
@@ -177,7 +182,7 @@
             "unrested": "You must rest before your daily preparations.",
             "duplicate": "A daily with this key already exists.",
             "invalidKey": "The daily key must be a string.",
-            "noLibwrapper": "The module now requires the dependency module 'libwrapper' to work at its best.",
+            "noLibwrapper": "The module now requires the dependency module <strong>libwrapper</strong> to work at its best.",
             "noCharacterSelected": "No <strong>Character</strong> were provided to the <strong>openDailyInterface</strong> function.",
             "noDailies": "This character has no dailies.",
             "notGM": "Only GM can do that."
@@ -201,6 +206,10 @@
             "blade": "Imbued their spirit into their weapon:",
             "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell:",
             "root": "Has prepared a small pouch with bits of herbs and gives it to an ally:",
+            "staff": {
+                "noExpend": "Has prepared a staff for the day:",
+                "withExpend": "Has prepared a staff with extra charges:"
+            },
             "rations": {
                 "used": "Consumed one of their {name} and has {nb} remaining.",
                 "last": "Consumed the last of their {name}.",
@@ -235,6 +244,18 @@
         "deprecated": {
             "custom": {
                 "key": "The <strong>{name}</strong> daily has been implemented directly into <strong>PF2e Dailies</strong>, the custom daily has been skipped and can be safely deleted."
+            }
+        },
+        "staves": {
+            "conflict": "The module <strong>PF2e Dailies</strong> now handles staves, you need to disable the <strong>PF2e Staves</strong> module.",
+            "label": "Charges",
+            "noCharge": "You do not have enough charges left in your staff.",
+            "noStaff": "You need to be holding your staff to cast a spell from it.",
+            "spontaneous": {
+                "title": "Use Spontaneous slot",
+                "remaining": "remaining",
+                "one": "Would you like to consume a spontaneous spell slot of <strong>{rank}</strong> from <strong>{entry}</strong>? <strong>({remaining} remaining)</strong>",
+                "multi": "Would you like to consume a spontaneous spell slot of <strong>{rank}</strong> from any of the following spellcasting entries?"
             }
         }
     }

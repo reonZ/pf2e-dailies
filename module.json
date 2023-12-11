@@ -9,9 +9,7 @@
             "discord": "Idle#3251"
         }
     ],
-    "esmodules": [
-        "scripts/main.js"
-    ],
+    "esmodules": ["scripts/main.js"],
     "compatibility": {
         "minimum": "11.315",
         "verified": "11"
@@ -24,11 +22,7 @@
     "download": "https://github.com/reonZ/pf2e-dailies/releases/download/2.14.0/module.zip",
     "changelog": "https://github.com/reonZ/pf2e-dailies/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/pf2e-dailies/issues",
-    "styles": [
-        "styles/global.css",
-        "styles/interface.css",
-        "styles/customs.css"
-    ],
+    "styles": ["styles/dailies.css"],
     "languages": [
         {
             "lang": "en",
@@ -63,7 +57,7 @@
                 "type": "system",
                 "manifest": "https://raw.githubusercontent.com/foundryvtt/pf2e/master/system.json",
                 "compatibility": {
-                    "minimum": "5.9.5"
+                    "minimum": "5.10.5"
                 }
             }
         ],

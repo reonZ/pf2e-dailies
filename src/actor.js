@@ -1,5 +1,6 @@
 import { openDailiesInterface } from './api'
-import { getMaxStaffCharges, getSpellcastingEntryStaffData, isPF2eStavesActive, localize, setFlag } from './module'
+import { localize, setFlag } from './module'
+import { getMaxStaffCharges, isPF2eStavesActive, getSpellcastingEntryStaffData } from './staves'
 
 export async function onPerformDailyCrafting() {
     const entries = (await this.getCraftingEntries()).filter(e => e.isDailyPrep)

@@ -2,15 +2,9 @@ import { utils } from '../api'
 import { getDailies } from '../dailies'
 import { getFamiliarPack } from '../data/familiar'
 import { getRations } from '../data/rations'
-import {
-    getFlag,
-    getMaxStaffCharges,
-    getPreparedSpells,
-    getSetting,
-    isPF2eStavesActive,
-    subLocalize,
-    templatePath,
-} from '../module'
+import { getFlag, getSetting, subLocalize, templatePath } from '../module'
+import { getMaxStaffCharges, isPF2eStavesActive } from '../staves'
+import { getPreparedSpells } from '../spellcasting'
 import { getTemplate } from './interface/data'
 import { onDropFeat, onDropItem, onDropSpell } from './interface/drop'
 import { processData } from './interface/process'

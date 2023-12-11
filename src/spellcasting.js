@@ -1,5 +1,6 @@
 import { utils } from './api'
-import { MODULE_ID, getSpellcastingEntryStaffData, localize, templatePath, warn } from './module'
+import { MODULE_ID, getFlag, localize, templatePath, warn, hasKineticActivation } from './module'
+import { getSpellcastingEntryStaffData } from './staves'
 
 export async function onSpellcastingEntryCast(wrapped, ...args) {
     const staffData = getSpellcastingEntryStaffData(this)
@@ -108,4 +109,81 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
 
     await actor.updateEmbeddedDocuments('Item', updates)
     await spell.toMessage(undefined, { data: { castLevel: castRank } })
+}
+
+export function getValidSpellcastingList(actor) {
+    return actor.spellcasting.regular.filter(
+        entry => !entry.flags?.['pf2e-staves'] && !getFlag(entry, 'staff') && entry.system.prepared.value !== 'items'
+    )
+}
+
+export function getSpellcastingEntryMaxSlotRank(entry) {
+    let maxSlot = 0
+
+    const slots = entry.system.slots
+    for (const key in slots) {
+        const slot = slots[key]
+        if (slot.max) maxSlot = Math.max(maxSlot, Number(key.slice(4)))
+    }
+
+    return maxSlot
+}
+
+export function getPreparedSpells(actor) {
+    const spells = []
+
+    const entries = actor.spellcasting.regular.filter(entry => entry.isPrepared)
+    for (const entry of entries) {
+        for (let rank = 1; rank <= 10; rank++) {
+            const data = entry.system.slots[`slot${rank}`]
+            if (!data.max) continue
+
+            for (const { id, prepared, expended } of Object.values(data.prepared)) {
+                if (prepared === false || expended) continue
+
+                const spell = entry.spells.get(id)
+                if (!spell) continue
+
+                spells.push(spell)
+            }
+        }
+    }
+
+    return spells
+}
+
+export function getNotExpendedPreparedSpellSlot(spell) {
+    if (!spell) return
+
+    const rank = spell.rank
+    const entry = spell.spellcasting
+    const entries = Object.entries(entry.system.slots[`slot${rank}`].prepared)
+    const prepared = entries.find(([_, { id, expended }]) => id === spell.id && expended !== true)
+    if (!prepared) return
+
+    return {
+        slot: prepared[0],
+        rank,
+        entry,
+    }
+}
+
+export function getBestSpellcastingEntry(actor) {
+    const entries = getValidSpellcastingList(actor)
+
+    let bestEntry = { mod: 0 }
+
+    for (const { tradition, attribute, statistic, isInnate, rank } of entries) {
+        if (isInnate) continue
+
+        const mod = statistic.mod
+        if (mod > bestEntry.mod) bestEntry = { tradition, attribute, mod, rank }
+    }
+
+    if (hasKineticActivation(actor)) {
+        const { mod, rank, slug } = actor.classDCs.kineticist ?? {}
+        if (mod > bestEntry.mod) bestEntry = { mod, rank, slug }
+    }
+
+    if (bestEntry.mod) return bestEntry
 }

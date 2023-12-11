@@ -1,20 +1,9 @@
 import { createUpdateCollection, utils } from '../../api'
 import { familiarUUID, getFamiliarPack } from '../../data/familiar'
 import { getRations } from '../../data/rations'
-import {
-    MODULE_ID,
-    chatUUID,
-    error,
-    fakeChatUUID,
-    getBestSpellcastingEntry,
-    getFlag,
-    getMaxStaffCharges,
-    getNotExpendedPreparedSpellSlot,
-    hasLocalization,
-    isPF2eStavesActive,
-    localize,
-    subLocalize,
-} from '../../module'
+import { MODULE_ID, chatUUID, error, fakeChatUUID, getFlag, hasLocalization, localize, subLocalize } from '../../module'
+import { getBestSpellcastingEntry, getNotExpendedPreparedSpellSlot } from '../../spellcasting'
+import { getMaxStaffCharges, isPF2eStavesActive } from '../../staves'
 import { sluggify } from '../../pf2e/sluggify'
 
 export async function processData() {

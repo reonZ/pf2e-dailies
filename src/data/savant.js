@@ -1,4 +1,4 @@
-import { getMaxEntrySlotRank, getValidSpellcastingList } from '../module'
+import { getSpellcastingEntryMaxSlotRank, getValidSpellcastingList } from '../spellcasting'
 
 export const scrollSavant = {
     key: 'savant',
@@ -50,7 +50,7 @@ function getSpellcastingTraditionDetails(actor, tradition) {
 
     const entries = getValidSpellcastingList(actor)
     for (const entry of entries) {
-        const entryMaxSlot = getMaxEntrySlotRank(entry)
+        const entryMaxSlot = getSpellcastingEntryMaxSlotRank(entry)
         if (entryMaxSlot > maxSlot) maxSlot = entryMaxSlot
 
         if (entry.tradition === tradition) maxTradition = Math.max(maxTradition, entry.rank)

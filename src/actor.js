@@ -1,6 +1,7 @@
 import { openDailiesInterface } from './api'
 import { localize, setFlag } from './module'
-import { getMaxStaffCharges, isPF2eStavesActive, getSpellcastingEntryStaffData } from './staves'
+import { getSpellcastingEntryMaxSlotRank, getValidSpellcastingList } from './spellcasting'
+import { getSpellcastingEntryStaffData, isPF2eStavesActive, updateEntryCharges } from './staves'
 
 export async function onPerformDailyCrafting() {
     const entries = (await this.getCraftingEntries()).filter(e => e.isDailyPrep)
@@ -63,36 +64,43 @@ function renderStavesEntries(html, actor) {
     })()
     if (!el) return
 
-    const charges = document.createElement('div')
-    charges.classList.add('pf2e-dailies-charges')
+    const charges = $(`<div class="pf2e-dailies-charges"><label>${localize('staves.label')}</label></div>`)
 
-    const label = document.createElement('label')
-    label.innerText = localize('staves.label')
+    const input = $(`<input type="number" min="0" max="${staffData.max}" value="${staffData.charges}">`)
+    input.on('change', event => onStaffChargesChange(event, actor))
 
-    const input = document.createElement('input')
-    input.type = 'number'
-    input.value = staffData.charges
-    input.min = 0
-    input.max = getMaxStaffCharges(actor) + (staffData.overcharge ?? 0)
-    input.addEventListener('change', event => onStaffChargesChange(event, actor))
+    const reset = $('<a><i class="fas fa-redo"></i></a>')
+    reset.on('click', event => onStaffChargesReset(event, actor))
 
-    charges.append(label)
     charges.append(input)
+    charges.append(reset)
 
-    el.querySelector('.spell-ability-data .statistic-values').after(charges)
+    el.querySelector('.spell-ability-data .statistic-values').after(charges[0])
+}
+
+function getEntryDataFromEvent(event, actor) {
+    const { itemId } = event.currentTarget.closest('.spellcasting-entry').dataset
+    return actor.spellcasting.get(itemId)
+}
+
+async function onStaffChargesReset(event, actor) {
+    const entry = getEntryDataFromEvent(event, actor)
+    updateEntryCharges(entry, 9999)
 }
 
 async function onStaffChargesChange(event, actor) {
-    const { itemId } = event.currentTarget.closest('.spellcasting-entry').dataset
-    const entry = actor.spellcasting.get(itemId)
-    const staffData = getSpellcastingEntryStaffData(entry)
-    if (!staffData) return false
+    const entry = getEntryDataFromEvent(event, actor)
+    updateEntryCharges(entry, event.currentTarget.valueAsNumber)
+}
 
-    const maxCharges = getMaxStaffCharges(actor) + (staffData.overcharge ?? 0)
-    const updatedValue = Math.clamped(event.currentTarget.valueAsNumber, 0, maxCharges)
+export function getActorMaxSlotRank(actor) {
+    let maxCharges = 0
+    const entries = getValidSpellcastingList(actor, { itemOnly: true })
 
-    if (updatedValue !== staffData.charges) {
-        staffData.charges = updatedValue
-        setFlag(entry, 'staff', staffData)
+    for (const entry of entries) {
+        const entryMaxCharges = getSpellcastingEntryMaxSlotRank(entry)
+        if (entryMaxCharges > maxCharges) maxCharges = entryMaxCharges
     }
+
+    return maxCharges
 }

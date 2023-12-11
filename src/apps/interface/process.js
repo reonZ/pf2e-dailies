@@ -4,7 +4,7 @@ import { getRations } from '../../data/rations'
 import { MODULE_ID, chatUUID, error, fakeChatUUID, getFlag, hasLocalization, localize, subLocalize } from '../../module'
 import { sluggify } from '../../pf2e/sluggify'
 import { getBestSpellcastingEntry, getNotExpendedPreparedSpellSlot } from '../../spellcasting'
-import { getMaxStaffCharges } from '../../staves'
+import { getActorMaxSlotRank } from '../../actor'
 
 export async function processData() {
     const actor = this.actor
@@ -116,7 +116,7 @@ export async function processData() {
     if (fields['dailies.staff']) {
         const staffID = fields['dailies.staff'].staffID.value
         const staff = actor.items.get(staffID)
-        const maxStaffCharges = getMaxStaffCharges(actor)
+        const maxStaffCharges = getActorMaxSlotRank(actor)
 
         if (staff && maxStaffCharges) {
             let uuids = []

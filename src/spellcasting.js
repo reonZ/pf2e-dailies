@@ -1,13 +1,13 @@
 import { utils } from './api'
 import { MODULE_ID, getFlag, localize, templatePath, warn } from './module'
-import { getSpellcastingEntryStaffData } from './staves'
+import { getSpellcastingEntryStaffFlags } from './staves'
 
 export async function onSpellcastingEntryCast(wrapped, ...args) {
-    const staffData = getSpellcastingEntryStaffData(this)
-    if (!staffData) return wrapped(...args)
+    const staffFlags = getSpellcastingEntryStaffFlags(this)
+    if (!staffFlags) return wrapped(...args)
 
     const actor = this.actor
-    const staff = actor.items.get(staffData.staveID)
+    const staff = actor.items.get(staffFlags.staveID)
     if (!staff?.isEquipped) {
         warn('staves.noStaff')
         return
@@ -20,14 +20,14 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
         return spell.toMessage(undefined, { data: { castLevel: castRank } })
     }
 
-    if (staffData.charges < 1 || (staffData.charges < castRank && staffData.overcharge)) {
+    if (staffFlags.charges < 1 || (staffFlags.charges < castRank && staffFlags.overcharge)) {
         warn('staves.noCharge')
         return
     }
 
     let updates = []
 
-    if (!staffData.overcharge) {
+    if (!staffFlags.overcharge) {
         const spontaneousEntries = actor.spellcasting.filter(
             entry => entry.isSpontaneous && entry.system.slots[`slot${castRank}`].value
         )
@@ -92,20 +92,20 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
 
             updates.push({ _id: entry.id, [`system.slots.slot${castRank}.value`]: current - 1 })
 
-            staffData.charges -= 1
+            staffFlags.charges -= 1
         }
     }
 
     if (!updates.length) {
-        if (staffData.charges < castRank) {
+        if (staffFlags.charges < castRank) {
             warn('staves.noCharge')
             return
         }
 
-        staffData.charges -= castRank
+        staffFlags.charges -= castRank
     }
 
-    updates.push({ _id: this.id, [`flags.${MODULE_ID}.staff`]: staffData })
+    updates.push({ _id: this.id, [`flags.${MODULE_ID}.staff`]: staffFlags })
 
     await actor.updateEmbeddedDocuments('Item', updates)
     await spell.toMessage(undefined, { data: { castLevel: castRank } })

@@ -3,7 +3,8 @@ import { getDailies } from '../dailies'
 import { getFamiliarPack } from '../data/familiar'
 import { getRations } from '../data/rations'
 import { getFlag, getSetting, subLocalize, templatePath } from '../module'
-import { getMaxStaffCharges, isPF2eStavesActive } from '../staves'
+import { isPF2eStavesActive } from '../staves'
+import { getActorMaxSlotRank } from '../actor'
 import { getPreparedSpells } from '../spellcasting'
 import { getTemplate } from './interface/data'
 import { onDropFeat, onDropItem, onDropSpell } from './interface/drop'
@@ -173,7 +174,7 @@ export class DailiesInterface extends Application {
                 return traits.includes('coda') || traits.includes('magical')
             })
 
-            const maxStaffCharges = getMaxStaffCharges(actor)
+            const maxStaffCharges = getActorMaxSlotRank(actor)
 
             if (maxStaffCharges && staves.length) {
                 const type = 'dailies.staff'

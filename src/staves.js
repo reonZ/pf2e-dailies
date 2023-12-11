@@ -1,5 +1,5 @@
-import { hasKineticActivation, getFlag } from './module'
-import { getValidSpellcastingList, getSpellcastingEntryMaxSlotRank } from './spellcasting'
+import { getFlag } from './module'
+import { getSpellcastingEntryMaxSlotRank, getValidSpellcastingList } from './spellcasting'
 
 export function isPF2eStavesActive() {
     return game.modules.get('pf2e-staves')?.active
@@ -17,16 +17,11 @@ export function getSpellcastingEntryStaffData(entry) {
 
 export function getMaxStaffCharges(actor) {
     let maxCharges = 0
-    const entries = getValidSpellcastingList(actor)
+    const entries = getValidSpellcastingList(actor, { itemOnly: true })
 
     for (const entry of entries) {
         const entryMaxCharges = getSpellcastingEntryMaxSlotRank(entry)
         if (entryMaxCharges > maxCharges) maxCharges = entryMaxCharges
-    }
-
-    if (hasKineticActivation(actor)) {
-        const levelCharges = Math.ceil(actor.level / 2)
-        if (levelCharges > maxCharges) maxCharges = levelCharges
     }
 
     return maxCharges

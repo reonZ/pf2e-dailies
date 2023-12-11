@@ -1,5 +1,5 @@
 import { utils } from './api'
-import { MODULE_ID, getFlag, localize, templatePath, warn, hasKineticActivation } from './module'
+import { MODULE_ID, getFlag, localize, templatePath, warn } from './module'
 import { getSpellcastingEntryStaffData } from './staves'
 
 export async function onSpellcastingEntryCast(wrapped, ...args) {
@@ -111,19 +111,34 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
     await spell.toMessage(undefined, { data: { castLevel: castRank } })
 }
 
-export function getValidSpellcastingList(actor) {
-    return actor.spellcasting.regular.filter(
-        entry => !entry.flags?.['pf2e-staves'] && !getFlag(entry, 'staff') && entry.system.prepared.value !== 'items'
-    )
+export function getValidSpellcastingList(actor, { itemOnly, innate, focus } = {}) {
+    return actor.spellcasting.regular.filter(entry => {
+        if (entry.flags?.['pf2e-staves'] || getFlag(entry, 'staff')) return false
+
+        if (!innate && entry.isInnate) return false
+        if (!focus && entry.isFocusPool) return false
+
+        if (entry.system.prepared.value === 'items') {
+            if (!itemOnly) return false
+            if (itemOnly === 'scroll' && entry.system.prepared.validItems !== 'scroll') return false
+        }
+
+        return true
+    })
 }
 
 export function getSpellcastingEntryMaxSlotRank(entry) {
     let maxSlot = 0
 
-    const slots = entry.system.slots
-    for (const key in slots) {
-        const slot = slots[key]
-        if (slot.max) maxSlot = Math.max(maxSlot, Number(key.slice(4)))
+    if (entry.system.prepared.value === 'items') {
+        const levelMaxSlot = Math.ceil(entry.actor.level / 2)
+        if (levelMaxSlot > maxSlot) maxSlot = levelMaxSlot
+    } else {
+        const slots = entry.system.slots
+        for (const key in slots) {
+            const slot = slots[key]
+            if (slot.max) maxSlot = Math.max(maxSlot, Number(key.slice(4)))
+        }
     }
 
     return maxSlot
@@ -169,20 +184,13 @@ export function getNotExpendedPreparedSpellSlot(spell) {
 }
 
 export function getBestSpellcastingEntry(actor) {
-    const entries = getValidSpellcastingList(actor)
+    const entries = getValidSpellcastingList(actor, { itemOnly: true })
 
     let bestEntry = { mod: 0 }
 
-    for (const { tradition, attribute, statistic, isInnate, rank } of entries) {
-        if (isInnate) continue
-
+    for (const { tradition, attribute, statistic, rank } of entries) {
         const mod = statistic.mod
         if (mod > bestEntry.mod) bestEntry = { tradition, attribute, mod, rank }
-    }
-
-    if (hasKineticActivation(actor)) {
-        const { mod, rank, slug } = actor.classDCs.kineticist ?? {}
-        if (mod > bestEntry.mod) bestEntry = { mod, rank, slug }
     }
 
     if (bestEntry.mod) return bestEntry

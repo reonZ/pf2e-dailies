@@ -1,5 +1,3 @@
-const KINETIC_ACTIVATION = 'Compendium.pf2e.feats-srd.Item.NV9H39kbkbjhAK6X'
-
 export const MODULE_ID = 'pf2e-dailies'
 
 export const AsyncFunction = async function () {}.constructor
@@ -197,8 +195,4 @@ export function isInstanceOf(obj, name) {
     }
 
     return false
-}
-
-export function hasKineticActivation(actor) {
-    return actor.itemTypes.feat.some(feat => feat.sourceId === KINETIC_ACTIVATION)
 }

@@ -1,3 +1,7 @@
+# 2.15.1
+
+-   fixed codas not showing up in the selection list of staves for `Preparing a Staff`
+
 # 2.15.0
 
 -   this is a `5.10.5` release

@@ -168,11 +168,15 @@ export class DailiesInterface extends Application {
         }
 
         if (!isPF2eStavesActive()) {
-            const staves = actor.itemTypes.weapon.filter(weapon => {
-                const traits = weapon.system.traits?.value
-                if (!traits || !traits.includes('staff')) return false
-                return traits.includes('coda') || traits.includes('magical')
-            })
+            const staves = [
+                { type: 'weapon', trait: 'magical' },
+                { type: 'equipment', trait: 'coda' },
+            ].flatMap(({ type, trait }) =>
+                actor.itemTypes[type].filter(item => {
+                    const traits = item.system.traits?.value
+                    return traits && traits.includes('staff') && traits.includes(trait)
+                })
+            )
 
             const maxStaffCharges = getActorMaxSlotRank(actor)
 

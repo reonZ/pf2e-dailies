@@ -2,9 +2,9 @@ import { createUpdateCollection, utils } from '../../api'
 import { familiarUUID, getFamiliarPack } from '../../data/familiar'
 import { getRations } from '../../data/rations'
 import { MODULE_ID, chatUUID, error, fakeChatUUID, getFlag, hasLocalization, localize, subLocalize } from '../../module'
-import { getBestSpellcastingEntry, getNotExpendedPreparedSpellSlot } from '../../spellcasting'
-import { getMaxStaffCharges, isPF2eStavesActive } from '../../staves'
 import { sluggify } from '../../pf2e/sluggify'
+import { getBestSpellcastingEntry, getNotExpendedPreparedSpellSlot } from '../../spellcasting'
+import { getMaxStaffCharges } from '../../staves'
 
 export async function processData() {
     const actor = this.actor
@@ -113,80 +113,81 @@ export async function processData() {
         }
     }
 
-    if (fields['dailies.staff'] && !isPF2eStavesActive()) {
+    if (fields['dailies.staff']) {
         const staffID = fields['dailies.staff'].staffID.value
         const staff = actor.items.get(staffID)
         const maxStaffCharges = getMaxStaffCharges(actor)
-        if (!maxStaffCharges) return
 
-        let uuids = []
+        if (staff && maxStaffCharges) {
+            let uuids = []
 
-        let rankMatch
-        const ranksRegex = /<strong>(?<rank>[a-zA-Z0-9]+)<\/strong>.+?(?<uuids>@UUID\[[a-zA-Z0-9-.]+\].+?)\n/g
-        while ((rankMatch = ranksRegex.exec(staff.description)) !== null) {
-            const rank = parseInt(rankMatch.groups.rank.trim()) || 0
+            let rankMatch
+            const ranksRegex = /<strong>(?<rank>[a-zA-Z0-9]+)<\/strong>.+?(?<uuids>@UUID\[[a-zA-Z0-9-.]+\].+?)\n/g
+            while ((rankMatch = ranksRegex.exec(staff.description)) !== null) {
+                const rank = parseInt(rankMatch.groups.rank.trim()) || 0
 
-            let uuidMatch
-            const uuidRegex = /@UUID\[([a-zA-Z0-9-.]+)\]/g
-            while ((uuidMatch = uuidRegex.exec(rankMatch.groups.uuids)) !== null) {
-                uuids.push({ rank, uuid: uuidMatch[1] })
-            }
-        }
-
-        if (uuids.length) {
-            let overcharge = 0
-
-            const expendedSpellID = fields['dailies.staff'].expend?.value
-            const expendedSpell = actor.items.get(expendedSpellID)
-            const expendedSlot = getNotExpendedPreparedSpellSlot(expendedSpell)
-            if (expendedSlot) {
-                const { entry, rank, slot } = expendedSlot
-                overcharge = rank
-                updateItem({ _id: entry.id, [`system.slots.slot${rank}.prepared.${slot}.expended`]: true })
+                let uuidMatch
+                const uuidRegex = /@UUID\[([a-zA-Z0-9-.]+)\]/g
+                while ((uuidMatch = uuidRegex.exec(rankMatch.groups.uuids)) !== null) {
+                    uuids.push({ rank, uuid: uuidMatch[1] })
+                }
             }
 
-            const { attribute, tradition, rank, slug } = getBestSpellcastingEntry(actor) ?? {}
+            if (uuids.length) {
+                let overcharge = 0
 
-            const entrySource = {
-                type: 'spellcastingEntry',
-                name: staff.name,
-                system: {
-                    ability: { value: attribute ?? '' },
-                    prepared: { value: 'charge' },
-                    showSlotlessLevels: { value: false },
-                    showUnpreparedSpells: { value: false },
-                    proficiency: { value: rank ?? 1, slug },
-                    tradition: { value: tradition ?? '' },
-                },
-                flags: {
-                    [MODULE_ID]: {
-                        type: 'staff',
-                        staff: {
-                            charges: maxStaffCharges + overcharge,
-                            staveID: staffID,
-                            overcharge,
+                const expendedSpellID = fields['dailies.staff'].expend?.value
+                const expendedSpell = actor.items.get(expendedSpellID)
+                const expendedSlot = getNotExpendedPreparedSpellSlot(expendedSpell)
+                if (expendedSlot) {
+                    const { entry, rank, slot } = expendedSlot
+                    overcharge = rank
+                    updateItem({ _id: entry.id, [`system.slots.slot${rank}.prepared.${slot}.expended`]: true })
+                }
+
+                const { attribute, tradition, rank, slug } = getBestSpellcastingEntry(actor) ?? {}
+
+                const entrySource = {
+                    type: 'spellcastingEntry',
+                    name: staff.name,
+                    system: {
+                        ability: { value: attribute ?? '' },
+                        prepared: { value: 'charge' },
+                        showSlotlessLevels: { value: false },
+                        showUnpreparedSpells: { value: false },
+                        proficiency: { value: rank ?? 1, slug },
+                        tradition: { value: tradition ?? '' },
+                    },
+                    flags: {
+                        [MODULE_ID]: {
+                            type: 'staff',
+                            staff: {
+                                charges: maxStaffCharges + overcharge,
+                                staveID: staffID,
+                                overcharge,
+                            },
                         },
                     },
-                },
-            }
-            addItems.push(entrySource)
+                }
+                addItems.push(entrySource)
 
-            await Promise.all(
-                uuids.map(async ({ rank, uuid }) => {
-                    const source = await utils.createSpellSource(uuid)
-                    setProperty(source, `flags.${MODULE_ID}.entry`, { level: rank, type: 'staff' })
-                    addItems.push(source)
-                })
-            )
+                await Promise.all(
+                    uuids.map(async ({ rank, uuid }) => {
+                        const source = await utils.createSpellSource(uuid)
+                        setProperty(source, `flags.${MODULE_ID}.entry`, { level: rank, type: 'staff' })
+                        addItems.push(source)
+                    })
+                )
 
-            const msgGroup = overcharge ? 'staff.withExpend' : 'staff.noExpend'
-            messageObj.addGroup(msgGroup, 45)
-            messageObj.add(msgGroup, { uuid: staff.uuid })
-            if (overcharge) {
-                messageObj.add(msgGroup, {
-                    uuid: expendedSpell.uuid,
-                    label: `${expendedSpell.name} (${utils.spellRankLabel(expendedSlot.rank)})`,
-                })
+                const msgGroup = overcharge ? 'staff.withExpend' : 'staff.noExpend'
+                messageObj.addGroup(msgGroup, 45)
+                messageObj.add(msgGroup, { uuid: staff.uuid })
+                if (overcharge) {
+                    messageObj.add(msgGroup, {
+                        uuid: expendedSpell.uuid,
+                        label: `${expendedSpell.name} (${utils.spellRankLabel(expendedSlot.rank)})`,
+                    })
+                }
             }
         }
     }

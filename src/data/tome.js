@@ -105,7 +105,8 @@ export const thaumaturgeTome = {
 }
 
 function createChildCondition(option) {
-    return function ({ item, utils }) {
-        return utils.getChoiSetRuleSelection(item, option) === 'tome'
+    return function ({ item, utils, actor }) {
+        const itemId = utils.getChoiSetRuleSelection(item)
+        return actor.items.get(itemId)?.slug === 'tome'
     }
 }

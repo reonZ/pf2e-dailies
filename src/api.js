@@ -103,7 +103,7 @@ export const utils = {
     },
     getChoiSetRuleSelection: (item, option) => {
         const rules = item._source.system.rules
-        const rule = rules.find(rule => rule.key === 'ChoiceSet' && rule.rollOption === option)
+        const rule = rules.find(rule => rule.key === 'ChoiceSet' && (!option || rule.rollOption === option))
         return rule?.selection
     },
     //

@@ -1,3 +1,7 @@
+# 2.15.2
+
+-   fixed thaumaturge's `Tome` proficiencies not scaling properly with the adept and paragon feats
+
 # 2.15.1
 
 -   fixed codas not showing up in the selection list of staves for `Preparing a Staff`

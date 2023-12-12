@@ -122,14 +122,18 @@ export async function processData() {
             let uuids = []
 
             let rankMatch
-            const ranksRegex = /<strong>(?<rank>[a-zA-Z0-9]+)<\/strong>.+?(?<uuids>@UUID\[[a-zA-Z0-9-.]+\].+?)\n/g
+            const ranksRegex = /<strong>(?<rank>[a-zA-Z0-9]+)<\/strong>.+?(?<uuids>@(?:UUID|Compendium)\[[a-zA-Z0-9-.]+\].+?)\n/g
             while ((rankMatch = ranksRegex.exec(staff.description)) !== null) {
                 const rank = parseInt(rankMatch.groups.rank.trim()) || 0
 
                 let uuidMatch
-                const uuidRegex = /@UUID\[([a-zA-Z0-9-.]+)\]/g
+                const uuidRegex = /@(?<protocole>UUID|Compendium)\[(?<uuid>[a-zA-Z0-9-.]+)\]/g
                 while ((uuidMatch = uuidRegex.exec(rankMatch.groups.uuids)) !== null) {
-                    uuids.push({ rank, uuid: uuidMatch[1] })
+                    let uuid = uuidMatch.groups.uuid
+                    if (uuidMatch.groups.protocole === 'Compendium') {
+                        if (!uuid.startsWith('Compendium.')) uuid = `Compendium.${uuid}`
+                    }
+                    uuids.push({ rank, uuid })
                 }
             }
 

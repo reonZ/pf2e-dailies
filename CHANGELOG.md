@@ -1,3 +1,7 @@
+# 2.15.4
+
+-   fixed `@Compendium` syntax not being parsed in staves description
+
 # 2.15.3
 
 -   staff spellcasting entry spells will now be shown as expended when appropriate, taking into account possible use of spontaneous spell slots

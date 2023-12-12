@@ -1,6 +1,6 @@
 import { utils } from './api'
 import { MODULE_ID, getFlag, localize, templatePath, warn } from './module'
-import { getSpellcastingEntryStaffFlags } from './staves'
+import { getSpellcastingEntryStaffFlags } from './data/staves'
 
 export async function onSpellcastingEntryCast(wrapped, ...args) {
     const staffFlags = getSpellcastingEntryStaffFlags(this)
@@ -134,10 +134,9 @@ export function getSpellcastingEntryMaxSlotRank(entry) {
         const levelMaxSlot = Math.ceil(entry.actor.level / 2)
         if (levelMaxSlot > maxSlot) maxSlot = levelMaxSlot
     } else {
-        const slots = entry.system.slots
-        for (const key in slots) {
-            const slot = slots[key]
-            if (slot.max) maxSlot = Math.max(maxSlot, Number(key.slice(4)))
+        for (let i = 0; i <= 10; i++) {
+            const slot = entry.system.slots[`slot${i}`]
+            if (slot.max) maxSlot = Math.max(maxSlot, i)
         }
     }
 
@@ -147,7 +146,7 @@ export function getSpellcastingEntryMaxSlotRank(entry) {
 export function getPreparedSpells(actor) {
     const spells = []
 
-    const entries = actor.spellcasting.regular.filter(entry => entry.isPrepared)
+    const entries = actor.spellcasting.filter(entry => entry.isPrepared)
     for (const entry of entries) {
         for (let rank = 1; rank <= 10; rank++) {
             const data = entry.system.slots[`slot${rank}`]

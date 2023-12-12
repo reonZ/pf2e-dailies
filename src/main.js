@@ -3,8 +3,13 @@ import { openDailiesInterface, requestDailies, utils } from './api'
 import { DailyCustoms } from './apps/custom'
 import { renderChatMessage } from './chat'
 import { BUILTINS_DAILIES, CUSTOM_DAILIES, checkCustomDaily, parseCustomDailies, prepareDailies } from './dailies'
+import {
+    getSpellcastingEntryStaffData,
+    getSpellcastingEntryStaffFlags,
+    isPF2eStavesActive,
+    updateEntryCharges,
+} from './data/staves'
 import { MODULE_ID, getSetting, registerSetting, registerSettingMenu, warn } from './module'
-import { getSpellcastingEntryStaffData, getSpellcastingEntryStaffFlags, isPF2eStavesActive, updateEntryCharges } from './staves'
 import { restForTheNight } from './rest'
 import { onSpellcastingEntryCast } from './spellcasting'
 

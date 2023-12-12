@@ -1,7 +1,7 @@
 import { createUpdateCollection } from './api'
 import { getDailyFromSourceId } from './dailies'
 import { MODULE_ID, getFlag, getSourceId, setFlag } from './module'
-import { isPF2eStavesActive } from './staves'
+import { isPF2eStavesActive } from './data/staves'
 import { sluggify } from './pf2e/sluggify'
 
 export async function restForTheNight(actor) {

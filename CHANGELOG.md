@@ -1,3 +1,7 @@
+# 2.15.3
+
+-   staff spellcasting entry spells will now be shown as expended when appropriate, taking into account possible use of spontaneous spell slots
+
 # 2.15.2
 
 -   fixed thaumaturge's `Tome` proficiencies not scaling properly with the adept and paragon feats

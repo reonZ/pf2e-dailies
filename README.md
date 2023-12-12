@@ -99,7 +99,7 @@ The interface allows the user to open the compendium browser (with the right set
 
 ## Scrolls/Wands
 
-Drop a spell is dropped in a spell slot, a temporary spell scroll/wand will be created with the appropriate hightened level directly in the character's inventory.
+Drop a spell in a spell slot, a temporary spell scroll/wand will be created with the appropriate hightened level directly in the character's inventory.
 
 ## Spells
 

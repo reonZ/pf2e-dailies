@@ -187,9 +187,12 @@ export function getBestSpellcastingEntry(actor) {
 
     let bestEntry = { mod: 0 }
 
-    for (const { tradition, attribute, statistic, rank } of entries) {
-        const mod = statistic.mod
-        if (mod > bestEntry.mod) bestEntry = { tradition, attribute, mod, rank }
+    for (const entry of entries) {
+        const mod = entry.statistic.mod
+        if (mod <= bestEntry.mod) continue
+
+        const { ability, tradition, proficiency } = entry.system
+        bestEntry = { ability, tradition, proficiency, mod }
     }
 
     if (bestEntry.mod) return bestEntry

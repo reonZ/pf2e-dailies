@@ -149,18 +149,18 @@ export async function processData() {
                     updateItem({ _id: entry.id, [`system.slots.slot${rank}.prepared.${slot}.expended`]: true })
                 }
 
-                const { attribute, tradition, rank, slug } = getBestSpellcastingEntry(actor) ?? {}
+                const { ability, tradition, proficiency } = getBestSpellcastingEntry(actor) ?? {}
 
                 const entrySource = {
                     type: 'spellcastingEntry',
                     name: staff.name,
                     system: {
-                        ability: { value: attribute ?? '' },
+                        ability,
                         prepared: { value: 'charge' },
                         showSlotlessLevels: { value: false },
                         showUnpreparedSpells: { value: false },
-                        proficiency: { value: rank ?? 1, slug },
-                        tradition: { value: tradition ?? '' },
+                        proficiency,
+                        tradition,
                     },
                     flags: {
                         [MODULE_ID]: {

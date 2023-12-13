@@ -23,6 +23,7 @@ Hooks.once('setup', () => {
         name: 'customDailies',
         type: Array,
         default: [],
+        config: false,
         onChange: parseCustomDailies,
     })
 
@@ -30,14 +31,12 @@ Hooks.once('setup', () => {
         name: 'familiar',
         type: String,
         default: '',
-        config: true,
     })
 
     registerSetting({
         name: 'watch',
         type: Boolean,
         default: false,
-        config: true,
         onChange: enableWatchHook,
     })
 
@@ -45,8 +44,15 @@ Hooks.once('setup', () => {
         name: 'members',
         type: Boolean,
         default: true,
-        config: true,
-        scope: 'user',
+        scope: 'client',
+    })
+
+    registerSetting({
+        name: 'staff-sort',
+        tupe: String,
+        default: 'top',
+        choices: ['top', 'bottom'],
+        scope: 'client',
     })
 
     registerSettingMenu({

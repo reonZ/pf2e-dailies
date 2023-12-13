@@ -1,10 +1,20 @@
+import { getActorMaxSlotRank } from '../../actor'
 import { createUpdateCollection, utils } from '../../api'
 import { familiarUUID, getFamiliarPack } from '../../data/familiar'
 import { getRations } from '../../data/rations'
-import { MODULE_ID, chatUUID, error, fakeChatUUID, getFlag, hasLocalization, localize, subLocalize } from '../../module'
+import {
+    MODULE_ID,
+    chatUUID,
+    error,
+    fakeChatUUID,
+    getFlag,
+    getSetting,
+    hasLocalization,
+    localize,
+    subLocalize,
+} from '../../module'
 import { sluggify } from '../../pf2e/sluggify'
-import { getBestSpellcastingEntry, getNotExpendedPreparedSpellSlot } from '../../spellcasting'
-import { getActorMaxSlotRank } from '../../actor'
+import { getBestSpellcastingEntry, getHighestSpellcastingEntrySort, getNotExpendedPreparedSpellSlot } from '../../spellcasting'
 
 const REGEX_RANKS = ['cantrips?', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'].join('|')
 
@@ -116,11 +126,13 @@ export async function processData() {
     }
 
     if (fields['dailies.staff']) {
-        const staffID = fields['dailies.staff'].staffID.value
+        const staffField = fields['dailies.staff']
+        const staffID = staffField.staffID.value
         const staff = actor.items.get(staffID)
-        const maxStaffCharges = getActorMaxSlotRank(actor)
+        const makeshift = staffField.makeshift?.value === 'true'
+        const maxStaffCharges = makeshift ? 0 : getActorMaxSlotRank(actor)
 
-        if (staff && maxStaffCharges) {
+        if (staff && (maxStaffCharges || makeshift)) {
             const uuids = []
 
             let rankMatch
@@ -145,13 +157,28 @@ export async function processData() {
             if (uuids.length) {
                 let overcharge = 0
 
-                const expendedSpellID = fields['dailies.staff'].expend?.value
-                const expendedSpell = actor.items.get(expendedSpellID)
-                const expendedSlot = getNotExpendedPreparedSpellSlot(expendedSpell)
-                if (expendedSlot) {
-                    const { entry, rank, slot } = expendedSlot
-                    overcharge = rank
-                    updateItem({ _id: entry.id, [`system.slots.slot${rank}.prepared.${slot}.expended`]: true })
+                const expendedSpells = []
+                const expendedSlots = makeshift ? [1, 2, 3] : [1]
+
+                for (const i of expendedSlots) {
+                    const expendField = staffField[`expend${i}`]
+                    const spell = actor.items.get(expendField?.value)
+                    const rank = expendField?.optionData.rank
+                    const spellSlot = getNotExpendedPreparedSpellSlot(spell, rank)
+
+                    if (spellSlot) {
+                        const { entry, slotIndex } = spellSlot
+
+                        overcharge += +rank
+
+                        updateItem({ _id: entry.id, [`system.slots.slot${rank}.prepared.${slotIndex}.expended`]: true })
+
+                        expendedSpells.push({
+                            uuid: spell.uuid,
+                            name: spell.name,
+                            rank: rank,
+                        })
+                    }
                 }
 
                 const { ability, tradition, proficiency } = getBestSpellcastingEntry(actor) ?? {}
@@ -159,6 +186,7 @@ export async function processData() {
                 const entrySource = {
                     type: 'spellcastingEntry',
                     name: staff.name,
+                    sort: getSetting('staff-sort') === 'bottom' ? getHighestSpellcastingEntrySort(actor) + 10000 : -10000,
                     system: {
                         ability,
                         prepared: { value: 'charge' },
@@ -174,10 +202,12 @@ export async function processData() {
                                 charges: maxStaffCharges + overcharge,
                                 staveID: staffID,
                                 overcharge,
+                                makeshift,
                             },
                         },
                     },
                 }
+
                 addItems.push(entrySource)
 
                 await Promise.all(
@@ -188,13 +218,18 @@ export async function processData() {
                     })
                 )
 
-                const msgGroup = overcharge ? 'staff.withExpend' : 'staff.noExpend'
-                messageObj.addGroup(msgGroup, 45)
-                messageObj.add(msgGroup, { uuid: staff.uuid })
-                if (overcharge) {
-                    messageObj.add(msgGroup, {
-                        uuid: expendedSpell.uuid,
-                        label: `${expendedSpell.name} (${utils.spellRankLabel(expendedSlot.rank)})`,
+                messageObj.addGroup(
+                    'staff',
+                    45,
+                    localize(`staves.message.${overcharge ? 'withExpend' : 'noExpend'}`, {
+                        makeshift: makeshift ? localize('staves.makeshift') : '',
+                    })
+                )
+                messageObj.add('staff', { uuid: staff.uuid })
+                for (const { uuid, name, rank } of expendedSpells) {
+                    messageObj.add('staff', {
+                        uuid,
+                        label: `${name} (${utils.spellRankLabel(rank)})`,
                     })
                 }
             }
@@ -366,6 +401,11 @@ function getFields() {
         if (field.type === 'combo' && field.input === 'false') {
             const select = element.previousElementSibling
             field.value = select.value
+            field.optionData = select.selectedOptions[0].dataset
+        }
+
+        if (field.type === 'select') {
+            field.optionData = element.selectedOptions[0].dataset
         }
 
         fields[field.daily] ??= {}

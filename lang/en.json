@@ -51,7 +51,8 @@
             "staves": {
                 "prepare": "Prepare a Staff",
                 "staff": "Staff",
-                "expend": "Expend Spell"
+                "expend": "Expend Spell",
+                "type": "Type"
             }
         },
         "customs": {
@@ -206,10 +207,6 @@
             "blade": "Imbued their spirit into their weapon:",
             "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell:",
             "root": "Has prepared a small pouch with bits of herbs and gives it to an ally:",
-            "staff": {
-                "noExpend": "Has prepared a staff for the day:",
-                "withExpend": "Has prepared a staff with extra charges:"
-            },
             "rations": {
                 "used": "Consumed one of their {name} and has {nb} remaining.",
                 "last": "Consumed the last of their {name}.",
@@ -239,6 +236,14 @@
             "members": {
                 "name": "Party Members Only",
                 "hint": "When a collection of players actors is retrieved in the module and if the character is a member of a party, should those actors be pulled from said party or be any player owned actor."
+            },
+            "staff-sort": {
+                "name": "Staff Spellcasting Sort",
+                "hint": "When a staff spellcasting entry is created, should it appear at the top or at the bottom of the list.",
+                "choices": {
+                    "top": "Top of the list",
+                    "bottom": "Bottom of the list"
+                }
             }
         },
         "deprecated": {
@@ -256,7 +261,12 @@
                 "remaining": "remaining",
                 "one": "Would you like to consume a spontaneous spell slot of <strong>{rank}</strong> from <strong>{entry}</strong>? <strong>({remaining} remaining)</strong>",
                 "multi": "Would you like to consume a spontaneous spell slot of <strong>{rank}</strong> from any of the following spellcasting entries?"
-            }
+            },
+            "message": {
+                "noExpend": "Has prepared a {makeshift} staff for the day:",
+                "withExpend": "Has prepared a {makeshift} staff with extra charges:"
+            },
+            "makeshift": "makeshift"
         }
     }
 }

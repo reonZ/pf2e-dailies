@@ -71,7 +71,7 @@
 <select {{{@root.dump entry}}} {{disabled (lte entry.options.length 1)}}>
     {{#select entry.value}}
     {{#each entry.options as |option|}}
-    <option value="{{option.value}}">{{option.label}}</option>
+    <option {{{@root.dump option}}}>{{option.label}}</option>
     {{/each}}
     {{/select}}
 </select>
@@ -82,7 +82,11 @@
 <div class="combo">
     <select {{#unless entry.options.length}}data-tooltip="{{@root.i18n 'tooltip.noSelect'}}" disabled{{/unless}}>
         <option value=""></option>
-        {{selectOptions entry.options selected=entry.selected nameAttr='value' labelAttr='label'}}
+        {{#select entry.selected}}
+        {{#each entry.options as |option|}}
+        <option {{{@root.dump option}}}>{{option.label}}</option>
+        {{/each}}
+        {{/select}}
     </select>
     <input type="text" class="input" {{{@root.dump entry}}} />
 </div>

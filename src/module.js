@@ -17,7 +17,7 @@ function getSettingLocalizationPath(...path) {
 export function registerSetting(options) {
     const name = options.name
     options.scope = options.scope ?? 'world'
-    options.config = options.config ?? false
+    options.config = options.config ?? true
     if (options.config) {
         options.name = getSettingLocalizationPath(name, 'name')
         options.hint = getSettingLocalizationPath(name, 'hint')
@@ -149,11 +149,17 @@ function getItemSourceIdCondition(sourceId) {
 }
 
 export function getItems(actor, itemTypes) {
+    if (typeof itemTypes === 'string') itemTypes = [itemTypes]
     return itemTypes ? itemTypes.flatMap(type => actor.itemTypes[type]) : actor.items
 }
 
-export function findItemWithSourceId(actor, sourceId, itemTypes) {
-    return getItems(actor, itemTypes).find(getItemSourceIdCondition(sourceId))
+export function findItemWithSourceId(actor, sourceId, itemTypes = []) {
+    if (typeof itemTypes === 'string') itemTypes = [itemTypes]
+
+    for (const type of itemTypes) {
+        const item = actor.itemTypes[type].find(item => item.sourceId === sourceId)
+        if (item) return item
+    }
 }
 
 export function sequenceArray(start, end) {

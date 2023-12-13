@@ -2,7 +2,7 @@ import { utils } from '../api'
 import { getDailies } from '../dailies'
 import { getFamiliarPack } from '../data/familiar'
 import { getRations } from '../data/rations'
-import { getFlag, getSetting, subLocalize, templatePath } from '../module'
+import { findItemWithSourceId, getFlag, getSetting, subLocalize, templatePath } from '../module'
 import { isPF2eStavesActive } from '../data/staves'
 import { getActorMaxSlotRank } from '../actor'
 import { getPreparedSpells } from '../spellcasting'
@@ -12,6 +12,8 @@ import { processData } from './interface/process'
 import { parseFilter } from './interface/shared'
 
 const localize = subLocalize('interface')
+
+const STAFF_NEXUS = 'Compendium.pf2e.classfeatures.Item.Klb35AwlkNrq1gpB'
 
 export class DailiesInterface extends Application {
     constructor(actor, options) {
@@ -82,7 +84,7 @@ export class DailiesInterface extends Application {
         if (actor.familiar) {
             const type = 'dailies.familiar'
             const localize = subLocalize('label')
-            const nbAbilityies = actor.attributes.familiarAbilities.value
+            const nbAbilities = actor.attributes.familiarAbilities.value
             const pack = getFamiliarPack()
             const flags = getFlag(actor, type) ?? {}
 
@@ -102,7 +104,7 @@ export class DailiesInterface extends Application {
 
             options.sort((a, b) => a.label.localeCompare(b.label))
 
-            for (let index = 0; index < nbAbilityies; index++) {
+            for (let index = 0; index < nbAbilities; index++) {
                 template.rows.push({
                     label: localize('ability', { nb: index + 1 }),
                     value: flags[`${index}`] ?? '',
@@ -207,36 +209,68 @@ export class DailiesInterface extends Application {
                     ],
                 }
 
+                this._rows[type] = {
+                    staffID: { save: true },
+                }
+
                 const preparedSpells = getPreparedSpells(actor)
                 if (preparedSpells.length) {
-                    preparedSpells.sort((a, b) => a.rank - b.rank)
+                    preparedSpells.sort((a, b) =>
+                        a.rank === b.rank ? a.spell.name.localeCompare(b.spell.name) : a.rank - b.rank
+                    )
 
-                    const options = preparedSpells.map(spell => ({
+                    const options = preparedSpells.map(({ spell, rank, index }) => ({
                         value: spell.id,
-                        label: `${spell.name} (${utils.spellRankLabel(spell.rank)})`,
+                        label: `${spell.name} (${utils.spellRankLabel(rank)})`,
+                        data: {
+                            rank,
+                            unique: `${spell.id}.${rank}.${index}`,
+                        },
                     }))
 
                     options.unshift({ value: '', label: '' })
 
-                    template.rows.push({
-                        label: localize('staves.expend'),
-                        value: '',
-                        order: 100,
-                        options,
-                        data: {
-                            type: 'select',
-                            daily: type,
-                            row: 'expend',
-                        },
-                    })
+                    const staffNexus = findItemWithSourceId(actor, STAFF_NEXUS, 'feat')
+                    const nbExpend = staffNexus && actor.level >= 8 ? (actor.level >= 16 ? 3 : 2) : 1
+
+                    if (staffNexus) {
+                        template.rows.push({
+                            label: localize('staves.type'),
+                            value: flags.makeshift ?? 'false',
+                            order: 100,
+                            options: [
+                                { value: 'false', label: 'Regular Staff' },
+                                { value: 'true', label: 'Makeshift Staff' },
+                            ],
+                            data: {
+                                type: 'select',
+                                daily: type,
+                                row: `makeshift`,
+                            },
+                        })
+
+                        this._rows[type].makeshift = { save: true }
+                    }
+
+                    for (let i = 1; i <= nbExpend; i++) {
+                        template.rows.push({
+                            label: localize('staves.expend'),
+                            value: '',
+                            order: 100,
+                            options,
+                            data: {
+                                type: 'select',
+                                daily: type,
+                                row: `expend${i}`,
+                                unique: 'expend',
+                            },
+                        })
+
+                        this._rows[type][`expend${i}`] = { save: false }
+                    }
                 }
 
                 templates.push(template)
-
-                this._rows[type] = {
-                    staffID: { save: true },
-                    overcharge: { save: false },
-                }
             }
         }
 
@@ -267,7 +301,9 @@ export class DailiesInterface extends Application {
                 let msg = ''
                 if (value) msg += ` value="${value}"`
                 if (placeholder) msg += ` placeholder="${placeholder}"`
-                Object.entries(data).forEach(([key, value]) => (msg += ` data-${key}="${value}"`))
+                if (typeof data === 'object') {
+                    Object.entries(data).forEach(([key, value]) => (msg += ` data-${key}="${value}"`))
+                }
                 if (msg) msg += ' '
                 return msg
             },
@@ -480,8 +516,15 @@ export class DailiesInterface extends Application {
             let childIndex = child.selectedIndex
             const childOptions = child.options
 
-            const getOption = () => childOptions[childIndex].value
-            const optionExists = () => uniqueOptions.has(getOption())
+            const optionUniqueValue = () => {
+                const option = childOptions[childIndex]
+                return option.dataset.unique ?? option.value
+            }
+
+            const optionExists = () => {
+                const value = optionUniqueValue()
+                return value && uniqueOptions.has(value)
+            }
 
             while (optionExists() && childIndex > 0) {
                 childIndex -= 1
@@ -494,7 +537,8 @@ export class DailiesInterface extends Application {
 
             if (optionExists()) continue
 
-            uniqueOptions.add(getOption())
+            const finalValue = optionUniqueValue()
+            if (finalValue) uniqueOptions.add(finalValue)
 
             if (child.selectedIndex !== childIndex) {
                 child.selectedIndex = childIndex
@@ -509,7 +553,7 @@ export class DailiesInterface extends Application {
                 if (index === childIndex) continue
 
                 const option = childOptions[index]
-                option.disabled = uniqueOptions.has(option.value)
+                option.disabled = uniqueOptions.has(option.dataset.unique ?? option.value)
             }
         }
     }

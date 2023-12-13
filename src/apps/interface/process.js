@@ -6,6 +6,8 @@ import { sluggify } from '../../pf2e/sluggify'
 import { getBestSpellcastingEntry, getNotExpendedPreparedSpellSlot } from '../../spellcasting'
 import { getActorMaxSlotRank } from '../../actor'
 
+const REGEX_RANKS = ['cantrips?', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'].join('|')
+
 export async function processData() {
     const actor = this.actor
     const dailies = this.dailies
@@ -119,10 +121,13 @@ export async function processData() {
         const maxStaffCharges = getActorMaxSlotRank(actor)
 
         if (staff && maxStaffCharges) {
-            let uuids = []
+            const uuids = []
 
             let rankMatch
-            const ranksRegex = /<strong>(?<rank>[a-zA-Z0-9]+)<\/strong>.+?(?<uuids>@(?:UUID|Compendium)\[[a-zA-Z0-9-.]+\].+?)\n/g
+            const ranksRegex = new RegExp(
+                `<strong>\\s*(?<rank>(?:${REGEX_RANKS}))\\s*<\/strong>.+?(?<uuids>@(?:UUID|Compendium)\[[a-zA-Z0-9-.]+\].+?)\n`,
+                'gi'
+            )
             while ((rankMatch = ranksRegex.exec(staff.description)) !== null) {
                 const rank = parseInt(rankMatch.groups.rank.trim()) || 0
 

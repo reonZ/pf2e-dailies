@@ -1,3 +1,14 @@
+# 2.16.0
+
+-   added a `Staff Spellcasting Sort` setting to decide if the entry should be created at the top or bottom of the list
+-   added a new `unique` option for selects to manage mutually exclusive options
+    -   when more than one select in a group share the same `unique` data, any option already selected will not be available to the others
+    -   this is useful for features like `Familiar Abilities` which will let the user select from the same list multiple times
+-   added support for `Staff Nexus`, more prepared spells can be expended
+-   fine-tuned the staff description parser to only catch the actual spells list and to be more lenient on the syntax
+-   reproduce more faithfully the existing spellcasting entry data when creating the staff spellcasting entry
+-   fixed heightened spells not using the right rank when expended for `Preparing a Staff`
+
 # 2.15.4
 
 -   fixed `@Compendium` syntax not being parsed in staves description

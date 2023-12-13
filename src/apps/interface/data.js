@@ -48,7 +48,7 @@ export async function getTemplate({ children = [], key, item, prepare, label, ro
     for (const row of rows) {
         rowsObj[row.slug] = row
 
-        const { type, slug, childPredicate = [], condition, label, save } = row
+        const { type, slug, childPredicate = [], condition, label, save, unique } = row
 
         if (childPredicate.length && !PredicatePF2e.test(childPredicate, predicates)) continue
         if (condition && !(await condition(dailyArgs))) continue
@@ -72,6 +72,7 @@ export async function getTemplate({ children = [], key, item, prepare, label, ro
                 type,
                 daily: key,
                 row: slug,
+                ...(unique ? { unique } : ''),
             },
         }
 

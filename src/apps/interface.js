@@ -112,6 +112,7 @@ export class DailiesInterface extends Application {
                         type: 'select',
                         daily: type,
                         row: index.toString(),
+                        unique: 'ability',
                     },
                 })
             }
@@ -309,6 +310,21 @@ export class DailiesInterface extends Application {
         html.find('[data-action=search]').on('click', this.#onSearch.bind(this))
 
         html.find('[data-action=alert]').on('click', this.#onAlert.bind(this))
+
+        const uniqueSelects = html.find('select[data-unique]')
+        uniqueSelects.on('change', event => this.#cleanUniqueSelects(event.currentTarget, true))
+        {
+            const processedUniques = []
+
+            for (const select of uniqueSelects) {
+                const { unique, daily } = select.dataset
+                const uniqueTag = `${daily}.${unique}`
+                if (processedUniques.includes(uniqueTag)) continue
+
+                processedUniques.push(uniqueTag)
+                this.#cleanUniqueSelects(select, false)
+            }
+        }
     }
 
     _canDragDrop(selector) {
@@ -451,4 +467,65 @@ export class DailiesInterface extends Application {
         event.preventDefault()
         this.close()
     }
+
+    #cleanUniqueSelects(select, isTarget) {
+        const uniqueTag = select.dataset.unique
+        const children = isTarget
+            ? [select, ...getSiblings(select, `select[data-unique="${uniqueTag}"]`)]
+            : select.parentElement.querySelectorAll(`:scope > select[data-unique="${uniqueTag}"]`)
+
+        const uniqueOptions = new Set()
+
+        for (const child of children) {
+            let childIndex = child.selectedIndex
+            const childOptions = child.options
+
+            const getOption = () => childOptions[childIndex].value
+            const optionExists = () => uniqueOptions.has(getOption())
+
+            while (optionExists() && childIndex > 0) {
+                childIndex -= 1
+            }
+
+            const maxIndex = child.options.length - 1
+            while (optionExists() && childIndex < maxIndex) {
+                childIndex += 1
+            }
+
+            if (optionExists()) continue
+
+            uniqueOptions.add(getOption())
+
+            if (child.selectedIndex !== childIndex) {
+                child.selectedIndex = childIndex
+            }
+        }
+
+        for (const child of children) {
+            const childIndex = child.selectedIndex
+            const childOptions = child.options
+
+            for (let index = 0; index < childOptions.length; index++) {
+                if (index === childIndex) continue
+
+                const option = childOptions[index]
+                option.disabled = uniqueOptions.has(option.value)
+            }
+        }
+    }
+}
+
+function getSiblings(el, selector) {
+    const siblings = []
+
+    const parent = el.parentElement
+    if (!parent) return siblings
+
+    const children = selector ? parent.querySelectorAll(`:scope > ${selector}`) : parent.children
+    for (const child of children) {
+        if (child === el) continue
+        siblings.push(child)
+    }
+
+    return siblings
 }

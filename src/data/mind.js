@@ -80,6 +80,7 @@ export const mindSmith = {
             label: () => localize('label.mentalforge', { nb }),
             options: WEAPON_TRAITS,
             labelizer: ({ utils }) => utils.weaponTraitLabel,
+            unique: 'mental',
             childPredicate: ['weapon', 'mental'],
         })),
         {

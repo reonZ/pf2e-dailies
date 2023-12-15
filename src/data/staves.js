@@ -24,7 +24,7 @@ export function getSpellcastingEntryStaffData(entry) {
 
     const spontaneousCharges = (() => {
         const actor = entry.actor
-        if (!staffData.charges || staffData.overcharge || !actor) return {}
+        if (!staffData.charges || staffData.overcharge || staffData.makeshift || !actor) return {}
 
         return actor.spellcasting
             .filter(entry => entry.isSpontaneous)

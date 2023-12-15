@@ -55,3 +55,15 @@ export async function updateEntryCharges(entry, value) {
         return setFlag(entry, 'staff', staffData)
     }
 }
+
+export function getStaves(actor) {
+    return [
+        { type: 'weapon', trait: 'magical' },
+        { type: 'equipment', trait: 'coda' },
+    ].flatMap(({ type, trait }) =>
+        actor.itemTypes[type].filter(item => {
+            const traits = item.system.traits?.value
+            return traits && traits.includes('staff') && traits.includes(trait)
+        })
+    )
+}

@@ -3,7 +3,7 @@ import { getDailies } from '../dailies'
 import { getFamiliarPack } from '../data/familiar'
 import { getRations } from '../data/rations'
 import { findItemWithSourceId, getFlag, getSetting, subLocalize, templatePath } from '../module'
-import { isPF2eStavesActive } from '../data/staves'
+import { getStaves, isPF2eStavesActive } from '../data/staves'
 import { getActorMaxSlotRank } from '../actor'
 import { getPreparedSpells } from '../spellcasting'
 import { getTemplate } from './interface/data'
@@ -171,19 +171,8 @@ export class DailiesInterface extends Application {
         }
 
         if (!isPF2eStavesActive()) {
-            const staves = [
-                { type: 'weapon', trait: 'magical' },
-                { type: 'equipment', trait: 'coda' },
-            ].flatMap(({ type, trait }) =>
-                actor.itemTypes[type].filter(item => {
-                    const traits = item.system.traits?.value
-                    return traits && traits.includes('staff') && traits.includes(trait)
-                })
-            )
-
-            const maxStaffCharges = getActorMaxSlotRank(actor)
-
-            if (maxStaffCharges && staves.length) {
+            let staves, maxStaffCharges
+            if ((staves = getStaves(actor)).length && (maxStaffCharges = getActorMaxSlotRank(actor))) {
                 const type = 'dailies.staff'
                 const flags = getFlag(actor, type) ?? {}
                 const options = staves.map(staff => ({

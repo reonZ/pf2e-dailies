@@ -1,6 +1,6 @@
 import { subLocalize } from '../../module'
 import { getTranslatedSkills } from '../../pf2e/skills'
-import { sluggify } from '../../pf2e/sluggify'
+import { sluggify } from '../../pf2e/utils'
 import { getFeatFilterLevel, getFilterTraits, getSpellFilterLevel } from './shared'
 
 const localize = subLocalize('interface.error.drop')

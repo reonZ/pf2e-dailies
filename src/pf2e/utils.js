@@ -5,3 +5,7 @@ export function ErrorPF2e(message) {
 export function isObject(value) {
     return typeof value === 'object' && value !== null
 }
+
+export function sluggify(text, options) {
+    return game.pf2e.system.sluggify(text, options)
+}

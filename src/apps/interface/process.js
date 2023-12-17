@@ -13,7 +13,7 @@ import {
     localize,
     subLocalize,
 } from '../../module'
-import { sluggify } from '../../pf2e/sluggify'
+import { sluggify } from '../../pf2e/utils'
 import { getBestSpellcastingEntry, getHighestSpellcastingEntrySort, getNotExpendedPreparedSpellSlot } from '../../spellcasting'
 
 const REGEX_RANKS = ['cantrips?', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'].join('|')

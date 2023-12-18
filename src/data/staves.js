@@ -1,5 +1,7 @@
-import { getActorMaxSlotRank } from '../actor'
-import { getFlag, setFlag } from '../module'
+import { findItemWithSourceId, getFlag, setFlag } from '../module'
+import { getValidSpellcastingList, getSpellcastingEntryMaxSlotRank } from '../spellcasting'
+
+const KINETIC_ACTIVATION = 'Compendium.pf2e.feats-srd.Item.NV9H39kbkbjhAK6X'
 
 export function isPF2eStavesActive() {
     return game.modules.get('pf2e-staves')?.active
@@ -20,7 +22,7 @@ export function getSpellcastingEntryStaffData(entry) {
     if (!staffData) return
 
     staffData.overcharge ??= 0
-    staffData.max = getActorMaxSlotRank(entry.actor) + staffData.overcharge
+    staffData.max = getMaxSlotRankForStaves(entry.actor) + staffData.overcharge
 
     const spontaneousCharges = (() => {
         const actor = entry.actor
@@ -66,4 +68,22 @@ export function getStaves(actor) {
             return traits && traits.includes('staff') && traits.includes(trait)
         })
     )
+}
+
+export function getMaxSlotRankForStaves(actor) {
+    let maxCharges = 0
+
+    const entries = getValidSpellcastingList(actor)
+    for (const entry of entries) {
+        const entryMaxCharges = getSpellcastingEntryMaxSlotRank(entry)
+        if (entryMaxCharges > maxCharges) maxCharges = entryMaxCharges
+    }
+
+    const activation = findItemWithSourceId(actor, KINETIC_ACTIVATION, 'feat')
+    if (activation) {
+        const classCharges = Math.ceil(actor.level / 2)
+        if (classCharges > maxCharges) maxCharges = classCharges
+    }
+
+    return maxCharges
 }

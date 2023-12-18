@@ -1,7 +1,6 @@
 import { openDailiesInterface } from './api'
 import { getSpellcastingEntryStaffData, isPF2eStavesActive, updateEntryCharges } from './data/staves'
 import { localize } from './module'
-import { getSpellcastingEntryMaxSlotRank, getValidSpellcastingList } from './spellcasting'
 
 export async function onPerformDailyCrafting() {
     const entries = (await this.getCraftingEntries()).filter(e => e.isDailyPrep)
@@ -93,16 +92,4 @@ async function onStaffChargesReset(event, actor) {
 async function onStaffChargesChange(event, actor) {
     const entry = getEntryDataFromEvent(event, actor)
     updateEntryCharges(entry, event.currentTarget.valueAsNumber)
-}
-
-export function getActorMaxSlotRank(actor) {
-    let maxCharges = 0
-    const entries = getValidSpellcastingList(actor, { itemOnly: true })
-
-    for (const entry of entries) {
-        const entryMaxCharges = getSpellcastingEntryMaxSlotRank(entry)
-        if (entryMaxCharges > maxCharges) maxCharges = entryMaxCharges
-    }
-
-    return maxCharges
 }

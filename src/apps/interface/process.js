@@ -1,4 +1,4 @@
-import { getActorMaxSlotRank } from '../../actor'
+import { getMaxSlotRankForStaves } from '../../data/staves'
 import { createUpdateCollection, utils } from '../../api'
 import { familiarUUID, getFamiliarPack } from '../../data/familiar'
 import { getRations } from '../../data/rations'
@@ -130,7 +130,7 @@ export async function processData() {
         const staffID = staffField.staffID.value
         const staff = actor.items.get(staffID)
         const makeshift = staffField.makeshift?.value === 'true'
-        const maxStaffCharges = makeshift ? 0 : getActorMaxSlotRank(actor)
+        const maxStaffCharges = makeshift ? 0 : getMaxSlotRankForStaves(actor)
 
         if (staff && (maxStaffCharges || makeshift)) {
             const uuids = []

@@ -4,7 +4,7 @@ import { getFamiliarPack } from '../data/familiar'
 import { getRations } from '../data/rations'
 import { findItemWithSourceId, getFlag, getSetting, subLocalize, templatePath } from '../module'
 import { getStaves, isPF2eStavesActive } from '../data/staves'
-import { getActorMaxSlotRank } from '../actor'
+import { getMaxSlotRankForStaves } from '../data/staves'
 import { getPreparedSpells } from '../spellcasting'
 import { getTemplate } from './interface/data'
 import { onDropFeat, onDropItem, onDropSpell } from './interface/drop'
@@ -172,7 +172,7 @@ export class DailiesInterface extends Application {
 
         if (!isPF2eStavesActive()) {
             let staves, maxStaffCharges
-            if ((staves = getStaves(actor)).length && (maxStaffCharges = getActorMaxSlotRank(actor))) {
+            if ((staves = getStaves(actor)).length && (maxStaffCharges = getMaxSlotRankForStaves(actor))) {
                 const type = 'dailies.staff'
                 const flags = getFlag(actor, type) ?? {}
                 const options = staves.map(staff => ({

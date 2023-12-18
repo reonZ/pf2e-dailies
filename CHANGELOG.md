@@ -1,3 +1,8 @@
+# 2.17.0
+
+-   removed `Items Only - All Magic Items` from the criterias used to determine if a character can use staves
+-   added an exception for `Kinetic Activation` to determine if a character can use staves
+
 # 2.16.0
 
 -   added a `Staff Spellcasting Sort` setting to decide if the entry should be created at the top or bottom of the list

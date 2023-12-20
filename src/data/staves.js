@@ -79,7 +79,7 @@ export function getStaves(actor) {
 	].flatMap(({ type, trait }) =>
 		actor.itemTypes[type].filter((item) => {
 			const traits = item.system.traits?.value;
-			return traits?.includes("staff") && traits?.includes(trait);
+			return traits?.includes("staff") && traits.includes(trait);
 		}),
 	);
 }

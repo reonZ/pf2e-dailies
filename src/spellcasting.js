@@ -183,19 +183,59 @@ export function getNotExpendedPreparedSpellSlot(spell, rank) {
 }
 
 export function getBestSpellcastingEntry(actor) {
-    const entries = getValidSpellcastingList(actor, { itemOnly: true })
+    const entries = getValidSpellcastingList(actor)
 
-    let bestEntry = { mod: 0 }
+    let bestMod = 0
+    let bestEntries = []
 
     for (const entry of entries) {
         const mod = entry.statistic.mod
-        if (mod <= bestEntry.mod) continue
-
-        const { ability, tradition, proficiency } = entry.system
-        bestEntry = { ability, tradition, proficiency, mod }
+        if (mod > bestMod) {
+            bestEntries = [entry]
+            bestMod = mod
+        } else if (mod === bestMod) {
+            bestEntries.push(entry)
+        }
     }
 
-    if (bestEntry.mod) return bestEntry
+    if (bestEntries.length === 0) return
+
+    const returnedEntry = entry => {
+        const { ability, tradition, proficiency } = entry.system
+        return { ability, tradition, proficiency, mod: bestMod }
+    }
+
+    if (bestEntries.length === 1) return returnedEntry(bestEntries[0])
+
+    const classAttr = actor.classDC.attribute
+    const classAttrEntries = bestEntries.filter(entry => entry.attribute === classAttr)
+
+    if (classAttrEntries === 1) return returnedEntry(classAttrEntries[0])
+
+    let bestCount = 0
+    let bestEntry
+
+    for (const entry of bestEntries) {
+        const entryCount = getPreparedCount(entry)
+        if (entryCount > bestCount) {
+            bestCount = entryCount
+            bestEntry = entry
+        }
+    }
+
+    return returnedEntry(bestEntry)
+}
+
+function getPreparedCount(entry) {
+    if (entry.isSpontaneous) return entry.spells.size
+
+    if (entry.isPrepared) {
+        const slots = Object.values(entry.system.slots)
+        const prepared = slots.flatMap(slot => Object.values(slot.prepared))
+        return prepared.filter(spell => spell.id).length
+    }
+
+    return 0
 }
 
 export function getSpellcastingEntriesSortBounds(actor) {

@@ -198,12 +198,14 @@ export function getBestSpellcastingEntry(actor) {
     if (bestEntry.mod) return bestEntry
 }
 
-export function getHighestSpellcastingEntrySort(actor) {
-    let sort = 0
+export function getSpellcastingEntriesSortBounds(actor) {
+    let min = 0
+    let max = 0
 
     for (const entry of actor.spellcasting) {
-        if (entry.sort > sort) sort = entry.sort
+        if (entry.sort > max) max = entry.sort
+        else if (entry.sort < min) min = entry.sort
     }
 
-    return sort
+    return { min, max }
 }

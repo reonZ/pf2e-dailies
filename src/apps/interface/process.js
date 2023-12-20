@@ -1,7 +1,7 @@
-import { getMaxSlotRankForStaves } from '../../data/staves'
 import { createUpdateCollection, utils } from '../../api'
 import { familiarUUID, getFamiliarPack } from '../../data/familiar'
 import { getRations } from '../../data/rations'
+import { getMaxSlotRankForStaves } from '../../data/staves'
 import {
     MODULE_ID,
     chatUUID,
@@ -14,7 +14,7 @@ import {
     subLocalize,
 } from '../../module'
 import { sluggify } from '../../pf2e/utils'
-import { getBestSpellcastingEntry, getHighestSpellcastingEntrySort, getNotExpendedPreparedSpellSlot } from '../../spellcasting'
+import { getBestSpellcastingEntry, getNotExpendedPreparedSpellSlot, getSpellcastingEntriesSortBounds } from '../../spellcasting'
 
 const REGEX_RANKS = ['cantrips?', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'].join('|')
 
@@ -183,10 +183,15 @@ export async function processData() {
 
                 const { ability, tradition, proficiency } = getBestSpellcastingEntry(actor) ?? {}
 
+                const sort = (() => {
+                    const { min, max } = getSpellcastingEntriesSortBounds(actor)
+                    return getSetting('staff-sort') === 'bottom' ? max + 10000 : min - 10000
+                })()
+
                 const entrySource = {
                     type: 'spellcastingEntry',
                     name: staff.name,
-                    sort: getSetting('staff-sort') === 'bottom' ? getHighestSpellcastingEntrySort(actor) + 10000 : -10000,
+                    sort,
                     system: {
                         ability,
                         prepared: { value: 'charge' },

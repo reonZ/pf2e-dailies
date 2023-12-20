@@ -1,3 +1,14 @@
+# 2.18.0
+
+-   changed empty fields warning and now indicate which ones by decorating their label
+-   improved the way the best spellcasting entry the staff spellcasting entry will be based on is chosen
+    -   it first looks at the ones with the highest DC, if only one is found, then we are done
+    -   if only one has the same attribute than the character's main classDC, then it will be chosen
+    -   it will then look at the one with the most "prepared" spells
+    -   if it still ends up with a tie between multiple entries, the first of them will be picked
+-   changed how rigid the `Root Magic` actor list is populated when the `Party Members Only` setting is enabled and the character isn't part of any party, if it is not part of a party, it will look at all the player owned actors
+-   fixed sorting of staff spellcasting entry when using the `Top of the list` option not always being on top
+
 # 2.17.0
 
 -   removed `Items Only - All Magic Items` from the criterias used to determine if a character can use staves

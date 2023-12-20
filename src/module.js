@@ -204,7 +204,7 @@ export function isInstanceOf(obj, name) {
 	let cursor = Reflect.getPrototypeOf(obj);
 	while (cursor) {
 		if (cursor.constructor.name === name) return true;
-		cursor = Reflect.getPrototypeOf(obj);
+		cursor = Reflect.getPrototypeOf(cursor);
 	}
 
 	return false;

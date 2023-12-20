@@ -23,7 +23,7 @@
             },
             "error": {
                 "unexpected": "Une erreur inattendue s'est produite au cours des préparatifs quotidiens. Consultez la console (F12) pour plus de détails.",
-                "empty": "Tous les champs doivent être remplis.",
+                "empty": "Certains champs obligatoires sont vides.",
                 "drop": {
                     "wrongDataType": "Type de données invalide déposé.",
                     "wrongType": "L'objet déposé n'a pas le bon type (nécessaire : {types}).",

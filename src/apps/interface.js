@@ -459,11 +459,21 @@ export class DailiesInterface extends Application {
 
     #validate() {
         const warns = []
-        const emptyInputs = this.element.find('input').filter((_, input) => !input.value)
-        const alertInputs = this.element.find('input.alert')
+        const html = this.element
+
+        const emptyInputs = html.find('input').filter((_, input) => !input.value)
+        const alertInputs = html.find('input.alert')
 
         if (emptyInputs.length) warns.push('error.empty')
         if (alertInputs.length) warns.push('error.unattended')
+
+        html.find('label').removeClass('empty')
+
+        for (const input of emptyInputs) {
+            const parent = input.parentElement
+            const target = parent.classList.contains('combo') ? parent : input
+            target.previousElementSibling.classList.add('empty')
+        }
 
         warns.forEach(x => localize.warn(x))
 

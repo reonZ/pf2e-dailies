@@ -10,7 +10,7 @@
             },
             "error": {
                 "unexpected": "An unexpected error occured during daily preparations. See the console (F12) for details.",
-                "empty": "All fields must be filled.",
+                "empty": "Some required fields are empty.",
                 "unattended": "Some alerts are still unattended. Please click on the alert triangles to resolve them.",
                 "drop": {
                     "wrongDataType": "Invalid data type dropped.",

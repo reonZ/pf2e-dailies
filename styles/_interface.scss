@@ -74,6 +74,22 @@
                 }
             }
 
+            label {
+                padding-bottom: 1px;
+
+                &.empty {
+                    color: #830000;
+                    font-weight: bold;
+                    text-decoration: underline;
+
+                    &:empty {
+                        &::after {
+                            content: '*';
+                        }
+                    }
+                }
+            }
+
             .alert {
                 color: #830000;
             }

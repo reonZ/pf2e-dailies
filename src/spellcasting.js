@@ -95,6 +95,10 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
 			});
 		}
 
+		if (useSpontaneous === null) {
+			return;
+		}
+
 		if (typeof useSpontaneous === "number") {
 			const entry = spontaneousEntries[useSpontaneous];
 			const current = entry.system.slots[`slot${castRank}`].value;

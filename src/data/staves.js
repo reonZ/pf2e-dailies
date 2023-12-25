@@ -2,6 +2,7 @@ import { findItemWithSourceId, getFlag, setFlag } from "../module";
 import {
 	getValidSpellcastingList,
 	getSpellcastingEntryMaxSlotRank,
+	getBestSpellcastingEntry,
 } from "../spellcasting";
 
 const KINETIC_ACTIVATION = "Compendium.pf2e.feats-srd.Item.NV9H39kbkbjhAK6X";
@@ -100,4 +101,27 @@ export function getMaxSlotRankForStaves(actor) {
 	}
 
 	return maxCharges;
+}
+
+export function getBestSpellcastingEntryForStaves(actor) {
+	const bestEntry = getBestSpellcastingEntry(actor);
+
+	const activation = findItemWithSourceId(actor, KINETIC_ACTIVATION, "feat");
+	if (activation) {
+		const bestMod = bestEntry?.mod ?? 0;
+		const classDC =
+			actor.classDCs.kineticist ?? actor.classDCs.find((c) => c.mod >= bestMod);
+		const classMod = classDC.mod;
+
+		if (classMod >= bestMod) {
+			return {
+				ability: { value: classDC.attribute },
+				tradition: { value: "primal" },
+				proficiency: { value: classDC.rank, slug: classDC.slug },
+				mod: classMod,
+			};
+		}
+	}
+
+	return bestEntry;
 }

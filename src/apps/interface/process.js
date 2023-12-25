@@ -1,12 +1,13 @@
 import { createUpdateCollection, utils } from "../../api";
 import { familiarUUID, getFamiliarPack } from "../../data/familiar";
-import { getRations } from "../../data/rations";
-import { getMaxSlotRankForStaves } from "../../data/staves";
+import {
+	getBestSpellcastingEntryForStaves,
+	getMaxSlotRankForStaves,
+} from "../../data/staves";
 import {
 	MODULE_ID,
 	chatUUID,
 	error,
-	fakeChatUUID,
 	getFlag,
 	getSetting,
 	hasLocalization,
@@ -15,7 +16,6 @@ import {
 } from "../../module";
 import { sluggify } from "../../pf2e/utils";
 import {
-	getBestSpellcastingEntry,
 	getNotExpendedPreparedSpellSlot,
 	getSpellcastingEntriesSortBounds,
 } from "../../spellcasting";
@@ -45,7 +45,7 @@ export async function processData() {
 	const msg = subLocalize("message");
 
 	let addedSpells = false;
-	let message = "";
+	let chatContent = "";
 
 	const getRules = (item) => {
 		const id = item.id;
@@ -71,6 +71,8 @@ export async function processData() {
 		scrolls: { order: 30, messages: [] },
 	};
 
+	const rawMessages = [];
+
 	const messageObj = {
 		add: (group, options) => {
 			messages[group] ??= { order: 0, messages: [] };
@@ -78,6 +80,9 @@ export async function processData() {
 		},
 		addGroup: (group, order, label) => {
 			messages[group] ??= { label, order: order ?? 1, messages: [] };
+		},
+		addRaw: (message, order = 1) => {
+			rawMessages.push({ order, message });
 		},
 	};
 
@@ -108,41 +113,6 @@ export async function processData() {
 		}
 
 		if (abilities.length) familiar.createEmbeddedDocuments("Item", abilities);
-	}
-
-	if (fields["dailies.rations"]?.rations.value === "true") {
-		const rations = getRations(actor);
-
-		if (rations?.uses.value) {
-			const quantity = rations.quantity;
-			const { value, max } = rations.uses;
-
-			if (value <= 1) {
-				if (quantity <= 1) {
-					rations.delete();
-				} else {
-					updateItem({
-						_id: rations.id,
-						"system.quantity": Math.max(rations.quantity - 1, 0),
-						"system.charges.value": max,
-					});
-				}
-			} else {
-				updateItem({
-					_id: rations.id,
-					"system.charges.value": Math.max(value - 1, 0),
-				});
-			}
-
-			const remaining = (quantity - 1) * max + value;
-			const name =
-				remaining <= 1 ? fakeChatUUID(rations.name) : chatUUID(rations.uuid);
-
-			if (remaining <= 1) message += msg("rations.last", { name });
-			else if (remaining <= 3)
-				message += msg("rations.almost", { name, nb: remaining - 1 });
-			else message += msg("rations.used", { name, nb: remaining - 1 });
-		}
 	}
 
 	if (fields["dailies.staff"]) {
@@ -208,67 +178,73 @@ export async function processData() {
 					}
 				}
 
-				const { ability, tradition, proficiency } =
-					getBestSpellcastingEntry(actor) ?? {};
+				const bestEntry = getBestSpellcastingEntryForStaves(actor);
 
-				const sort = (() => {
-					const { min, max } = getSpellcastingEntriesSortBounds(actor);
-					return getSetting("staff-sort") === "bottom"
-						? max + 10000
-						: min - 10000;
-				})();
+				if (bestEntry) {
+					const { ability, tradition, proficiency } = bestEntry;
 
-				const entrySource = {
-					type: "spellcastingEntry",
-					name: staff.name,
-					sort,
-					system: {
-						ability,
-						prepared: { value: "charge" },
-						showSlotlessLevels: { value: false },
-						showUnpreparedSpells: { value: false },
-						proficiency,
-						tradition,
-					},
-					flags: {
-						[MODULE_ID]: {
-							type: "staff",
-							staff: {
-								charges: maxStaffCharges + overcharge,
-								staveID: staffID,
-								overcharge,
-								makeshift,
+					const sort = (() => {
+						const { min, max } = getSpellcastingEntriesSortBounds(actor);
+						return getSetting("staff-sort") === "bottom"
+							? max + 10000
+							: min - 10000;
+					})();
+
+					const entrySource = {
+						type: "spellcastingEntry",
+						name: staff.name,
+						sort,
+						system: {
+							ability,
+							prepared: { value: "charge" },
+							showSlotlessLevels: { value: false },
+							showUnpreparedSpells: { value: false },
+							proficiency,
+							tradition,
+						},
+						flags: {
+							[MODULE_ID]: {
+								type: "staff",
+								staff: {
+									charges: maxStaffCharges + overcharge,
+									staveID: staffID,
+									overcharge,
+									makeshift,
+								},
 							},
 						},
-					},
-				};
+					};
 
-				addItems.push(entrySource);
+					addItems.push(entrySource);
 
-				await Promise.all(
-					uuids.map(async ({ rank, uuid }) => {
-						const source = await utils.createSpellSource(uuid);
-						setProperty(source, `flags.${MODULE_ID}.entry`, {
-							level: rank,
-							type: "staff",
+					await Promise.all(
+						uuids.map(async ({ rank, uuid }) => {
+							const source = await utils.createSpellSource(uuid);
+							setProperty(source, `flags.${MODULE_ID}.entry`, {
+								level: rank,
+								type: "staff",
+							});
+							addItems.push(source);
+						}),
+					);
+
+					messageObj.addGroup(
+						"staff",
+						45,
+						localize(
+							`staves.message.${overcharge ? "withExpend" : "noExpend"}`,
+							{
+								makeshift: makeshift ? localize("staves.makeshift") : "",
+							},
+						),
+					);
+					messageObj.add("staff", { uuid: staff.uuid });
+					for (const { uuid, name, rank } of expendedSpells) {
+						messageObj.add("staff", {
+							uuid,
+							label: `${name} (${utils.spellRankLabel(rank)})`,
 						});
-						addItems.push(source);
-					}),
-				);
-
-				messageObj.addGroup(
-					"staff",
-					45,
-					localize(`staves.message.${overcharge ? "withExpend" : "noExpend"}`, {
-						makeshift: makeshift ? localize("staves.makeshift") : "",
-					}),
-				);
-				messageObj.add("staff", { uuid: staff.uuid });
-				for (const { uuid, name, rank } of expendedSpells) {
-					messageObj.add("staff", {
-						uuid,
-						label: `${name} (${utils.spellRankLabel(rank)})`,
-					});
+					}
 				}
 			}
 		}
@@ -410,10 +386,18 @@ export async function processData() {
 	if (updateItems.size)
 		await actor.updateEmbeddedDocuments("Item", updateItems.contents);
 
-	message += parseMessages(messages, message);
-	message = message ? `${msg("changes")}<hr />${message}` : msg("noChanges");
+	rawMessages.sort((a, b) => b.order - a.order);
+	for (const { message } of rawMessages) {
+		chatContent += `${message}<hr />`;
+	}
+
+	chatContent += parseMessages(messages, chatContent);
+	chatContent = chatContent
+		? `${msg("changes")}<hr />${chatContent}`
+		: msg("noChanges");
+
 	ChatMessage.create({
-		content: message,
+		content: chatContent,
 		speaker: ChatMessage.getSpeaker({ actor }),
 	});
 }

@@ -74,6 +74,7 @@ export async function getTemplate({
 			label,
 			save,
 			unique,
+			order,
 		} = row;
 
 		if (
@@ -98,7 +99,7 @@ export async function getTemplate({
 		const rowTemplate = {
 			label: rowLabel ? game.i18n.localize(rowLabel) : "",
 			value,
-			order: templateOrders[type],
+			order: order ?? templateOrders[type],
 			data: {
 				type,
 				daily: key,

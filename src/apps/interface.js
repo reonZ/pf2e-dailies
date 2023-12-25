@@ -1,7 +1,11 @@
 import { utils } from "../api";
 import { DAILY_FILTERS, getDailies } from "../dailies";
 import { getFamiliarPack } from "../data/familiar";
-import { getRations } from "../data/rations";
+import {
+	getMaxSlotRankForStaves,
+	getStaves,
+	isPF2eStavesActive,
+} from "../data/staves";
 import {
 	findItemWithSourceId,
 	getFlag,
@@ -9,8 +13,6 @@ import {
 	subLocalize,
 	templatePath,
 } from "../module";
-import { getStaves, isPF2eStavesActive } from "../data/staves";
-import { getMaxSlotRankForStaves } from "../data/staves";
 import { getPreparedSpells } from "../spellcasting";
 import { getTemplate } from "./interface/data";
 import { onDropFeat, onDropItem, onDropSpell } from "./interface/drop";
@@ -135,50 +137,6 @@ export class DailiesInterface extends Application {
 					return rows;
 				}, {});
 				templates.push(template);
-			}
-		}
-
-		if (!DAILY_FILTERS.includes("dailies.rations")) {
-			const rations = getRations(actor);
-			if (rations?.uses.value) {
-				const type = "dailies.rations";
-				const row = "rations";
-				const { value, max } = rations.uses;
-				const quantity = rations.quantity;
-				const remaining = (quantity - 1) * max + value;
-				const last = remaining <= 1;
-
-				const options = [
-					{
-						value: "false",
-						label: localize("rations.no"),
-					},
-					{
-						value: "true",
-						label: last
-							? localize("rations.last")
-							: localize("rations.yes", { nb: remaining }),
-					},
-				];
-
-				templates.push({
-					label: rations.name,
-					rows: [
-						{
-							label: "",
-							order: 200,
-							value: "false",
-							options,
-							data: {
-								type: "select",
-								daily: type,
-								row: row,
-							},
-						},
-					],
-				});
-
-				this._rows[type] = { [row]: { save: false } };
 			}
 		}
 

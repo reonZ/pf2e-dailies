@@ -7,6 +7,7 @@ import { createFeatDaily } from "./data/feat";
 import { combatFlexibility } from "./data/flexibility";
 import { createLanguageDaily } from "./data/language";
 import { mindSmith } from "./data/mind";
+import { rations } from "./data/rations";
 import { createResistancelDaily } from "./data/resistance";
 import { rootMagic } from "./data/root";
 import { scrollSavant } from "./data/savant";
@@ -16,7 +17,7 @@ import { AsyncFunction, error, getSetting, getSourceId, warn } from "./module";
 
 const DEPRECATED_CUSTOM_DAILIES = ["root-magic"];
 
-export const UNIQUE_DAILY_KEYS = ["rations", "familiar", "staves"];
+export const UNIQUE_DAILY_KEYS = ["familiar", "staves"];
 
 export const BUILTINS_DAILIES = [
 	thaumaturgeTome,
@@ -89,6 +90,7 @@ export const BUILTINS_DAILIES = [
 	bladeAlly,
 	rootMagic,
 	ceremonialKnife,
+	rations,
 ];
 
 export let DAILY_FILTERS = [];

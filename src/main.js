@@ -11,7 +11,6 @@ import {
 	prepareAllDailies,
 	prepareDailies,
 } from "./dailies";
-import { RATION_UUID } from "./data/rations";
 import {
 	getSpellcastingEntryStaffData,
 	getSpellcastingEntryStaffFlags,
@@ -96,15 +95,10 @@ Hooks.once("setup", () => {
 				BUILTINS_DAILIES.map((d) => `dailies.${d.key}`),
 			].flat(),
 		getBuiltinDailyKey: (uuid) => {
-			if (uuid === RATION_UUID) return "dailies.rations";
-
-			const daily = [BUILTINS_DAILIES, UNIQUE_DAILY_KEYS]
-				.flat()
-				.find(
-					(d) =>
-						d.item.uuid === uuid || d.children.some((c) => c.uuid === uuid),
-				);
-			if (daily) return;
+			const daily = BUILTINS_DAILIES.find(
+				(d) => d.item.uuid === uuid || d.children?.some((c) => c.uuid === uuid),
+			);
+			if (!daily) return;
 			return `dailies.${daily.key}`;
 		},
 		prepareDailies,

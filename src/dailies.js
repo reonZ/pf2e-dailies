@@ -16,6 +16,8 @@ import { AsyncFunction, error, getSetting, getSourceId, warn } from "./module";
 
 const DEPRECATED_CUSTOM_DAILIES = ["root-magic"];
 
+export const UNIQUE_DAILY_KEYS = ["rations", "familiar", "staves"];
+
 export const BUILTINS_DAILIES = [
 	thaumaturgeTome,
 	createTrainedSkillDaily(
@@ -89,7 +91,9 @@ export const BUILTINS_DAILIES = [
 	ceremonialKnife,
 ];
 
-const BUILTINS_UUIDS = prepareDailies(BUILTINS_DAILIES, "dailies");
+export let DAILY_FILTERS = [];
+
+let BUILTINS_UUIDS;
 const UUIDS = new Map();
 
 export function prepareDailies(dailies, prefix) {
@@ -100,6 +104,7 @@ export function prepareDailies(dailies, prefix) {
 
 		try {
 			const keyWithPrefix = `${prefix}.${daily.key}`;
+			if (DAILY_FILTERS.includes(keyWithPrefix)) continue;
 
 			uuids.set(daily.item.uuid, { daily, condition: daily.item.condition });
 
@@ -121,6 +126,10 @@ export function prepareDailies(dailies, prefix) {
 	}
 
 	return uuids;
+}
+
+function prepareBaseDailies() {
+	BUILTINS_UUIDS = prepareDailies(BUILTINS_DAILIES, "dailies");
 }
 
 export let CUSTOM_DAILIES = [];
@@ -154,6 +163,30 @@ export async function parseCustomDailies() {
 	for (const [uuid, daily] of CUSTOM_UUIDS.entries()) {
 		UUIDS.set(uuid, daily);
 	}
+}
+
+function prepareDailyFilters() {
+	const filters = getSetting("filters").trim();
+	if (!filters) {
+		DAILY_FILTERS = [];
+	}
+
+	try {
+		DAILY_FILTERS = filters
+			.split(",")
+			.map((s) => s.trim())
+			.filter(Boolean);
+	} catch (err) {
+		error("error.unexpected");
+		console.error(err);
+		console.error("The error occured while trying to parse the daily filters");
+	}
+}
+
+export async function prepareAllDailies() {
+	prepareDailyFilters();
+	prepareBaseDailies();
+	await parseCustomDailies();
 }
 
 export function checkCustomDaily(daily, warning = false) {

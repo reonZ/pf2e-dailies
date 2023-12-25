@@ -5,10 +5,13 @@ import { renderChatMessage } from "./chat";
 import {
 	BUILTINS_DAILIES,
 	CUSTOM_DAILIES,
+	UNIQUE_DAILY_KEYS,
 	checkCustomDaily,
 	parseCustomDailies,
+	prepareAllDailies,
 	prepareDailies,
 } from "./dailies";
+import { RATION_UUID } from "./data/rations";
 import {
 	getSpellcastingEntryStaffData,
 	getSpellcastingEntryStaffFlags,
@@ -69,6 +72,14 @@ Hooks.once("setup", () => {
 		scope: "client",
 	});
 
+	registerSetting({
+		name: "filters",
+		tupe: String,
+		default: "",
+		scope: "client",
+		onChange: prepareAllDailies,
+	});
+
 	registerSettingMenu({
 		name: "customs",
 		type: DailyCustoms,
@@ -79,6 +90,23 @@ Hooks.once("setup", () => {
 		requestDailies,
 		getBuiltinDailies: () => deepClone(BUILTINS_DAILIES),
 		getCustomDailies: () => deepClone(CUSTOM_DAILIES),
+		getBuiltinDailyKeys: () =>
+			[
+				UNIQUE_DAILY_KEYS.map((k) => `dailies.${k}`),
+				BUILTINS_DAILIES.map((d) => `dailies.${d.key}`),
+			].flat(),
+		getBuiltinDailyKey: (uuid) => {
+			if (uuid === RATION_UUID) return "dailies.rations";
+
+			const daily = [BUILTINS_DAILIES, UNIQUE_DAILY_KEYS]
+				.flat()
+				.find(
+					(d) =>
+						d.item.uuid === uuid || d.children.some((c) => c.uuid === uuid),
+				);
+			if (daily) return;
+			return `dailies.${daily.key}`;
+		},
 		prepareDailies,
 		checkCustomDaily,
 		getUtils: () => deepClone(utils),
@@ -104,7 +132,7 @@ Hooks.once("ready", async () => {
 		warn("staves.conflict", true);
 	}
 
-	await parseCustomDailies();
+	await prepareAllDailies();
 
 	if (!game.modules.get("lib-wrapper")?.active && game.user.isGM) {
 		warn("error.noLibwrapper", true);

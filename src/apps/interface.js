@@ -1,5 +1,5 @@
 import { utils } from "../api";
-import { getDailies } from "../dailies";
+import { DAILY_FILTERS, getDailies } from "../dailies";
 import { getFamiliarPack } from "../data/familiar";
 import { getRations } from "../data/rations";
 import {
@@ -87,7 +87,7 @@ export class DailiesInterface extends Application {
 		const actor = this._actor;
 		this._dailies = getDailies(actor);
 
-		if (actor.familiar) {
+		if (actor.familiar && !DAILY_FILTERS.includes("dailies.familiar")) {
 			const type = "dailies.familiar";
 			const localize = subLocalize("label");
 			const nbAbilities = actor.attributes.familiarAbilities.value;
@@ -138,7 +138,7 @@ export class DailiesInterface extends Application {
 			}
 		}
 
-		{
+		if (!DAILY_FILTERS.includes("dailies.rations")) {
 			const rations = getRations(actor);
 			if (rations?.uses.value) {
 				const type = "dailies.rations";
@@ -182,7 +182,7 @@ export class DailiesInterface extends Application {
 			}
 		}
 
-		if (!isPF2eStavesActive()) {
+		if (!DAILY_FILTERS.includes("dailies.staves") && !isPF2eStavesActive()) {
 			const staves = getStaves(actor);
 			if (staves.length) {
 				const maxStaffCharges = getMaxSlotRankForStaves(actor);

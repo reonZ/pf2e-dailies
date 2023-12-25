@@ -244,6 +244,10 @@
                     "top": "Top of the list",
                     "bottom": "Bottom of the list"
                 }
+            },
+            "filters": {
+                "name": "Filter Out Dailies",
+                "hint": "List of comma separated Daily keys (i.e. 'dailies.tome', 'custom.mydaily) to be filtered out of the daily preparation for this user. You can get the list of keys by typing in your browser console `game.modules.get('pf2e-dailies').api.getBuiltinDailyKeys()`. You can also diretly retrieve the key of a specific daily from any of its related item uuid by typing in your browser console `game.modules.get('pf2e-dailies').api.getBuiltinDailyKey('<compendium-uuid-of-the-item>')`."
             }
         },
         "deprecated": {

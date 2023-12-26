@@ -1,3 +1,15 @@
+# 2.19.0
+
+-   added a `Filter Out Dailies` client setting
+    -   list of comma separated Daily keys (i.e. 'dailies.tome', 'custom.mydaily') to be filtered out of the daily preparation for this user
+    -   you can get the list of keys by typing in your browser console `game.modules.get('pf2e-dailies').api.getBuiltinDailyKeys()`
+    -   you can also directly retrieve the key of a specific daily from any of its related item uuid by typing in your browser console `game.modules.get('pf2e-dailies').api.getBuiltinDailyKey('<compendium-uuid-of-the-item>')`
+-   added support for flexible spellcasting entries to be expended during staves preparation
+-   spells and flexible slots will now be grouped by spellcasting entry inside the staff `Expend Spell` selects
+-   removed `anarchic` and `axiomatic` from `Advanced Runic Mind Smithing` selection
+-   fixed rations not being used
+-   fixed `Kinetic Activation` breaking stuff
+
 # 2.18.0
 
 -   changed empty fields warning and now indicate which ones by decorating their label

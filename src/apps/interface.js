@@ -13,7 +13,7 @@ import {
 	subLocalize,
 	templatePath,
 } from "../module";
-import { getPreparedSpells } from "../spellcasting";
+import { getPreparedSpellcastingEntriesForStaves } from "../data/staves";
 import { getTemplate } from "./interface/data";
 import { onDropFeat, onDropItem, onDropSpell } from "./interface/drop";
 import { processData } from "./interface/process";
@@ -142,8 +142,10 @@ export class DailiesInterface extends Application {
 
 		if (!DAILY_FILTERS.includes("dailies.staves") && !isPF2eStavesActive()) {
 			const staves = getStaves(actor);
+
 			if (staves.length) {
 				const maxStaffCharges = getMaxSlotRankForStaves(actor);
+
 				if (maxStaffCharges) {
 					const type = "dailies.staff";
 					const flags = getFlag(actor, type) ?? {};
@@ -174,27 +176,67 @@ export class DailiesInterface extends Application {
 						staffID: { save: true },
 					};
 
-					const preparedSpells = getPreparedSpells(actor);
-					if (preparedSpells.length) {
-						preparedSpells.sort((a, b) =>
-							a.rank === b.rank
-								? a.spell.name.localeCompare(b.spell.name)
-								: a.rank - b.rank,
+					const preparedEntries =
+						getPreparedSpellcastingEntriesForStaves(actor);
+					if (preparedEntries.length) {
+						preparedEntries.sort((a, b) =>
+							!!a.slot === !!b.slot
+								? a.name.localeCompare(b.name)
+								: a.slot
+								  ? -1
+								  : b.slot
+									  ? 1
+									  : 0,
 						);
 
-						const options = preparedSpells.map(({ spell, rank, index }) => ({
-							value: spell.id,
-							label: `${spell.name} (${utils.spellRankLabel(rank)})`,
-							data: {
-								rank,
-								unique: `${spell.id}.${rank}.${index}`,
-							},
-						}));
+						const options = [{ value: "", label: "" }];
+						const flexibleLabel = game.i18n.localize("PF2E.SpellFlexibleLabel");
 
-						options.unshift({ value: "", label: "" });
+						for (const entry of preparedEntries) {
+							const entryId = entry.id;
+
+							options.push({ groupStart: true, label: entry.name });
+
+							for (const spell of entry.spells ?? []) {
+								options.push({
+									value: spell.id,
+									label: `${spell.name} (${utils.spellRankLabel(spell.rank)})`,
+									data: {
+										type: "spell",
+										rank: spell.rank,
+										spell: spell.id,
+										unique: `${spell.id}.${spell.rank}.${spell.index}`,
+									},
+								});
+							}
+
+							for (const slot of entry.slots ?? []) {
+								const rankLabel = utils.spellRankLabel(slot.rank);
+
+								const data = {
+									type: "slot",
+									rank: slot.rank,
+									entry: entryId,
+								};
+
+								if (slot.value > 1) {
+									data.skipUnique = true;
+								} else {
+									data.unique = `${entryId}.${slot.rank}`;
+								}
+
+								options.push({
+									value: slot.rank,
+									label: `${flexibleLabel} ${slot.value}/${slot.max} (${rankLabel})`,
+									data,
+								});
+							}
+
+							options.push({ groupEnd: true });
+						}
 
 						const staffNexus = findItemWithSourceId(actor, STAFF_NEXUS, "feat");
-						const nbExpend =
+						const nbExpends =
 							staffNexus && actor.level >= 8 ? (actor.level >= 16 ? 3 : 2) : 1;
 
 						if (staffNexus) {
@@ -212,11 +254,10 @@ export class DailiesInterface extends Application {
 									row: "makeshift",
 								},
 							});
-
 							this._rows[type].makeshift = { save: true };
 						}
 
-						for (let i = 1; i <= nbExpend; i++) {
+						for (let i = 1; i <= nbExpends; i++) {
 							template.rows.push({
 								label: localize("staves.expend"),
 								value: "",
@@ -229,7 +270,6 @@ export class DailiesInterface extends Application {
 									unique: "expend",
 								},
 							});
-
 							this._rows[type][`expend${i}`] = { save: false };
 						}
 					}
@@ -268,7 +308,8 @@ export class DailiesInterface extends Application {
 				if (placeholder) msg += ` placeholder="${placeholder}"`;
 				if (typeof data === "object") {
 					for (const [key, value] of Object.entries(data)) {
-						msg += ` data-${key}="${value}"`;
+						const formattedKey = key.replace(/[A-Z]/g, (c) => `-${c}`);
+						msg += ` data-${formattedKey}="${value}"`;
 					}
 				}
 				if (msg) msg += " ";
@@ -507,7 +548,9 @@ export class DailiesInterface extends Application {
 
 			const optionUniqueValue = () => {
 				const option = childOptions[childIndex];
-				return option.dataset.unique ?? option.value;
+				return option.dataset.skipUnique
+					? undefined
+					: option.dataset.unique ?? option.value;
 			};
 
 			const optionExists = () => {

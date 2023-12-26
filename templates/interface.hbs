@@ -71,7 +71,13 @@
 <select {{{@root.dump entry}}} {{disabled (lte entry.options.length 1)}}>
     {{#select entry.value}}
     {{#each entry.options as |option|}}
+    {{#if option.groupStart}}
+    <optgroup label="{{option.label}}"></optgroup>
+    {{else if option.groupEnd}}
+    </optgroup>
+    {{else}}
     <option {{{@root.dump option}}}>{{option.label}}</option>
+    {{/if}}
     {{/each}}
     {{/select}}
 </select>

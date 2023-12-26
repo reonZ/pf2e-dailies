@@ -125,3 +125,61 @@ export function getBestSpellcastingEntryForStaves(actor) {
 
 	return bestEntry;
 }
+
+export function getPreparedSpellcastingEntriesForStaves(actor) {
+	const entryGroups = {};
+
+	for (const entry of actor.spellcasting.filter((entry) => entry.isPrepared)) {
+		const entryId = entry.id;
+		const isFlexible = entry.isFlexible;
+
+		for (let rank = 1; rank <= 10; rank++) {
+			const data = entry.system.slots[`slot${rank}`];
+			if (data.max < 1) continue;
+
+			if (isFlexible) {
+				if (data.value < 1) continue;
+
+				entryGroups[entryId] ??= {
+					id: entryId,
+					name: entry.name,
+					slots: [],
+				};
+
+				entryGroups[entryId].slots.push({
+					rank,
+					value: data.value,
+					max: data.max,
+				});
+			} else {
+				for (const [index, { id, prepared, expended }] of Object.entries(
+					data.prepared,
+				)) {
+					if (prepared === false || expended) continue;
+
+					const spell = entry.spells.get(id);
+					if (!spell) continue;
+
+					entryGroups[entryId] ??= {
+						id: entryId,
+						name: entry.name,
+						spells: [],
+					};
+
+					entryGroups[entryId].spells.push({
+						id: spell.id,
+						name: spell.name,
+						rank,
+						index,
+					});
+				}
+			}
+		}
+
+		entryGroups[entryId]?.spells?.sort((a, b) =>
+			a.rank === b.rank ? a.name.localeCompare(b.name) : a.rank - b.rank,
+		);
+	}
+
+	return Object.values(entryGroups);
+}

@@ -166,34 +166,7 @@ export function getSpellcastingEntryMaxSlotRank(entry) {
 	return maxSlot;
 }
 
-export function getPreparedSpells(actor) {
-	const spells = [];
-
-	const entries = actor.spellcasting.filter((entry) => entry.isPrepared);
-	for (const entry of entries) {
-		for (let rank = 1; rank <= 10; rank++) {
-			const data = entry.system.slots[`slot${rank}`];
-			if (!data.max) continue;
-
-			for (const [index, { id, prepared, expended }] of Object.entries(
-				data.prepared,
-			)) {
-				if (prepared === false || expended) continue;
-
-				const spell = entry.spells.get(id);
-				if (!spell) continue;
-
-				spells.push({ spell, rank, index });
-			}
-		}
-	}
-
-	return spells;
-}
-
 export function getNotExpendedPreparedSpellSlot(spell, rank) {
-	if (!spell) return;
-
 	const entry = spell.spellcasting;
 	const entries = Object.entries(
 		entry.system.slots[`slot${rank ?? spell.rank}`].prepared,

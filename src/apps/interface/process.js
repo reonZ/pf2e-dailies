@@ -153,27 +153,59 @@ export async function processData() {
 
 				const expendedSpells = [];
 				const expendedSlots = makeshift ? [1, 2, 3] : [1];
+				const flexibleLabel = game.i18n.localize("PF2E.SpellFlexibleLabel");
+				const slotsUpdates = {};
 
 				for (const i of expendedSlots) {
 					const expendField = staffField[`expend${i}`];
-					const spell = actor.items.get(expendField?.value);
-					const rank = expendField?.optionData.rank;
-					const spellSlot = getNotExpendedPreparedSpellSlot(spell, rank);
+					const data = expendField?.optionData;
+					if (!data) continue;
 
-					if (spellSlot) {
-						const { entry, slotIndex } = spellSlot;
+					if (data.type === "spell") {
+						const spell = actor.items.get(data.spell);
+						if (!spell) continue;
 
-						overcharge += +rank;
+						const spellSlot = getNotExpendedPreparedSpellSlot(spell, data.rank);
+						if (!spellSlot) continue;
+
+						overcharge += +data.rank;
 
 						updateItem({
-							_id: entry.id,
-							[`system.slots.slot${rank}.prepared.${slotIndex}.expended`]: true,
+							_id: spellSlot.entry.id,
+							[`system.slots.slot${data.rank}.prepared.${spellSlot.slotIndex}.expended`]: true,
 						});
 
 						expendedSpells.push({
 							uuid: spell.uuid,
 							name: spell.name,
-							rank: rank,
+							rank: data.rank,
+						});
+					} else {
+						const entry = actor.items.get(data.entry);
+						if (!entry) continue;
+
+						const slot = entry.system.slots[`slot${data.rank}`];
+						if (slot.max < 1 || slot.value < 1) continue;
+
+						slotsUpdates[data.entry] ??= {};
+						slotsUpdates[data.entry][data.rank] ??= slot.value;
+
+						const currentValue = slotsUpdates[data.entry][data.rank];
+
+						if (currentValue < 1) continue;
+
+						overcharge += +data.rank;
+
+						updateItem({
+							_id: data.entry,
+							[`system.slots.slot${data.rank}.value`]: currentValue - 1,
+						});
+
+						slotsUpdates[data.entry][data.rank] -= 1;
+
+						expendedSpells.push({
+							name: flexibleLabel,
+							rank: data.rank,
 						});
 					}
 				}

@@ -3,6 +3,9 @@ import { MODULE_ID, getFlag, localize, templatePath, warn } from "./module";
 import { getSpellcastingEntryStaffFlags } from "./data/staves";
 
 export async function onSpellcastingEntryCast(wrapped, ...args) {
+	const [spell, { rank }] = args;
+	if (spell.isCantrip) return wrapped(...args);
+
 	const staffFlags = getSpellcastingEntryStaffFlags(this);
 	if (!staffFlags) return wrapped(...args);
 
@@ -13,11 +16,10 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
 		return;
 	}
 
-	const [spell, { level }] = args;
-	const castRank = spell.computeCastRank(level);
+	const castRank = spell.computeCastRank(rank);
 
-	if (!level || level === "0") {
-		return spell.toMessage(undefined, { data: { castLevel: castRank } });
+	if (!rank || rank === "0") {
+		return spell.toMessage(undefined, { data: { castRank } });
 	}
 
 	if (
@@ -124,7 +126,7 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
 	updates.push({ _id: this.id, [`flags.${MODULE_ID}.staff`]: staffFlags });
 
 	await actor.updateEmbeddedDocuments("Item", updates);
-	await spell.toMessage(undefined, { data: { castLevel: castRank } });
+	await spell.toMessage(undefined, { data: { castRank } });
 }
 
 export function getValidSpellcastingList(

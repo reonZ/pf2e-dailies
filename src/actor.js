@@ -97,12 +97,12 @@ function renderStavesEntries(html, actor) {
 		el.querySelector(".spell-ability-data .statistic-values").after(charges[0]);
 
 		const spells = el.querySelectorAll(
-			'.spell-list .spell:not([data-slot-level="0"]',
+			'.spell-list .spell:not([data-group-id="cantrips"]',
 		);
 		for (const spell of spells) {
-			const cost = spell.dataset.slotLevel;
+			const cost = spell.dataset.castRank;
 			if (staffData.canPayCost(cost)) continue;
-			spell.dataset.expendedState = true;
+			spell.dataset.slotExpended = "";
 		}
 	}
 }

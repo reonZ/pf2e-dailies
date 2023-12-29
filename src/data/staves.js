@@ -53,7 +53,7 @@ export function getSpellcastingEntryStaffData(entry) {
 
 	staffData.canPayCost = (cost) => {
 		return (
-			staffData.charges &&
+			!!staffData.charges &&
 			(cost <= staffData.charges || spontaneousCharges[cost])
 		);
 	};

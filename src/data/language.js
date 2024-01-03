@@ -10,7 +10,7 @@ export function createLanguageDaily(key, uuid, label) {
 				type: "select",
 				slug: "language",
 				options: ({ actor, utils }) => {
-					const actorLanguages = actor.system.traits.languages.value;
+					const actorLanguages = actor.system.details.languages.value;
 					return utils.languageNames
 						.filter((x) => !actorLanguages.includes(x))
 						.sort();

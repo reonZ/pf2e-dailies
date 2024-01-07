@@ -1,3 +1,8 @@
+# 2.20.0
+
+-   this is a `5.12.0` release
+-   updated the spell and languages data changes from the system
+
 # 2.19.0
 
 -   added a `Filter Out Dailies` client setting

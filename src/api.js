@@ -228,7 +228,7 @@ export function openDailiesInterface(character) {
 	if (!actor || !actor.isOfType("character") || !actor.isOwner)
 		return warn("error.noCharacterSelected");
 
-	if (getFlag(actor, "rested") !== true) return warn("error.unrested");
+	if (getFlag(actor, "rested") === false) return warn("error.unrested");
 
 	new DailiesInterface(actor, {
 		title: localize("interface.title", { name: actor.name }),

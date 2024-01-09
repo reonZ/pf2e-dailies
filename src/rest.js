@@ -9,7 +9,7 @@ export async function restForTheNightAll(wrapped, ...args) {
 	await Promise.all(
 		messages.map(async (message) => {
 			const actor = message.actor;
-			if (!actor?.isOwner) return;
+			if (!actor?.isOwner || getFlag(actor, "rested")) return;
 			await restForTheNight(actor);
 			await setFlag(actor, "rested", true);
 			await setFlag(message, "prepared", false);

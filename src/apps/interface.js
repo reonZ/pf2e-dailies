@@ -10,6 +10,7 @@ import {
 	findItemWithSourceId,
 	getFlag,
 	getSetting,
+	setFlag,
 	subLocalize,
 	templatePath,
 } from "../module";
@@ -24,7 +25,7 @@ const localize = subLocalize("interface");
 const STAFF_NEXUS = "Compendium.pf2e.classfeatures.Item.Klb35AwlkNrq1gpB";
 
 export class DailiesInterface extends Application {
-	constructor(actor, options) {
+	constructor(actor, options, message) {
 		super(options);
 		this._actor = actor;
 		this._dailies = [];
@@ -34,6 +35,7 @@ export class DailiesInterface extends Application {
 		this._custom = {};
 		this._predicate = {};
 		this._rows = {};
+		this._message = message;
 	}
 
 	static get defaultOptions() {
@@ -512,8 +514,15 @@ export class DailiesInterface extends Application {
 	async #onAccept(event) {
 		event.preventDefault();
 		if (!this.#validate()) return;
+
 		this.#lock();
+
 		await processData.call(this);
+
+		if (this._message) {
+			setFlag(this._message, "prepared", true);
+		}
+
 		this.close();
 	}
 

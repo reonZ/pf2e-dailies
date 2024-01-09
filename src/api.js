@@ -1,6 +1,5 @@
 import { canPrepDailies } from "./actor";
 import { DailiesInterface } from "./apps/interface";
-import { createWatchChatMessage } from "./chat";
 import {
 	capitalize,
 	getSetting,
@@ -214,7 +213,7 @@ export function ordinalString(value) {
 	return game.i18n.format("PF2E.OrdinalNumber", { value, suffix });
 }
 
-export function openDailiesInterface(character) {
+export function openDailiesInterface(character, message) {
 	let actor = character;
 
 	if (!actor || !actor.isOfType("character") || !actor.isOwner) {
@@ -230,14 +229,13 @@ export function openDailiesInterface(character) {
 
 	if (!canPrepDailies(actor)) return warn("error.unrested");
 
-	new DailiesInterface(actor, {
-		title: localize("interface.title", { name: actor.name }),
-	}).render(true);
-}
-
-export function requestDailies() {
-	if (!game.user.isGM) return warn("error.notGM");
-	createWatchChatMessage();
+	new DailiesInterface(
+		actor,
+		{
+			title: localize("interface.title", { name: actor.name }),
+		},
+		message,
+	).render(true);
 }
 
 export function createUpdateCollection() {

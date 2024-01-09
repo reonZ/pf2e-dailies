@@ -4,7 +4,21 @@ import { MODULE_ID, getFlag, getSourceId, setFlag } from "./module";
 import { isPF2eStavesActive } from "./data/staves";
 import { sluggify } from "./pf2e/utils";
 
-export async function restForTheNight(actor) {
+export async function restForTheNightAll(wrapped, ...args) {
+	const messages = await wrapped(...args);
+	await Promise.all(
+		messages.map(async (message) => {
+			const actor = message.actor;
+			if (!actor?.isOwner) return;
+			await restForTheNight(actor);
+			await setFlag(actor, "rested", true);
+			await setFlag(message, "prepared", false);
+		}),
+	);
+	return messages;
+}
+
+async function restForTheNight(actor) {
 	const removeItems = [];
 	const [updateItems, updateItem] = createUpdateCollection();
 	const pf2eStavesActive = isPF2eStavesActive();
@@ -63,6 +77,4 @@ export async function restForTheNight(actor) {
 		await actor.updateEmbeddedDocuments("Item", updateItems.contents);
 	if (removeItems.length)
 		await actor.deleteEmbeddedDocuments("Item", removeItems);
-
-	await setFlag(actor, "rested", true);
 }

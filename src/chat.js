@@ -1,23 +1,37 @@
+import { canPrepDailies } from "./actor";
 import { openDailiesInterface } from "./api";
-import { MODULE_ID, getFlag, localize } from "./module";
+import { getFlag, localize, updateSourceFlag } from "./module";
 
-export function renderChatMessage(message, html) {
-	const flag = getFlag(message, "isWatch");
-	if (!flag) return;
-	html
-		.find(".message-content button")
-		.on("click", () => openDailiesInterface());
+export function preCreateChatMessage(message, data, context) {
+	if (context.restForTheNight) {
+		updateSourceFlag(message, "restForTheNight", true);
+	}
 }
 
-export function createWatchChatMessage() {
-	let content = `<div>${localize("message.dailiesRequest.content")}</div>`;
+export function renderChatMessage(message, html) {
+	if (getFlag(message, "restForTheNight")) {
+		renderRestMessage(message, html);
+	}
+}
 
-	content += `<button type="button" style="margin-top: 8px;">${localize(
-		"message.dailiesRequest.button",
-	)}</button>`;
+function renderRestMessage(message, html) {
+	const actor = message.actor;
+	if (!actor.isOwner) return;
 
-	ChatMessage.implementation.create({
-		content,
-		flags: { [MODULE_ID]: { isWatch: true } },
-	});
+	const canPrep = canPrepDailies(actor);
+	const prepared = getFlag(message, "prepared");
+	const label = localize(
+		`message.dailiesRequest.${
+			prepared === undefined ? "cleaning" : canPrep ? "button" : "prepared"
+		}`,
+	);
+	const btn = $(`<button type="button">${label}</button>`);
+
+	html.find(".message-content").append(btn);
+
+	if (canPrep) {
+		btn.on("click", () => openDailiesInterface(actor, message));
+	} else {
+		btn.prop("disabled", true);
+	}
 }

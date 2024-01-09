@@ -209,3 +209,13 @@ export function isInstanceOf(obj, name) {
 
 	return false;
 }
+
+export function updateSourceFlag(doc, key, value) {
+	return doc.updateSource({
+		[`flags.${MODULE_ID}.${key}`]: value,
+	});
+}
+
+export function registerWrapper(path, callback, type = "WRAPPER") {
+	return libWrapper.register(MODULE_ID, path, callback, type);
+}

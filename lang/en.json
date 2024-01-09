@@ -158,7 +158,8 @@
             }
         },
         "sheet": {
-            "title": "Daily Preparations"
+            "title": "Daily Preparations",
+            "unrested": "Rest Required"
         },
         "dialog": {
             "weapon": {

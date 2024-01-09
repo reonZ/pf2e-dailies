@@ -41,6 +41,16 @@
         i {
             font-size: 1.1rem;
         }
+
+        &.disabled {
+            &:hover {
+                transition: none;
+
+                i {
+                    transform: scale(1);
+                }
+            }
+        }
     }
 }
 

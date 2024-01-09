@@ -1,8 +1,8 @@
+import { canPrepDailies } from "./actor";
 import { DailiesInterface } from "./apps/interface";
 import { createWatchChatMessage } from "./chat";
 import {
 	capitalize,
-	getFlag,
 	getSetting,
 	localize,
 	sequenceArray,
@@ -228,7 +228,7 @@ export function openDailiesInterface(character) {
 	if (!actor || !actor.isOfType("character") || !actor.isOwner)
 		return warn("error.noCharacterSelected");
 
-	if (getFlag(actor, "rested") === false) return warn("error.unrested");
+	if (!canPrepDailies(actor)) return warn("error.unrested");
 
 	new DailiesInterface(actor, {
 		title: localize("interface.title", { name: actor.name }),

@@ -4,7 +4,7 @@ import {
 	isPF2eStavesActive,
 	updateEntryCharges,
 } from "./data/staves";
-import { localize } from "./module";
+import { getFlag, localize } from "./module";
 
 export async function onPerformDailyCrafting() {
 	const entries = (await this.getCraftingEntries()).filter(
@@ -54,12 +54,19 @@ export function renderCharacterSheetPF2e(sheet, html) {
 	const actor = sheet.actor;
 	if (!actor.isOwner) return;
 
-	const tooltip = localize("sheet.title");
-	const icon = `<a class="roll-icon dailies" data-tooltip="${tooltip}"><i class="fas fa-mug-saucer"></i></a>`;
+	const canPrep = canPrepDailies(actor);
+	const disabledClass = canPrep ? "" : " disabled";
+	const tooltip = localize(canPrep ? "sheet.title" : "sheet.unrested");
+	const icon = `<a class="roll-icon dailies${disabledClass}" data-tooltip="${tooltip}">
+	<i class="fas fa-mug-saucer"></i>
+</a>`;
 
 	const el = html.find("aside .sidebar .hitpoints .hp-small");
 	el.append(icon);
-	el.find(".dailies").on("click", () => openDailiesInterface(actor));
+
+	if (canPrep) {
+		el.find(".dailies").on("click", () => openDailiesInterface(actor));
+	}
 
 	if (!isPF2eStavesActive()) renderStavesEntries(html, actor);
 }
@@ -120,4 +127,8 @@ async function onStaffChargesReset(event, actor) {
 async function onStaffChargesChange(event, actor) {
 	const entry = getEntryDataFromEvent(event, actor);
 	updateEntryCharges(entry, event.currentTarget.valueAsNumber);
+}
+
+export function canPrepDailies(actor) {
+	return getFlag(actor, "rested") !== false;
 }

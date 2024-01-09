@@ -1,3 +1,7 @@
+# 2.21.1
+
+-   fixed rest-for-the-night button message when no dailies were prepared
+
 # 2.21.0
 
 -   this is a `5.12.3` release

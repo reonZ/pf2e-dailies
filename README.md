@@ -188,15 +188,6 @@ function openDailiesInterface(actor?: CharacterPF2e): void
 
 ```js
 /**
- * This will create a chat message reminding all the users to do their
- * daily preparations, this requires for the setting `Watch For Request`
- * to be enabled, otherwise the chat card button will not be functional.
- */
-function requestDailies(): void
-```
-
-```js
-/**
  * @param {SpellcastingEntryPF2e} entry
  * @returns {{charges: number, overcharge?: number, staveID: string} | undefined}
  */

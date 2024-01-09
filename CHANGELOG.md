@@ -1,3 +1,15 @@
+# 2.21.0
+
+-   this is a `5.12.3` release
+-   the cup icon will now be disabled if the character has yet to rest
+-   cleaning of dailies is now linked to the rest-for-the-night message instead of its hook
+-   the rest-for-the-night system message will now contain an extra button:
+    -   allows the preparation of dailies when clicking on it
+    -   disabled if the associated character cannot prepare the dailies
+    -   disabled if the module is currently cleaning the dailies on the associated character
+-   removed the `requestDailies` api function
+-   removed the `Watch For Request` setting
+
 # 2.20.0
 
 -   this is a `5.12.0` release

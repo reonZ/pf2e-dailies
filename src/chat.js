@@ -22,7 +22,11 @@ function renderRestMessage(message, html) {
 	const prepared = getFlag(message, "prepared");
 	const label = localize(
 		`message.dailiesRequest.${
-			prepared === undefined ? "cleaning" : canPrep ? "button" : "prepared"
+			!canPrep && prepared === undefined
+				? "cleaning"
+				: canPrep
+				  ? "button"
+				  : "prepared"
 		}`,
 	);
 	const btn = $(`<button type="button">${label}</button>`);

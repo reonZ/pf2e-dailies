@@ -29,6 +29,24 @@ export async function onPerformDailyCrafting() {
 		"system.resources.crafting.infusedReagents.value": reagentValue,
 	});
 
+	const key =
+		reagentCost === 0
+			? "ZeroConsumed"
+			: reagentCost === 1
+			  ? "OneConsumed"
+			  : "NConsumed";
+
+	ui.notifications.info(
+		game.i18n.format(`PF2E.Actor.Character.Crafting.Daily.Complete.${key}`, {
+			quantity: reagentCost,
+		}),
+	);
+
+	// // Remove infused/temp items
+	// for (const item of this.inventory) {
+	// 	if (item.system.temporary) await item.delete();
+	// }
+
 	for (const entry of entries) {
 		for (const formula of entry.preparedCraftingFormulas) {
 			const itemSource = formula.item.toObject();
@@ -38,9 +56,7 @@ export async function onPerformDailyCrafting() {
 
 			if (
 				entry.isAlchemical &&
-				(itemSource.type === "consumable" ||
-					itemSource.type === "weapon" ||
-					itemSource.type === "equipment")
+				itemIsOfType(itemSource, "consumable", "equipment", "weapon")
 			) {
 				itemSource.system.traits.value.push("infused");
 			}

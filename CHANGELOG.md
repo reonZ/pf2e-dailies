@@ -1,3 +1,14 @@
+# 2.22.0
+
+-   added `Staff Labels Regex` world setting:
+    -   offers support for different rank label formats, mostly useful for localized languages that modify the items description with babele
+    -   must contain a regex summarizing the possible rank labels, any staff item not matching it will not be processed during daily preparation, so make sure to add all the eventual formats
+    -   labels must contain numerical values for ranks (cantrip doesn't need it)
+    -   can be left empty to use the default english labels:
+        -   `cantrips?|1st|2nd|3rd|4th|5th|6th|7th|8th|9th|10th`
+-   updated `onPerformDailyCrafting` wrapper
+-   fixed `SpellcastingEntryPF2e#cast` wrapper error spam
+
 # 2.21.1
 
 -   fixed rest-for-the-night button message when no dailies were prepared

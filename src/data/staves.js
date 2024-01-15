@@ -5,6 +5,20 @@ import {
 	getBestSpellcastingEntry,
 } from "../spellcasting";
 
+export const DEFAULT_REGEX_RANKS = [
+	"cantrips?",
+	"1st",
+	"2nd",
+	"3rd",
+	"4th",
+	"5th",
+	"6th",
+	"7th",
+	"8th",
+	"9th",
+	"10th",
+].join("|");
+
 const KINETIC_ACTIVATION = "Compendium.pf2e.feats-srd.Item.NV9H39kbkbjhAK6X";
 
 export function isPF2eStavesActive() {

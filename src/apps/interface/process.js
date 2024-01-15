@@ -1,6 +1,7 @@
 import { createUpdateCollection, utils } from "../../api";
 import { familiarUUID, getFamiliarPack } from "../../data/familiar";
 import {
+	DEFAULT_REGEX_RANKS,
 	getBestSpellcastingEntryForStaves,
 	getMaxSlotRankForStaves,
 } from "../../data/staves";
@@ -19,20 +20,6 @@ import {
 	getNotExpendedPreparedSpellSlot,
 	getSpellcastingEntriesSortBounds,
 } from "../../spellcasting";
-
-const REGEX_RANKS = [
-	"cantrips?",
-	"1st",
-	"2nd",
-	"3rd",
-	"4th",
-	"5th",
-	"6th",
-	"7th",
-	"8th",
-	"9th",
-	"10th",
-].join("|");
 
 export async function processData() {
 	const actor = this.actor;
@@ -124,14 +111,16 @@ export async function processData() {
 
 		if (staff && (maxStaffCharges || makeshift)) {
 			const uuids = [];
+			const ranks = getSetting("staff-regex").trim() || DEFAULT_REGEX_RANKS;
 			const ranksRegex = new RegExp(
-				`<strong>\\s*(?<rank>(?:${REGEX_RANKS}))\\s*<\/strong>.+?(?<uuids>@(?:UUID|Compendium)\[[a-zA-Z0-9-.]+\].+?)\n`,
+				`<strong>\\s*(?<rank>(?:${ranks}))\\s*<\/strong>.+?(?<uuids>@(?:UUID|Compendium)\[[a-zA-Z0-9-.]+\].+?)\n`,
 				"gi",
 			);
 
 			let rankMatch = ranksRegex.exec(staff.description);
 			while (rankMatch !== null) {
-				const rank = parseInt(rankMatch.groups.rank.trim()) || 0;
+				const rank =
+					parseInt(rankMatch.groups.rank.trim().replace(/\D+/, "")) || 0;
 				const uuidRegex =
 					/@(?<protocole>UUID|Compendium)\[(?<uuid>[a-zA-Z0-9-.]+)\]/g;
 

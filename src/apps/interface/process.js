@@ -119,8 +119,8 @@ export async function processData() {
 
 			let rankMatch = ranksRegex.exec(staff.description);
 			while (rankMatch !== null) {
-				const rank =
-					parseInt(rankMatch.groups.rank.trim().replace(/\D+/, "")) || 0;
+				const rankStr = rankMatch.groups.rank.trim().replace(/\D+/, "") || "0";
+				const rank = Math.clamped(parseInt(rankStr), 0, 10);
 				const uuidRegex =
 					/@(?<protocole>UUID|Compendium)\[(?<uuid>[a-zA-Z0-9-.]+)\]/g;
 

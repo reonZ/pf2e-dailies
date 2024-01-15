@@ -12,6 +12,7 @@ import {
 	prepareDailies,
 } from "./dailies";
 import {
+	DEFAULT_REGEX_RANKS,
 	getSpellcastingEntryStaffData,
 	getSpellcastingEntryStaffFlags,
 	isPF2eStavesActive,
@@ -59,15 +60,21 @@ Hooks.once("setup", () => {
 
 	registerSetting({
 		name: "staff-sort",
-		tupe: String,
+		type: String,
 		default: "top",
 		choices: ["top", "bottom"],
 		scope: "client",
 	});
 
 	registerSetting({
+		name: "staff-regex",
+		type: String,
+		default: DEFAULT_REGEX_RANKS,
+	});
+
+	registerSetting({
 		name: "filters",
-		tupe: String,
+		type: String,
 		default: "",
 		scope: "client",
 		onChange: prepareAllDailies,
@@ -104,7 +111,7 @@ Hooks.once("setup", () => {
 
 	if (!isPF2eStavesActive()) {
 		CONFIG.PF2E.preparationType.charge = "Charge";
-		registerWrapper(SPELLCASTING_ENTRY_CAST, onSpellcastingEntryCast);
+		registerWrapper(SPELLCASTING_ENTRY_CAST, onSpellcastingEntryCast, "MIXED");
 	}
 });
 

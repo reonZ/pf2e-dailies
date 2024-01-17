@@ -1,3 +1,7 @@
+# 2.22.1
+
+-   fixed `Advanced Alchemy` not adding items because of the module
+
 # 2.22.0
 
 -   added `Staff Labels Regex` world setting:

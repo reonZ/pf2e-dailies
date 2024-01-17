@@ -9,3 +9,15 @@ export function isObject(value) {
 export function sluggify(text, options) {
 	return game.pf2e.system.sluggify(text, options);
 }
+
+export function setHasElement(set, value) {
+	return set.has(value);
+}
+
+export function itemIsOfType(item, ...types) {
+	return types.some((t) =>
+		t === "physical"
+			? setHasElement(PHYSICAL_ITEM_TYPES, item.type)
+			: item.type === t,
+	);
+}

@@ -1,4 +1,4 @@
-import { onPerformDailyCrafting, renderCharacterSheetPF2e } from "./actor";
+import { performDailyCrafting, renderCharacterSheetPF2e } from "./actor";
 import { openDailiesInterface, utils } from "./api";
 import { DailyCustoms } from "./apps/custom";
 import { preCreateChatMessage, renderChatMessage } from "./chat";
@@ -127,7 +127,7 @@ Hooks.once("ready", async () => {
 		return;
 	}
 
-	registerWrapper(DAILY_CRAFTING, onPerformDailyCrafting, "OVERRIDE");
+	registerWrapper(DAILY_CRAFTING, performDailyCrafting, "OVERRIDE");
 
 	registerWrapper(REST_FOR_THE_NIGHT, restForTheNightAll);
 });

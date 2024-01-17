@@ -5,8 +5,9 @@ import {
 	updateEntryCharges,
 } from "./data/staves";
 import { getFlag, localize } from "./module";
+import { itemIsOfType } from "./pf2e/utils";
 
-export async function onPerformDailyCrafting() {
+export async function performDailyCrafting() {
 	const entries = (await this.getCraftingEntries()).filter(
 		(e) => e.isDailyPrep,
 	);

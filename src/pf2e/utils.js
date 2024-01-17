@@ -1,3 +1,14 @@
+const PHYSICAL_ITEM_TYPES = new Set([
+	"armor",
+	"backpack",
+	"book",
+	"consumable",
+	"equipment",
+	"shield",
+	"treasure",
+	"weapon",
+]);
+
 export function ErrorPF2e(message) {
 	return Error(`PF2e System | ${message}`);
 }

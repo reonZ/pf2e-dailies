@@ -195,6 +195,7 @@ export const utils = {
 
 		if (memberIsActor && member.parties.size && getSetting("members")) {
 			actors = Array.from(member.parties ?? []).flatMap((p) => p.members);
+			actors = Array.from(new Set(actors));
 		} else {
 			actors = actors.filter((a) => a.hasPlayerOwner);
 		}

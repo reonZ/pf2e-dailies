@@ -168,7 +168,7 @@ This setting offers support for different rank label formats, mostly useful for 
 
 Example for the french localization with babele:
 
--   `tour de magie|niveau 1|niveau 2|niveau 3|niveau 4|niveau 5|niveau 6|niveau 7|niveau 8|niveau 9|niveau 10`
+-   `tour de magie|1er|2e|3e|4e|5e|6e|7e|8e|9e|10e`
 
 # Homebrew
 

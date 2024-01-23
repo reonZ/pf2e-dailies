@@ -157,6 +157,19 @@ Feats and items that require you to select an options (e.g. skill or language) w
 
 You can add additional familiar abilities by adding their UUIDs in the settings (comma separated).
 
+# Staff Labels Regex
+
+This setting offers support for different rank label formats, mostly useful for localized languages that modify the items description with babele
+
+-   must contain a regex summarizing the possible rank labels, any staff item not matching it will not be processed during daily preparation, so make sure to add all the eventual formats
+-   labels must contain numerical values for ranks (cantrip doesn't need it)
+-   can be left empty to use the default english labels:
+    -   `cantrips?|1st|2nd|3rd|4th|5th|6th|7th|8th|9th|10th`
+
+Example for the french localization with babele:
+
+-   `tour de magie|niveau 1|niveau 2|niveau 3|niveau 4|niveau 5|niveau 6|niveau 7|niveau 8|niveau 9|niveau 10`
+
 # Homebrew
 
 You can add your own dailies using the `register` menu in the settings.

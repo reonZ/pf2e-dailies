@@ -283,6 +283,15 @@ export async function processData() {
 				messages: messageObj,
 				addItem: (source) => addItems.push(source),
 				updateItem,
+				removeRule: (signature, parent) => {
+					const rules = getRules(parent ?? item);
+					for (let i = rules.length - 1; i >= 0; i--) {
+						const rule = rules[i];
+						if (signature(rule)) {
+							rules.splice(i, 1);
+						}
+					}
+				},
 				addRule: (source, parent) => {
 					source[MODULE_ID] = true;
 					getRules(parent ?? item).push(source);

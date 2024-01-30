@@ -5,17 +5,7 @@ export function createTrainedSkillDaily(key, uuid, label) {
 		item: {
 			uuid,
 		},
-		rows: [
-			{
-				type: "combo",
-				slug: "skill",
-				options: ({ actor, utils }) => {
-					const actorSkills = actor.skills;
-					return utils.skillNames.filter((x) => actorSkills[x].rank < 1);
-				},
-				labelizer: ({ utils }) => utils.skillLabel,
-			},
-		],
+		rows: [createComboSkillRow("skill", 0)],
 		process: ({ fields, addItem, addRule, utils, messages }) => {
 			let value = fields.skill.value;
 
@@ -32,6 +22,19 @@ export function createTrainedSkillDaily(key, uuid, label) {
 		},
 	};
 	return daily;
+}
+
+export function createComboSkillRow(slug, rank, extras = {}) {
+	return {
+		type: "combo",
+		slug,
+		options: ({ actor, utils }) => {
+			const actorSkills = actor.skills;
+			return utils.skillNames.filter((x) => actorSkills[x].rank === rank);
+		},
+		labelizer: ({ utils }) => utils.skillLabel,
+		...extras,
+	};
 }
 
 export function createTrainedLoreDaily(key, uuid, label) {

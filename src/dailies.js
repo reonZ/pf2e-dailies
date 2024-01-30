@@ -6,6 +6,7 @@ import { createScrollChain } from "./data/chain";
 import { createFeatDaily } from "./data/feat";
 import { combatFlexibility } from "./data/flexibility";
 import { createLanguageDaily } from "./data/language";
+import { longevities } from "./data/longevity";
 import { mindSmith } from "./data/mind";
 import { rations } from "./data/rations";
 import { createResistancelDaily } from "./data/resistance";
@@ -21,10 +22,7 @@ export const UNIQUE_DAILY_KEYS = ["familiar", "staves"];
 
 export const BUILTINS_DAILIES = [
 	thaumaturgeTome,
-	createTrainedSkillDaily(
-		"longevity",
-		"Compendium.pf2e.feats-srd.Item.WoLh16gyDp8y9WOZ",
-	), // Ancestral Longevity
+	longevities,
 	createTrainedSkillDaily(
 		"ageless",
 		"Compendium.pf2e.feats-srd.Item.wylnETwIz32Au46y",

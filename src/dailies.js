@@ -3,7 +3,6 @@ import { tricksterAce } from "./data/ace";
 import { bladeAlly } from "./data/blade";
 import { ceremonialKnife } from "./data/ceremonial";
 import { createScrollChain } from "./data/chain";
-import { createFeatDaily } from "./data/feat";
 import { combatFlexibility } from "./data/flexibility";
 import { createLanguageDaily } from "./data/language";
 import { longevities } from "./data/longevity";
@@ -13,6 +12,7 @@ import { createResistancelDaily } from "./data/resistance";
 import { rootMagic } from "./data/root";
 import { scrollSavant } from "./data/savant";
 import { createTrainedLoreDaily, createTrainedSkillDaily } from "./data/skill";
+import { spellshaping } from "./data/spellshaping";
 import { thaumaturgeTome } from "./data/tome";
 import { AsyncFunction, error, getSetting, getSourceId, warn } from "./module";
 
@@ -62,15 +62,7 @@ export const BUILTINS_DAILIES = [
 		"ganzi",
 		true,
 	), // Ganzi
-	createFeatDaily(
-		"metamagical",
-		"Compendium.pf2e.classfeatures.Item.89zWKD2CN7nRu2xp",
-		{
-			category: ["class"],
-			traits: { selected: ["spellshape", "wizard"], conjunction: "and" },
-			level: "half",
-		},
-	), // Experimental Spellshaping
+	spellshaping,
 	combatFlexibility,
 	scrollSavant,
 	createScrollChain("esoterica", [

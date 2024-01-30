@@ -92,7 +92,13 @@ export async function createConsumableFromSpell(
 
 	if (type !== "cantripDeck5") {
 		consumableSource.system.spell = spell
-			.clone({ "system.location.heightenedLevel": heightenedLevel })
+			.clone(
+				{
+					_id: randomID(),
+					"system.location.heightenedLevel": heightenedLevel,
+				},
+				{ keepId: true },
+			)
 			.toObject();
 	}
 

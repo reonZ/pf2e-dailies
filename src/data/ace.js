@@ -6,7 +6,7 @@ export function tricksterAce() {
 		"ace",
 		"Compendium.pf2e.feats-srd.Item.POrE3ZgBRdBL9MsW",
 		{
-			category: ["cantrip", "spell"],
+			category: [],
 			level: 4,
 		},
 		4,

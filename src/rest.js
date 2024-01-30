@@ -9,7 +9,8 @@ export async function restForTheNightAll(wrapped, ...args) {
 	await Promise.all(
 		messages.map(async (message) => {
 			const actor = message.actor;
-			if (!actor?.isOwner || getFlag(actor, "rested")) return;
+			if (!actor?.isOwner) return;
+
 			await restForTheNight(actor);
 			await setFlag(actor, "rested", true);
 			await setFlag(message, "prepared", false);
@@ -73,8 +74,11 @@ async function restForTheNight(actor) {
 		if (modifiedRules) updateItem({ _id: item.id, "system.rules": rules });
 	}
 
-	if (updateItems.size)
+	if (updateItems.size) {
 		await actor.updateEmbeddedDocuments("Item", updateItems.contents);
-	if (removeItems.length)
+	}
+
+	if (removeItems.length) {
 		await actor.deleteEmbeddedDocuments("Item", removeItems);
+	}
 }

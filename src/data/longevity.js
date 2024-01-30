@@ -1,4 +1,4 @@
-import { createComboSkillRow } from "./skill";
+import { createComboSkillRow, processComboSkill } from "./skill";
 
 export const longevities = {
 	key: "longevities",
@@ -20,41 +20,20 @@ export const longevities = {
 			childPredicate: ["expert"],
 		}),
 	],
-	process: async ({
-		fields,
-		addItem,
-		addRule,
-		item,
-		children,
-		utils,
-		messages,
-	}) => {
+	process: async (api) => {
 		const feats = [
-			{ field: "ancestral", rank: 1, item: item },
-			{ field: "expert", rank: 2, item: children.expert },
+			{ field: "ancestral", rank: 1, item: api.item },
+			{ field: "expert", rank: 2, item: api.children.expert },
 		];
 
 		for (const { field, rank, item } of feats) {
-			if (!fields[field]) continue;
-
-			let value = fields[field].value;
-
-			if (fields[field].input === "true") {
-				const source = utils.createLoreSource({ name: value, rank });
-				addItem(source);
-			} else {
-				const source = utils.createSkillRuleElement({
-					skill: value,
-					value: rank,
-				});
-				value = utils.skillLabel(value);
-				addRule(source);
-			}
-
-			messages.add("skills", {
+			if (!api.fields[field]) continue;
+			processComboSkill(api, {
+				label: item.name,
 				uuid: item.uuid,
-				selected: value,
-				label: item.label,
+				field,
+				rank,
+				parent: item,
 			});
 		}
 	},

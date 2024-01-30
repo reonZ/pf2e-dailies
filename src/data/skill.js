@@ -6,22 +6,48 @@ export function createTrainedSkillDaily(key, uuid, label) {
 			uuid,
 		},
 		rows: [createComboSkillRow("skill", 0)],
-		process: ({ fields, addItem, addRule, utils, messages }) => {
-			let value = fields.skill.value;
-
-			if (fields.skill.input === "true") {
-				const source = utils.createLoreSource({ name: value, rank: 1 });
-				addItem(source);
-			} else {
-				const source = utils.createSkillRuleElement({ skill: value, value: 1 });
-				value = utils.skillLabel(value);
-				addRule(source);
-			}
-
-			messages.add("skills", { uuid, selected: value, label });
+		process: (api) => {
+			processComboSkill(api, { uuid, label });
 		},
 	};
 	return daily;
+}
+
+export function processComboSkill(
+	{ fields, addItem, addRule, utils, messages, removeRule },
+	{ field = "skill", uuid, label, rank = 1, parent },
+) {
+	removeRule(
+		(rule) =>
+			rule.key === "ActiveEffectLike" &&
+			rule.mode === "upgrade" &&
+			rule.phase === "beforeDerived" &&
+			rule.path?.startsWith("system.skills."),
+		parent,
+	);
+
+	removeRule(
+		(rule) =>
+			rule.key === "RollOption" &&
+			rule.toggleable &&
+			rule.alwaysActive &&
+			rule.phase === "beforeDerived" &&
+			rule.suboptions.some((suboption) => suboption.label === "PF2E.SkillAcr"),
+		parent,
+	);
+
+	let value = fields[field].value;
+
+	if (fields[field].input === "true") {
+		const source = utils.createLoreSource({ name: value, rank });
+		addItem(source);
+	} else {
+		const source = utils.createSkillRuleElement({ skill: value, value: rank });
+		value = utils.skillLabel(value);
+		addRule(source, parent);
+	}
+
+	messages.add("skills", { uuid, selected: value, label });
 }
 
 export function createComboSkillRow(slug, rank, extras = {}) {

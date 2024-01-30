@@ -51,6 +51,18 @@ export const utils = {
 		};
 		return data;
 	},
+	getTranslatedSkills: (lowercase = false) => {
+		return Object.entries(CONFIG.PF2E.skillList).reduce(
+			(result, [key, value]) => {
+				const localized = game.i18n.localize(value);
+				result[key] = lowercase
+					? localized.toLocaleLowerCase(game.i18n.lang)
+					: localized;
+				return result;
+			},
+			{},
+		);
+	},
 	// Languages
 	get languageNames() {
 		LANGUAGES ??= Object.keys(CONFIG.PF2E.languages);

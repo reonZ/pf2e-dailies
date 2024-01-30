@@ -1,5 +1,5 @@
+import { utils } from "../../api";
 import { subLocalize } from "../../module";
-import { getTranslatedSkills } from "../../pf2e/skills";
 import { sluggify } from "../../pf2e/utils";
 import {
 	getFeatFilterLevel,
@@ -34,7 +34,7 @@ export async function onDropFeat(item, target, filter) {
 	}
 
 	if (search.skills?.length) {
-		const translatedSkills = getTranslatedSkills();
+		const translatedSkills = utils.getTranslatedSkills(true);
 		const prerequisites = item.system.prerequisites.value.map((prerequisite) =>
 			prerequisite.value.toLocaleLowerCase(),
 		);

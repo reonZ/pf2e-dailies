@@ -106,8 +106,8 @@ export async function processData() {
 		const staffField = fields["dailies.staff"];
 		const staffID = staffField.staffID.value;
 		const staff = actor.items.get(staffID);
-		const makeshift = staffField.makeshift?.value === "true";
-		const maxStaffCharges = makeshift ? 0 : getMaxSlotRankForStaves(actor);
+		const makeshift = staffField.staffID.makeshift === "true";
+		const maxStaffCharges = getMaxSlotRankForStaves(actor);
 
 		if (staff && (maxStaffCharges || makeshift)) {
 			const uuids = [];

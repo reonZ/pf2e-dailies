@@ -157,21 +157,21 @@ export class DailiesInterface extends Application {
 					}));
 					options.sort((a, b) => a.label.localeCompare(b.label));
 
+					const staffIdRow = {
+						label: localize("staves.staff"),
+						value: flags.staffID ?? "",
+						order: 100,
+						options,
+						data: {
+							type: "select",
+							daily: type,
+							row: "staffID",
+						},
+					};
+
 					const template = {
 						label: localize("staves.prepare"),
-						rows: [
-							{
-								label: localize("staves.staff"),
-								value: flags.staffID ?? "",
-								order: 100,
-								options,
-								data: {
-									type: "select",
-									daily: type,
-									row: "staffID",
-								},
-							},
-						],
+						rows: [staffIdRow],
 					};
 
 					this._rows[type] = {
@@ -242,21 +242,7 @@ export class DailiesInterface extends Application {
 							staffNexus && actor.level >= 8 ? (actor.level >= 16 ? 3 : 2) : 1;
 
 						if (staffNexus) {
-							template.rows.push({
-								label: localize("staves.type"),
-								value: flags.makeshift ?? "false",
-								order: 100,
-								options: [
-									{ value: "false", label: "Regular Staff" },
-									{ value: "true", label: "Makeshift Staff" },
-								],
-								data: {
-									type: "select",
-									daily: type,
-									row: "makeshift",
-								},
-							});
-							this._rows[type].makeshift = { save: true };
+							staffIdRow.data.makeshift = true;
 						}
 
 						for (let i = 1; i <= nbExpends; i++) {

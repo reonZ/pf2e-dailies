@@ -90,11 +90,9 @@ export function renderCharacterSheetPF2e(sheet, html) {
 
 function renderStavesEntries(html, actor) {
 	const tab = html.find(
-		".sheet-body .sheet-content [data-tab=spellcasting] .spellcastingEntry-list",
+		".sheet-body .sheet-content [data-tab=spellcasting] [data-tab=known-spells] .spellcastingEntry-list",
 	);
-	const entries = tab.find(
-		"[data-container-type=spellcastingEntry]:not([data-container-id=rituals])",
-	);
+	const entries = tab.find("[data-container-type=spellcastingEntry]");
 
 	for (const el of entries) {
 		const entryId = el.dataset.containerId;

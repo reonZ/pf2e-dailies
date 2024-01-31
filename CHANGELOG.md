@@ -1,3 +1,14 @@
+# 2.23.0
+
+-   this is a `5.13.0` release
+-   updated the different helpers changes made in the system
+-   updated `Staff Nexus` to its remaster version, the makeshift staff now gets base charges like any staff and the feature adds extra expendable slots globaly (the staff `Type` field has been removed)
+-   the system now adds rule elements to feats that let you train a skill (e.g. `Ageless Spirit`, `Ancestral Longevity`, etc.), because those directly conflict with the module, they will be removed from said feats the first time a daily preparation is done on them, this is an irreversible process
+    -   if a player doesn't want to let the module handle one of those feat and prefers using the systems `Roll Options`, they are gonna have to add their key to the `Filter Out Dailies` setting
+    -   if the rule elements have already been removed from the feats due to daily preparation, the feats will have to be replaced in the character sheet
+-   added support for `Expert Longevity`
+-   removed the droppable field spell category filters from `Tricster's Ace`, having 2 categories leaves the browser window empty
+
 # 2.22.1
 
 -   fixed `Advanced Alchemy` not adding items because of the module

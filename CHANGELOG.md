@@ -1,3 +1,7 @@
+# 2.23.1
+
+-   fixed error with `ItemSpellcasting`
+
 # 2.23.0
 
 -   this is a `5.13.0` release

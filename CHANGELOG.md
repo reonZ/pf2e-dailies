@@ -1,3 +1,7 @@
+# 2.23.2
+
+-   set a hard cap for the number of staff charges based on the actor level (this doesn't include expended spells)
+
 # 2.23.1
 
 -   fixed error with `ItemSpellcasting`

@@ -101,6 +101,7 @@ export function getStaves(actor) {
 
 export function getMaxSlotRankForStaves(actor) {
 	let maxCharges = 0;
+	const actorCharges = Math.ceil(actor.level / 2);
 
 	const entries = getValidSpellcastingList(actor);
 	for (const entry of entries) {
@@ -110,11 +111,10 @@ export function getMaxSlotRankForStaves(actor) {
 
 	const activation = findItemWithSourceId(actor, KINETIC_ACTIVATION, "feat");
 	if (activation) {
-		const classCharges = Math.ceil(actor.level / 2);
-		if (classCharges > maxCharges) maxCharges = classCharges;
+		if (actorCharges > maxCharges) maxCharges = actorCharges;
 	}
 
-	return maxCharges;
+	return Math.min(actorCharges, maxCharges);
 }
 
 export function getBestSpellcastingEntryForStaves(actor) {

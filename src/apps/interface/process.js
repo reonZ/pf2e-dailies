@@ -130,7 +130,9 @@ export async function processData() {
 					if (uuidMatch.groups.protocole === "Compendium") {
 						if (!uuid.startsWith("Compendium.")) uuid = `Compendium.${uuid}`;
 					}
-					uuids.push({ rank, uuid });
+					if (fromUuidSync(uuid)) {
+						uuids.push({ rank, uuid });
+					}
 					uuidMatch = uuidRegex.exec(rankMatch.groups.uuids);
 				}
 

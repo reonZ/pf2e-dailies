@@ -227,7 +227,7 @@ export function getBestSpellcastingEntry(actor) {
 		}
 	}
 
-	return returnedEntry(bestEntry);
+	return returnedEntry(bestEntry ?? bestEntries[0]);
 }
 
 function getPreparedCount(entry) {

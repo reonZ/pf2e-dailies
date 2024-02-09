@@ -1,3 +1,8 @@
+# 2.23.3
+
+-   prevent the daily preparation from crashing if a staff contains an UUID that leads to nothing
+-   fix issue during spell staff preparation in the unusual situation where more than one prepared spellcasting entry exist and none have any spell actually prepared
+
 # 2.23.2
 
 -   set a hard cap for the number of staff charges based on the actor level (this doesn't include expended spells)

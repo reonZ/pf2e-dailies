@@ -75,8 +75,11 @@ export const utils = {
 		const rule = {
 			key: "ActiveEffectLike",
 			mode,
-			path: "system.details.languages.value",
-			value: language,
+			path: "system.build.languages.granted",
+			value: {
+				slug: language,
+				source: "{item|name}",
+			},
 		};
 		if (predicate?.length) rule.predicate = predicate;
 		return rule;

@@ -162,9 +162,16 @@ export async function processData() {
 
 						overcharge += +data.rank;
 
+						const slots = spellSlot.entry._source.system.slots;
+						const prepared = slots[`slot${data.rank}`].prepared.slice();
+						const prepareSlot = prepared[spellSlot.slotIndex];
+						if (!prepareSlot) continue;
+
+						prepareSlot.expended = true;
+
 						updateItem({
 							_id: spellSlot.entry.id,
-							[`system.slots.slot${data.rank}.prepared.${spellSlot.slotIndex}.expended`]: true,
+							[`system.slots.slot${data.rank}.prepared`]: prepared,
 						});
 
 						expendedSpells.push({

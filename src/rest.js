@@ -11,7 +11,7 @@ export async function restForTheNightAll(wrapped, ...args) {
 			const actor = message.actor;
 			if (!actor?.isOwner) return;
 
-			await restForTheNight(actor);
+			await onRestForTheNight(actor);
 			await setFlag(actor, "rested", true);
 			await setFlag(message, "prepared", false);
 		}),
@@ -19,7 +19,7 @@ export async function restForTheNightAll(wrapped, ...args) {
 	return messages;
 }
 
-async function restForTheNight(actor) {
+async function onRestForTheNight(actor) {
 	const removeItems = [];
 	const [updateItems, updateItem] = createUpdateCollection();
 	const pf2eStavesActive = isPF2eStavesActive();

@@ -108,3 +108,15 @@
         }
     }
 }
+
+.chat-message .pf2e-dailies-summary {
+    a.content-link {
+        background: none;
+        border: none;
+        padding: 0;
+        text-decoration: underline;
+        white-space: unset;
+        word-break: normal;
+        margin-right: 0.3em;
+    }
+}

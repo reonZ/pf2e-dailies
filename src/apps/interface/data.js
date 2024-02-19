@@ -1,6 +1,6 @@
+import { PredicatePF2e } from "module-api";
 import { utils } from "../../api";
 import { capitalize, getFlag, hasLocalization, localize } from "../../module";
-import { PredicatePF2e } from "../../pf2e/predicate";
 
 const templateOrders = {
 	select: 100,

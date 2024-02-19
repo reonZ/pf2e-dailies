@@ -1,3 +1,4 @@
+import { createConsumableFromSpell, ordinalString } from "module-api";
 import { canPrepDailies } from "./actor";
 import { DailiesInterface } from "./apps/interface";
 import {
@@ -7,7 +8,6 @@ import {
 	sequenceArray,
 	warn,
 } from "./module";
-import { createConsumableFromSpell } from "./pf2e/spell";
 
 const halfLevelString = "max(1,floor(@actor.level/2))";
 
@@ -110,31 +110,11 @@ export const utils = {
 		return source;
 	},
 	// spells
-	createSpellScrollSource: async ({ uuid, level, itemName, itemImg }) => {
-		const source = await createConsumableFromSpell(uuid, "scroll", {
-			heightenedLevel: level,
-			temp: true,
-			itemName,
-			itemImg,
-		});
-		if (!source)
-			throw new Error(
-				`An error occured while trying to create a spell scroll source with uuid: ${uuid}`,
-			);
-		return source;
+	createSpellScrollSource: async (options) => {
+		return createSpellConsumableSource("scroll", options);
 	},
-	createWandSource: async ({ uuid, level, itemName, itemImg }) => {
-		const source = await createConsumableFromSpell(uuid, "wand", {
-			heightenedLevel: level,
-			temp: true,
-			itemName,
-			itemImg,
-		});
-		if (!source)
-			throw new Error(
-				`An error occured while trying to create a wand source with uuid: ${uuid}`,
-			);
-		return source;
+	createWandSource: async (options) => {
+		return createSpellConsumableSource("wand", options);
 	},
 	createSpellSource: async (uuid) => {
 		const source = (await fromUuid(uuid))?.toObject();
@@ -221,12 +201,23 @@ export const utils = {
 	},
 };
 
-export function ordinalString(value) {
-	const pluralRules = new Intl.PluralRules(game.i18n.lang, { type: "ordinal" });
-	const suffix = game.i18n.localize(
-		`PF2E.OrdinalSuffixes.${pluralRules.select(value)}`,
-	);
-	return game.i18n.format("PF2E.OrdinalNumber", { value, suffix });
+async function createSpellConsumableSource(
+	type,
+	{ uuid, level, itemName, itemImg },
+) {
+	const spell = await fromUuid(uuid);
+	if (!spell) {
+		throw new Error(
+			`An error occured while trying to create a spell scroll source with uuid: ${uuid}`,
+		);
+	}
+	return createConsumableFromSpell(spell, {
+		type,
+		heightenedLevel: level,
+		temp: true,
+		itemName,
+		itemImg,
+	});
 }
 
 export function openDailiesInterface(character, message) {

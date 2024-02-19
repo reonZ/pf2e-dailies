@@ -1,14 +1,9 @@
-import {
-	chatUUID,
-	fakeChatUUID,
-	findItemWithSourceId,
-	localize,
-} from "../module";
+import { createFancyLink, getItemWithSourceId, localize } from "module-api";
 
 const RATION_UUID = "Compendium.pf2e.equipment-srd.Item.L9ZV076913otGtiB";
 
 function getRations(actor) {
-	return findItemWithSourceId(actor, RATION_UUID, "consumable");
+	return getItemWithSourceId(actor, RATION_UUID, "consumable");
 }
 
 export const rations = {
@@ -44,7 +39,7 @@ export const rations = {
 			},
 		},
 	],
-	process: ({ fields, updateItem, messages, actor }) => {
+	process: async ({ fields, updateItem, messages, actor }) => {
 		if (fields.rations.value !== "true") return;
 
 		const rations = getRations(actor);
@@ -72,7 +67,9 @@ export const rations = {
 
 		const remaining = (quantity - 1) * max + value;
 		const name =
-			remaining <= 1 ? fakeChatUUID(rations.name) : chatUUID(rations.uuid);
+			remaining <= 1
+				? await createFancyLink(RATION_UUID, { label: rations.name })
+				: await createFancyLink(rations);
 
 		const message =
 			remaining <= 1

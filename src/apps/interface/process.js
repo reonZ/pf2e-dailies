@@ -1,4 +1,15 @@
-import { sluggify } from "module-api";
+import {
+	MODULE,
+	chatUUID,
+	createFancyLink,
+	error,
+	getFlag,
+	getSetting,
+	hasLocalization,
+	localize,
+	sluggify,
+	subLocalize,
+} from "module-api";
 import { createUpdateCollection, utils } from "../../api";
 import { familiarUUID, getFamiliarPack } from "../../data/familiar";
 import {
@@ -6,16 +17,6 @@ import {
 	getBestSpellcastingEntryForStaves,
 	getMaxSlotRankForStaves,
 } from "../../data/staves";
-import {
-	MODULE_ID,
-	chatUUID,
-	error,
-	getFlag,
-	getSetting,
-	hasLocalization,
-	localize,
-	subLocalize,
-} from "../../module";
 import {
 	getNotExpendedPreparedSpellSlot,
 	getSpellcastingEntriesSortBounds,
@@ -42,7 +43,7 @@ export async function processData() {
 		const rules = deepClone(item._source.system.rules);
 
 		for (let i = rules.length - 1; i >= 0; i--) {
-			if (MODULE_ID in rules[i]) rules.splice(i, 1);
+			if (MODULE.id in rules[i]) rules.splice(i, 1);
 		}
 
 		addRules.set(id, rules);
@@ -226,7 +227,7 @@ export async function processData() {
 							tradition,
 						},
 						flags: {
-							[MODULE_ID]: {
+							[MODULE.id]: {
 								type: "staff",
 								staff: {
 									charges: maxStaffCharges + overcharge,
@@ -243,7 +244,7 @@ export async function processData() {
 					await Promise.all(
 						uuids.map(async ({ rank, uuid }) => {
 							const source = await utils.createSpellSource(uuid);
-							setProperty(source, `flags.${MODULE_ID}.entry`, {
+							setProperty(source, `flags.${MODULE.id}.entry`, {
 								level: rank,
 								type: "staff",
 							});
@@ -295,7 +296,7 @@ export async function processData() {
 					}
 				},
 				addRule: (source, parent) => {
-					source[MODULE_ID] = true;
+					source[MODULE.id] = true;
 					getRules(parent ?? item).push(source);
 				},
 				addFeat: (source, parent) => {
@@ -306,12 +307,12 @@ export async function processData() {
 							id: parentId,
 							onDelete: "cascade",
 						});
-						setProperty(source, `flags.${MODULE_ID}.grantedBy`, parentId);
+						setProperty(source, `flags.${MODULE.id}.grantedBy`, parentId);
 					}
 					addItems.push(source);
 				},
 				addSpell: (source, level) => {
-					setProperty(source, `flags.${MODULE_ID}.entry`, {
+					setProperty(source, `flags.${MODULE.id}.entry`, {
 						level: level,
 						type: "fallback",
 					});
@@ -364,7 +365,7 @@ export async function processData() {
 				},
 			},
 			flags: {
-				[MODULE_ID]: {
+				[MODULE.id]: {
 					type: "fallback",
 				},
 			},
@@ -374,7 +375,7 @@ export async function processData() {
 
 	for (const source of addItems) {
 		const alreadyTemp = getProperty(source, "system.temporary") === true;
-		if (!alreadyTemp) setProperty(source, `flags.${MODULE_ID}.temporary`, true);
+		if (!alreadyTemp) setProperty(source, `flags.${MODULE.id}.temporary`, true);
 	}
 
 	if (addItems.length) {
@@ -412,7 +413,7 @@ export async function processData() {
 	}
 
 	await actor.update({
-		[`flags.${MODULE_ID}`]: { ...expandObject(flags), rested: false },
+		[`flags.${MODULE.id}`]: { ...expandObject(flags), rested: false },
 	});
 
 	if (updateItems.size)
@@ -423,18 +424,18 @@ export async function processData() {
 		chatContent += `${message}<hr />`;
 	}
 
-	chatContent += parseMessages(messages, chatContent);
+	chatContent += await parseMessages(messages, chatContent);
 	chatContent = chatContent
 		? `${msg("changes")}<hr />${chatContent}`
 		: msg("noChanges");
 
 	ChatMessage.create({
-		content: chatContent,
+		content: `<div class="pf2e-dailies-summary">${chatContent}</div>`,
 		speaker: ChatMessage.getSpeaker({ actor }),
 	});
 }
 
-function parseMessages(messages) {
+async function parseMessages(messages) {
 	const msg = subLocalize("message");
 
 	const messageList = Object.entries(messages).map(([type, options]) => {
@@ -458,8 +459,8 @@ function parseMessages(messages) {
 
 			message += "<p>";
 			message += uuid
-				? `${chatUUID(uuid, label)}`
-				: `<strong>${label}</strong>`;
+				? `${await createFancyLink(uuid, { label })}`
+				: ` <strong>${label}</strong>`;
 			if (selected) message += ` <span>${selected}</span>`;
 			if (random) message += ' <i class="fa-solid fa-dice-d20"></i>';
 			message += "</p>";

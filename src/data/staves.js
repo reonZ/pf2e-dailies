@@ -1,4 +1,4 @@
-import { findItemWithSourceId, getFlag, setFlag } from "../module";
+import { getFlag, getItemWithSourceId, setFlag } from "module-api";
 import {
 	getValidSpellcastingList,
 	getSpellcastingEntryMaxSlotRank,
@@ -109,7 +109,7 @@ export function getMaxSlotRankForStaves(actor) {
 		if (entryMaxCharges > maxCharges) maxCharges = entryMaxCharges;
 	}
 
-	const activation = findItemWithSourceId(actor, KINETIC_ACTIVATION, "feat");
+	const activation = getItemWithSourceId(actor, KINETIC_ACTIVATION, "feat");
 	if (activation) {
 		if (actorCharges > maxCharges) maxCharges = actorCharges;
 	}
@@ -120,7 +120,7 @@ export function getMaxSlotRankForStaves(actor) {
 export function getBestSpellcastingEntryForStaves(actor) {
 	const bestEntry = getBestSpellcastingEntry(actor);
 
-	const activation = findItemWithSourceId(actor, KINETIC_ACTIVATION, "feat");
+	const activation = getItemWithSourceId(actor, KINETIC_ACTIVATION, "feat");
 	if (activation) {
 		const bestMod = bestEntry?.mod ?? 0;
 		const classDC =

@@ -1,6 +1,6 @@
+import { getFlag, localize, updateSourceFlag } from "module-api";
 import { canPrepDailies } from "./actor";
 import { openDailiesInterface } from "./api";
-import { getFlag, localize, updateSourceFlag } from "./module";
 
 export function preCreateChatMessage(message, data, context) {
 	if (context.restForTheNight) {

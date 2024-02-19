@@ -1,5 +1,5 @@
+import { MODULE, getFlag, localize, render, warn } from "module-api";
 import { utils } from "./api";
-import { MODULE_ID, getFlag, localize, templatePath, warn } from "./module";
 import { getSpellcastingEntryStaffFlags } from "./data/staves";
 
 export async function onSpellcastingEntryCast(wrapped, ...args) {
@@ -66,14 +66,11 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
 				remaining: entryRankValue(entry),
 			}));
 
-			const content = await renderTemplate(
-				templatePath("staves-spontaneous.hbs"),
-				{
-					entries,
-					castRank: utils.spellRankLabel(castRank),
-					i18n: (key, { hash }) => localize(`staves.spontaneous.${key}`, hash),
-				},
-			);
+			const content = await render("staves-spontaneous", {
+				entries,
+				castRank: utils.spellRankLabel(castRank),
+				i18n: (key, { hash }) => localize(`staves.spontaneous.${key}`, hash),
+			});
 
 			useSpontaneous = await Dialog.wait({
 				title: localize("staves.spontaneous.title"),
@@ -123,7 +120,7 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
 		staffFlags.charges -= castRank;
 	}
 
-	updates.push({ _id: this.id, [`flags.${MODULE_ID}.staff`]: staffFlags });
+	updates.push({ _id: this.id, [`flags.${MODULE.id}.staff`]: staffFlags });
 
 	await actor.updateEmbeddedDocuments("Item", updates);
 	await spell.toMessage(undefined, { data: { castRank } });

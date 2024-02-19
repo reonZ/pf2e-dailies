@@ -1,4 +1,4 @@
-import { localize } from "../module";
+import { localize } from "module-api";
 
 export const bladeAlly = {
 	key: "blade",

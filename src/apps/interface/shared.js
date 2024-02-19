@@ -1,4 +1,4 @@
-import { sequenceArray } from "../../module";
+import { sequenceArray } from "module-api";
 
 export function getSimplifiableValue(actor, value, fallback) {
 	if (value === undefined) return fallback;

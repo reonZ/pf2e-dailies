@@ -1,8 +1,7 @@
 import { createUpdateCollection } from "./api";
 import { getDailyFromSourceId } from "./dailies";
-import { MODULE_ID, getFlag, getSourceId, setFlag } from "./module";
 import { isPF2eStavesActive } from "./data/staves";
-import { sluggify } from "module-api";
+import { MODULE, getFlag, getSourceId, setFlag, sluggify } from "module-api";
 
 export async function restForTheNightAll(wrapped, ...args) {
 	const messages = await wrapped(...args);
@@ -66,7 +65,7 @@ async function onRestForTheNight(actor) {
 		const rules = deepClone(item._source.system.rules);
 		let modifiedRules = false;
 		for (let i = rules.length - 1; i >= 0; i--) {
-			if (MODULE_ID in rules[i]) {
+			if (MODULE.id in rules[i]) {
 				rules.splice(i, 1);
 				modifiedRules = true;
 			}

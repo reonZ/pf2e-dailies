@@ -1,13 +1,13 @@
-import { createConsumableFromSpell, ordinalString } from "module-api";
-import { canPrepDailies } from "./actor";
-import { DailiesInterface } from "./apps/interface";
 import {
 	capitalize,
+	createConsumableFromSpell,
 	getSetting,
 	localize,
+	ordinalString,
 	sequenceArray,
-	warn,
-} from "./module";
+} from "module-api";
+import { canPrepDailies } from "./actor";
+import { DailiesInterface } from "./apps/interface";
 
 const halfLevelString = "max(1,floor(@actor.level/2))";
 

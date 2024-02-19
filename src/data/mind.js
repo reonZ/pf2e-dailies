@@ -1,10 +1,10 @@
 import {
-	MODULE_ID,
-	findItemWithSourceId,
+	MODULE,
 	getFlag,
+	getItemWithSourceId,
 	localize,
 	subLocalize,
-} from "../module";
+} from "module-api";
 
 const MIND_WEAPON_UUID =
 	"Compendium.pf2e-dailies.equipment.Item.VpmEozw21aRxX15P";
@@ -165,7 +165,7 @@ export const mindSmith = {
 				updateItem({
 					_id: weapon.id,
 					[`system.${freeSlot}.value`]: selected,
-					[`flags.${MODULE_ID}.runeSlot`]: freeSlot,
+					[`flags.${MODULE.id}.runeSlot`]: freeSlot,
 				});
 				messages.add("mindsmith", {
 					selected: utils.weaponPropertyRunesLabel(selected),
@@ -178,7 +178,7 @@ export const mindSmith = {
 	rest: ({ item, sourceId, updateItem, actor }) => {
 		if (sourceId !== MIND_WEAPON_UUID) return;
 
-		const mental = findItemWithSourceId(actor, MALLEABLE_MENTAL_FORGE_UUID);
+		const mental = getItemWithSourceId(actor, MALLEABLE_MENTAL_FORGE_UUID);
 		if (mental) {
 			let traits = item._source.system.traits?.value ?? [];
 			traits = traits.filter((trait) => !WEAPON_TRAITS.includes(trait));
@@ -190,7 +190,7 @@ export const mindSmith = {
 			updateItem({
 				_id: item.id,
 				[`system.${runeSlot}.value`]: null,
-				[`flags.${MODULE_ID}.-=runeSlot`]: true,
+				[`flags.${MODULE.id}.-=runeSlot`]: true,
 			});
 		}
 	},

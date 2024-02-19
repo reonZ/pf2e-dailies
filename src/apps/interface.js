@@ -6,19 +6,19 @@ import {
 	getStaves,
 	isPF2eStavesActive,
 } from "../data/staves";
-import {
-	findItemWithSourceId,
-	getFlag,
-	getSetting,
-	setFlag,
-	subLocalize,
-	templatePath,
-} from "../module";
 import { getPreparedSpellcastingEntriesForStaves } from "../data/staves";
 import { getTemplate } from "./interface/data";
 import { onDropFeat, onDropItem, onDropSpell } from "./interface/drop";
 import { processData } from "./interface/process";
 import { parseFilter } from "./interface/shared";
+import {
+	getFlag,
+	getItemWithSourceId,
+	getSetting,
+	setFlag,
+	subLocalize,
+	templatePath,
+} from "module-api";
 
 const localize = subLocalize("interface");
 
@@ -41,7 +41,7 @@ export class DailiesInterface extends Application {
 	static get defaultOptions() {
 		return mergeObject(Application.defaultOptions, {
 			id: "pf2e-dailies-interface",
-			template: templatePath("interface.hbs"),
+			template: templatePath("interface"),
 			height: "auto",
 			width: 400,
 			submitOnClose: false,
@@ -237,7 +237,7 @@ export class DailiesInterface extends Application {
 							options.push({ groupEnd: true });
 						}
 
-						const staffNexus = findItemWithSourceId(actor, STAFF_NEXUS, "feat");
+						const staffNexus = getItemWithSourceId(actor, STAFF_NEXUS, "feat");
 						const nbExpends =
 							staffNexus && actor.level >= 8 ? (actor.level >= 16 ? 3 : 2) : 1;
 
@@ -289,7 +289,7 @@ export class DailiesInterface extends Application {
 		groups.sort((a, b) => a.rows.length - b.rows.length);
 
 		return mergeObject(super.getData(options), {
-			i18n: localize,
+			i18n: localize.template,
 			dump: ({ value, placeholder, data }) => {
 				let msg = "";
 				if (value) msg += ` value="${value}"`;

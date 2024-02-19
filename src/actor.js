@@ -1,11 +1,10 @@
-import { itemIsOfType } from "module-api";
+import { getFlag, itemIsOfType, localize } from "module-api";
 import { openDailiesInterface } from "./api";
 import {
 	getSpellcastingEntryStaffData,
 	isPF2eStavesActive,
 	updateEntryCharges,
 } from "./data/staves";
-import { getFlag, localize } from "./module";
 
 export async function performDailyCrafting() {
 	const entries = (await this.getCraftingEntries()).filter(

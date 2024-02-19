@@ -1,4 +1,4 @@
-import { localizePath } from "../module";
+import { localizePath } from "module-api";
 import { createSpellDaily } from "./spell";
 
 export function tricksterAce() {

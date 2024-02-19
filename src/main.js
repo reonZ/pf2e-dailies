@@ -1,3 +1,11 @@
+import {
+	getModule,
+	registerModule,
+	registerSetting,
+	registerSettingMenu,
+	registerWrapper,
+	warn,
+} from "module-api";
 import { performDailyCrafting, renderCharacterSheetPF2e } from "./actor";
 import { openDailiesInterface, utils } from "./api";
 import { DailyCustoms } from "./apps/custom";
@@ -18,15 +26,10 @@ import {
 	isPF2eStavesActive,
 	updateEntryCharges,
 } from "./data/staves";
-import {
-	MODULE_ID,
-	registerSetting,
-	registerSettingMenu,
-	registerWrapper,
-	warn,
-} from "./module";
 import { restForTheNightAll } from "./rest";
 import { onSpellcastingEntryCast } from "./spellcasting";
+
+registerModule("pf2e-dailies");
 
 export const EXT_VERSION = "1.3.0";
 
@@ -85,7 +88,7 @@ Hooks.once("setup", () => {
 		type: DailyCustoms,
 	});
 
-	game.modules.get(MODULE_ID).api = {
+	getModule().api = {
 		openDailiesInterface: (actor) => openDailiesInterface(actor),
 		getBuiltinDailies: () => deepClone(BUILTINS_DAILIES),
 		getCustomDailies: () => deepClone(CUSTOM_DAILIES),

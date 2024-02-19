@@ -1,6 +1,5 @@
-import { sluggify } from "module-api";
+import { sluggify, subLocalize } from "module-api";
 import { utils } from "../../api";
-import { subLocalize } from "../../module";
 import {
 	getFeatFilterLevel,
 	getFilterTraits,

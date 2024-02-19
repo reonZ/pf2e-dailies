@@ -1,9 +1,3 @@
-import { createFeatDaily } from "../data/feat";
-import { createLanguageDaily } from "../data/language";
-import { createResistancelDaily } from "../data/resistance";
-import { createTrainedLoreDaily, createTrainedSkillDaily } from "../data/skill";
-import { createSpellDaily } from "../data/spell";
-import { EXT_VERSION } from "../main";
 import {
 	AsyncFunction,
 	error,
@@ -12,7 +6,13 @@ import {
 	subLocalize,
 	templatePath,
 	warn,
-} from "../module";
+} from "module-api";
+import { createFeatDaily } from "../data/feat";
+import { createLanguageDaily } from "../data/language";
+import { createResistancelDaily } from "../data/resistance";
+import { createTrainedLoreDaily, createTrainedSkillDaily } from "../data/skill";
+import { createSpellDaily } from "../data/spell";
+import { EXT_VERSION } from "../main";
 import { flexibility } from "./custom/flexibility";
 import { mind } from "./custom/mind";
 import { savant } from "./custom/savant";
@@ -36,7 +36,7 @@ export class DailyCustoms extends FormApplication {
 		return mergeObject(FormApplication.defaultOptions, {
 			id: "pf2e-dailies-customs",
 			title: localize("title"),
-			template: templatePath("customs.hbs"),
+			template: templatePath("customs"),
 			submitOnChange: false,
 			submitOnClose: false,
 			closeOnSubmit: false,
@@ -59,7 +59,7 @@ export class DailyCustoms extends FormApplication {
 				: "";
 
 		return mergeObject(super.getData(options), {
-			i18n: localize,
+			i18n: localize.template,
 			template,
 			templates: TEMPLATES,
 			daily: this._selectedDaily,

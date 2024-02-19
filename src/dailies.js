@@ -1,3 +1,10 @@
+import {
+	AsyncFunction,
+	error,
+	getSetting,
+	getSourceId,
+	warn,
+} from "module-api";
 import { utils } from "./api";
 import { tricksterAce } from "./data/ace";
 import { bladeAlly } from "./data/blade";
@@ -14,7 +21,6 @@ import { scrollSavant } from "./data/savant";
 import { createTrainedLoreDaily, createTrainedSkillDaily } from "./data/skill";
 import { spellshaping } from "./data/spellshaping";
 import { thaumaturgeTome } from "./data/tome";
-import { AsyncFunction, error, getSetting, getSourceId, warn } from "./module";
 
 const DEPRECATED_CUSTOM_DAILIES = ["root-magic"];
 

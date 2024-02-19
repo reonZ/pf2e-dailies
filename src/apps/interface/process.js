@@ -1,3 +1,4 @@
+import { sluggify } from "module-api";
 import { createUpdateCollection, utils } from "../../api";
 import { familiarUUID, getFamiliarPack } from "../../data/familiar";
 import {
@@ -15,7 +16,6 @@ import {
 	localize,
 	subLocalize,
 } from "../../module";
-import { sluggify } from "../../pf2e/utils";
 import {
 	getNotExpendedPreparedSpellSlot,
 	getSpellcastingEntriesSortBounds,

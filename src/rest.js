@@ -2,7 +2,7 @@ import { createUpdateCollection } from "./api";
 import { getDailyFromSourceId } from "./dailies";
 import { MODULE_ID, getFlag, getSourceId, setFlag } from "./module";
 import { isPF2eStavesActive } from "./data/staves";
-import { sluggify } from "./pf2e/utils";
+import { sluggify } from "module-api";
 
 export async function restForTheNightAll(wrapped, ...args) {
 	const messages = await wrapped(...args);

@@ -1,6 +1,6 @@
+import { sluggify } from "module-api";
 import { utils } from "../../api";
 import { subLocalize } from "../../module";
-import { sluggify } from "../../pf2e/utils";
 import {
 	getFeatFilterLevel,
 	getFilterTraits,

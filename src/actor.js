@@ -1,3 +1,4 @@
+import { itemIsOfType } from "module-api";
 import { openDailiesInterface } from "./api";
 import {
 	getSpellcastingEntryStaffData,
@@ -5,7 +6,6 @@ import {
 	updateEntryCharges,
 } from "./data/staves";
 import { getFlag, localize } from "./module";
-import { itemIsOfType } from "./pf2e/utils";
 
 export async function performDailyCrafting() {
 	const entries = (await this.getCraftingEntries()).filter(
@@ -18,7 +18,6 @@ export async function performDailyCrafting() {
 	);
 	const reagentValue =
 		(this.system.resources.crafting.infusedReagents.value || 0) - reagentCost;
-
 	if (reagentValue < 0) {
 		ui.notifications.warn(
 			game.i18n.localize("PF2E.CraftingTab.Alerts.MissingReagents"),
@@ -29,14 +28,12 @@ export async function performDailyCrafting() {
 	await this.update({
 		"system.resources.crafting.infusedReagents.value": reagentValue,
 	});
-
 	const key =
 		reagentCost === 0
 			? "ZeroConsumed"
 			: reagentCost === 1
 			  ? "OneConsumed"
 			  : "NConsumed";
-
 	ui.notifications.info(
 		game.i18n.format(`PF2E.Actor.Character.Crafting.Daily.Complete.${key}`, {
 			quantity: reagentCost,
@@ -61,7 +58,6 @@ export async function performDailyCrafting() {
 			) {
 				itemSource.system.traits.value.push("infused");
 			}
-
 			await this.addToInventory(itemSource);
 		}
 	}

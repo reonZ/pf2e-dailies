@@ -468,8 +468,12 @@ async function parseMessages(messages) {
 			message += uuid
 				? `${await createFancyLink(uuid, { label })}`
 				: ` <strong>${label}</strong>`;
-			if (selected) message += ` <span>${selected}</span>`;
-			if (random) message += ' <i class="fa-solid fa-dice-d20"></i>';
+			if (selected) {
+				message += `<i class="fa-solid fa-caret-right"></i>${selected}`;
+			}
+			if (random) {
+				message += '<i class="fa-solid fa-dice-d20"></i>';
+			}
 			message += "</p>";
 		}
 	}

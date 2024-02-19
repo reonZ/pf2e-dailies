@@ -117,6 +117,18 @@
         text-decoration: underline;
         white-space: unset;
         word-break: normal;
-        margin-right: 0.3em;
+    }
+
+    .fa-caret-right {
+        margin-inline: 0.3em;
+    }
+
+    .fa-dice-d20 {
+        margin-left: 0.3em;
+    }
+
+    hr:last-child {
+        border: none;
+        margin-top: 0;
     }
 }

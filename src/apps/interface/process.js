@@ -163,7 +163,7 @@ export async function processData() {
 						overcharge += +data.rank;
 
 						const slots = spellSlot.entry._source.system.slots;
-						const prepared = slots[`slot${data.rank}`].prepared.slice();
+						const prepared = deepClone(slots[`slot${data.rank}`].prepared);
 						const prepareSlot = prepared[spellSlot.slotIndex];
 						if (!prepareSlot) continue;
 

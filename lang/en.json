@@ -52,7 +52,9 @@
                 "prepare": "Prepare a Staff",
                 "staff": "Staff",
                 "expend": "Expend Spell",
-                "type": "Type"
+                "type": "Type",
+                "flexible": "Flexible Slot",
+                "empty": "Empty Slot"
             }
         },
         "customs": {

@@ -172,7 +172,6 @@ export function getPreparedSpellcastingEntriesForStaves(actor) {
 					if (prepared === false || expended) continue;
 
 					const spell = entry.spells.get(id);
-					if (!spell) continue;
 
 					entryGroups[entryId] ??= {
 						id: entryId,
@@ -181,8 +180,7 @@ export function getPreparedSpellcastingEntriesForStaves(actor) {
 					};
 
 					entryGroups[entryId].spells.push({
-						id: spell.id,
-						name: spell.name,
+						name: spell?.name ?? "Empty Slot",
 						rank,
 						index,
 					});
@@ -190,9 +188,7 @@ export function getPreparedSpellcastingEntriesForStaves(actor) {
 			}
 		}
 
-		entryGroups[entryId]?.spells?.sort((a, b) =>
-			a.rank === b.rank ? a.name.localeCompare(b.name) : a.rank - b.rank,
-		);
+		entryGroups[entryId]?.spells?.sort((a, b) => a.rank - b.rank);
 	}
 
 	return Object.values(entryGroups);

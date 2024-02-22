@@ -1,6 +1,5 @@
 import {
 	MODULE,
-	chatUUID,
 	createFancyLink,
 	error,
 	getFlag,
@@ -17,10 +16,7 @@ import {
 	getBestSpellcastingEntryForStaves,
 	getMaxSlotRankForStaves,
 } from "../../data/staves";
-import {
-	getNotExpendedPreparedSpellSlot,
-	getSpellcastingEntriesSortBounds,
-} from "../../spellcasting";
+import { getSpellcastingEntriesSortBounds } from "../../spellcasting";
 
 export async function processData() {
 	const actor = this.actor;
@@ -145,7 +141,8 @@ export async function processData() {
 
 				const expendedSpells = [];
 				const expendedSlots = makeshift ? [1, 2, 3] : [1];
-				const flexibleLabel = game.i18n.localize("PF2E.SpellFlexibleLabel");
+				const flexibleLabel = localize("interface.staves.flexible");
+				const emptyLabel = localize("interface.staves.empty");
 				const slotsUpdates = {};
 
 				for (const i of expendedSlots) {
@@ -153,58 +150,55 @@ export async function processData() {
 					const data = expendField?.optionData;
 					if (!data) continue;
 
+					const entryId = data.entry;
+					const entry = actor.items.get(entryId);
+					if (!entry) continue;
+
+					const rank = Number(data.rank);
+					const slot = entry._source.system.slots[`slot${rank}`];
+
 					if (data.type === "spell") {
-						const spell = actor.items.get(data.spell);
-						if (!spell) continue;
+						const prepared = deepClone(slot.prepared);
+						const preparedSlot = prepared[data.index];
+						if (slot.max < 1 || preparedSlot.expended) return;
 
-						const spellSlot = getNotExpendedPreparedSpellSlot(spell, data.rank);
-						if (!spellSlot) continue;
+						overcharge += rank;
 
-						overcharge += +data.rank;
-
-						const slots = spellSlot.entry._source.system.slots;
-						const prepared = deepClone(slots[`slot${data.rank}`].prepared);
-						const prepareSlot = prepared[spellSlot.slotIndex];
-						if (!prepareSlot) continue;
-
-						prepareSlot.expended = true;
+						preparedSlot.expended = true;
 
 						updateItem({
-							_id: spellSlot.entry.id,
-							[`system.slots.slot${data.rank}.prepared`]: prepared,
+							_id: entryId,
+							[`system.slots.slot${rank}.prepared`]: prepared,
 						});
 
+						const spell = actor.items.get(preparedSlot.id);
 						expendedSpells.push({
-							uuid: spell.uuid,
-							name: spell.name,
-							rank: data.rank,
+							uuid: spell?.uuid,
+							name: spell?.name ?? emptyLabel,
+							rank,
 						});
 					} else {
-						const entry = actor.items.get(data.entry);
-						if (!entry) continue;
-
-						const slot = entry.system.slots[`slot${data.rank}`];
 						if (slot.max < 1 || slot.value < 1) continue;
 
-						slotsUpdates[data.entry] ??= {};
-						slotsUpdates[data.entry][data.rank] ??= slot.value;
+						slotsUpdates[entryId] ??= {};
+						slotsUpdates[entryId][rank] ??= slot.value;
 
-						const currentValue = slotsUpdates[data.entry][data.rank];
+						const currentValue = slotsUpdates[entryId][rank];
 
 						if (currentValue < 1) continue;
 
-						overcharge += +data.rank;
+						overcharge += rank;
 
 						updateItem({
-							_id: data.entry,
-							[`system.slots.slot${data.rank}.value`]: currentValue - 1,
+							_id: entryId,
+							[`system.slots.slot${rank}.value`]: currentValue - 1,
 						});
 
-						slotsUpdates[data.entry][data.rank] -= 1;
+						slotsUpdates[entryId][rank] -= 1;
 
 						expendedSpells.push({
 							name: flexibleLabel,
-							rank: data.rank,
+							rank,
 						});
 					}
 				}
@@ -271,9 +265,17 @@ export async function processData() {
 					);
 					messageObj.add("staff", { uuid: staff.uuid });
 					for (const { uuid, name, rank } of expendedSpells) {
+						const rankLabel = utils.spellRankLabel(rank);
+						const label = `${name} (${rankLabel})`;
+
 						messageObj.add("staff", {
 							uuid,
-							label: `${name} (${utils.spellRankLabel(rank)})`,
+							label: uuid
+								? label
+								: `<span class="fake-link">
+									<i class='fa-solid fa-sparkles'></i>
+									${label}
+								</span>`,
 						});
 					}
 				}
@@ -467,7 +469,7 @@ async function parseMessages(messages) {
 			message += "<p>";
 			message += uuid
 				? `${await createFancyLink(uuid, { label })}`
-				: ` <strong>${label}</strong>`;
+				: ` ${label}`;
 			if (selected) {
 				message += `<i class="fa-solid fa-caret-right"></i>${selected}`;
 			}

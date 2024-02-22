@@ -181,18 +181,9 @@ export class DailiesInterface extends Application {
 					const preparedEntries =
 						getPreparedSpellcastingEntriesForStaves(actor);
 					if (preparedEntries.length) {
-						preparedEntries.sort((a, b) =>
-							!!a.slot === !!b.slot
-								? a.name.localeCompare(b.name)
-								: a.slot
-								  ? -1
-								  : b.slot
-									  ? 1
-									  : 0,
-						);
-
 						const options = [{ value: "", label: "" }];
-						const flexibleLabel = game.i18n.localize("PF2E.SpellFlexibleLabel");
+						const flexibleLabel = localize("staves.flexible");
+						const emptyLabel = localize("staves.emty");
 
 						for (const entry of preparedEntries) {
 							const entryId = entry.id;
@@ -200,14 +191,17 @@ export class DailiesInterface extends Application {
 							options.push({ groupStart: true, label: entry.name });
 
 							for (const spell of entry.spells ?? []) {
+								const name = spell.name ?? emptyLabel;
+								const unique = `${spell.rank}.${spell.index}`;
 								options.push({
-									value: spell.id,
-									label: `${spell.name} (${utils.spellRankLabel(spell.rank)})`,
+									value: unique,
+									label: `${name} (${utils.spellRankLabel(spell.rank)})`,
 									data: {
 										type: "spell",
 										rank: spell.rank,
-										spell: spell.id,
-										unique: `${spell.id}.${spell.rank}.${spell.index}`,
+										index: spell.index,
+										unique: unique,
+										entry: entryId,
 									},
 								});
 							}

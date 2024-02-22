@@ -131,4 +131,13 @@
         border: none;
         margin-top: 0;
     }
+
+    .fake-link {
+        font-style: italic;
+        line-height: 1.6em;
+
+        i {
+            color: var(--color-text-dark-inactive);
+        }
+    }
 }

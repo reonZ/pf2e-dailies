@@ -55,6 +55,12 @@ Hooks.once("setup", () => {
 	});
 
 	registerSetting({
+		name: "staff-regex",
+		type: String,
+		default: DEFAULT_REGEX_RANKS,
+	});
+
+	registerSetting({
 		name: "members",
 		type: Boolean,
 		default: true,
@@ -67,12 +73,6 @@ Hooks.once("setup", () => {
 		default: "top",
 		choices: ["top", "bottom"],
 		scope: "client",
-	});
-
-	registerSetting({
-		name: "staff-regex",
-		type: String,
-		default: DEFAULT_REGEX_RANKS,
 	});
 
 	registerSetting({

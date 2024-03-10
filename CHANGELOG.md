@@ -1,3 +1,13 @@
+# 2.24.0
+
+-   this is a `5.14.0` release
+-   updated the module to maintain compatibility with the latest system version
+-   summary message has received a small restyle
+-   empty prepared slots can now be expended during staff preparation
+    -   the system doesn't have any visual cue to tell if an empty slot has been expended or not
+    -   placing a spell later on in an expended slot will show the spell as expended properly
+-   fixed expended prepared spells during staff preparation being completely removed instead
+
 # 2.23.4
 
 -   fixed language dailies not working with the latest system versions

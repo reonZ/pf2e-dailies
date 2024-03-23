@@ -3,7 +3,7 @@ import { utils } from "./api";
 import { getSpellcastingEntryStaffFlags } from "./data/staves";
 
 export async function onSpellcastingEntryCast(wrapped, ...args) {
-	const [spell, { rank }] = args;
+	const [spell, { rank, staffChargeEntryId }] = args;
 	if (spell.isCantrip) return wrapped(...args);
 
 	const staffFlags = getSpellcastingEntryStaffFlags(this);
@@ -37,6 +37,9 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
 			(entry) =>
 				entry.isSpontaneous && entry.system.slots[`slot${castRank}`].value,
 		);
+		const staffChargeEntryIndex = spontaneousEntries.findIndex(
+			(entry) => entry._id === staffChargeEntryId
+		)
 
 		let useSpontaneous = false;
 
@@ -52,7 +55,9 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
 				remaining: entryRankValue(entry),
 			});
 
-			useSpontaneous = await Dialog.confirm({
+			useSpontaneous = staffChargeEntryIndex >= 0
+			? true 
+			: await Dialog.confirm({
 				title: localize("staves.spontaneous.title"),
 				defaultYes: false,
 				content: `<div class="pf2e-dailies-spontaneous">${content}</div>`,
@@ -72,7 +77,9 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
 				i18n: (key, { hash }) => localize(`staves.spontaneous.${key}`, hash),
 			});
 
-			useSpontaneous = await Dialog.wait({
+			useSpontaneous = staffChargeEntryIndex >= 0
+			? staffChargeEntryIndex
+			: await Dialog.wait({
 				title: localize("staves.spontaneous.title"),
 				content,
 				buttons: {
@@ -97,7 +104,7 @@ export async function onSpellcastingEntryCast(wrapped, ...args) {
 		if (useSpontaneous === null) {
 			return;
 		}
-
+		console.log(useSpontaneous)
 		if (typeof useSpontaneous === "number") {
 			const entry = spontaneousEntries[useSpontaneous];
 			const current = entry.system.slots[`slot${castRank}`].value;

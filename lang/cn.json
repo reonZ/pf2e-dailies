@@ -1,38 +1,40 @@
 {
     "pf2e-dailies": {
         "interface": {
-            "title": "进行每日准备",
+            "title": "{name}的每日准备",
+            "noDailies": "该角色未进行任何每日准备",
             "accept": "确定",
             "cancel": "取消",
-            "error": {
-                "empty": "请填满所有空缺。",
-                "unattended": "一些警告尚未得到关注，请点击三角警告标志来进行处理。",
-                "drop": {
-                    "wrongDataType": "放入了无效的类型。",
-                    "wrongLevelLow": "所选物品等级对于此槽位（{level}）而言过低。",
-                    "wrongLevelHigh": "所选物品等级对于此槽位（{level}）而言过高。",
-                    "wrongTraitAnd": "所选物品并不完全包含所需特征 traits 中的所有项（需要所有：{traits}）。",
-                    "wrongSkill": "所选物品未拥有正确的先决条件技能熟练 prerequisite skills （{skills}）。",
-                    "wrongTradition": "所选物品根源错误 tradition（需要：{traditions}）。",
-                    "wrongSchool": "所选物品学派错误 school（需要： {schools}）。",
-                    "wrongLevel": "所选物品等级错误 level（需要：{levels}）。",
-                    "wrongRarity": "所选物品稀有度错误 rarity（{rarities}）。",
-                    "wrongSource": "所选物品并不来自正确的来源 source（{sources}）。",
-                    "wrongCustom": "所选物品并不符合该过滤项。",
-                    "notFeat": "此处只能放入专长。",
-                    "notSpell": "此处只能放入法术。",
-                    "wrongType": "所选物品类型错误 type（需要：{types}）。",
-                    "wrongCategory": "所选物品类别错误 category（需要：{categories}）。",
-                    "wrongTraitOr": "所选物品并不完全包含所需特征 traits 中的任意一项（需要任意：{traits}）。",
-                    "wrongSpellTime": "所选法术的施放时间超过 {time} 。"
-                },
-                "input": {
-                    "proficiency": "你的 {proficiency} 已经是 {rank} 了。"
-                },
-                "unexpected": "日常准备过程中出现了预期外的错误。详见 (F12) 控制台。"
-            },
             "alert": {
                 "weapon": "缺少心灵武器"
+            },
+            "error": {
+                "unexpected": "日常准备过程中出现了预期外的错误。详见 (F12) 控制台。",
+                "empty": "存在空字段。",
+                "unattended": "一些警告尚未得到关注，请点击三角警告标志来进行处理。",
+                "drop": {
+                    "wrongDataType": "放入了无效的类型.",
+                    "wrongType": "所选物品并非正确 type (正确为: {types}).",
+                    "wrongCategory": "所选物品并非正确 category (正确为: {categories}).",
+                    "wrongTradition": "所选物品并非正确根源 tradition (正确为: {traditions}).",
+                    "wrongSchool": "所选物品并非正确学派 school (正确为: {schools}).",
+                    "wrongLevel": "所选物品并非等级 (正确为: {levels}).",
+                    "wrongLevelLow": "所选物品等级对于此槽位（{level}）而言过低.",
+                    "wrongLevelHigh": "所选物品等级对于此槽位（{level}）而言过高.",
+                    "wrongTraitAnd": "所选物品并不完全包含所需特征 traits 中的所有项 (需要所有: {traits}).",
+                    "wrongTraitOr": "所选物品并不完全包含所需特征 traits 中的可能项 (需要任一: {traits}).",
+                    "wrongTraits": "所选物品根源错误 tradition.",
+                    "wrongSkill": "所选物品未拥有正确的先决条件技能熟练 prerequisite skills ({skills}).",
+                    "wrongRarity": "所选物品稀有度错误 rarity ({rarities}).",
+                    "wrongSource": "所选物品并不来自正确的来源 source ({sources}).",
+                    "wrongCustom": "所选物品并不符合该过滤项.",
+                    "notFeat": "此处只能放入专长.",
+                    "notSpell": "此处只能放入法术.",
+                    "wrongSpellTime": "所选法术的施放时间超过 {time}."
+                },
+                "input": {
+                    "proficiency": "你的 {proficiency} 已经是 {rank} 了."
+                }
             },
             "tooltip": {
                 "random": "此处将随机选择",
@@ -45,28 +47,37 @@
                 "yes": "消耗（剩余 {nb}）",
                 "no": "不进行任何消耗",
                 "last": "消耗最后可用项"
+            },
+            "staves": {
+                "prepare": "准备一根法杖",
+                "staff": "法杖",
+                "expend": "扩展法术",
+                "type": "类型",
+                "flexible": "灵活环位",
+                "empty": "空环位"
             }
         },
         "customs": {
-            "title": "默认准备",
-            "deleted": "每日准备“{daily}”删除失败。",
+            "title": "默认每日准备",
+            "saved": "每日准备 '{daily}' 成功保存.",
+            "deleted": "每日准备 '{daily}' 成功删除.",
             "list": {
                 "create": "创建每日准备"
             },
             "code": {
                 "save": "保存每日准备",
-                "newVersion": "新版本 <strong>{version}</strong> 已开放下载，不更新的话可能会造成某些问题。你能在此处找到更新： <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>",
-                "notify": "若你想要在自制每日准备时拥有更好的体验，这里有一个可用的扩展模组，添加了一个更强大的能处理所有类型的编辑器。<br>该扩展模组并未纳入foundry当中，但你能在此处找到它：<a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>"
+                "newVersion": "新版本 <strong>{version}</strong> 已开放下载，不更新的话可能会造成某些问题。你能在此处找到更新: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>",
+                "notify": "若你想要在自制每日准备时拥有更好的体验，这里有一个可用的扩展模组，添加了一个更强大的能处理所有类型的编辑器。<br>该扩展模组并未纳入foundry当中，但你能在此处找到它: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>"
             },
             "delete": {
-                "content": "你确定想要删除这项每日准备？",
-                "title": "删除每日准备"
+                "title": "删除每日准备",
+                "content": "你确定想要删除这项每日准备 ?"
             },
             "template": {
                 "template": "模板",
                 "templates": "模板列表",
-                "create": "创建每日准备",
-                "noEmpty": "有些字段必须填写，请确保你已为所有未标注 “可选” 字样的字段提供了具体条目。",
+                "create": "创建准备",
+                "noEmpty": "有些字段必须填写，请确保你已为所有未标注 (可选) 字样的字段提供了具体条目。",
                 "badResistance": "抗力值必须大于0。",
                 "tooltips": {
                     "key": "每日准备的 Unique key。",
@@ -74,13 +85,13 @@
                     "uuid": "用于决定该项每日准备是否可用（若角色拥有所需物品的话）的根物品（专长，装备，等）的UUID。",
                     "resistances": "用逗号隔开的抗力列表，使用者可以在其中进行选择。",
                     "resistance": "所获抗力的具体数值。",
+                    "feattype": "（可选）逗号隔开的用于筛选的专长类型表。",
                     "feattraits": "（可选）用逗号隔开的用于筛选的专长特征表。",
+                    "featlevel": "（可选）筛选中可用的最大专长等级。可以是一个数字，也可以使用简写 “level” 或 “half”，此时将使用角色等级或其等级的一半。",
                     "spelllevel": "（可选）法术将被升阶到这一环级。留空以使用该法术的原始环级。",
                     "spellcategory": "（可选）逗号隔开的法术类别表。",
                     "spelltraits": "（可选）逗号隔开的用于筛选的法术特征表。",
                     "traditions": "（可选）逗号隔开的用于筛选的法术根源表。",
-                    "feattype": "（可选）逗号隔开的用于筛选的专长类型表。",
-                    "featlevel": "（可选）筛选中可用的最大专长等级。可以是一个数字，也可以使用简写 “level” 或 “half”，此时将使用角色等级或其等级的一半。",
                     "spelllevels": "（可选）逗号隔开的用于筛选的法术环级表。若使用单一数字，则将其作为上限。可使用简写 “level” 或 “half”，此时将使用角色等级或其等级的一半。"
                 },
                 "default": {
@@ -96,8 +107,8 @@
                     "hint": "这一模板是为诸如 <strong>快速学习 Quick Study</strong> 这样的专长所准备，可以创造一个新学识，其熟练度为<strong>受训</strong>."
                 },
                 "language": {
-                    "hint": "这一模板是为诸如 <strong>传世语言学 Ancestral Linguistics</strong> 这样的专长以及 <strong>波尔特的祝福 Bort's Blessing</strong> 这类物品所准备，用来增加一门新的语言。",
-                    "label": "语言"
+                    "label": "语言",
+                    "hint": "这一模板是为诸如 <strong>传世语言学 Ancestral Linguistics</strong> 这样的专长以及 <strong>波尔特的祝福 Bort's Blessing</strong> 这类物品所准备，用来增加一门新的语言。"
                 },
                 "resistance": {
                     "label": "抗力",
@@ -107,8 +118,12 @@
                     "label": "专长",
                     "hint": "这一模板是为诸如 <strong>超魔实验 Metamagical Experimentation</strong> 这样的专长所准备，用来创造新专长。"
                 },
+                "spell": {
+                    "label": "法术",
+                    "hint": "这一模板是为法术所准备，用来创造新的临时施法条目。"
+                },
                 "example": "范例",
-                "examples": "范例列表",
+                "examples": "更多范例",
                 "tome": {
                     "label": "奇术师典奇具",
                     "hint": "此处是自制奇术师 <strong>典 Tome</strong> 奇具每日准备效果所需的代码，it highlights the use of children with conditions and the use of the <u>prepare</u> function."
@@ -124,13 +139,8 @@
                 "mind": {
                     "label": "铸念师",
                     "hint": "此处是自制 <strong>铸念师 Mind Smith</strong> 入门每日准备效果所需的专长。This is by far the most complex example, the rows make use of both <u>child predicates</u> and <u>condition</u>, everything is falling appart if the character doesn't have a mind weapon equiped (the weapon is in a compendium pack) and that is why we are using the <u>alert</u> row to create said weapon if needed. It also make use of the <u>rest</u> function to clean up the mind weapon."
-                },
-                "spell": {
-                    "label": "法术",
-                    "hint": "这一模板将允许创造一个新的法术，其将被加入到临时施法项当中。"
                 }
-            },
-            "saved": "每日准备“{daily}”保存失败。"
+            }
         },
         "label": {
             "elementalist": "元素使 Elementalist",
@@ -142,10 +152,16 @@
             "runicmind": "符文锻造 Runic Smithing",
             "familiar": "魔宠能力 Familiar Abilities",
             "ability": "能力 #{nb}",
-            "metamagical": "超魔 Metamagical"
+            "metamagical": "超魔 Metamagical",
+            "root": "最初的魔法",
+            "blade": {
+                "weapon": "武器",
+                "rune": "潜能符文"
+            }
         },
         "sheet": {
-            "title": "每日准备"
+            "title": "每日准备",
+            "unrested": "需要休息"
         },
         "dialog": {
             "weapon": {
@@ -169,7 +185,11 @@
             "unexpected": "在模组 <strong>PF2e Dailies</strong> 的每日准备过程当中出现了不可预期的错误，请查看 (F12) 控制台以获取更多细节。",
             "unrested": "在进行每日准备之前，你必须先进行休息。",
             "invalidKey": "每日准备的 key 必须是字符串。",
-            "duplicate": "已存在有一个拥有该 key 的每日准备。"
+            "duplicate": "已存在有一个拥有该 key 的每日准备。",
+            "noLibwrapper": "该模组现在需要配合 <strong>libwrapper</strong> 模组共同使用才最佳。",
+            "noCharacterSelected": "未为 <strong>openDailyInterface</strong> 功能选中目标 <strong>Character</strong> 。",
+            "noDailies": "该角色无每日准备项目。",
+            "notGM": "只有GM能够进行此操作。"
         },
         "spellEntry": {
             "name": "临时法术"
@@ -187,10 +207,19 @@
             "familiar": "已选择下列魔宠能力：",
             "feats": "学会了下列专长：",
             "scrolls": "创造了下列临时卷轴：",
+            "blade": "已将精魂注入到了该武器当中:",
+            "ceremonial": "已用仪式将刚法术注入到了短刃当中：",
+            "root": "已做好了一个护身香囊并将其交予了盟友：",
             "rations": {
                 "used": "消耗了其一项 {name}，目前剩余 {nb} 。",
                 "last": "消耗了他们所剩的 {name}。",
                 "almost": "消耗了其 {name} 中的一项，目前仅剩 {nb} 。"
+            },
+            "dailiesRequest": {
+                "content": "到点了，请进行每日准备。",
+                "button": "每日准备",
+                "cleaning": "...清除每日准备",
+                "prepared": "每日准备完成"
             }
         },
         "settings": {
@@ -204,7 +233,49 @@
                     "label": "上传",
                     "hint": "将你自制的每日准备上传到模组当中。"
                 }
+            },
+            "members": {
+                "name": "仅限小队 Party 成员",
+                "hint": "当在模组中检索玩家角色卡时，若该角色是某个小队的成员，那么则数据应该是从该小队中提取，还是从任何玩家所拥有的角色中提取。"
+            },
+            "staff-sort": {
+                "name": "法杖施法列表位置",
+                "hint": "创建法杖施法列表时，该条目应显示在法表顶端还是底部。",
+                "choices": {
+                    "top": "法表顶端",
+                    "bottom": "法表底部"
+                }
+            },
+            "staff-regex": {
+                "name": "法杖标签识别",
+                "hint": "用于解析不同本地化版本法杖环级的正则表达式，如果使用的是默认的英文标签，则可以留空。"
+            },
+            "filters": {
+                "name": "Filter Out Dailies",
+                "hint": "List of comma separated Daily keys (i.e. 'dailies.tome', 'custom.mydaily') to be filtered out of the daily preparation for this user. You can get the list of keys by typing in your browser console `game.modules.get('pf2e-dailies').api.getBuiltinDailyKeys()`. You can also directly retrieve the key of a specific daily from any of its related item uuid by typing in your browser console `game.modules.get('pf2e-dailies').api.getBuiltinDailyKey('<compendium-uuid-of-the-item>')`."
             }
+        },
+        "deprecated": {
+            "custom": {
+                "key": "该 <strong>{name}</strong> 每日准备项目已包含在了在 <strong>PF2e Dailies</strong> 模组中，该自定义准备已被跳过，可以被安全地删除。"
+            }
+        },
+        "staves": {
+            "conflict": "如今， <strong>PF2e Dailies</strong> 模组已着手处理法杖自动化了，你需要禁用 <strong>PF2e Staves</strong> 模组。",
+            "label": "充能",
+            "noCharge": "你的法杖没有足够的充能。",
+            "noStaff": "你必须握持法杖才能使用其进行施法。",
+            "spontaneous": {
+                "title": "使用自发法术位",
+                "remaining": "剩余",
+                "one": "你是否确定要消耗 <strong>{entry}</strong> 中的一个 <strong>{rank}</strong> 自发法术位 ? <strong>(剩余 {remaining})</strong>",
+                "multi": "你是否确定要消耗来自以下施法根源的一个  <strong>{rank}</strong> 自发法术位 ?"
+            },
+            "message": {
+                "noExpend": "已为今天准备好了 {makeshift} 法杖：",
+                "withExpend": "已为今天准备好了一个 {makeshift} 法杖，且进行了额外充能："
+            },
+            "makeshift": "临时法杖"
         }
     }
 }

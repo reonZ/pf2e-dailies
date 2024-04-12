@@ -296,7 +296,14 @@ type PreparedDailies = Record<string, PreparedDaily | null>;
 
 type SimplifiableValue = number | StringNumber | "level" | "half";
 
+type ChargesSpellcastingSheetData = SpellcastingSheetData & {
+    isStaff: boolean;
+    isCharges: boolean;
+    uses: { value: number; max: number };
+};
+
 export type {
+    ChargesSpellcastingSheetData,
     CustomDaily,
     Daily,
     DailyActorFlags,

@@ -8,6 +8,7 @@ import {
     warn,
     warnInvalidDrop,
 } from "pf2e-api";
+import { ChargesSpellcastingSheetData } from "./types";
 
 function spellcastingEntryPrepareSiblingData(
     this: SpellcastingEntryPF2e<CreaturePF2e>,
@@ -139,4 +140,34 @@ async function spellcastingEntryConsume(
     }
 }
 
-export { spellcastingEntryConsume, spellcastingEntryPrepareSiblingData };
+async function spellcastingEntryGetSheetData(
+    this: SpellcastingEntryPF2e<NonNullable<CreaturePF2e>>,
+    wrapped: libWrapper.RegisterCallback,
+    options: { spells?: SpellCollection<CharacterPF2e> } = {}
+): Promise<ChargesSpellcastingSheetData> {
+    const actor = this.actor;
+    const data: ChargesSpellcastingSheetData = await wrapped(options);
+
+    if (
+        !actor.isOfType("npc", "character") ||
+        !actor.spellcasting ||
+        this.system.prepared.value !== "charges"
+    ) {
+        return data;
+    }
+
+    data.isCharges = true;
+    data.isStaff = false;
+    data.uses = {
+        value: this.system.slots.slot1.value,
+        max: this.system.slots.slot1.max,
+    };
+
+    return data;
+}
+
+export {
+    spellcastingEntryConsume,
+    spellcastingEntryGetSheetData,
+    spellcastingEntryPrepareSiblingData,
+};

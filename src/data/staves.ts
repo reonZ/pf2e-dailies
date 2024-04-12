@@ -19,7 +19,11 @@ import {
 } from "pf2e-api";
 import { canCastRank, getStaffFlags, setStaffFlagChargeValue } from "../api";
 import { createDaily } from "../daily";
-import { DailyRowSelectOption, DailyRowSelectOptionValue } from "../types";
+import {
+    ChargesSpellcastingSheetData,
+    DailyRowSelectOption,
+    DailyRowSelectOptionValue,
+} from "../types";
 import { utils } from "../utils";
 
 type FlexiblePreparedEntryGroup = {
@@ -646,7 +650,7 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
 
     async getSheetData({
         spells,
-    }: { spells?: SpellCollection<CharacterPF2e> } = {}): Promise<SpellcastingSheetData> {
+    }: { spells?: SpellCollection<CharacterPF2e> } = {}): Promise<ChargesSpellcastingSheetData> {
         const actor = this.actor;
 
         if (!actor?.isOfType("character", "npc")) {
@@ -698,6 +702,9 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
             attribute: this.statistic.attribute,
             hasCollection: !!spells?.size,
             usesSpellProficiency: false,
+            isCharges: true,
+            isStaff: true,
+            uses: getStaffFlags(actor)?.charges ?? { value: 0, max: 0 },
         };
     }
 }

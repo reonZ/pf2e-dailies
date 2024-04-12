@@ -14,11 +14,14 @@ import {
     onRenderFamiliarSheetPF2e,
     onRenderNPCSheetPF2e,
 } from "./actor";
-import { canPrepareDailies } from "./api";
+import { CustomDailies } from "./apps/customs";
 import { DAILY_SCHEMA, initDailies, parseDailies } from "./dailies";
 import { restForTheNight } from "./rest";
-import { spellcastingEntryConsume, spellcastingEntryPrepareSiblingData } from "./spellcasting";
-import { CustomDailies } from "./apps/customs";
+import {
+    spellcastingEntryConsume,
+    spellcastingEntryGetSheetData,
+    spellcastingEntryPrepareSiblingData,
+} from "./spellcasting";
 import { CustomDaily } from "./types";
 
 MODULE.register("pf2e-dailies", "PF2e Dailies");
@@ -57,10 +60,6 @@ Hooks.once("init", () => {
         onChange: () => renderCharacterSheet(),
     });
 
-    MODULE.current.api = {
-        canPrepareDailies,
-    };
-
     registerWrapper(
         "CONFIG.PF2E.Actor.documentClasses.character.prototype.prepareData",
         onCharacterPrepareData,
@@ -79,6 +78,12 @@ Hooks.once("init", () => {
         "CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.consume",
         spellcastingEntryConsume,
         "MIXED"
+    );
+
+    registerWrapper(
+        "CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.getSheetData",
+        spellcastingEntryGetSheetData,
+        "WRAPPER"
     );
 });
 

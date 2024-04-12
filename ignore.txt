@@ -1,0 +1,15 @@
+\.git 
+\node_modules
+\releases 
+\src
+\src.old
+*.scss
+.gitignore 
+*.lock 
+ignore.txt
+package*.json
+*.code-workspace
+release.mjs
+tsconfig.json
+jsconfig.json
+webpack*.*

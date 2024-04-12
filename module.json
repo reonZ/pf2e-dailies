@@ -9,51 +9,20 @@
             "discord": "Idle#3251"
         }
     ],
-    "esmodules": [
-        "scripts/main.js"
-    ],
+    "esmodules": ["scripts/main.js"],
     "compatibility": {
         "minimum": "11.315",
-        "verified": "11"
+        "verified": "11.315"
     },
-    "version": "2.24.0",
+    "version": "3.0.0",
     "manifestPlusVersion": "1.2.0",
     "url": "https://github.com/reonZ/pf2e-dailies",
     "readme": "https://github.com/reonZ/pf2e-dailies/blob/master/README.md",
     "manifest": "https://raw.githubusercontent.com/reonZ/pf2e-dailies/master/module.json",
-    "download": "https://github.com/reonZ/pf2e-dailies/releases/download/2.24.0/module.zip",
+    "download": "https://github.com/reonZ/pf2e-dailies/releases/download/3.0.0/module.zip",
     "changelog": "https://github.com/reonZ/pf2e-dailies/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/pf2e-dailies/issues",
-    "styles": [
-        "styles/dailies.css"
-    ],
-    "languages": [
-        {
-            "lang": "en",
-            "name": "English",
-            "path": "lang/en.json"
-        },
-        {
-            "lang": "fr",
-            "name": "Français",
-            "path": "lang/fr.json"
-        },
-        {
-            "lang": "cn",
-            "name": "中文（简体）",
-            "path": "lang/cn.json"
-        },
-        {
-            "lang": "zh-tw",
-            "name": "正體中文",
-            "path": "lang/zh-tw.json"
-        },
-        {
-            "lang": "de",
-            "name": "Deutsch",
-            "path": "lang/de.json"
-        }
-    ],
+    "styles": ["styles/pf2e-dailies.css"],
     "relationships": {
         "systems": [
             {
@@ -61,7 +30,7 @@
                 "type": "system",
                 "manifest": "https://raw.githubusercontent.com/foundryvtt/pf2e/master/system.json",
                 "compatibility": {
-                    "minimum": "5.14.0"
+                    "minimum": "5.15.0"
                 }
             }
         ],
@@ -73,13 +42,11 @@
             }
         ]
     },
-    "packs": [
+    "languages": [
         {
-            "name": "equipment",
-            "label": "PF2e Dailies (equipment)",
-            "system": "pf2e",
-            "path": "packs/equipment.db",
-            "type": "Item"
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
         }
     ]
 }

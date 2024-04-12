@@ -1,15 +1,5 @@
 .git/
 node_modules/
 releases/
-ignore.txt
-release.mjs
+scripts/
 *.code-workspace
-tsconfig.json
-jsconfig.json
-webpack*.*
-*.log
-CURRENT
-LOCK
-LOG*
-MANIFEST*
-src.old

@@ -1,0 +1,23 @@
+[id^="pf2e-dailies-settings-"] {
+    --daily-hover-color: #00000026;
+
+    max-height: 80%;
+    width: 300px;
+
+    .dailies {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3em;
+
+        .daily {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 5px;
+
+            &:hover {
+                background: var(--daily-hover-color);
+            }
+        }
+    }
+}

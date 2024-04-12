@@ -1,0 +1,63 @@
+.app.dialog {
+    .pf2e-dailies-spontaneous {
+        margin-bottom: 0.7em;
+
+        strong {
+            white-space: nowrap;
+        }
+
+        .hint {
+            text-align: center;
+            margin-bottom: 0.5em;
+        }
+
+        h3 {
+            padding-left: 0.3em;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2em;
+            margin-left: 0.3em;
+        }
+
+        input {
+            margin-right: 0.3em;
+        }
+    }
+}
+
+#pf2e-dailies-weapon {
+    .window-content {
+        .dialog-content {
+            .flavor {
+                text-align: center;
+            }
+
+            input {
+                margin-right: 0.5em;
+            }
+
+            label:not(:first-child) {
+                margin-top: 0.5em;
+                display: block;
+            }
+
+            .runes {
+                margin-left: 2em;
+
+                label {
+                    font-weight: bold;
+                    margin-right: 0.5em;
+                }
+            }
+        }
+
+        .dialog-buttons {
+            margin-top: 1em;
+        }
+    }
+}

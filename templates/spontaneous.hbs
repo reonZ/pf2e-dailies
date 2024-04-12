@@ -1,0 +1,23 @@
+<div class="pf2e-dailies-spontaneous">
+    <div class="hint">{{{hint}}}</div>
+    <div class="list">
+        {{#each entries as |entry i|}}
+        {{#if ../multiEntries}}
+        <h3>{{entry.name}}</h3>
+        {{/if}}
+        <ul>
+            {{#each slots as |slot|}}
+            <li>
+                <label>
+                    <input type="radio" name="entry" data-entry="{{entry.id}}"
+                        data-slot="{{slot.key}}" {{checked (and (eq i 0) (eq @index 0))}}>
+                    <span>{{slot.rank}}
+                        ({{slot.value}} {{@root.i18n
+                        'remaining'}})</span>
+                </label>
+            </li>
+            {{/each}}
+        </ul>
+        {{/each}}
+    </div>
+</div>

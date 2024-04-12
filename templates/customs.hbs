@@ -1,115 +1,32 @@
 <form>
     <div class="left">
         <div class="list">
-            {{#each customs}}
-            <div class="row{{#if (eq @root.daily this.key)}} selected{{/if}}" data-key="{{this.key}}">
-                <span>{{this.key}}</span>
-                <a data-action="delete-daily" data-key="{{this.key}}">
+            {{#each list as |daily|}}
+            <div class="row{{#if daily.selected}} selected{{/if}}" data-key="{{daily.key}}">
+                <span class="name{{#if daily.readonly}} readonly{{/if}}"
+                    data-action="select-daily">{{daily.key}} </span>
+                <a data-action="delete-daily" data-tooltip="{{@root.i18n.path 'list.delete'}}">
                     <i class="fas fa-trash"></i>
                 </a>
             </div>
             {{/each}}
         </div>
         <div class="buttons">
-            <button data-action="create-daily"><i class="fas fa-folder-plus"></i> {{i18n 'list.create'}}</button>
-        </div>
-    </div>
-
-    <div class="right">
-        {{#if code}}
-        {{#if monaco}}
-        {{#if newVersion}}
-        <div class="notify">{{{i18n 'code.newVersion' newVersion}}}</div>
-        {{/if}}
-        <div class="monaco">
-            <div class="placeholder"></div>
-        </div>
-        {{else}}
-        <div class="notify">{{{i18n 'code.notify'}}}</div>
-        {{/if}}
-        <textarea class="code{{#if monaco}} hide{{/if}}" spellcheck="false" autocomplete="off">{{code}}</textarea>
-        <button data-action="save-code"><i class="fas fa-save"></i> {{i18n 'code.save'}}</button>
-        {{else}}
-        <div class="template">
-            <label>
-                {{#if isExample}}
-                {{i18n 'template.example'}}
-                {{else}}
-                {{i18n 'template.template'}}
-                {{/if}}
-            </label>
-            <select data-action="select-template">
-                {{#select template}}
-                <optgroup label="{{i18n 'template.templates'}}">
-                    {{#each templates}}
-                    <option value="{{this}}">{{@root.i18n (concat 'template.' this '.label')}}</option>
-                    {{/each}}
-                </optgroup>
-                <optgroup label="{{i18n 'template.examples'}}">
-                    {{#each examples}}
-                    <option value="{{this}}">{{@root.i18n (concat 'template.' this '.label')}}</option>
-                    {{/each}}
-                </optgroup>
-                {{/select}}
-            </select>
-
-            <div class="hint">{{{i18n (concat 'template.' template '.hint')}}}</div>
-
-            {{#unless isExample}}
-            <hr />
-            <label>Key</label>
-            <input type="text" name="key" placeholder="uniqueKey" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.key'}}"></i>
-            <label>Label</label>
-            <input type="text" name="label" placeholder="New Custom Daily" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.label'}}"> </i>
-            <label>UUID</label>
-            <input type="text" name="uuid" placeholder="Compendium.pf2e.feats-srd.Item.uxHWqFbYD0ZvkeF8" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.uuid'}}"></i>
-            {{#if (eq template 'resistance')}}
-            <hr>
-            <label>Resistances</label>
-            <input type="text" name="resistances" placeholder="fire, acid, poison, air" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.resistances'}}"></i>
-            <label>Value</label>
-            <input type="text" name="resistance" placeholder="5" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.resistance'}}"></i>
-            {{else if (eq template 'feat')}}
-            <hr>
-            <label>Categories</label>
-            <input type="text" name="category" placeholder="class, classfeature, archetype" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.feattype'}}"></i>
-            <label>Traits</label>
-            <input type="text" name="traits" placeholder="metamagic, wizard" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.feattraits'}}"></i>
-            <label>Max Level</label>
-            <input type="text" name="level" placeholder="half" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.featlevel'}}"></i>
-            {{else if (eq template 'spell')}}
-            <hr>
-            <label>Level</label>
-            <input type="text" name="level" placeholder="10" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.spelllevel'}}"></i>
-            <label>Categories</label>
-            <input type="text" name="category" placeholder="spell, cantrip" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.spellcategory'}}"></i>
-            <label>Traits</label>
-            <input type="text" name="traits" placeholder="light, cleric" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.spelltraits'}}"></i>
-            <label>Traditions</label>
-            <input type="text" name="traditions" placeholder="divine, occult" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.traditions'}}"></i>
-            <label>Levels</label>
-            <input type="text" name="levels" placeholder="1, 2, 3, 4" value="">
-            <i class="fas fa-circle-question" data-tooltip="{{i18n 'template.tooltips.spelllevels'}}"></i>
-            {{/if}}
-            {{/unless}}
-
-
-            <button data-action="create-template">
-                <i class="fas fa-folder-plus"></i> {{i18n 'template.create'}}
+            <button type="button" data-action="create-daily">
+                <i class="fas fa-mug-saucer"></i> {{i18n 'list.create'}}
             </button>
         </div>
+    </div>
+    <div class="right">
+        {{#if readonly}}
+        <div class="readonly">
+            {{{i18n 'readonly.flavor'}}}
+        </div>
         {{/if}}
+        <textarea class="editor" {{disabled (or readonly disabled)}}
+            spellcheck="false">{{code}}</textarea>
+        <button type="button" data-action="save-daily" {{disabled (or readonly disabled)}}>
+            <i class="fas fa-save"></i> {{i18n 'code.save'}}
+        </button>
     </div>
 </form>

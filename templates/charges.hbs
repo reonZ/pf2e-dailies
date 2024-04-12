@@ -1,0 +1,18 @@
+<div class="pf2e-dailies-charges">
+    <label>{{i18n 'label'}}</label>
+    <input type="number" data-action="change-charges" min="0" value="{{charges.value}}"
+        max="{{charges.max}}" step="1" {{disabled (not isOwner)}}>
+    {{#if withMax}}
+    <input type="number" data-action="change-max-charges" min="0" value="{{charges.max}}" max="50"
+        step="1" {{disabled (not isOwner)}}>
+    {{/if}}
+    {{#if isOwner}}
+    <a {{#if (eq charges.value charges.max)}}class="disabled" {{/if}} data-action="reset-charges"><i
+            class="fas fa-redo" data-tooltip="{{i18n 'tooltip' max=charges.max}}"></i></a>
+    {{/if}}
+    {{#if action}}
+    <button type="button" class="cast-spell blue" data-item-id="{{action.id}}">
+        <span class="action-glyph">{{action.cost}}</span> {{localize action.label}}
+    </button>
+    {{/if}}
+</div>

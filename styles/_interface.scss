@@ -1,180 +1,265 @@
-#pf2e-dailies-interface {
+[id^="pf2e-dailies-interface-"] {
+    --interface-background: url(../../../ui/parchment.jpg) repeat;
+    --interface-background-color: #d9d9cd;
+    --alert-color: #830000;
+    --unallowed-color: red;
+    --disabled-color: grey;
+    --exists-color: #ffa900;
+    --gap: 0.3em;
+    --right-margin: 0.2em;
+
     max-height: 80%;
+    width: 400px;
 
     .window-content {
         position: relative;
-        background: url(../../../ui/parchment.jpg) repeat;
+        background: var(--interface-background);
 
         .content {
-            display: grid;
-            grid-auto-flow: row;
-            gap: 1em;
+            .dailies {
+                display: grid;
+                grid-auto-flow: row;
+                gap: 1em;
 
-            hr:last-child {
-                display: none;
-            }
-        }
-
-        .nothing {
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.3em;
-        }
-
-        .group {
-            display: grid;
-            gap: 0.2em 1em;
-            align-items: center;
-            grid-template-columns: minmax(70px, auto) 1fr auto auto;
-            padding-inline: 0.3em;
-
-            [data-action='clear'] {
-                font-size: 1.2em;
-                margin-right: 0.2em;
-            }
-
-            input.input,
-            input.alert {
-                grid-column: 2 / -2;
-            }
-
-            h3 {
-                grid-column: 1 / -1;
-            }
-
-            select {
-                grid-column: 2 / -1;
-            }
-
-            select.random {
-                pointer-events: none;
-                appearance: none;
-                grid-column: 2 / -2;
-            }
-
-            .combo {
-                grid-column: 2 / -1;
-                position: relative;
-
-                select,
-                input {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
+                hr:last-child {
+                    display: none;
                 }
 
-                input {
-                    width: calc(100% - 20px);
-                    border-radius: 3px 0 0 3px;
-                }
-
-                select {
-                    width: 100%;
-                }
-            }
-
-            label {
-                padding-bottom: 1px;
-
-                &.empty {
-                    color: #830000;
+                .nothing {
+                    text-align: center;
                     font-weight: bold;
-                    text-decoration: underline;
+                    font-size: 1.3em;
+                }
 
-                    &:empty {
-                        &::after {
-                            content: '*';
+                .group {
+                    display: grid;
+                    gap: 0.2em var(--gap);
+                    align-items: center;
+                    grid-template-columns: minmax(30%, auto) minmax(50%, auto);
+                    padding-left: var(--gap);
+
+                    > div {
+                        display: flex;
+                        align-items: center;
+                        gap: var(--gap);
+                    }
+
+                    .note {
+                        font-size: 1.1em;
+                    }
+
+                    .browser {
+                        font-size: 1.1em;
+                    }
+
+                    .alert {
+                        grid-column: 1 / -1;
+                        margin-right: 0.1em;
+
+                        input {
+                            background: none;
+                            text-align: end;
                         }
+
+                        input:read-only,
+                        a {
+                            color: var(--alert-color);
+                        }
+
+                        a {
+                            font-size: 1.3em;
+                        }
+                    }
+
+                    .clear {
+                        font-size: 1.5em;
+
+                        &.disabled {
+                            pointer-events: none;
+                            cursor: default;
+                            color: var(--disabled-color);
+
+                            &:hover {
+                                text-shadow: none;
+                            }
+                        }
+                    }
+
+                    .die {
+                        margin-right: var(--right-margin);
+                        font-size: 1.2em;
+                    }
+
+                    input,
+                    select {
+                        border-radius: 3px;
+                        flex: 1;
+                    }
+
+                    input {
+                        &:read-only {
+                            cursor: default;
+
+                            &:focus,
+                            &:focus-visible {
+                                box-shadow: none;
+                            }
+                        }
+
+                        &:not(:disabled, :read-only) {
+                            background: var(--interface-background);
+                            background-color: var(--interface-background-color);
+                        }
+                    }
+
+                    h3 {
+                        grid-column: 1 / -1;
+                    }
+
+                    input {
+                        padding-inline: 5px;
+                    }
+
+                    select {
+                        &.random {
+                            padding-inline: 5px;
+                        }
+
+                        &:not(.random) {
+                            padding-inline: 0;
+                        }
+                    }
+
+                    @-moz-document url-prefix() {
+                        input,
+                        select,
+                        select:not(.random) {
+                            padding-inline: 5px;
+                        }
+                    }
+
+                    select {
+                        &.random {
+                            pointer-events: none;
+                            appearance: none;
+                        }
+
+                        &:disabled {
+                            cursor: not-allowed;
+
+                            &[editable] > button {
+                                stroke: var(--unallowed-color);
+                            }
+                        }
+                    }
+
+                    .combo {
+                        position: relative;
+
+                        select,
+                        input {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                        }
+
+                        input {
+                            width: calc(100% - 20px);
+                            border-radius: 3px 0 0 3px;
+                        }
+
+                        select {
+                            width: 100%;
+                        }
+                    }
+
+                    .drop {
+                        input {
+                            &.exists {
+                                box-shadow: inset 0 0 6px var(--exists-color),
+                                    0 0 2px var(--exists-color);
+                            }
+                        }
+                    }
+
+                    label {
+                        padding-bottom: 1px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+
+                        &.empty {
+                            color: var(--alert-color);
+                            font-weight: bold;
+                            text-decoration: underline;
+
+                            &:empty {
+                                &::after {
+                                    content: "*";
+                                }
+                            }
+                        }
+                    }
+
+                    .combo,
+                    select,
+                    option,
+                    input,
+                    input:disabled,
+                    input:read-only,
+                    select:disabled {
+                        color: var(--color-text-dark-primary);
+                        height: 26px;
+                    }
+                }
+
+                &.has-alert {
+                    input,
+                    select,
+                    a:not([data-action="resolve-alert"]) {
+                        color: var(--color-text-dark-primary);
+                        pointer-events: none;
                     }
                 }
             }
 
-            .alert {
-                color: #830000;
-            }
-        }
+            .buttons {
+                margin-top: 0.7em;
 
-        .rows {
-            grid-template-columns: minmax(120px, auto) 1fr auto auto;
-        }
-
-        input,
-        select {
-            border-radius: 3px;
-        }
-
-        select:disabled {
-            cursor: not-allowed;
-
-            &[editable] > button {
-                stroke: red;
-            }
-        }
-
-        .combo,
-        select,
-        option,
-        input,
-        input:disabled,
-        input:read-only,
-        select:disabled {
-            color: var(--color-text-dark-primary);
-            height: 26px;
-        }
-
-        input {
-            &:read-only {
-                cursor: default;
-                border: none;
-
-                &:focus,
-                &:focus-visible {
-                    box-shadow: none;
+                &:not(.no-accept) {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    column-gap: var(--gap);
                 }
             }
-
-            &:not(:disabled, :read-only) {
-                background: url(../../../ui/parchment.jpg) repeat;
-                background-color: #d9d9cd;
-            }
         }
 
-        .buttons {
-            margin-top: 1em;
+        .cover {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.411);
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-            &:not(.no-dailies) {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                column-gap: 0.3em;
+            .loader {
+                border: 1em solid var(--color-border-light-primary);
+                border-top-color: var(--color-border-dark-primary);
+                border-radius: 50%;
+                height: min(25%, 8em);
+                aspect-ratio: 1/1;
+                animation: spin 2s linear infinite;
+                margin-top: -10px;
             }
-        }
-    }
 
-    .cover {
-        position: absolute;
-        inset: 0;
-        background-color: rgba(0, 0, 0, 0.411);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        .loader {
-            border: 1em solid var(--color-border-light-primary);
-            border-top-color: var(--color-border-dark-primary);
-            border-radius: 50%;
-            height: min(25%, 8em);
-            aspect-ratio: 1/1;
-            animation: spin 2s linear infinite;
-            margin-top: -10px;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
             }
         }
     }

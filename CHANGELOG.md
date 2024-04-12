@@ -1,3 +1,55 @@
+#
+
+-   the module has been completely remade from scratch
+-   daily selections made by a previous version will not be compatible
+    -   they will be reset on each character the first time the preparation interface is opened
+    -   from that point, everything will save properly between preparations
+-   the module no longer has compendium packs
+-   the module no longer interact with the chat (i never liked the idea to begin with)
+    -   no more daily preparation button in the message generate by `Rest for the night`
+    -   no more daily request macro
+-   familiar abilities are no longer indiscriminately removed
+    -   only abilities added by the module will be (starting from this version)
+    -   familiar abilities are now removed on rest (previously only during daily prep)
+    -   this should allow for more customizable familiars such as specific ones
+-   the previously `Filter Out Dailies` user setting is now a per-character feature
+    -   it can be accessed by clicking the `filters` button in the preparation interface header
+-   temporary items added by the module will now be highlighted in the character and familiar sheets
+    -   this can be disabled in the settings
+-   drop filters' options and warnings have been significantly improved
+-   drop feat rows will now warn if the feat is already present on the character
+-   drop spell rows can now have extra notes to remind of eventual requirements that cannot be achieved with filters alone
+-   it is no longer possible to accept or modify anything inside the preparation window whenever an `alert` field is present (beside resolving the issue itself)
+-   spellcasting entries created by the module to house added spells will now be personalized to the feat/daily/actor
+-   improved styling of the preparation interface to avoid inconsistencies
+-   no longer have backward compatibility support for the `PF2e Staves` module
+-   the `Mind Smith Dedication` daily has been updated
+-   the module now allows you to create and use `Charges` spellcasting entries
+    -   they work separately from the staves spellcasting entries
+    -   you can set the max value for charges
+    -   they behave the same way a regular spellcasting entry would
+    -   also works on NPCs, which allows for pseudo-staff entries
+-   the staves preparation has seen a complete change in its core:
+    -   it no longer creates a spellcasting entry and spell items on the actor, it instead generates the entry during the actor `prepareData` like is done for wands & scrolls by the system
+    -   the staff spellcasting entry can now be found at the top of the `Activations` tab
+    -   a new `draw`, `retrieve` or `pick up` button is added if the staff isn't currently equipped
+        -   a message is created when equipping the staff that way if in combat
+    -   staff entries from an older module version will not be seen as staff entries anymore
+        -   they will still appear in the sheet but won't be usable
+        -   they will properly be removed during `rest` like everything else
+    -   the `Staff Spellcasting Sort` setting has been removed
+        -   the staves description still needs to respect the system's format
+        -   the rank label needs to contain a number to be parsed, anything without a number will be seen as a `cantrip`
+    -   staff spells above the `character level / 2` will not be added to the entry
+    -   you can now expend spontaneous slots of higher ranks when casting a spell instead of the exact same rank
+    -   you can provide a spontaneous entry id & rank in the `cast` method options of the staff entry to skip the dialog popup
+-   custom dailies made prior to this version will not be compatible (though still accessible)
+    -   the internal structure of dailies has been completely changed
+    -   a lot of new features and utilities have been added/removed/modified
+    -   it is now possible to have dailies that do not relate to an embedded item, `familiar` and `staves` dailies were previously hardcoded to bypass that restriction and are now made the same way any other daily
+    -   removed templates but added convenient functions to create simple dailies with ease
+    -   the `PF2e Dailies Ext` isn't usable anymore
+
 # 2.24.0
 
 -   this is a `5.14.0` release
@@ -240,7 +292,7 @@
 /**
  * Retrieves the API object containing the funtions
  */
-game.modules.get('pf2e-dailies').api
+game.modules.get("pf2e-dailies").api;
 ```
 
 ```js

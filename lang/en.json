@@ -1,281 +1,216 @@
 {
     "pf2e-dailies": {
+        "settings": {
+            "familiarAbilities": {
+                "name": "Familiar Abilities",
+                "hint": "Comma separated ability UUIDs. Those will be added to the list of familiar abilities."
+            },
+            "addedHighlight": {
+                "name": "Highlight Added Items",
+                "hint": "Temporary \"items\" added by the module will be highlighted in the character and familiar sheets."
+            },
+            "partyMembers": {
+                "name": "Party Members Only",
+                "hint": "When a collection of players actors is retrieved in the module, should the module limits it to party members (if the character is member of any party) or all player owned actors?"
+            },
+            "menus": {
+                "customs": {
+                    "name": "Custom Dailies",
+                    "hint": "Register you own dailies with the module.",
+                    "label": "Register"
+                }
+            }
+        },
+        "error": {
+            "incompatible": "There are custom dailies that are incompatible with the current version of <strong>PF2e Dailies</strong>.",
+            "unexpected": "An unexpected error occured with the module <strong>PF2e Dailies</strong>. See the console (F12) for details."
+        },
+        "sheet": {
+            "title": "Daily Preparations",
+            "unrested": "Rest Required",
+            "charges": {
+                "label": "Charges",
+                "tooltip": "Reset charges to maximum (max: {max})"
+            }
+        },
+        "builtin": {
+            "dailies": {
+                "familiar": "Familiar Abilities",
+                "staves": "Prepare a Staff",
+                "thaumaturge-tome": "Thaumaturge Tome"
+            }
+        },
+        "dialog": {
+            "mind-weapon": {
+                "title": "Create Mind Weapon",
+                "flavor": "This character doesn't have a mind weapon in their inventory.<br>Please select one of the following options to create one.",
+                "yes": "Create",
+                "no": "Cancel",
+                "held-in-one-hand": "one-handed",
+                "held-in-two-hands": "two-handed",
+                "label": "A {hand} weapon that deals <strong>1{die}</strong> damage{hasTrait}",
+                "oneTrait": " and has the <strong>{trait1}</strong> trait",
+                "twoTraits": " and has the <strong>{trait1}</strong> and <strong>{trait2}</strong> traits"
+            }
+        },
+        "message": {
+            "changes": "Has made the following changes during their daily preparations.",
+            "noChanges": "Has made no changes during their daily preparations, you didn't even need to know about it really.",
+            "gained": "Gained the temporary {type}",
+            "groups": {
+                "resistances": "Gained the resistances",
+                "languages": "Learned to read and speak",
+                "skills": "Trained in the following skills",
+                "tome": "Studied their thaumaturgy tome",
+                "spells": "Is ready to use the spells",
+                "familiar": "Has selected the familiar abilities",
+                "feats": "Learned the feats",
+                "scrolls": "Created the temporary scrolls",
+                "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell",
+                "staff": "Has prepared a staff for the day",
+                "blade": "Imbued their spirit into their weapon",
+                "mindsmith": "Has focused their mind into their weapon"
+            },
+            "rations": {
+                "used": "Consumed one of their {name} and has {nb} remaining.",
+                "last": "Consumed the last of their {name}.",
+                "almost": "Consumed one of their {name} and only has {nb} remaining."
+            }
+        },
+        "label": {
+            "ability": "Ability #{nb}",
+            "expend": "Expend #{nb}",
+            "rune": "Property Rune",
+            "select": "Select {that}",
+            "mind-smith": "Mind Smith",
+            "mind-mental": "Mental Forge",
+            "mind-runic": "Runic Smithing"
+        },
         "interface": {
-            "title": "{name}'s daily preparations",
+            "config": "Filters",
             "noDailies": "This character doesn't have any daily",
             "accept": "Accept",
             "cancel": "Cancel",
-            "alert": {
-                "weapon": "Missing Mind Weapon"
-            },
-            "error": {
-                "unexpected": "An unexpected error occured during daily preparations. See the console (F12) for details.",
-                "empty": "Some required fields are empty.",
-                "unattended": "Some alerts are still unattended. Please click on the alert triangles to resolve them.",
-                "drop": {
-                    "wrongDataType": "Invalid data type dropped.",
-                    "wrongType": "The dropped item does not have the right type (needed: {types}).",
-                    "wrongCategory": "The dropped item does not have the right category (needed: {categories}).",
-                    "wrongTradition": "The dropped item does not have the right tradition (needed: {traditions}).",
-                    "wrongSchool": "The dropped item does not have the right school (needed: {schools}).",
-                    "wrongLevel": "The dropped item level does not have the right level (needed: {levels}).",
-                    "wrongLevelLow": "The dropped item level is too low for this slot ({level}).",
-                    "wrongLevelHigh": "The dropped item level is too high for this slot ({level}).",
-                    "wrongTraitAnd": "The dropped item does not have all the traits (needed all: {traits}).",
-                    "wrongTraitOr": "The dropped item does not have either of the traits (needed any: {traits}).",
-                    "wrongTraits": "The dropped item has mismatched traits.",
-                    "wrongSkill": "The dropped item does not have the right prerequisite skills ({skills}).",
-                    "wrongRarity": "The dropped item does not have the right rarity ({rarities}).",
-                    "wrongSource": "The dropped item does not originate from the right source ({sources}).",
-                    "wrongCustom": "The dropped item didn't match the filters.",
-                    "notFeat": "Only feats can be dropped here.",
-                    "notSpell": "Only spells can be dropped here.",
-                    "wrongSpellTime": "The dropped spell cast-time exceeds {time}."
-                },
-                "input": {
-                    "proficiency": "You are already {rank} in {proficiency}."
-                }
-            },
             "tooltip": {
-                "random": "This will randomly be selected",
+                "random": "This will be randomly selected",
                 "alert": "Click here to resolve",
                 "search": "Open the compendium browser",
                 "clear": "Clear selection",
-                "noSelect": "No options available"
+                "noSelect": "No options available",
+                "exists": "This feat is already present on the character"
+            },
+            "error": {
+                "empty": "Some required fields are empty."
+            },
+            "drop": {
+                "notes": {
+                    "ace": "Choose a single spell from the arcane, divine, occult, or primal list of 4th level or lower.<br>The spell can't have a cost, nor can its casting time be more than 10 minutes. The spell must be able to target a single creature, and you must be a valid target for it."
+                },
+                "error": {
+                    "wrongDataType": "Invalid data type dropped.",
+                    "wrongData": "The dropped item does not have the right <strong>{type}</strong> ({require}).",
+                    "require": "require: <strong>{need}</strong>, has: <strong>{has}</strong>",
+                    "missing": "missing: <strong>{need}</strong>",
+                    "invalid": "invalid: <strong>{has}</strong>",
+                    "wrongTraits": "The dropped item traits missmatch with the filter's.",
+                    "exclude": "<strong>{item}</strong> was excluded from the selection.",
+                    "type": {
+                        "type": "type",
+                        "level": "level",
+                        "category": "category",
+                        "categories": "categories",
+                        "skills": "skills",
+                        "source": "source",
+                        "rarity": "rarity",
+                        "rank": "rank",
+                        "traditions": "traditions"
+                    },
+                    "none": "none"
+                }
+            },
+            "staves": {
+                "empty": "Empty Slot",
+                "flexible": "Flexible Slot"
             },
             "rations": {
                 "yes": "Consume ({nb} remaining)",
                 "no": "Do not consume any",
                 "last": "Consume last available"
             },
-            "staves": {
-                "prepare": "Prepare a Staff",
-                "staff": "Staff",
-                "expend": "Expend Spell",
-                "type": "Type",
-                "flexible": "Flexible Slot",
-                "empty": "Empty Slot"
-            }
-        },
-        "customs": {
-            "title": "Custom Dailies",
-            "saved": "The daily '{daily}' was successfully saved.",
-            "deleted": "The daily '{daily}' was successfully deleted.",
-            "list": {
-                "create": "Create Daily"
-            },
-            "code": {
-                "save": "Save Daily",
-                "newVersion": "There is a new version <strong>{version}</strong> of the extension that is available to download, not updating it may result in experiencing some issues. You can find the extension here: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>",
-                "notify": "If you want to have a better experience while creating homebrew dailies, there is an extension for the module that replaces this with a very powerful text editor including all the typings of the module.<br>The extension module is not registered with the foundry but you can find it here: <a href='https://github.com/reonZ/pf2e-dailies-ext'>https://github.com/reonZ/pf2e-dailies-ext</a>"
-            },
-            "delete": {
-                "title": "Delete Daily",
-                "content": "Are you sure you want to dlete this daily ?"
-            },
-            "template": {
-                "template": "Template",
-                "templates": "Templates",
-                "create": "Create Daily",
-                "noEmpty": "Some fields are not optional, please make sure you provide entries for all the fields which are not specified (optional).",
-                "badResistance": "A resistance value must be strictly supperior to 0.",
-                "tooltips": {
-                    "key": "Unique key for your daily.",
-                    "label": "(optional) Label used in the preparation interface and chat message. If left empty, the name of the root item will be used instead.",
-                    "uuid": "The uuid of the root item (feat, equipment, etc.) that will decide if this daily is used or not (if the character has said item).",
-                    "resistances": "Comma separated list of resistances from which the user will be able to select.",
-                    "resistance": "The value of the resistance gained.",
-                    "feattype": "(optional) Comma separated list of feat types used in the filter.",
-                    "feattraits": "(optional) Comma separated list of feat traits used in the filter.",
-                    "featlevel": "(optional) The max feat level used in the filter. Can be a number or one of the shortcuts 'level' and 'half' which respectively use the actor's level or half its value.",
-                    "spelllevel": "(optional) The level to which the spell will be heightened. Can be left empty to use the original level of the spell.",
-                    "spellcategory": "(optional) Comma separated list of spell categories.",
-                    "spelltraits": "(optional) Comma separated list of spell traits used in the filter.",
-                    "traditions": "(optional) Comma separated list of spell traditions used in the filter.",
-                    "spelllevels": "(optional) Comma separated list of spell levels used in the filter. If a single number is provided, it will be used as the upper range value. Can be one of the shortcuts 'level' and 'half' which respectively use the actor's level or half its value."
+            "migration": {
+                "title": "PF2e Dailies - Migration",
+                "label": "Read and Acknowledge",
+                "reset": "The daily selections saved on this character were not compatible with the current version of the module and have been reset.",
+                "filter": "You can now filter out dailies on a per-character basis, the option is directly available in the header of the preparation window (the original setting has been removed).",
+                "familiar": {
+                    "now-remove": "The module doesn't indiscriminately remove familiar abilities anymore, it will now only remove those that were added by the module itself, making it possible to have more than the total number set on the sheet.",
+                    "cant-remove": "NOTE: Because of this, the module will not remove any old ability from the familiar, even if they were originally added by a previous version of the module."
                 },
-                "default": {
-                    "label": "Default",
-                    "hint": "This is the default template boilerplate."
-                },
-                "trainedSkill": {
-                    "label": "Trained Skill",
-                    "hint": "This template was used for feats like <strong>Ancestral Longevity</strong> or <strong>Ageless Spirit</strong> to upgrade one skill or create a new lore with the proficiency rank of <strong>Trained</strong>."
-                },
-                "trainedLore": {
-                    "label": "Trained Lore",
-                    "hint": "This template was used for the <strong>Quick Study</strong> feat to create a new lore with the proficiency rank of <strong>Trained</strong>."
-                },
-                "language": {
-                    "label": "Language",
-                    "hint": "This template was used with the <strong>Ancestral Linguistics</strong> feat and the <strong>Bort's Blessing</strong> ring to add a new language."
-                },
-                "resistance": {
-                    "label": "Resistance",
-                    "hint": "This template was used for the <strong>Elementalist</strong> dedication and <strong>Ganzi</strong> heritage to add a new resistance among a predefined set of options."
-                },
-                "feat": {
-                    "label": "Feat",
-                    "hint": "This template was used for the <strong>Metamagical Experimentation</strong> feat to create a new feat."
-                },
-                "spell": {
-                    "label": "Spell",
-                    "hint": "This template will allow the creation of a new spell which is added to a temporary spellcasting entry."
-                },
-                "example": "Example",
-                "examples": "Examples",
-                "tome": {
-                    "label": "Thaumaturgy Tome",
-                    "hint": "This is what the code would look like if the <strong>Tome</strong> implement of the Thaumaturge class was a homebrew daily, it highlights the use of children with conditions and the use of the <u>prepare</u> function."
-                },
-                "flexibility": {
-                    "label": "Combat Flexibility",
-                    "hint": "This is what the code would look like if the <strong>Combat Flexibility</strong> feat was a homebrew daily, it is a very simple example of drop rows with <u>spell filters</u> and <u>child predicate</u>."
-                },
-                "savant": {
-                    "label": "Scroll Savant",
-                    "hint": "This is what the code would look like if the <strong>Scroll Savant</strong> feat was a homebrew daily. We gather some simple data in the <u>prepare</u> function and use it for the <u>condition</u> function of the different rows."
-                },
-                "mind": {
-                    "label": "Mind Smith",
-                    "hint": "This is what the code would look like if the <strong>Mind Smith</strong> dedication was a homebrow daily. This is by far the most complex example, the rows make use of both <u>child predicates</u> and <u>condition</u>, everything is falling appart if the character doesn't have a mind weapon equiped (the weapon is in a compendium pack) and that is why we are using the <u>alert</u> row to create said weapon if needed. It also make use of the <u>rest</u> function to clean up the mind weapon."
+                "staves": {
+                    "moved": "You will now find your prepared staff in the <strong>Activations</strong> tab of the character sheet."
                 }
+            },
+            "mindsmith": {
+                "missing": "Mind Weapon is missing"
             }
         },
-        "label": {
-            "elementalist": "Elementalist",
-            "trickster": "Scroll Trickster",
-            "ganzi": "Ganzi Heritage",
-            "tome": "Thaumaturgy Tome",
-            "mindsmith": "Mind Smith",
-            "mentalforge": "Mental Forge {nb}",
-            "runicmind": "Runic Smithing",
-            "familiar": "Familiar Abilities",
-            "ability": "Ability #{nb}",
-            "metamagical": "Spellshaping",
-            "root": "Root Magic",
-            "blade": {
-                "weapon": "Weapon",
-                "rune": "Property Rune"
+        "charges": {
+            "label": "Charges",
+            "reset": {
+                "title": "Reset Staff Charges",
+                "content": "A re you sure you want to reset the staff charges to their maximum value (max: {max}) ?"
+            },
+            "error": {
+                "notEnough": "Cannot cast {spell} at {rank}: not enough charges."
             }
         },
-        "sheet": {
-            "title": "Daily Preparations",
-            "unrested": "Rest Required"
-        },
-        "dialog": {
-            "weapon": {
-                "title": "Mind Weapon",
-                "flavor": "<p>This character doesn't have a mind weapon in their inventory.</p><p>Please select one of the following options to create one.</p>",
-                "accept": "Accept",
-                "cancel": "Cancel",
-                "option": {
-                    "0": "A one-handed weapon that deals <strong>1d4</strong> damage and has the <strong>agile</strong> and <strong>finesse</strong> traits",
-                    "1": "A one-handed weapon that deals <strong>1d6</strong> damage and has the <strong>finesse</strong> trait",
-                    "2": "A one-handed weapon that deals <strong>1d8</strong> damage",
-                    "3": "A two-handed weapon that deals <strong>1d10</strong> damage and has the <strong>reach</strong> trait"
-                },
-                "error": {
-                    "noSelection": "You must select one weapon base type.",
-                    "missing": "The weapon couldn't be found in the compendium."
-                }
+        "staves": {
+            "spontaneous": {
+                "title": "Use Spontaneous slot",
+                "remaining": "remaining",
+                "must": "You must consume a spontaneous slot of <strong>{rank}</strong>{higher} from {from}?",
+                "would": "Would you like to consume a spontaneous spell slot of <strong>{rank}</strong>{higher} from {from}?",
+                "one": "<strong>{entry}</strong>",
+                "multi": "any of the following spellcasting entries",
+                "higher": " or higher "
+            },
+            "error": {
+                "missing": "Couldn't retrieve the staff.",
+                "notEquipped": "You need to equip your {staff} to use it."
+            },
+            "action": {
+                "pick-up": "Pick Up",
+                "retrieve": "Retrieve",
+                "sheathe": "Sheathe",
+                "draw": "Draw"
             }
-        },
-        "error": {
-            "unexpected": "An unexpected error occured during preparation of the module <strong>PF2e Dailies</strong>. See the console (F12) for details.",
-            "unrested": "You must rest before your daily preparations.",
-            "duplicate": "A daily with this key already exists.",
-            "invalidKey": "The daily key must be a string.",
-            "noLibwrapper": "The module now requires the dependency module <strong>libwrapper</strong> to work at its best.",
-            "noCharacterSelected": "No <strong>Character</strong> were provided to the <strong>openDailyInterface</strong> function.",
-            "noDailies": "This character has no dailies.",
-            "notGM": "Only GM can do that."
         },
         "spellEntry": {
             "name": "Temporary Spells"
         },
-        "message": {
-            "changes": "Has made the following changes during their daily preparations.",
-            "noChanges": "Has made no changes during their daily preparations, you didn't even need to know about it really.",
-            "gained": "Gained the temporary {type}:",
-            "resistances": "Gained the resistances:",
-            "languages": "Learned to read and speak:",
-            "skills": "Trained in the following skills:",
-            "tome": "Studied their thaumaturgy tome:",
-            "spells": "Is ready to use the spells:",
-            "mindsmith": "Is focusing on the mind weapon:",
-            "familiar": "Has selected the familiar abilities:",
-            "feats": "Learned the feats:",
-            "scrolls": "Created the temporary scrolls:",
-            "blade": "Imbued their spirit into their weapon:",
-            "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell:",
-            "root": "Has prepared a small pouch with bits of herbs and gives it to an ally:",
-            "rations": {
-                "used": "Consumed one of their {name} and has {nb} remaining.",
-                "last": "Consumed the last of their {name}.",
-                "almost": "Consumed one of their {name} and has only {nb} remaining."
-            },
-            "dailiesRequest": {
-                "content": "It is that time of the day, please make your daily preparations.",
-                "button": "Daily Preparations",
-                "cleaning": "...Cleaning Dailies",
-                "prepared": "Dailies Done"
+        "mindsmith": {
+            "weapon": {
+                "name": "Mind Weapon"
             }
         },
-        "settings": {
-            "familiar": {
-                "name": "Familiar Abilities",
-                "hint": "Comma separated ability UUIDs. Those will be added to the list of familiar abilities."
+        "customs": {
+            "title": "Custom Dailies",
+            "list": {
+                "create": "Create Custom Daily",
+                "delete": "Delete Custom Daily"
             },
-            "menus": {
-                "customs": {
-                    "name": "Custom Dailies",
-                    "hint": "Register you own dailies to the module.",
-                    "label": "Register"
-                }
+            "delete": {
+                "title": "Delete Custom Daily",
+                "content": "Are you sure you want to delete this daily ?"
             },
-            "members": {
-                "name": "Party Members Only",
-                "hint": "When a collection of players actors is retrieved in the module and if the character is a member of a party, should those actors be pulled from said party or be any player owned actor."
+            "code": {
+                "save": "Save Custom Daily",
+                "error": "The returned data isn't respecting the Daily structure.",
+                "saved": "Custom Daily was succesfully saved."
             },
-            "staff-sort": {
-                "name": "Staff Spellcasting Sort",
-                "hint": "When a staff spellcasting entry is created, should it appear at the top or at the bottom of the list.",
-                "choices": {
-                    "top": "Top of the list",
-                    "bottom": "Bottom of the list"
-                }
-            },
-            "staff-regex": {
-                "name": "Staff Labels Regex",
-                "hint": "Regular expresion used to parse the staves ranks for different localizations. Can be left empty for defaul english labels."
-            },
-            "filters": {
-                "name": "Filter Out Dailies",
-                "hint": "List of comma separated Daily keys (i.e. 'dailies.tome', 'custom.mydaily') to be filtered out of the daily preparation for this user. You can get the list of keys by typing in your browser console `game.modules.get('pf2e-dailies').api.getBuiltinDailyKeys()`. You can also directly retrieve the key of a specific daily from any of its related item uuid by typing in your browser console `game.modules.get('pf2e-dailies').api.getBuiltinDailyKey('<compendium-uuid-of-the-item>')`."
+            "readonly": {
+                "flavor": "This daily is flagged as <em>read only</em> because it was created in a previous version of the module and is incompatible. If you decide to <a>unlock</a> it, make sure to update it to the current version data format before saving."
             }
-        },
-        "deprecated": {
-            "custom": {
-                "key": "The <strong>{name}</strong> daily has been implemented directly into <strong>PF2e Dailies</strong>, the custom daily has been skipped and can be safely deleted."
-            }
-        },
-        "staves": {
-            "conflict": "The module <strong>PF2e Dailies</strong> now handles staves, you need to disable the <strong>PF2e Staves</strong> module.",
-            "label": "Charges",
-            "noCharge": "You do not have enough charges left in your staff.",
-            "noStaff": "You need to be holding your staff to cast a spell from it.",
-            "spontaneous": {
-                "title": "Use Spontaneous slot",
-                "remaining": "remaining",
-                "one": "Would you like to consume a spontaneous spell slot of <strong>{rank}</strong> from <strong>{entry}</strong>? <strong>({remaining} remaining)</strong>",
-                "multi": "Would you like to consume a spontaneous spell slot of <strong>{rank}</strong> from any of the following spellcasting entries?"
-            },
-            "message": {
-                "noExpend": "Has prepared a {makeshift} staff for the day:",
-                "withExpend": "Has prepared a {makeshift} staff with extra charges:"
-            },
-            "makeshift": "makeshift"
         }
     }
 }

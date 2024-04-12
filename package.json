@@ -1,24 +1,23 @@
 {
     "name": "pf2e-dailies",
     "scripts": {
-        "build": "esbuild src/main.js --bundle --keep-names --minify --sourcemap --outdir=scripts",
-        "dev": "esbuild src/main.js --bundle --keep-names --watch --sourcemap --outdir=scripts"
+        "build": "esbuild src/main.ts --bundle --keep-names --minify --sourcemap --outdir=scripts",
+        "dev": "esbuild src/main.ts --bundle --keep-names --watch --sourcemap --outdir=scripts"
     },
+    "author": "Idle",
+    "homepage": "https://github.com/reonZ/pf2e-dailies#readme",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/reonZ/pf2e-dailies.git"
     },
-    "author": "Idle",
-    "license": "ISC",
     "bugs": {
         "url": "https://github.com/reonZ/pf2e-dailies/issues"
     },
-    "homepage": "https://github.com/reonZ/pf2e-dailies#readme",
     "devDependencies": {
-        "@biomejs/biome": "1.5.x",
-        "esbuild": "0.x"
+        "esbuild": "^0.20.1",
+        "typescript": "5.3.3"
     },
     "dependencies": {
-        "module-api": "github:reonZ/module-api"
+        "pf2e-api": "github:reonZ/pf2e-api"
     }
 }

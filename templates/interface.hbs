@@ -1,109 +1,127 @@
 <div class="content">
-    {{#if hasDailies}}
-
-    {{#if rows.length}}
-    <div class="group rows">
-        {{#each rows as | group |}}
-        {{> (concat group.rows.[0].data.type 'Row') entry=group.rows.[0] label=group.label}}
+    <div class="dailies{{#if hasAlert}} has-alert{{/if}}">
+        {{#if hasDailies}}
+        {{#if rows.length}}
+        <div class="group rows">
+            {{#each rows as | row |}}
+            {{> (concat row.type 'Row') row}}
+            {{/each}}
+        </div>
+        {{/if}}
+        {{#each groups as | group |}}
+        <div class="group {{group.type}}">
+            <h3>{{group.label}}</h3>
+            {{#each group.rows as | row |}}
+            {{> (concat row.type 'Row') row}}
+            {{/each}}
+        </div>
         {{/each}}
+        {{else}}
+        <div class="nothing">
+            {{i18n 'noDailies'}}
+        </div>
+        {{/if}}
     </div>
-    {{/if}}
-
-    {{#each groups as | group |}}
-    <div class="group {{group.type}}">
-        <h3>{{group.label}}</h3>
-        {{#each group.rows as | row |}}
-        {{> (concat row.data.type 'Row') entry=row label=row.label}}
-        {{/each}}
+    <div class="buttons{{#unless canAccept}} no-accept{{/unless}}">
+        {{#if canAccept}}
+        <button data-action="accept"><i class="fas fa-mug-saucer"></i> {{i18n 'accept'}}</button>
+        {{/if}}
+        <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
     </div>
-    {{/each}}
-
-    {{else}}
-
-    <div class="nothing">
-        {{i18n 'noDailies'}}
-    </div>
-
-    {{/if}}
 </div>
-
-<div class="buttons {{#unless hasDailies}}no-dailies{{/unless}}">
-    {{#if hasDailies}}
-    <button data-action="accept"><i class="fas fa-save"></i> {{i18n 'accept'}}</button>
-    {{/if}}
-    <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
-</div>
-
 <div class="cover">
     <div class="loader"></div>
 </div>
 
 
-{{#*inline 'alertRow'}}
-<label>{{label}}</label>
-<input type="text" class="alert" {{{@root.dump entry}}} disabled>
-<a class="alert" data-action="alert" {{{@root.dump entry}}} data-tooltip="{{@root.i18n 'tooltip.alert'}}">
-    <i class="fa-solid fa-triangle-exclamation"></i>
-</a>
+{{#*inline 'randomRow'}}
+<label>{{this.label}}</label>
+<div>
+    <select class="random" {{{this.data}}}>
+        {{#each this.options as |option|}}
+        <option value="{{option.value}}">{{option.label}}</option>
+        {{/each}}
+    </select>
+    <div class="die" data-tooltip="{{@root.i18n 'tooltip.random'}}">
+        <i class="fa-solid fa-dice-d20"></i>
+    </div>
+</div>
 {{/inline}}
 
 {{#*inline 'inputRow'}}
 <label>{{label}}</label>
-<input type="text" class="input" {{{@root.dump entry}}} />
-<a data-action="clear" data-tooltip="{{@root.i18n 'tooltip.clear'}}">
-    <i class="fas fa-times"></i>
-</a>
-{{/inline}}
-
-{{#*inline 'dropRow'}}
-<label data-droppable="true">{{label}}</label>
-<input type="text" class="drop" data-droppable="true" {{{@root.dump entry}}} readonly />
-<a data-action="search" {{{@root.dump entry}}} data-tooltip="{{@root.i18n 'tooltip.search'}}">
-    <i class="fas fa-search"></i>
-</a>
-<a data-action="clear" {{#unless entry.uuid}} class="disabled" {{/unless}} data-tooltip="{{@root.i18n 'tooltip.clear'}}">
-    <i class="fas fa-times"></i>
-</a>
-{{/inline}}
-
-{{#*inline 'selectRow'}}
-<label>{{label}}</label>
-<select {{{@root.dump entry}}} {{disabled (lte entry.options.length 1)}}>
-    {{#select entry.value}}
-    {{#each entry.options as |option|}}
-    {{#if option.groupStart}}
-    <optgroup label="{{option.label}}"></optgroup>
-    {{else if option.groupEnd}}
-    </optgroup>
-    {{else}}
-    <option {{{@root.dump option}}}>{{option.label}}</option>
-    {{/if}}
-    {{/each}}
-    {{/select}}
-</select>
-{{/inline}}
-
-{{#*inline 'comboRow'}}
-<label>{{label}}</label>
-<div class="combo">
-    <select {{#unless entry.options.length}}data-tooltip="{{@root.i18n 'tooltip.noSelect'}}" disabled{{/unless}}>
-        <option value=""></option>
-        {{#select entry.selected}}
-        {{#each entry.options as |option|}}
-        <option {{{@root.dump option}}}>{{option.label}}</option>
-        {{/each}}
-        {{/select}}
-    </select>
-    <input type="text" class="input" {{{@root.dump entry}}} />
+<div class="input">
+    <input type="text" {{{this.data}}} value="{{this.value}}" />
+    <a class="clear{{#unless value}} disabled{{/unless}}" data-action="clear-field"
+        data-tooltip="{{@root.i18n 'tooltip.clear'}}">
+        <i class="fa-regular fa-times"></i>
+    </a>
 </div>
 {{/inline}}
 
-{{#*inline 'randomRow'}}
-<label>{{label}}</label>
-<select class="random" {{{@root.dump entry}}}>
-    {{#each entry.options as | option |}}
-    <option value="{{option.value}}">{{option.label}}</option>
-    {{/each}}
+{{#*inline 'alertRow'}}
+<div class="alert">
+    <input type="text" value="{{this.value}}" disabled>
+    <a data-action="resolve-alert" {{{this.data}}} data-tooltip="{{@root.i18n 'tooltip.alert'}}">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+    </a>
+</div>
+{{/inline}}
+
+{{#*inline 'dropRow'}}
+<label data-row="{{this.row}}" data-droppable="true">{{this.label}}</label>
+<div class="drop">
+    {{#if this.note}}
+    <span class="note">
+        <i class="fa-solid fa-info" data-tooltip="{{this.note}}"
+            data-tooltip-class="pf2e-dailies-note"></i>
+    </span>
+    {{/if}}
+    <input type="text" data-cache-tooltip="{{@root.i18n 'tooltip.exists'}}" value="{{this.value}}"
+        {{{this.data}}} data-droppable="true" readonly />
+    <a class="browser" data-action="open-browser" data-tooltip="{{@root.i18n 'tooltip.search'}}">
+        <i class="fa-solid fa-search"></i>
+    </a>
+    <a class="clear{{#unless value}} disabled{{/unless}}" data-action="clear-field"
+        data-tooltip="{{@root.i18n 'tooltip.clear'}}">
+        <i class="fa-regular fa-times"></i>
+    </a>
+</div>
+{{/inline}}
+
+{{#*inline 'comboRow'}}
+<label data-row="{{this.row}}">{{this.label}}</label>
+<div class="combo">
+    <select data-dailykey="{{this.daily}}" data-unique="{{this.unique}}" {{#unless
+        this.options.length}}data-tooltip="{{@root.i18n 'tooltip.noSelect'}}" disabled{{/unless}}>
+        <option value="" data-skip-unique="true"></option>
+        {{> selectOptions this}}
+    </select>
+    <input type="text" value="{{this.value}}" {{{this.data}}} class="input" />
+</div>
+{{/inline}}
+
+{{#*inline 'selectRow'}}
+<label data-row="{{this.row}}">{{this.label}}</label>
+<select {{{this.data}}} data-dailykey="{{this.daily}}" data-unique="{{this.unique}}" {{disabled (lte
+    this.options.length 1)}}>
+    {{> selectOptions this}}
 </select>
-<div class="die" data-tooltip="{{@root.i18n 'tooltip.random'}}"><i class="fa-solid fa-dice-d20"></i></div>
+{{/inline}}
+
+
+
+{{#*inline 'selectOptions'}}
+{{#select this.selected}}
+{{#each this.options as |option|}}
+{{#if option.group}}
+<optgroup label="{{option.group}}"></optgroup>
+{{else if option.groupEnd}}
+</optgroup>
+{{else}}
+<option value="{{option.value}}" {{#if option.skipUnique}}data-skip-unique="{{option.skipUnique}}"
+    {{/if}} {{#if option.unique}}data-unique="{{option.unique}}" {{/if}}>{{option.label}}</option>
+{{/if}}
+{{/each}}
+{{/select}}
 {{/inline}}

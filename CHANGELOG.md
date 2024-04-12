@@ -1,4 +1,4 @@
-#
+# 3.0.0
 
 -   the module has been completely remade from scratch
 -   daily selections made by a previous version will not be compatible

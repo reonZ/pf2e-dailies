@@ -17,7 +17,7 @@ import {
     waitDialog,
     warn,
 } from "pf2e-api";
-import { canCastRank, getStaffFlags, setStaffFlagChargeValue } from "../api";
+import { canCastRank, getStaffFlags, setStaffChargesValue } from "../api";
 import { createDaily } from "../daily";
 import {
     ChargesSpellcastingSheetData,
@@ -640,7 +640,7 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
             ]);
         }
 
-        await setStaffFlagChargeValue(actor, spontaneousValue ? charges - 1 : charges - castRank);
+        await setStaffChargesValue(actor, spontaneousValue ? charges - 1 : charges - castRank);
 
         spell.toMessage(null, {
             rollMode: options.rollMode,

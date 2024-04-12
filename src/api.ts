@@ -77,10 +77,10 @@ function getStaffFlags(actor: CharacterPF2e) {
     return getFlag<dailies.StaffFlags>(actor, "extra.staffData");
 }
 
-function setStaffFlagChargeValue(actor: CharacterPF2e, value: number) {
-    const current = getStaffFlags(actor)?.charges.value;
-    if (current === undefined || current === value) return;
-    return setFlag(actor, "extra.staffData.charges.value", value);
+function setStaffChargesValue(actor: CharacterPF2e, value?: number) {
+    const charges = getStaffFlags(actor)?.charges;
+    if (!charges || (value != null && charges.value === value)) return;
+    return setFlag(actor, "extra.staffData.charges.value", value ?? charges.max);
 }
 
 function canCastRank<TPArent extends CharacterPF2e>(actor: TPArent, rank: number) {
@@ -127,6 +127,6 @@ export {
     isSimplifiableValue,
     isTemporary,
     openDailiesInterface,
-    setStaffFlagChargeValue,
+    setStaffChargesValue,
     simplifyValue,
 };

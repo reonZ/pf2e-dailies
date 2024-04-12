@@ -23,6 +23,7 @@ import {
     spellcastingEntryPrepareSiblingData,
 } from "./spellcasting";
 import { CustomDaily } from "./types";
+import { canCastRank, setStaffChargesValue } from "./api";
 
 MODULE.register("pf2e-dailies", "PF2e Dailies");
 
@@ -65,6 +66,11 @@ Hooks.once("init", () => {
         onCharacterPrepareData,
         "WRAPPER"
     );
+
+    MODULE.current.api = {
+        canCastRank,
+        setStaffChargesValue,
+    };
 
     CONFIG.PF2E.preparationType.charges = "Charges";
 

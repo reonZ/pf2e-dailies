@@ -22,7 +22,7 @@ import {
     getStaffFlags,
     isTemporary,
     openDailiesInterface,
-    setStaffFlagChargeValue,
+    setStaffChargesValue,
 } from "./api";
 import { StaffSpellcasting } from "./data/staves";
 
@@ -180,12 +180,12 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQue
                 "change",
                 (event, el: HTMLInputElement) => {
                     const value = Math.clamped(el.valueAsNumber, 0, charges.max);
-                    setStaffFlagChargeValue(actor, value);
+                    setStaffChargesValue(actor, value);
                 }
             );
 
             addListener(chargesElement, "[data-action='reset-charges']", async () => {
-                setStaffFlagChargeValue(actor, charges.max);
+                setStaffChargesValue(actor, charges.max);
             });
 
             if (!isEquipped) {

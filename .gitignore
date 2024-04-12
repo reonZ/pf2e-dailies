@@ -3,3 +3,4 @@ node_modules/
 releases/
 scripts/
 *.code-workspace
+release.mjs

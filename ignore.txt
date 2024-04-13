@@ -3,6 +3,7 @@
 \releases 
 \src
 \src.old
+\wiki
 *.scss
 .gitignore 
 *.lock 

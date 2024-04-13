@@ -1053,7 +1053,7 @@ class DailyInterface extends Application {
 
                 const label = messageOptions.label?.trim();
 
-                if ("uuid" in messageOptions) {
+                if ("uuid" in messageOptions && messageOptions.uuid) {
                     message += createChatLink(messageOptions.uuid, { label });
                 } else if (label) {
                     message += ` ${label}`;

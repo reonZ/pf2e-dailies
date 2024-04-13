@@ -538,7 +538,7 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
         let useSpontaneous: null | false | { entry: string; slot: SlotKey } = false;
 
         if (!staffFlags.expended) {
-            const minRank = options.spontaneous?.rank ?? castRank;
+            const minRank = Math.min(options.spontaneous?.rank ?? castRank, castRank);
             const maxRank = getActorMaxRank(actor);
             const range = R.range(minRank, maxRank + 1) as OneToTen[];
             const entries = R.pipe(

@@ -1,3 +1,9 @@
+# 3.0.1
+
+-   make sure `Perform Daily Crafting` doesn't remove temporary items in case the daily preparations were done before
+-   added missing `openDailiesInterface` function in the api
+-   fixed broken link for expended flexible slots during staff prep
+
 # 3.0.0
 
 -   the module has been completely remade from scratch

@@ -13,6 +13,7 @@ import {
     onRenderCharacterSheetPF2e,
     onRenderFamiliarSheetPF2e,
     onRenderNPCSheetPF2e,
+    performDailyCrafting,
 } from "./actor";
 import { CustomDailies } from "./apps/customs";
 import { DAILY_SCHEMA, initDailies, parseDailies } from "./dailies";
@@ -97,6 +98,12 @@ Hooks.once("ready", () => {
     initDailies();
 
     registerWrapper("game.pf2e.actions.restForTheNight", restForTheNight, "WRAPPER");
+
+    registerWrapper(
+        "CONFIG.PF2E.Actor.documentClasses.character.prototype.performDailyCrafting",
+        performDailyCrafting,
+        "OVERRIDE"
+    );
 
     registerWrapper(
         "CONFIG.Actor.sheetClasses.character['pf2e.CharacterSheetPF2e'].cls.prototype.getData",

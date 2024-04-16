@@ -26,6 +26,48 @@ import {
 } from "./api";
 import { StaffSpellcasting } from "./data/staves";
 
+async function performDailyCrafting(this: CharacterPF2e) {
+    const entries = (await this.getCraftingEntries()).filter((e) => e.isDailyPrep);
+    const alchemicalEntries = entries.filter((e) => e.isAlchemical);
+    const reagentCost = alchemicalEntries.reduce((sum, entry) => sum + entry.reagentCost, 0);
+    const reagentValue = (this.system.resources.crafting.infusedReagents.value || 0) - reagentCost;
+    if (reagentValue < 0) {
+        ui.notifications.warn(game.i18n.localize("PF2E.CraftingTab.Alerts.MissingReagents"));
+        return;
+    } else {
+        await this.update({ "system.resources.crafting.infusedReagents.value": reagentValue });
+        const key =
+            reagentCost === 0 ? "ZeroConsumed" : reagentCost === 1 ? "OneConsumed" : "NConsumed";
+        ui.notifications.info(
+            game.i18n.format(`PF2E.Actor.Character.Crafting.Daily.Complete.${key}`, {
+                quantity: reagentCost,
+            })
+        );
+    }
+
+    // Remove infused/temp items
+    // for (const item of this.inventory) {
+    //     if (item.system.temporary) await item.delete();
+    // }
+
+    for (const entry of entries) {
+        for (const formula of entry.preparedCraftingFormulas) {
+            const itemSource: PhysicalItemSource = formula.item.toObject();
+            itemSource.system.quantity = formula.quantity;
+            itemSource.system.temporary = true;
+            itemSource.system.size = this.ancestry?.size === "tiny" ? "tiny" : "med";
+
+            if (
+                entry.isAlchemical &&
+                ["consumable", "equipment", "weapon"].includes(itemSource.type)
+            ) {
+                itemSource.system.traits.value.push("infused");
+            }
+            await this.addToInventory(itemSource);
+        }
+    }
+}
+
 async function renderChargesEntries(
     actor: CharacterPF2e | NPCPF2e,
     parentElement: HTMLElement,
@@ -370,4 +412,5 @@ export {
     onRenderCharacterSheetPF2e,
     onRenderFamiliarSheetPF2e,
     onRenderNPCSheetPF2e,
+    performDailyCrafting,
 };

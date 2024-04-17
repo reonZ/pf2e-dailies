@@ -1,3 +1,7 @@
+# 3.0.3
+
+-   removed debug log
+
 # 3.0.2
 
 -   added an extra check to make sure only spells were added to the staff, in case the UUID for something else was provided in the description

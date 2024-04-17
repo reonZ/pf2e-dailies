@@ -1,3 +1,7 @@
+# 3.0.2
+
+-   added an extra check to make sure only spells were added to the staff, in case the UUID for something else was provided in the description
+
 # 3.0.1
 
 -   make sure `Perform Daily Crafting` doesn't remove temporary items in case the daily preparations were done before

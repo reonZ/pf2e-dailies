@@ -266,7 +266,7 @@ const staves = createDaily({
             await Promise.all(
                 staffSpellData.map(async ({ rank, uuid }) => {
                     const spell = await fromUuid<SpellPF2e>(uuid);
-                    if (!spell) return;
+                    if (!spell?.isOfType("spell")) return;
 
                     return mergeObject(
                         spell._source,
@@ -657,6 +657,7 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
             throw ErrorPF2e("Spellcasting entries can only exist on characters and npcs");
         }
 
+        console.log(spells);
         const maxCantripRank = Math.max(1, Math.ceil(actor.level / 2)) as OneToTen;
         const groups = R.pipe(
             Array.from(spells?.values() ?? []),

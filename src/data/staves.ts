@@ -1,6 +1,5 @@
 import {
     ErrorPF2e,
-    PredicatePF2e,
     R,
     createCounteractStatistic,
     createHTMLFromString,
@@ -407,7 +406,7 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
     actor: CharacterPF2e;
     statistic: Statistic;
     tradition: MagicTradition | null;
-    castPredicate: PredicatePF2e;
+    castPredicate: Predicate;
     staff: dailies.StaffPF2e;
 
     constructor(
@@ -426,8 +425,7 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
         this.actor = actor;
         this.statistic = statistic;
         this.tradition = tradition ?? null;
-        // TODO predicate will be in the global in the 5.16.0
-        this.castPredicate = new PredicatePF2e(castPredicate);
+        this.castPredicate = new game.pf2e.Predicate(castPredicate);
         this.staff = staff;
     }
 

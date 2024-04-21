@@ -1,3 +1,7 @@
+# 3.0.6
+
+-   fixed spell links using the `@Compendium` format not working
+
 # 3.0.5
 
 -   make sure staff charges stay between 0 and max

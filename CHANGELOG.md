@@ -1,3 +1,7 @@
+# 3.0.4
+
+-   fixed thaumaturge tome second adept issue
+
 # 3.0.3
 
 -   removed debug log

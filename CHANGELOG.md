@@ -1,3 +1,8 @@
+# 3.0.5
+
+-   make sure staff charges stay between 0 and max
+-   sort familiar abilities dropdown options
+
 # 3.0.4
 
 -   fixed thaumaturge tome second adept issue

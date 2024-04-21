@@ -254,7 +254,7 @@ const staves = createDaily({
                 const label = SpellRankEL.firstChild as HTMLElement;
                 const rank = Number(label.textContent?.match(LABEL_REGEX)?.[0] || "0") as ZeroToTen;
                 const uuids = Array.from(SpellRankEL.textContent!.matchAll(UUID_REGEX)).map(
-                    (match) => match[2]
+                    (match) => (match[1] === "Compendium" ? `Compendium.${match[2]}` : match[2])
                 );
                 return uuids.map((uuid) => ({ rank, uuid }));
             }),

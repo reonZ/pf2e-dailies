@@ -1,4 +1,4 @@
-import { R, getSetting, localize, setFlagProperty } from "pf2e-api";
+import { R, getSetting, localeCompare, localize, setFlagProperty } from "pf2e-api";
 import { isTemporary } from "../api";
 import { createDaily } from "../daily";
 import { DailyMessageOptions } from "../types";
@@ -28,6 +28,8 @@ const familiar = createDaily({
                 options.push({ value: uuid, label: item.name });
             }
         }
+
+        options.sort((a, b) => localeCompare(a.label, b.label));
 
         return R.range(1, nbAbilities + 1).map((i) => ({
             type: "select",

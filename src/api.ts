@@ -80,7 +80,12 @@ function getStaffFlags(actor: CharacterPF2e) {
 function setStaffChargesValue(actor: CharacterPF2e, value?: number) {
     const charges = getStaffFlags(actor)?.charges;
     if (!charges || (value != null && charges.value === value)) return;
-    return setFlag(actor, "extra.staffData.charges.value", value ?? charges.max);
+
+    return setFlag(
+        actor,
+        "extra.staffData.charges.value",
+        Math.clamped(value ?? charges.max, 0, charges.max)
+    );
 }
 
 function canCastRank<TPArent extends CharacterPF2e>(actor: TPArent, rank: number) {

@@ -31,8 +31,8 @@ const thaumaturgeTome = createDaily({
             condition: itemCondition,
         },
         {
-            slug: "second", // Second Implement
-            uuid: "Compendium.pf2e.classfeatures.Item.Z8WpDAdAXyefLB7Q",
+            slug: "second", // Second Adept
+            uuid: "Compendium.pf2e.classfeatures.Item.ZEUxZ4Ta1kDPHiq5",
             condition: itemCondition,
         },
         {

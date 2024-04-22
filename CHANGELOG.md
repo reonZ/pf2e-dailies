@@ -1,3 +1,9 @@
+# 3.1.0
+
+-   change the `Filters` menu into a `Config`
+    -   the list of enabled dailies is still there
+    -   you will also find a slider to set the amount of familiar abilities you want to select during preparations, which make it easier to implement specific familiars
+
 # 3.0.6
 
 -   fixed spell links using the `@Compendium` format not working

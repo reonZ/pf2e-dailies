@@ -61,7 +61,7 @@ import type {
     PreparedDailies,
     PreparedDaily,
 } from "../types";
-import { DailySettings } from "./settings";
+import { DailyConfig } from "./config";
 import { utils } from "../utils";
 
 type DailyTemplate = {
@@ -225,7 +225,7 @@ class DailyInterface extends Application {
     #actor: CharacterPF2e;
     #dailies: PreparedDailies;
     #dailiesArray: PreparedDaily[];
-    #settingsApp: DailySettings | null = null;
+    #settingsApp: DailyConfig | null = null;
     #randomInterval?: number;
     #featUuids!: string[];
     #dropFilters: Record<
@@ -351,7 +351,7 @@ class DailyInterface extends Application {
                 const actor = this.actor;
                 const id = `pf2e-dailies-settings-${actor.uuid}`;
 
-                this.#settingsApp = new DailySettings(actor, this.#dailiesArray!, { id });
+                this.#settingsApp = new DailyConfig(actor, this.#dailiesArray!, { id });
                 this.#settingsApp.registerListener("update", () =>
                     this.render(false, { height: "auto" })
                 );

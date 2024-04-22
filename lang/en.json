@@ -87,7 +87,7 @@
             "mind-runic": "Runic Smithing"
         },
         "interface": {
-            "config": "Filters",
+            "config": "Config",
             "noDailies": "This character doesn't have any daily",
             "accept": "Accept",
             "cancel": "Cancel",
@@ -211,6 +211,10 @@
             "readonly": {
                 "flavor": "This daily is flagged as <em>read only</em> because it was created in a previous version of the module and is incompatible. If you decide to <a>unlock</a> it, make sure to update it to the current version data format before saving."
             }
+        },
+        "config": {
+            "filters": "Enabled Dailies",
+            "familiar": "Familiar Abilities"
         }
     }
 }

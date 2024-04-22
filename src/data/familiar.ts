@@ -1,4 +1,4 @@
-import { R, getSetting, localeCompare, localize, setFlagProperty } from "pf2e-api";
+import { R, getFlag, getSetting, localeCompare, localize, setFlagProperty } from "pf2e-api";
 import { isTemporary } from "../api";
 import { createDaily } from "../daily";
 import { DailyMessageOptions } from "../types";
@@ -7,10 +7,24 @@ function getPack(): CompendiumCollection<AbilityItemPF2e> {
     return game.packs.get("pf2e.familiar-abilities")!;
 }
 
+function getFamiliarAbilityCount(actor: CharacterPF2e) {
+    const max = actor.attributes.familiarAbilities.value;
+    const flag = getFlag<ValueAndMax>(actor, "familiar");
+
+    if (!flag) return max;
+    if (flag.max === max) return flag.value;
+
+    const newValue = flag.value - (flag.max - max);
+    return Math.clamped(newValue, 0, max);
+}
+
 const familiar = createDaily({
     key: "familiar",
     condition: (actor) => !!actor.familiar,
     rows: async (actor) => {
+        const nbAbilities = getFamiliarAbilityCount(actor);
+        if (!nbAbilities) return [];
+
         const pack = getPack();
         const uniqueId = randomID();
         const options = pack.index.map(({ _id, name }) => ({
@@ -18,7 +32,6 @@ const familiar = createDaily({
             label: name,
         }));
         const customUUIDS = getSetting<String>("familiarAbilities").split(",");
-        const nbAbilities = actor.attributes.familiarAbilities.value;
 
         for (let uuid of customUUIDS) {
             uuid = uuid.trim();
@@ -87,4 +100,4 @@ const familiar = createDaily({
     },
 });
 
-export { familiar };
+export { familiar, getFamiliarAbilityCount };

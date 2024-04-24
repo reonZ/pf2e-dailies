@@ -246,8 +246,9 @@ const staves = createDaily({
 
         const descriptionEl = createHTMLFromString(staff.description);
         const spellList = descriptionEl.querySelectorAll("ul");
-        const spellRanksList = querySelectorArray(spellList[spellList.length - 1], "li");
+        if (!spellList.length) return;
 
+        const spellRanksList = querySelectorArray(spellList[spellList.length - 1], "li");
         const staffSpellData = R.pipe(
             spellRanksList,
             R.flatMap((SpellRankEL) => {

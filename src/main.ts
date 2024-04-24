@@ -4,7 +4,7 @@ import {
     registerSetting,
     registerSettingMenu,
     registerWrapper,
-    renderCharacterSheet,
+    renderCharacterSheets,
     warn,
 } from "pf2e-api";
 import {
@@ -59,7 +59,7 @@ Hooks.once("init", () => {
         type: Boolean,
         default: true,
         scope: "client",
-        onChange: () => renderCharacterSheet(),
+        onChange: renderCharacterSheets,
     });
 
     registerWrapper(

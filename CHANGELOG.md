@@ -1,3 +1,7 @@
+# 3.1.1
+
+-   fixed error when a staff description doesn't have the required unordered list
+
 # 3.1.0
 
 -   change the `Filters` menu into a `Config`

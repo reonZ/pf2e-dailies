@@ -1,3 +1,7 @@
+# 3.1.2
+
+-   fixed issue when adding spells to an existing entry
+
 # 3.1.1
 
 -   fixed error when a staff description doesn't have the required unordered list

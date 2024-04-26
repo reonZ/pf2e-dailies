@@ -934,7 +934,7 @@ class DailyInterface extends Application {
 
             if (
                 source.type === "spell" &&
-                !getProperty(source, "system.localtion.value") &&
+                !getProperty(source, "system.location.value") &&
                 !getFlagProperty(source, "identifier")
             ) {
                 hasOrphanSpells = true;

@@ -1,3 +1,7 @@
+# 3.1.3
+
+-   fixed error when observing a sheet that has `charges` spellcasting entries
+
 # 3.1.2
 
 -   fixed issue when adding spells to an existing entry

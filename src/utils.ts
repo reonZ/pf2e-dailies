@@ -52,7 +52,9 @@ const utils = {
         return localize ? game.i18n.localize(label) : label;
     },
     getSkills: () => {
-        return configToOptions("skillList").filter((x) => x.value !== "lore");
+        return configToOptions("skillList").filter(
+            (x): x is { value: SkillLongForm; label: string } => x.value !== "lore"
+        );
     },
     getSpellRankLabel: (rank: ZeroToTen) => {
         return getRankLabel(rank);

@@ -129,12 +129,15 @@ async function renderChargesEntries(
 }
 
 function onRenderNPCSheetPF2e(sheet: NPCSheetPF2e, $html: JQuery) {
+    const actor = sheet.actor;
     const html = htmlElement($html);
     const spellsTab = querySelector(html, ".tab[data-tab='spells']");
 
-    renderChargesEntries(sheet.actor, spellsTab, (container, charges, toggle) => {
+    renderChargesEntries(actor, spellsTab, (container, charges, toggle) => {
         querySelector(container, ":scope > .header").after(charges);
-        querySelector(container, ":scope > .header > .item-controls").prepend(toggle);
+        if (actor.isOwner) {
+            querySelector(container, ":scope > .header > .item-controls").prepend(toggle);
+        }
     });
 }
 
@@ -167,7 +170,9 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQue
 
     renderChargesEntries(actor, spellsTab, (container, charges, toggle) => {
         querySelector(container, ".spell-ability-data .statistic-values").after(charges);
-        querySelector(container, ".action-header .item-controls").prepend(toggle);
+        if (actor.isOwner) {
+            querySelector(container, ".action-header .item-controls").prepend(toggle);
+        }
     });
 
     {

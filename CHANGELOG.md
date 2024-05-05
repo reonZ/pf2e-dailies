@@ -1,3 +1,7 @@
+# 3.1.4
+
+-   fixed staff selecting the worst spellcasting entry instead of the best
+
 # 3.1.3
 
 -   fixed error when observing a sheet that has `charges` spellcasting entries

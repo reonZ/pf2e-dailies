@@ -2,7 +2,6 @@ import {
     addListener,
     addListenerAll,
     elementData,
-    getFlag,
     htmlElement,
     queryInParent,
     setFlag,
@@ -13,8 +12,8 @@ import {
     type WithEventManager,
 } from "pf2e-api";
 import { getDisabledDailies } from "../api";
-import type { PreparedDaily } from "../types";
 import { getFamiliarAbilityCount } from "../data/familiar";
+import type { PreparedDaily } from "../types";
 
 interface DailyConfig extends WithEventManager {}
 

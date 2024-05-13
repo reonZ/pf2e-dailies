@@ -13,15 +13,16 @@
         "scripts/main.js"
     ],
     "compatibility": {
-        "minimum": "11.315",
-        "verified": "11.315"
+        "minimum": "12.322",
+        "verified": "12.322",
+        "maximum": "12"
     },
-    "version": "3.1.5",
+    "version": "3.2.0",
     "manifestPlusVersion": "1.2.0",
     "url": "https://github.com/reonZ/pf2e-dailies",
     "readme": "https://github.com/reonZ/pf2e-dailies/blob/master/README.md",
     "manifest": "https://raw.githubusercontent.com/reonZ/pf2e-dailies/master/module.json",
-    "download": "https://github.com/reonZ/pf2e-dailies/releases/download/3.1.5/module.zip",
+    "download": "https://github.com/reonZ/pf2e-dailies/releases/download/3.2.0/module.zip",
     "changelog": "https://github.com/reonZ/pf2e-dailies/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/pf2e-dailies/issues",
     "styles": [
@@ -34,7 +35,7 @@
                 "type": "system",
                 "manifest": "https://raw.githubusercontent.com/foundryvtt/pf2e/master/system.json",
                 "compatibility": {
-                    "minimum": "5.15.1"
+                    "minimum": "6.0.0-beta1"
                 }
             }
         ],

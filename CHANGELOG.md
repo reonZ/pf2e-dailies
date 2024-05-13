@@ -1,3 +1,7 @@
+# 3.2.0
+
+-   this is a `6.0.0-beta1` release
+
 # 3.1.5
 
 -   made extra checks across the module to avoid missing elements errors

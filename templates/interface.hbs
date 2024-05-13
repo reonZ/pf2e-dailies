@@ -112,7 +112,6 @@
 
 
 {{#*inline 'selectOptions'}}
-{{#select this.selected}}
 {{#each this.options as |option|}}
 {{#if option.group}}
 <optgroup label="{{option.group}}"></optgroup>
@@ -120,8 +119,10 @@
 </optgroup>
 {{else}}
 <option value="{{option.value}}" {{#if option.skipUnique}}data-skip-unique="{{option.skipUnique}}"
-    {{/if}} {{#if option.unique}}data-unique="{{option.unique}}" {{/if}}>{{option.label}}</option>
+    {{/if}} {{#if option.unique}}data-unique="{{option.unique}}" {{/if}} {{#if
+    this.selected}}selected{{/if}}>
+    {{option.label}}
+</option>
 {{/if}}
 {{/each}}
-{{/select}}
 {{/inline}}

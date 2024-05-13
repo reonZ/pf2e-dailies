@@ -1,6 +1,6 @@
 # 3.1.5
 
--   made extra checks across the features to avoid missing elements errors
+-   made extra checks across the module to avoid missing elements errors
 
 # 3.1.4
 

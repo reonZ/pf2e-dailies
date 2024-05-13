@@ -1,6 +1,7 @@
 # 3.2.0
 
 -   this is a `6.0.0-beta1` release
+-   testing has been very light, you should be expecting some eventual breakages
 
 # 3.1.5
 

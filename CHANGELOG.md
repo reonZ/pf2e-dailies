@@ -1,3 +1,7 @@
+# 3.1.5
+
+-   made extra checks across the features to avoid missing elements errors
+
 # 3.1.4
 
 -   fixed staff selecting the worst spellcasting entry instead of the best

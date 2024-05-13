@@ -6,6 +6,7 @@ import {
     getRankLabel,
     getSetting,
     hasFreePropertySlot,
+    rollDie,
     setFlagProperty,
 } from "pf2e-api";
 
@@ -212,8 +213,8 @@ const utils = {
 
         if (options.length === 0) return "";
 
-        const roll = new Roll(`1d${options.length}`).evaluate({ async: false });
-        const result = options[roll.total - 1];
+        const roll = rollDie(options.length);
+        const result = options[roll - 1];
 
         return typeof result === "object" ? result.value : result;
     },

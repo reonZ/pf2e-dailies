@@ -221,7 +221,7 @@ const mindSmith = createDaily({
                 : [];
         };
 
-        const mentalUniqueId = randomID();
+        const mentalUniqueId = foundry.utils.randomID();
         const mentalOptions = arrayToOptions(
             !!items.mental,
             mentalForgeTraits,

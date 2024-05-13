@@ -114,7 +114,7 @@ Hooks.once("ready", () => {
 
     if (game.user.isGM) {
         const hasIncompatibleDailies = getSetting<CustomDaily[]>("customDailies").some((custom) =>
-            isNewerVersion(DAILY_SCHEMA, custom.schema ?? "")
+            foundry.utils.isNewerVersion(DAILY_SCHEMA, custom.schema ?? "")
         );
         if (hasIncompatibleDailies) {
             warn("error.incompatible", true);

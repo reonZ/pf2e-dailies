@@ -67,7 +67,7 @@ async function cleanup(actor: CharacterPF2e) {
                 return;
             }
 
-            const rules = deepClone(item._source.system.rules);
+            const rules = foundry.utils.deepClone(item._source.system.rules);
             let modifiedRules = false;
 
             for (let i = rules.length - 1; i >= 0; i--) {

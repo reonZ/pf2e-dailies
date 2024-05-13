@@ -222,7 +222,7 @@ const staves = createDaily({
             }
         }
 
-        const uniqueId = randomID();
+        const uniqueId = foundry.utils.randomID();
         const rows = R.range(1, nbExpends + 1).map((i) => {
             return {
                 type: "select",
@@ -268,10 +268,10 @@ const staves = createDaily({
                     const spell = await fromUuid<SpellPF2e>(uuid);
                     if (!spell?.isOfType("spell")) return;
 
-                    return mergeObject(
+                    return foundry.utils.mergeObject(
                         spell._source,
                         {
-                            _id: randomID(),
+                            _id: foundry.utils.randomID(),
                             system: { location: { value: null, heightenedLevel: rank } },
                         },
                         { inplace: false }
@@ -294,7 +294,7 @@ const staves = createDaily({
         for (const preparedPath of expendedRows) {
             const entryId = preparedPath?.split(".")[0];
             const entry = spellcasting.get<SpellcastingEntryPF2e<CharacterPF2e>>(entryId);
-            const preparedData = getProperty<
+            const preparedData = foundry.utils.getProperty<
                 FlexiblePreparedEntryGroup["slots"][number] | PreparedEntryGroup["spells"][number]
             >(preparedEntries, preparedPath);
 
@@ -326,7 +326,7 @@ const staves = createDaily({
                     rank,
                 });
             } else {
-                const prepared = deepClone(slot.prepared);
+                const prepared = foundry.utils.deepClone(slot.prepared);
                 const preparedSlot = prepared[preparedData.index];
 
                 if (slot.max < 1 || preparedSlot.expended) continue;

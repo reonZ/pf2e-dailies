@@ -31,7 +31,7 @@ const tricksterAce = createDaily({
         ];
     },
     process: async ({ actor, items, rows, messages, addItem }) => {
-        const identifier = randomID();
+        const identifier = foundry.utils.randomID();
         const uuid = rows.spell.uuid;
         const statistic = actor.classDC;
         const spellSource = await utils.createSpellSource(uuid, { identifier });

@@ -23,7 +23,7 @@ async function openDailiesInterface(actor: CharacterPF2e) {
 
 function getDisabledDailies(actor: CharacterPF2e) {
     const flag = getActorFlag(actor, "disabled") ?? {};
-    return flattenObject(flag) as Record<string, boolean>;
+    return foundry.utils.flattenObject(flag) as Record<string, boolean>;
 }
 
 function simplifyValue(actor: ActorPF2e, value: SimplifiableValue) {
@@ -59,7 +59,7 @@ function createUpdateCollection<T extends EmbeddedDocumentUpdateData<ItemSourceP
         (data: T) => {
             if (data._id) {
                 const update = collection.get(data._id) ?? {};
-                collection.set(data._id, mergeObject(update, data));
+                collection.set(data._id, foundry.utils.mergeObject(update, data));
             }
         },
     ];
@@ -84,7 +84,7 @@ function setStaffChargesValue(actor: CharacterPF2e, value?: number) {
     return setFlag(
         actor,
         "extra.staffData.charges.value",
-        Math.clamped(value ?? charges.max, 0, charges.max)
+        Math.clamp(value ?? charges.max, 0, charges.max)
     );
 }
 

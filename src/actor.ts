@@ -96,7 +96,7 @@ async function renderChargesEntries(
             "[data-action='change-charges']",
             "change",
             (event, el: HTMLInputElement) => {
-                const value = Math.clamped(el.valueAsNumber, 0, charges.max);
+                const value = Math.clamp(el.valueAsNumber, 0, charges.max);
                 entry.update({ "system.slots.slot1.value": value });
             }
         );
@@ -106,7 +106,7 @@ async function renderChargesEntries(
             "[data-action='change-max-charges']",
             "change",
             (event, el: HTMLInputElement) => {
-                const value = Math.clamped(el.valueAsNumber, 0, 50);
+                const value = Math.clamp(el.valueAsNumber, 0, 50);
                 entry.update({
                     "system.slots.slot1.max": value,
                     "system.slots.slot1.value": Math.min(value, charges.value),
@@ -233,7 +233,7 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQue
                 "[data-action='change-charges']",
                 "change",
                 (event, el: HTMLInputElement) => {
-                    const value = Math.clamped(el.valueAsNumber, 0, charges.max);
+                    const value = Math.clamp(el.valueAsNumber, 0, charges.max);
                     setStaffChargesValue(actor, value);
                 }
             );
@@ -401,7 +401,7 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
         const collection = new SpellCollection(staffEntry);
 
         for (const spellSource of staffFlags.spells) {
-            const source: SpellSource = mergeObject(
+            const source: SpellSource = foundry.utils.mergeObject(
                 spellSource,
                 { "system.location.value": collectionId },
                 { inplace: false }

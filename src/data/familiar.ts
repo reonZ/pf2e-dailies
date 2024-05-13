@@ -15,7 +15,7 @@ function getFamiliarAbilityCount(actor: CharacterPF2e) {
     if (flag.max === max) return flag.value;
 
     const newValue = flag.value - (flag.max - max);
-    return Math.clamped(newValue, 0, max);
+    return Math.clamp(newValue, 0, max);
 }
 
 const familiar = createDaily({
@@ -26,7 +26,7 @@ const familiar = createDaily({
         if (!nbAbilities) return [];
 
         const pack = getPack();
-        const uniqueId = randomID();
+        const uniqueId = foundry.utils.randomID();
         const options = pack.index.map(({ _id, name }) => ({
             value: _id,
             label: name,

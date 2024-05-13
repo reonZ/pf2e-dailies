@@ -20,7 +20,7 @@ const scrollAdept = createDaily({
         const proficiency = actor.system.proficiencies.spellcasting.rank;
 
         const ranks = R.pipe(
-            R.range(2, Math.clamped(proficiency, 2, 4) + 2),
+            R.range(2, Math.clamp(proficiency, 2, 4) + 2),
             R.map((r): { rank: OneToTen; row: `rank${OneToTen}` } => {
                 const rank = (maxRank - r) as OneToTen;
                 return {

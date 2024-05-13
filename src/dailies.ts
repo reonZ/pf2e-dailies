@@ -108,7 +108,7 @@ function prepareDailies(dailies: Daily[], prefix: "custom" | "dailies") {
 
         try {
             const keyWithPrefix = `${prefix}.${originalKey}`;
-            const daily = deepClone(original) as PreparedDaily;
+            const daily = foundry.utils.deepClone(original) as PreparedDaily;
 
             daily.key = keyWithPrefix;
             daily.items ??= [];
@@ -176,7 +176,7 @@ async function parseDailies() {
     const customs = getSetting<CustomDaily[]>("customDailies");
 
     for (const custom of customs) {
-        if (isNewerVersion(DAILY_SCHEMA, custom.schema ?? "")) {
+        if (foundry.utils.isNewerVersion(DAILY_SCHEMA, custom.schema ?? "")) {
             continue;
         }
 
@@ -236,7 +236,7 @@ async function getDailies(actor: CharacterPF2e) {
             }
 
             if (!(daily.key in dailies)) {
-                dailies[daily.key] = deepClone(daily) as PreparedDaily;
+                dailies[daily.key] = foundry.utils.deepClone(daily) as PreparedDaily;
             }
 
             const tmpDaily = dailies[daily.key]!;

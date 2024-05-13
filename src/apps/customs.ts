@@ -43,7 +43,7 @@ class CustomDailies extends FormApplication {
     #selected: string | null = null;
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             id: "pf2e-dailies-customs",
             title: localize("title"),
             template: templatePath("customs"),
@@ -67,11 +67,12 @@ class CustomDailies extends FormApplication {
             i18n: localize.i18n,
             list: dailies.map(({ key, schema }) => ({
                 key,
-                readonly: isNewerVersion(DAILY_SCHEMA, schema ?? ""),
+                readonly: foundry.utils.isNewerVersion(DAILY_SCHEMA, schema ?? ""),
                 selected: key === selected,
             })),
             code: daily?.code ?? "",
-            readonly: (daily && isNewerVersion(DAILY_SCHEMA, daily?.schema ?? "")) || false,
+            readonly:
+                (daily && foundry.utils.isNewerVersion(DAILY_SCHEMA, daily?.schema ?? "")) || false,
             disabled: !daily,
         };
     }
@@ -168,7 +169,7 @@ class CustomDailies extends FormApplication {
     }
 
     async #onCreateDaily() {
-        const key = randomID();
+        const key = foundry.utils.randomID();
         const dailies = this.dailies.slice();
 
         dailies.push({

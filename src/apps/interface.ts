@@ -164,10 +164,10 @@ async function migration(actor: CharacterPF2e) {
     const messages: string[] = [];
     const schema = getActorFlag(actor, "schema") ?? "";
 
-    if (!isNewerVersion(ACTOR_DAILY_SCHEMA, schema)) return;
+    if (!foundry.utils.isNewerVersion(ACTOR_DAILY_SCHEMA, schema)) return;
 
     for (const migration of MIGRATIONS) {
-        if (!isNewerVersion(migration.schema, schema)) continue;
+        if (!foundry.utils.isNewerVersion(migration.schema, schema)) continue;
 
         reset ||= migration.reset === true;
 
@@ -834,7 +834,7 @@ class DailyInterface extends Application {
                 return existing;
             }
 
-            const rules = deepClone(item._source.system.rules);
+            const rules = foundry.utils.deepClone(item._source.system.rules);
 
             for (let i = rules.length - 1; i >= 0; i--) {
                 if (MODULE.id in rules[i]) {
@@ -884,7 +884,7 @@ class DailyInterface extends Application {
                         addFeat: (source, parent) => {
                             if (parent?.isOfType("feat")) {
                                 const parentId = parent.id;
-                                setProperty(source, "flags.pf2e.grantedBy", {
+                                foundry.utils.setProperty(source, "flags.pf2e.grantedBy", {
                                     id: parentId,
                                     onDelete: "cascade",
                                 });
@@ -912,7 +912,7 @@ class DailyInterface extends Application {
                             getRules(item).push(source);
                         },
                         setExtraFlags: (data: Record<string, any>) => {
-                            mergeObject(extraFlags, data);
+                            foundry.utils.mergeObject(extraFlags, data);
                         },
                     });
                 } catch (err) {
@@ -924,16 +924,16 @@ class DailyInterface extends Application {
         );
 
         let hasOrphanSpells = false;
-        const entryIdentifier = randomID();
+        const entryIdentifier = foundry.utils.randomID();
 
         for (const source of addedItems) {
-            if (!getProperty(source, "system.temporary")) {
+            if (!foundry.utils.getProperty(source, "system.temporary")) {
                 setFlagProperty(source, "temporary", true);
             }
 
             if (
                 source.type === "spell" &&
-                !getProperty(source, "system.location.value") &&
+                !foundry.utils.getProperty(source, "system.location.value") &&
                 !getFlagProperty(source, "identifier")
             ) {
                 hasOrphanSpells = true;
@@ -1290,7 +1290,7 @@ class DailyInterface extends Application {
             const filterKey = `${data.daily}.${data.row}`;
 
             this.#dropFilters[filterKey] ??= await (async () => {
-                const filter = deepClone(dailyRow.filter);
+                const filter = foundry.utils.deepClone(dailyRow.filter);
                 return {
                     daily: data.daily,
                     row: data.row,
@@ -1299,7 +1299,7 @@ class DailyInterface extends Application {
                 };
             })();
 
-            return deepClone(this.#dropFilters[filterKey]);
+            return foundry.utils.deepClone(this.#dropFilters[filterKey]);
         } catch (err) {
             error("error.unexpected");
             console.error(err);
@@ -1316,8 +1316,8 @@ class DailyInterface extends Application {
         const compendiumFilter = init
             ? await compendiumTab.getFilterData()
             : compendiumTab.isInitialized
-            ? deepClone(compendiumTab.defaultFilterData)
-            : deepClone(compendiumTab.filterData);
+            ? foundry.utils.deepClone(compendiumTab.defaultFilterData)
+            : foundry.utils.deepClone(compendiumTab.filterData);
 
         if (filterIsOfType(dropFilter, "spell")) {
             const rank = Array.isArray(dropFilter.search.rank)

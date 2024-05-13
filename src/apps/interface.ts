@@ -326,7 +326,7 @@ class DailyInterface extends Application {
 
         target.value = item.name;
         target.dataset.uuid = item.uuid;
-        queryInClosest(target, ".drop", ".clear").classList.remove("disabled");
+        queryInClosest(target, ".drop", ".clear")!.classList.remove("disabled");
 
         if (isFeat) {
             const exists = !!this.actor.itemTypes.feat.find((feat) => feat.sourceId === data.uuid);
@@ -617,13 +617,13 @@ class DailyInterface extends Application {
     }
 
     #onInputChange(event: Event, el: HTMLInputElement) {
-        queryInClosest(el, ".input", ".clear").classList.toggle("disabled", !el.value.trim());
+        queryInClosest(el, ".input", ".clear")!.classList.toggle("disabled", !el.value.trim());
     }
 
     #onUniqueChange(event: Event | null, el: HTMLSelectElement) {
         const uniqueTag = elementData(el).unique;
         const uniqueOptions = new Set<string>();
-        const selectElements = closest(el, ".dailies").querySelectorAll<HTMLSelectElement>(
+        const selectElements = closest(el, ".dailies")!.querySelectorAll<HTMLSelectElement>(
             `select[data-unique="${uniqueTag}"]`
         );
 
@@ -681,7 +681,7 @@ class DailyInterface extends Application {
 
     #onComboInputChange(event: Event, inputEl: HTMLInputElement) {
         const value = inputEl.value.trim().toLowerCase();
-        const selectEl = queryInClosest<HTMLSelectElement>(inputEl, ".combo", "select");
+        const selectEl = queryInClosest<HTMLSelectElement>(inputEl, ".combo", "select")!;
         const option = value
             ? Array.from(selectEl.options).find(
                   (option) => option.value === value || option.text.toLowerCase() === value
@@ -699,14 +699,13 @@ class DailyInterface extends Application {
     }
 
     #onComboSelectChange(event: Event, selectEl: HTMLSelectElement) {
-        const inputEl = queryInClosest<HTMLInputElement>(selectEl, ".combo", "input");
-
+        const inputEl = queryInClosest<HTMLInputElement>(selectEl, ".combo", "input")!;
         inputEl.dataset.input = "false";
         inputEl.value = selectEl.options[selectEl.selectedIndex].text;
     }
 
     async #onOpenBrowser(event: Event, el: HTMLElement) {
-        const inputEl = queryInClosest(el, ".drop", "input");
+        const inputEl = queryInClosest(el, ".drop", "input")!;
         const compendium = await this.#compendiumFilterFromElement(inputEl, true);
 
         if (compendium) {
@@ -715,7 +714,7 @@ class DailyInterface extends Application {
     }
 
     #onClearField(event: Event, btnEl: HTMLElement) {
-        const inputEl = queryInParent<HTMLInputElement>(btnEl, "input");
+        const inputEl = queryInParent<HTMLInputElement>(btnEl, "input")!;
 
         inputEl.dataset.tooltip = "";
         inputEl.classList.remove("exists");
@@ -742,7 +741,7 @@ class DailyInterface extends Application {
 
             for (const inputEl of emptyRows) {
                 const { row } = elementData<RowElementDataset>(inputEl);
-                const labelEl = queryInClosest(inputEl, ".group", `label[data-row="${row}"]`);
+                const labelEl = queryInClosest(inputEl, ".group", `label[data-row="${row}"]`)!;
                 labelEl.classList.add("empty");
             }
 
@@ -781,7 +780,7 @@ class DailyInterface extends Application {
                 const isInput = rowElement.dataset.input === "true";
                 const selected = isInput
                     ? rowElement.value.trim()
-                    : queryInClosest<HTMLSelectElement>(rowElement, ".combo", "select").value;
+                    : queryInClosest<HTMLSelectElement>(rowElement, ".combo", "select")!.value;
 
                 row = {
                     selected,

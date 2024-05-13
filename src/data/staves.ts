@@ -589,7 +589,7 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
                         htmlElement(html),
                         "[name=entry]:checked"
                     );
-                    return elementData(el) as { entry: string; slot: SlotKey };
+                    return elementData(el!) as { entry: string; slot: SlotKey };
                 };
 
                 useSpontaneous = await waitDialog({

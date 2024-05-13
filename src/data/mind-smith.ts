@@ -102,8 +102,8 @@ async function createMindWeapon(actor: CharacterPF2e) {
                         );
 
                         return {
-                            type: Number(input.value),
-                            rune: Number(select.value) as ZeroToFour,
+                            type: Number(input!.value),
+                            rune: Number(select!.value) as ZeroToFour,
                         };
                     },
                 },

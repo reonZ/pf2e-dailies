@@ -96,7 +96,7 @@ class CustomDailies extends FormApplication {
         if (!this.#selected) return;
 
         const html = htmlElement(this.element);
-        const code = querySelector<HTMLTextAreaElement>(html, ".editor").value;
+        const code = querySelector<HTMLTextAreaElement>(html, ".editor")!.value;
         const daily = await parseCustomDaily({ code, key: this.#selected });
 
         if (!daily) {
@@ -133,8 +133,8 @@ class CustomDailies extends FormApplication {
         if (!readonlyEl) return;
 
         readonlyEl.remove();
-        querySelector<HTMLTextAreaElement>(html, ".editor").disabled = false;
-        querySelector<HTMLButtonElement>(html, "[data-action='save-daily']").disabled = false;
+        querySelector<HTMLTextAreaElement>(html, ".editor")!.disabled = false;
+        querySelector<HTMLButtonElement>(html, "[data-action='save-daily']")!.disabled = false;
     }
 
     #onEditorKeyup(event: KeyboardEvent, editor: HTMLTextAreaElement) {
@@ -162,7 +162,7 @@ class CustomDailies extends FormApplication {
     }
 
     #onSelectDaily(event: MouseEvent, el: HTMLElement) {
-        const key = closest(el, ".row").dataset.key!;
+        const key = closest(el, ".row")!.dataset.key!;
         this.#selected = key;
         this.render();
     }
@@ -184,7 +184,7 @@ class CustomDailies extends FormApplication {
     }
 
     async #onDeleteDaily(event: MouseEvent, el: HTMLElement) {
-        const key = closest(el, ".row").dataset.key!;
+        const key = closest(el, ".row")!.dataset.key!;
         const dailies = this.dailies.slice();
         const index = dailies.findIndex((daily) => daily.key === key);
         if (index === -1) return false;

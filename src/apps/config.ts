@@ -110,7 +110,7 @@ class DailyConfig extends Application {
 
     #onFamiliarRangeInput(event: Event, el: HTMLInputElement) {
         const valueInput = queryInParent<HTMLInputElement>(el, "[name='familiar-value']");
-        valueInput.value = el.value;
+        if (valueInput) valueInput.value = el.value;
     }
 
     async #onDailyEnabledChange(event: Event, el: HTMLInputElement) {

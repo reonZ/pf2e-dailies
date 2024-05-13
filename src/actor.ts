@@ -132,11 +132,12 @@ function onRenderNPCSheetPF2e(sheet: NPCSheetPF2e, $html: JQuery) {
     const actor = sheet.actor;
     const html = htmlElement($html);
     const spellsTab = querySelector(html, ".tab[data-tab='spells']");
+    if (!spellsTab) return;
 
     renderChargesEntries(actor, spellsTab, (container, charges, toggle) => {
-        querySelector(container, ":scope > .header").after(charges);
+        querySelector(container, ":scope > .header")?.after(charges);
         if (actor.isOwner) {
-            querySelector(container, ":scope > .header > .item-controls").prepend(toggle);
+            querySelector(container, ":scope > .header > .item-controls")?.prepend(toggle);
         }
     });
 }
@@ -145,6 +146,8 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQue
     const actor = sheet.actor;
     const html = htmlElement($html);
     const contentElement = querySelector(html, ".sheet-content");
+    if (!contentElement) return;
+
     const spellsTab = querySelector(contentElement, ".tab[data-tab='spellcasting']");
     const highlightItems = getSetting("addedHighlight");
 
@@ -154,26 +157,30 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQue
         const disabledClass = canPrep ? "" : " disabled";
         const targetEl = querySelector(html, "aside .sidebar .hitpoints .hp-small");
 
-        appendHTMLFromString(
-            targetEl,
-            `<a class="roll-icon dailies${disabledClass}" data-action="prepare-dailies" data-tooltip="${tooltip}">
+        if (targetEl) {
+            appendHTMLFromString(
+                targetEl,
+                `<a class="roll-icon dailies${disabledClass}" data-action="prepare-dailies" data-tooltip="${tooltip}">
             <i class="fas fa-mug-saucer"></i>
             </a>`
-        );
-
-        if (canPrep) {
-            addListener(targetEl, "[data-action='prepare-dailies']", () =>
-                openDailiesInterface(actor)
             );
+
+            if (canPrep) {
+                addListener(targetEl, "[data-action='prepare-dailies']", () =>
+                    openDailiesInterface(actor)
+                );
+            }
         }
     }
 
-    renderChargesEntries(actor, spellsTab, (container, charges, toggle) => {
-        querySelector(container, ".spell-ability-data .statistic-values").after(charges);
-        if (actor.isOwner) {
-            querySelector(container, ".action-header .item-controls").prepend(toggle);
-        }
-    });
+    if (spellsTab) {
+        renderChargesEntries(actor, spellsTab, (container, charges, toggle) => {
+            querySelector(container, ".spell-ability-data .statistic-values")?.after(charges);
+            if (actor.isOwner) {
+                querySelector(container, ".action-header .item-controls")?.prepend(toggle);
+            }
+        });
+    }
 
     {
         const staffData = getStaffFlags(actor);
@@ -241,7 +248,7 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQue
                 });
             }
 
-            querySelector(staffContainer, ".spell-ability-data .statistic-values").after(
+            querySelector(staffContainer, ".spell-ability-data .statistic-values")?.after(
                 chargesElement
             );
         }

@@ -28,7 +28,7 @@ type PreConditionDaily = {
 
 const DAILY_SCHEMA = "3.0.0";
 
-let BUILTINS_DAILIES: Daily[] = [
+const BUILTINS_DAILIES: Daily[] = [
     rations, // Rations
     familiar, // Familiar
     staves, // Staves
@@ -91,6 +91,8 @@ let BUILTINS_DAILIES: Daily[] = [
     ]),
 ];
 
+let MODULE_DAILIES: Map<string, Daily> = new Map();
+
 type AlwaysDaily = Omit<PreparedDaily, "condition"> & Required<Pick<PreparedDaily, "condition">>;
 
 let BUILTINS_UUIDS: Map<string, PreConditionDaily> = new Map();
@@ -99,7 +101,7 @@ let BUILTINS_ALWAYS: AlwaysDaily[] = [];
 const UUIDS: Map<string, PreConditionDaily> = new Map();
 let ALWAYS: AlwaysDaily[] = [];
 
-function prepareDailies(dailies: Daily[], prefix: "custom" | "dailies") {
+function prepareDailies(dailies: Daily[], prefix: "custom" | "dailies" | "module") {
     const uuids = new Map<string, PreConditionDaily>();
     const always: AlwaysDaily[] = [];
 
@@ -153,13 +155,7 @@ async function parseCustomDaily(custom: CustomDaily) {
             createScrollChainDaily
         );
 
-        if (
-            typeof daily.key === "string" &&
-            daily.key.trim() &&
-            typeof daily.rows === "function" &&
-            typeof daily.process === "function" &&
-            (typeof daily.condition === "function" || Array.isArray(daily.items))
-        ) {
+        if (isValidDaily(daily)) {
             return daily;
         }
     } catch (err) {
@@ -167,6 +163,16 @@ async function parseCustomDaily(custom: CustomDaily) {
         console.error(err);
         console.error(`The error occured during creation of custom daily for ${custom.key}`);
     }
+}
+
+function isValidDaily(daily: Daily) {
+    return (
+        typeof daily.key === "string" &&
+        daily.key.trim() &&
+        typeof daily.rows === "function" &&
+        typeof daily.process === "function" &&
+        (typeof daily.condition === "function" || Array.isArray(daily.items))
+    );
 }
 
 async function parseDailies() {
@@ -191,13 +197,14 @@ async function parseDailies() {
         UUIDS.set(uuid, daily);
     }
 
-    const { always, uuids } = prepareDailies(customDailies, "custom");
+    const preparedCustoms = prepareDailies(customDailies, "custom");
+    const preparedModules = prepareDailies(Array.from(MODULE_DAILIES.values()), "module");
 
-    for (const [uuid, daily] of uuids) {
+    for (const [uuid, daily] of [...preparedCustoms.uuids, ...preparedModules.uuids]) {
         UUIDS.set(uuid, daily);
     }
 
-    ALWAYS = [...BUILTINS_ALWAYS, ...always];
+    ALWAYS = [...BUILTINS_ALWAYS, ...preparedCustoms.always, ...preparedModules.always];
 }
 
 async function initDailies() {
@@ -288,6 +295,27 @@ async function getAlwaysDailies(actor: CharacterPF2e): Promise<Omit<Daily, "item
     return Promise.all(ALWAYS.filter((daily) => daily.condition!(actor)));
 }
 
+function registerCustomDailies(dailies: Daily[]) {
+    const incompatible: Set<string> = new Set();
+    const duplicates: Set<string> = new Set();
+
+    for (const daily of dailies) {
+        if (!isValidDaily(daily)) {
+            incompatible.add(daily.key ?? "unknown");
+            continue;
+        }
+
+        if (MODULE_DAILIES.has(daily.key)) {
+            duplicates.add(daily.key);
+            continue;
+        }
+
+        MODULE_DAILIES.set(daily.key, daily);
+    }
+
+    parseDailies();
+}
+
 export {
     DAILY_SCHEMA,
     filterDailies,
@@ -297,4 +325,5 @@ export {
     initDailies,
     parseCustomDaily,
     parseDailies,
+    registerCustomDailies,
 };

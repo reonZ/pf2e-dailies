@@ -16,7 +16,7 @@ import {
     performDailyCrafting,
 } from "./actor";
 import { CustomDailies } from "./apps/customs";
-import { DAILY_SCHEMA, initDailies, parseDailies } from "./dailies";
+import { DAILY_SCHEMA, initDailies, parseDailies, registerCustomDailies } from "./dailies";
 import { restForTheNight } from "./rest";
 import {
     spellcastingEntryConsume,
@@ -25,6 +25,11 @@ import {
 } from "./spellcasting";
 import { CustomDaily } from "./types";
 import { canCastRank, openDailiesInterface, setStaffChargesValue } from "./api";
+import { createComboSkillDaily, createLoreSkillDaily } from "./data/skills";
+import { createLanguageDaily } from "./data/languages";
+import { createResistanceDaily } from "./data/resistances";
+import { createScrollChainDaily } from "./data/scrolls";
+import { utils } from "./utils";
 
 MODULE.register("pf2e-dailies", "PF2e Dailies");
 
@@ -72,6 +77,15 @@ Hooks.once("init", () => {
         canCastRank,
         setStaffChargesValue,
         openDailiesInterface,
+        registerCustomDailies,
+        utils,
+        dailyHelpers: {
+            createComboSkillDaily,
+            createLoreSkillDaily,
+            createLanguageDaily,
+            createResistanceDaily,
+            createScrollChainDaily,
+        },
     };
 
     CONFIG.PF2E.preparationType.charges = "Charges";

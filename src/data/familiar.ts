@@ -3,6 +3,8 @@ import { isTemporary } from "../api";
 import { createDaily } from "../daily";
 import { DailyMessageOptions } from "../types";
 
+const SKIP_UNIQUES = ["jevzf9JbJJibpqaI"];
+
 function getPack(): CompendiumCollection<AbilityItemPF2e> {
     return game.packs.get("pf2e.familiar-abilities")!;
 }
@@ -30,6 +32,7 @@ const familiar = createDaily({
         const options = pack.index.map(({ _id, name }) => ({
             value: _id,
             label: name,
+            skipUnique: SKIP_UNIQUES.includes(_id),
         }));
         const customUUIDS = getSetting<String>("familiarAbilities").split(",");
 
@@ -38,7 +41,7 @@ const familiar = createDaily({
             const item = await fromUuid<ItemPF2e>(uuid);
 
             if (item?.isOfType("action")) {
-                options.push({ value: uuid, label: item.name });
+                options.push({ value: uuid, label: item.name, skipUnique: false });
             }
         }
 

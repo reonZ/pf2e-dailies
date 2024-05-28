@@ -1,3 +1,9 @@
+# 3.2.1
+
+-   made the `Skilled` familiar ability not unique
+-   fixed issue preventing the opening of the preparation interface
+-   fixed issue with select fields not using the previous daily data
+
 # 3.2.0
 
 -   this is a `6.0.0-beta1` release
@@ -5,7 +11,7 @@
 
 # 3.1.5
 
--   made extra checks across the module to avoid missing elements errors
+-   added extra checks across the module to avoid missing elements errors
 
 # 3.1.4
 

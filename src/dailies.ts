@@ -258,7 +258,7 @@ async function getDailies(actor: CharacterPF2e) {
 
     await Promise.all(
         actor.items.map((item) => {
-            const sourceId = item.sourceId;
+            const sourceId = item._stats.compendiumSource ?? item.sourceId;
 
             if (!sourceId || (item.isOfType("physical") && item.isInvested === false)) {
                 return;

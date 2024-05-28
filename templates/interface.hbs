@@ -119,8 +119,8 @@
 </optgroup>
 {{else}}
 <option value="{{option.value}}" {{#if option.skipUnique}}data-skip-unique="{{option.skipUnique}}"
-    {{/if}} {{#if option.unique}}data-unique="{{option.unique}}" {{/if}} {{#if
-    this.selected}}selected{{/if}}>
+    {{/if}} {{#if option.unique}}data-unique="{{option.unique}}" {{/if}} {{#if (eq ../this.selected
+    option.value)}}selected{{/if}}>
     {{option.label}}
 </option>
 {{/if}}

@@ -1,3 +1,11 @@
+# 3.3.0
+
+-   this is a foundry `12.324` release
+-   modules can now delare their own custom dailies directly
+    -   those dailies only exist when the module is enabled
+    -   you can find more details in the wiki [Third Party Modules](https://github.com/reonZ/pf2e-dailies/wiki/Custom-Daily#third-party-modules) and [API](https://github.com/reonZ/pf2e-dailies/wiki/API)
+-   fixed issue with items lacking a `sourceId` when using custom dailies
+
 # 3.2.1
 
 -   made the `Skilled` familiar ability not unique

@@ -1,0 +1,32 @@
+@mixin summary {
+    a.content-link {
+        background: none;
+        border: none;
+        padding: 0;
+        text-decoration: underline;
+        white-space: unset;
+        word-break: normal;
+    }
+
+    .fa-caret-right {
+        margin-inline: 0.3em;
+    }
+
+    .fa-dice-d20 {
+        margin-left: 0.3em;
+    }
+
+    hr:last-child {
+        border: none;
+        margin-top: 0;
+    }
+
+    .fake-link {
+        font-style: italic;
+        line-height: 1.6em;
+
+        i {
+            color: var(--color-text-dark-inactive);
+        }
+    }
+}

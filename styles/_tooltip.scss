@@ -1,6 +1,20 @@
+@use "shared";
+
 #tooltip {
     &.pf2e-dailies-note {
         text-align: start;
         max-width: 400px;
+    }
+
+    &.pf2e-dailies-summary {
+        @include shared.summary;
+
+        hr {
+            border-bottom: 0;
+        }
+
+        a.content-link {
+            color: unset;
+        }
     }
 }

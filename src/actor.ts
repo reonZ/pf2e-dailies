@@ -168,6 +168,7 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQue
                     tooltip: canPrep
                         ? localize("sheet.title")
                         : getFlag(actor, "tooltip") || localize("sheet.unrested"),
+                    tooltipClass: canPrep ? "pf2e" : "pf2e pf2e-dailies-summary",
                 },
             });
 

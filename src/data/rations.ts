@@ -1,4 +1,4 @@
-import { localize } from "pf2e-api";
+import { localize } from "foundry-pf2e";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
 

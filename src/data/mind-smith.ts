@@ -1,4 +1,4 @@
-import { R, htmlElement, localize, localizePath, querySelector, subLocalize } from "pf2e-api";
+import { MODULE, R, htmlQuery, localize, subLocalize } from "foundry-pf2e";
 import { createDaily } from "../daily";
 import { DailyRowSelectOption } from "../types";
 import { utils } from "../utils";
@@ -91,15 +91,12 @@ async function createMindWeapon(actor: CharacterPF2e) {
                     icon: '<i class="fas fa-save"></i>',
                     label: weaponLocalize("yes"),
                     callback: ($html) => {
-                        const html = htmlElement($html);
-                        const input = querySelector<HTMLInputElement>(
+                        const html = $html[0];
+                        const input = htmlQuery<HTMLInputElement>(
                             html,
                             "input[name='type']:checked"
                         );
-                        const select = querySelector<HTMLSelectElement>(
-                            html,
-                            "select[name='rune']"
-                        );
+                        const select = htmlQuery<HTMLSelectElement>(html, "select[name='rune']");
 
                         return {
                             type: Number(input!.value),
@@ -212,7 +209,7 @@ const mindSmith = createDaily({
             return truthy
                 ? R.pipe(
                       arr,
-                      R.map.strict((value) => ({
+                      R.map((value) => ({
                           value,
                           label: labelizer(value),
                       })),
@@ -237,7 +234,7 @@ const mindSmith = createDaily({
                 slug: "damage",
                 label: selectThat("PF2E.WeaponGroupLabel"),
                 options: R.pipe(
-                    R.keys.strict(weaponDamages),
+                    R.keys(weaponDamages),
                     R.map((damage) => ({
                         value: damage,
                         label: damageLabel(damage),
@@ -275,7 +272,7 @@ const mindSmith = createDaily({
             {
                 type: "select",
                 slug: "rune",
-                label: localizePath("label.rune"),
+                label: MODULE.path("label.rune"),
                 options: arrayToOptions(
                     canHaveRune,
                     items.advanced ? advancedRunes : runicRunes,
@@ -312,7 +309,7 @@ const mindSmith = createDaily({
         const traits = R.pipe(
             [1, 2] as const,
             R.map((i) => rows[`trait${i}`]),
-            R.compact
+            R.filter(R.isTruthy)
         );
 
         for (const trait of traits) {

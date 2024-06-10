@@ -1,4 +1,4 @@
-import { R, localizePath } from "pf2e-api";
+import { MODULE, R } from "foundry-pf2e";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
 
@@ -70,7 +70,7 @@ const bladeAlly = createDaily({
             {
                 type: "select",
                 slug: "rune",
-                label: localizePath("label.rune"),
+                label: MODULE.path("label.rune"),
                 options: R.pipe(
                     runes,
                     R.map((rune) => ({

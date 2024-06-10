@@ -1,38 +1,4 @@
 import {
-    MODULE,
-    R,
-    addListener,
-    addListenerAll,
-    closest,
-    createChatLink,
-    dataToDatasetString,
-    elementData,
-    error,
-    getFlag,
-    getFlagProperty,
-    getHighestSpellcastingStatistic,
-    getHighestSyntheticStatistic,
-    getTranslatedSkills,
-    hasModuleFlag,
-    htmlElement,
-    localize,
-    localizeIfExist,
-    localizePath,
-    queryInClosest,
-    queryInParent,
-    querySelectorArray,
-    setFlag,
-    setFlagProperty,
-    stringBoolean,
-    stringNumber,
-    subLocalize,
-    templateLocalize,
-    templatePath,
-    unsetMofuleFlag,
-    updateFlag,
-    warn,
-} from "pf2e-api";
-import {
     createUpdateCollection,
     getActorFlag,
     getDisabledDailies,
@@ -63,6 +29,38 @@ import type {
 } from "../types";
 import { DailyConfig } from "./config";
 import { utils } from "../utils";
+import {
+    MODULE,
+    R,
+    addListener,
+    addListenerAll,
+    createChatLink,
+    dataToDatasetString,
+    elementDataset,
+    error,
+    getFlag,
+    getFlagProperty,
+    getHighestSpellcastingStatistic,
+    getHighestSyntheticStatistic,
+    getTranslatedSkills,
+    hasModuleFlag,
+    htmlClosest,
+    htmlQuery,
+    htmlQueryAll,
+    htmlQueryInClosest,
+    localize,
+    localizeIfExist,
+    setFlag,
+    setFlagProperty,
+    stringBoolean,
+    stringNumber,
+    subLocalize,
+    templateLocalize,
+    templatePath,
+    unsetMofuleFlag,
+    updateFlag,
+    warn,
+} from "foundry-pf2e";
 
 type DailyTemplate = {
     label: string;
@@ -226,7 +224,7 @@ class DailyInterface extends Application {
     #dailies: PreparedDailies;
     #dailiesArray: PreparedDaily[];
     #settingsApp: DailyConfig | null = null;
-    #randomInterval?: number;
+    #randomInterval?: NodeJS.Timeout;
     #featUuids!: string[];
     #dropFilters: Record<
         string,
@@ -238,7 +236,11 @@ class DailyInterface extends Application {
         }
     > = {};
 
-    constructor(actor: CharacterPF2e, dailies: PreparedDailies, options: ApplicationOptions = {}) {
+    constructor(
+        actor: CharacterPF2e,
+        dailies: PreparedDailies,
+        options: Partial<ApplicationOptions> = {}
+    ) {
         options.dragDrop = [
             {
                 dropSelector: '[data-droppable="true"]',
@@ -274,7 +276,7 @@ class DailyInterface extends Application {
             event.target instanceof HTMLInputElement
                 ? event.target
                 : event.target instanceof HTMLLabelElement
-                ? queryInClosest<HTMLInputElement>(
+                ? htmlQueryInClosest<HTMLInputElement>(
                       event.target,
                       ".group",
                       `input[data-row="${event.target.dataset.row}"]`
@@ -326,7 +328,7 @@ class DailyInterface extends Application {
 
         target.value = item.name;
         target.dataset.uuid = item.uuid;
-        queryInClosest(target, ".drop", ".clear")!.classList.remove("disabled");
+        htmlQueryInClosest(target, ".drop", ".clear")!.classList.remove("disabled");
 
         if (isFeat) {
             const exists = !!this.actor.itemTypes.feat.find((feat) => feat.sourceId === data.uuid);
@@ -340,7 +342,7 @@ class DailyInterface extends Application {
 
         buttons.splice(-1, 0, {
             class: "pf2e-dailies-config",
-            label: localizePath("interface.config"),
+            label: MODULE.path("interface.config"),
             icon: "fa-solid fa-user-gear",
             onclick: (event) => {
                 if (this.#settingsApp) {
@@ -351,11 +353,13 @@ class DailyInterface extends Application {
                 const actor = this.actor;
                 const id = `pf2e-dailies-settings-${actor.uuid}`;
 
-                this.#settingsApp = new DailyConfig(actor, this.#dailiesArray!, { id });
-                this.#settingsApp.registerListener("update", () =>
+                this.#settingsApp = new DailyConfig(actor, this.#dailiesArray, { id });
+                this.#settingsApp.addEventListener("update", () =>
                     this.render(false, { height: "auto" })
                 );
-                this.#settingsApp.registerListener("close", () => (this.#settingsApp = null), true);
+                this.#settingsApp.addEventListener("close", () => (this.#settingsApp = null), {
+                    once: true,
+                });
                 this.#settingsApp.render(true);
             },
         });
@@ -363,7 +367,7 @@ class DailyInterface extends Application {
         return buttons;
     }
 
-    close(options?: { force?: boolean | undefined } | undefined): Promisable<void> {
+    async close(options?: { force?: boolean | undefined }) {
         this.#settingsApp?.close({ noEmit: true });
         clearInterval(this.#randomInterval);
         return super.close(options);
@@ -492,7 +496,7 @@ class DailyInterface extends Application {
                             this.#featUuids ??= R.pipe(
                                 this.actor.itemTypes.feat,
                                 R.map((feat) => feat.sourceId),
-                                R.compact
+                                R.filter(R.isTruthy)
                             );
                         }
 
@@ -553,7 +557,7 @@ class DailyInterface extends Application {
     }
 
     activateListeners($html: JQuery<HTMLElement>): void {
-        const html = htmlElement($html);
+        const html = $html[0];
 
         addListener(html, "[data-action='accept']", () => this.#onAccept(html));
         addListener(html, "[data-action='cancel']", () => this.close());
@@ -577,7 +581,7 @@ class DailyInterface extends Application {
         const uniqueSelects = html.querySelectorAll<HTMLSelectElement>("[data-unique]");
 
         for (const selectEl of uniqueSelects) {
-            const { unique, dailykey } = elementData<RowElementDataset>(selectEl);
+            const { unique, dailykey } = elementDataset<RowElementDataset>(selectEl);
             const uniqueTag = `${dailykey}.${unique}`;
 
             if (processedUniques.includes(uniqueTag)) continue;
@@ -610,20 +614,20 @@ class DailyInterface extends Application {
     }
 
     async #onResolveAlert(event: Event, el: HTMLInputElement) {
-        const data = elementData<RowElementDataset>(el);
+        const data = elementDataset<RowElementDataset>(el);
         const row = this.#getDailyRow<DailyRowAlert>(data.daily, data.row);
         const resolved = await row.resolve();
         if (resolved) this.render(false, { height: "auto" });
     }
 
     #onInputChange(event: Event, el: HTMLInputElement) {
-        queryInClosest(el, ".input", ".clear")!.classList.toggle("disabled", !el.value.trim());
+        htmlQueryInClosest(el, ".input", ".clear")!.classList.toggle("disabled", !el.value.trim());
     }
 
     #onUniqueChange(event: Event | null, el: HTMLSelectElement) {
-        const uniqueTag = elementData(el).unique;
+        const uniqueTag = elementDataset(el).unique;
         const uniqueOptions = new Set<string>();
-        const selectElements = closest(el, ".dailies")!.querySelectorAll<HTMLSelectElement>(
+        const selectElements = htmlClosest(el, ".dailies")!.querySelectorAll<HTMLSelectElement>(
             `select[data-unique="${uniqueTag}"]`
         );
 
@@ -681,7 +685,7 @@ class DailyInterface extends Application {
 
     #onComboInputChange(event: Event, inputEl: HTMLInputElement) {
         const value = inputEl.value.trim().toLowerCase();
-        const selectEl = queryInClosest<HTMLSelectElement>(inputEl, ".combo", "select")!;
+        const selectEl = htmlQueryInClosest<HTMLSelectElement>(inputEl, ".combo", "select")!;
         const option = value
             ? Array.from(selectEl.options).find(
                   (option) => option.value === value || option.text.toLowerCase() === value
@@ -699,13 +703,13 @@ class DailyInterface extends Application {
     }
 
     #onComboSelectChange(event: Event, selectEl: HTMLSelectElement) {
-        const inputEl = queryInClosest<HTMLInputElement>(selectEl, ".combo", "input")!;
+        const inputEl = htmlQueryInClosest<HTMLInputElement>(selectEl, ".combo", "input")!;
         inputEl.dataset.input = "false";
         inputEl.value = selectEl.options[selectEl.selectedIndex].text;
     }
 
     async #onOpenBrowser(event: Event, el: HTMLElement) {
-        const inputEl = queryInClosest(el, ".drop", "input")!;
+        const inputEl = htmlQueryInClosest(el, ".drop", "input")!;
         const compendium = await this.#compendiumFilterFromElement(inputEl, true);
 
         if (compendium) {
@@ -714,7 +718,7 @@ class DailyInterface extends Application {
     }
 
     #onClearField(event: Event, btnEl: HTMLElement) {
-        const inputEl = queryInParent<HTMLInputElement>(btnEl, "input")!;
+        const inputEl = htmlQuery<HTMLInputElement>(btnEl.parentElement, "input")!;
 
         inputEl.dataset.tooltip = "";
         inputEl.classList.remove("exists");
@@ -731,7 +735,7 @@ class DailyInterface extends Application {
             labelEl.classList.remove("empty");
         }
 
-        const emptyRows = querySelectorArray<HTMLInputElement | HTMLSelectElement>(
+        const emptyRows = htmlQueryAll<HTMLInputElement | HTMLSelectElement>(
             html,
             "[data-empty='false']"
         ).filter((el) => el.value.trim() === "");
@@ -740,8 +744,8 @@ class DailyInterface extends Application {
             warn("interface.error.empty");
 
             for (const inputEl of emptyRows) {
-                const { row } = elementData<RowElementDataset>(inputEl);
-                const labelEl = queryInClosest(inputEl, ".group", `label[data-row="${row}"]`)!;
+                const { row } = elementDataset<RowElementDataset>(inputEl);
+                const labelEl = htmlQueryInClosest(inputEl, ".group", `label[data-row="${row}"]`)!;
                 labelEl.classList.add("empty");
             }
 
@@ -780,7 +784,7 @@ class DailyInterface extends Application {
                 const isInput = rowElement.dataset.input === "true";
                 const selected = isInput
                     ? rowElement.value.trim()
-                    : queryInClosest<HTMLSelectElement>(rowElement, ".combo", "select")!.value;
+                    : htmlQueryInClosest<HTMLSelectElement>(rowElement, ".combo", "select")!.value;
 
                 row = {
                     selected,
@@ -1001,7 +1005,7 @@ class DailyInterface extends Application {
 
                     for (const spell of spells) {
                         const rank = getFlag<OneToTen>(spell, "rank");
-                        const update: EmbeddedDocumentUpdateData<ItemSourcePF2e> = {
+                        const update: EmbeddedDocumentUpdateData = {
                             _id: spell.id,
                             "system.location.value": item.id,
                             "system.location.heightenedLevel": rank,
@@ -1124,7 +1128,7 @@ class DailyInterface extends Application {
 
     #validateDefault(item: FeatPF2e | SpellPF2e, filter: FeatFilters | SpellFilters) {
         const { multiselects, checkboxes } = filter;
-        const tab = game.pf2e.compendiumBrowser.tabs[item.type as BrowserTabName];
+        const tab = game.pf2e.compendiumBrowser.tabs[item.type as TabName];
         const itemTraits = item.system.traits.value.map((t: string) => t.replace(/^hb_/, ""));
 
         if (
@@ -1138,7 +1142,7 @@ class DailyInterface extends Application {
             return false;
         }
 
-        const rarities = checkboxes.rarity.selected;
+        const rarities = checkboxes.rarity.selected as Rarity[];
         if (rarities.length && !rarities.includes(item.rarity)) {
             this.#dropDataWarning(
                 "rarity",
@@ -1174,7 +1178,7 @@ class DailyInterface extends Application {
             return false;
         }
 
-        const categories = checkboxes.category.selected;
+        const categories = checkboxes.category.selected as FeatOrFeatureCategory[];
         if (categories.length && !categories.includes(item.category)) {
             this.#dropDataWarning(
                 "category",
@@ -1184,7 +1188,7 @@ class DailyInterface extends Application {
             return false;
         }
 
-        const filterSkills = checkboxes.skills.selected;
+        const filterSkills = checkboxes.skills.selected as SkillSlug[];
         if (filterSkills.length) {
             const prereqs: { value: string }[] = item.system.prerequisites.value;
             const prerequisitesArr = prereqs.map((prerequisite) =>
@@ -1192,12 +1196,12 @@ class DailyInterface extends Application {
             );
             const translatedSkills = getTranslatedSkills();
             const skillList = Object.entries(translatedSkills);
-            const skills: Set<SkillLongForm> = new Set();
+            const skills: Set<SkillSlug> = new Set();
 
             for (const prereq of prerequisitesArr) {
                 for (const [key, value] of skillList) {
                     if (prereq.includes(key) || prereq.includes(value)) {
-                        skills.add(key as SkillLongForm);
+                        skills.add(key as SkillSlug);
                     }
                 }
             }
@@ -1237,17 +1241,20 @@ class DailyInterface extends Application {
             const isFocusSpell = item.isFocusSpell;
             const isRitual = item.isRitual;
             const isSpell = !isCantrip && !isFocusSpell && !isRitual;
-            const categories = R.compact([
-                isSpell ? "spell" : null,
-                isCantrip ? "cantrip" : null,
-                isFocusSpell ? "focus" : null,
-                isRitual ? "ritual" : null,
-            ]);
+            const categories = R.filter(
+                [
+                    isSpell ? "spell" : null,
+                    isCantrip ? "cantrip" : null,
+                    isFocusSpell ? "focus" : null,
+                    isRitual ? "ritual" : null,
+                ],
+                R.isTruthy
+            );
 
             const sortedFilterCategories = filterCategories.sort();
             const sortedItemCategories = categories.sort();
 
-            if (!R.equals(sortedFilterCategories, sortedItemCategories)) {
+            if (!R.isDeepEqual(sortedFilterCategories, sortedItemCategories)) {
                 this.#dropDataWarning(
                     "categories",
                     sortedFilterCategories.map((x) =>
@@ -1261,8 +1268,8 @@ class DailyInterface extends Application {
             }
         }
 
-        const filterTraditions = checkboxes.traditions.selected;
-        const itemTraditions = item.system.traits.traditions;
+        const filterTraditions = checkboxes.traditions.selected as MagicTradition[];
+        const itemTraditions = item.system.traits.traditions as MagicTradition[];
         if (filterTraditions.length && !R.intersection(filterTraditions, itemTraditions).length) {
             this.#dropDataWarning(
                 "traditions",
@@ -1285,7 +1292,7 @@ class DailyInterface extends Application {
 
     async #compendiumFilterFromElement(el: HTMLElement, init?: boolean) {
         try {
-            const data = elementData<RowElementDataset>(el);
+            const data = elementDataset<RowElementDataset>(el);
             const dailyRow = this.#getDailyRow<DailyRowDrop>(data.daily, data.row);
             const filterKey = `${data.daily}.${data.row}`;
 

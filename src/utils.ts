@@ -8,7 +8,7 @@ import {
     hasFreePropertySlot,
     rollDie,
     setFlagProperty,
-} from "pf2e-api";
+} from "foundry-pf2e";
 
 type SimplifiableRuleValue = string | number | "half" | "level";
 
@@ -16,7 +16,7 @@ type CreateSpellConsumableSourceOptions = {
     uuid: string;
     level?: number;
     itemName?: string;
-    itemImg?: string;
+    itemImg?: ImageFilePath;
 };
 
 const utils = {
@@ -28,7 +28,7 @@ const utils = {
         );
         return rule?.selection as T | undefined;
     },
-    hasFreePropertySlot: (item: WeaponPF2e<CharacterPF2e>) => {
+    hasFreePropertySlot: (item: WeaponPF2e) => {
         return hasFreePropertySlot(item);
     },
     getResistanceLabel: (resistance: string, localize = true) => {
@@ -48,19 +48,23 @@ const utils = {
     getLanguages: () => {
         return configToOptions("languages");
     },
-    getSkillLabel: (skill: SkillLongForm, localize = true) => {
+    getSkillLabel: (skill: SkillSlug, localize = true) => {
         const label = CONFIG.PF2E.skillList[skill];
         return localize ? game.i18n.localize(label) : label;
     },
     getSkills: () => {
         return configToOptions("skillList").filter(
-            (x): x is { value: SkillLongForm; label: string } => x.value !== "lore"
+            (x): x is { value: SkillSlug; label: string } => x.value !== "lore"
         );
     },
     getSpellRankLabel: (rank: ZeroToTen) => {
         return getRankLabel(rank);
     },
-    createExcludeFeatList: (actor: CharacterPF2e, categories: FeatCategory[], traits: string[]) => {
+    createExcludeFeatList: (
+        actor: CharacterPF2e,
+        categories: FeatOrFeatureCategory[],
+        traits: string[]
+    ) => {
         return R.pipe(
             actor.itemTypes.feat,
             R.filter((feat) => categories.some((category) => feat.category === category)),
@@ -75,9 +79,9 @@ const utils = {
     ) => {
         const maxRank = R.pipe(
             actor.spellcasting.spellcastingFeatures,
-            tradition ? R.filter((entry) => entry.tradition === tradition) : R.identity,
+            tradition ? R.filter((entry) => entry.tradition === tradition) : R.identity(),
             R.map((entry) => entry.highestRank),
-            R.firstBy([R.identity, "desc"])
+            R.firstBy([R.identity(), "desc"])
         );
         return maxRank ?? 0;
     },
@@ -132,7 +136,7 @@ const utils = {
         value,
         predicate,
     }: {
-        skill: SkillLongForm;
+        skill: SkillSlug;
         mode?: "upgrade";
         value: number;
         predicate?: any[];
@@ -304,7 +308,7 @@ const utils = {
 function configToOptions<T extends keyof typeof CONFIG.PF2E>(type: T, capitalize = false) {
     return R.pipe(
         CONFIG.PF2E[type],
-        R.toPairs.strict,
+        R.entries(),
         R.map(([value, label]) => ({ value, label }))
     );
 }

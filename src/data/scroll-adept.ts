@@ -1,4 +1,4 @@
-import { R } from "pf2e-api";
+import { R } from "foundry-pf2e";
 import { createDaily } from "../daily";
 import { DailyRowDropSpell } from "../types";
 import { utils } from "../utils";

@@ -6,7 +6,7 @@ import {
     registerWrapper,
     renderCharacterSheets,
     warn,
-} from "pf2e-api";
+} from "foundry-pf2e";
 import {
     onCharacterPrepareData,
     onCharacterSheetGetData,
@@ -15,8 +15,13 @@ import {
     onRenderNPCSheetPF2e,
     performDailyCrafting,
 } from "./actor";
+import { canCastRank, openDailiesInterface, setStaffChargesValue } from "./api";
 import { CustomDailies } from "./apps/customs";
 import { DAILY_SCHEMA, initDailies, parseDailies, registerCustomDailies } from "./dailies";
+import { createLanguageDaily } from "./data/languages";
+import { createResistanceDaily } from "./data/resistances";
+import { createScrollChainDaily } from "./data/scrolls";
+import { createComboSkillDaily, createLoreSkillDaily } from "./data/skills";
 import { restForTheNight } from "./rest";
 import {
     spellcastingEntryConsume,
@@ -24,11 +29,6 @@ import {
     spellcastingEntryPrepareSiblingData,
 } from "./spellcasting";
 import { CustomDaily } from "./types";
-import { canCastRank, openDailiesInterface, setStaffChargesValue } from "./api";
-import { createComboSkillDaily, createLoreSkillDaily } from "./data/skills";
-import { createLanguageDaily } from "./data/languages";
-import { createResistanceDaily } from "./data/resistances";
-import { createScrollChainDaily } from "./data/scrolls";
 import { utils } from "./utils";
 
 MODULE.register("pf2e-dailies", "PF2e Dailies");

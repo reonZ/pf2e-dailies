@@ -1,21 +1,20 @@
 import {
     MODULE,
     addListener,
-    appendHTMLFromString,
     changeCarryType,
-    createHTMLFromString,
-    elementData,
+    createHTMLElement,
+    elementDataset,
     getHighestSpellcastingStatistic,
     getSetting,
-    getSpellClass,
-    getSpellCollectionClass,
-    htmlElement,
+    htmlQuery,
+    itemIsOfType,
     libWrapper,
     localize,
-    querySelector,
     render,
+    getSpellClass,
     templateLocalize,
-} from "pf2e-api";
+    getSpellCollectionClass,
+} from "foundry-pf2e";
 import {
     canPrepareDailies,
     getActorFlag,
@@ -59,7 +58,7 @@ async function performDailyCrafting(this: CharacterPF2e) {
 
             if (
                 entry.isAlchemical &&
-                ["consumable", "equipment", "weapon"].includes(itemSource.type)
+                itemIsOfType(itemSource, "consumable", "equipment", "weapon")
             ) {
                 itemSource.system.traits.value.push("infused");
             }
@@ -82,10 +81,7 @@ async function renderChargesEntries(
     );
 
     for (const entry of chargesEntries) {
-        const entryContainer = parentElement.querySelector<HTMLElement>(
-            `[data-container-id="${entry.id}"]`
-        );
-
+        const entryContainer = htmlQuery(parentElement, `[data-container-id="${entry.id}"]`);
         if (!entryContainer) continue;
 
         const charges = entry.system.slots.slot1;
@@ -119,10 +115,13 @@ async function renderChargesEntries(
         });
 
         const classStr = entry.showSlotlessRanks ? "fa-solid" : "fa-regular";
-        const toggleStr = `<a data-action="toggle-show-slotless-ranks" data-tooltip="PF2E.ToggleSlotlessSpellLevelsTitle">
-<i class="${classStr} fa-fw fa-list-alt"></i>
-</a>`;
-        const toggleElement = createHTMLFromString(toggleStr);
+        const toggleElement = createHTMLElement("a", {
+            innerHTML: `<i class="${classStr} fa-fw fa-list-alt"></i>`,
+            dataset: {
+                action: "toggle-show-slotless-ranks",
+                tooltip: "PF2E.ToggleSlotlessSpellLevelsTitle",
+            },
+        });
 
         callback?.(entryContainer, chargesElement, toggleElement);
     }
@@ -130,54 +129,60 @@ async function renderChargesEntries(
 
 function onRenderNPCSheetPF2e(sheet: NPCSheetPF2e, $html: JQuery) {
     const actor = sheet.actor;
-    const html = htmlElement($html);
-    const spellsTab = querySelector(html, ".tab[data-tab='spells']");
+    const html = $html[0];
+    const spellsTab = htmlQuery(html, ".tab[data-tab='spells']");
     if (!spellsTab) return;
 
     renderChargesEntries(actor, spellsTab, (container, charges, toggle) => {
-        querySelector(container, ":scope > .header")?.after(charges);
+        htmlQuery(container, ":scope > .header")?.after(charges);
         if (actor.isOwner) {
-            querySelector(container, ":scope > .header > .item-controls")?.prepend(toggle);
+            htmlQuery(container, ":scope > .header > .item-controls")?.prepend(toggle);
         }
     });
 }
 
 async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQuery) {
     const actor = sheet.actor;
-    const html = htmlElement($html);
-    const contentElement = querySelector(html, ".sheet-content");
+    const html = $html[0];
+    const contentElement = htmlQuery(html, ".sheet-content");
     if (!contentElement) return;
 
-    const spellsTab = querySelector(contentElement, ".tab[data-tab='spellcasting']");
+    const spellsTab = htmlQuery(contentElement, ".tab[data-tab='spellcasting']");
     const highlightItems = getSetting("addedHighlight");
 
     if (actor.isOwner) {
-        const canPrep = canPrepareDailies(actor);
-        const tooltip = localize(canPrep ? "sheet.title" : "sheet.unrested");
-        const disabledClass = canPrep ? "" : " disabled";
-        const targetEl = querySelector(html, "aside .sidebar .hitpoints .hp-small");
+        const targetEl = htmlQuery(html, "aside .sidebar .hitpoints .hp-small");
 
         if (targetEl) {
-            appendHTMLFromString(
-                targetEl,
-                `<a class="roll-icon dailies${disabledClass}" data-action="prepare-dailies" data-tooltip="${tooltip}">
-            <i class="fas fa-mug-saucer"></i>
-            </a>`
-            );
+            const canPrep = canPrepareDailies(actor);
+
+            const classes = ["roll-icon", "dailies"];
+            if (!canPrep) classes.push("disabled");
+
+            const dailyIcon = createHTMLElement("a", {
+                innerHTML: "<i class='fas fa-mug-saucer'></i>",
+                classes,
+                dataset: {
+                    action: "prepare-dailies",
+                    tooltip: localize(canPrep ? "sheet.title" : "sheet.unrested"),
+                },
+            });
+
+            targetEl.appendChild(dailyIcon);
 
             if (canPrep) {
-                addListener(targetEl, "[data-action='prepare-dailies']", () =>
-                    openDailiesInterface(actor)
-                );
+                dailyIcon.addEventListener("click", () => {
+                    openDailiesInterface(actor);
+                });
             }
         }
     }
 
     if (spellsTab) {
         renderChargesEntries(actor, spellsTab, (container, charges, toggle) => {
-            querySelector(container, ".spell-ability-data .statistic-values")?.after(charges);
+            htmlQuery(container, ".spell-ability-data .statistic-values")?.after(charges);
             if (actor.isOwner) {
-                querySelector(container, ".action-header .item-controls")?.prepend(toggle);
+                htmlQuery(container, ".action-header .item-controls")?.prepend(toggle);
             }
         });
     }
@@ -187,9 +192,7 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQue
         const staff = staffData ? actor.inventory.get(staffData.staffId) : undefined;
         const staffId = staffData?.staffId;
         const staffContainer = staffId
-            ? contentElement.querySelector<HTMLLIElement>(
-                  `[data-container-id="${staffId}-casting"]`
-              )
+            ? htmlQuery(contentElement, `[data-container-id="${staffId}-casting"]`)
             : undefined;
 
         if (staffContainer && staffData && staff) {
@@ -248,7 +251,7 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQue
                 });
             }
 
-            querySelector(staffContainer, ".spell-ability-data .statistic-values")?.after(
+            htmlQuery(staffContainer, ".spell-ability-data .statistic-values")?.after(
                 chargesElement
             );
         }
@@ -283,18 +286,22 @@ async function createChargesElement(
         action,
         i18n: templateLocalize("sheet.charges"),
     });
-    return createHTMLFromString<HTMLElement>(chargesTemplate);
+
+    return createHTMLElement("div", {
+        classes: ["pf2e-dailies-charges"],
+        innerHTML: chargesTemplate,
+    });
 }
 
 function onRenderFamiliarSheetPF2e(sheet: FamiliarSheetPF2e, $html: JQuery) {
     const actor = sheet.actor;
-    const html = htmlElement($html);
+    const html = $html[0];
     const itemElements = html.querySelectorAll<HTMLElement>(
         ".section-container:not(.familiar-section) .actions-list [data-item-id]"
     );
 
     for (const itemElement of itemElements) {
-        const { itemId } = elementData(itemElement);
+        const { itemId } = elementDataset(itemElement);
         const item = actor.items.get(itemId);
 
         if (item && isTemporary(item)) {
@@ -305,10 +312,10 @@ function onRenderFamiliarSheetPF2e(sheet: FamiliarSheetPF2e, $html: JQuery) {
 
 async function onCharacterSheetGetData(
     this: CharacterSheetPF2e,
-    wrapped: libWrapper.RegisterCallback<Promise<CharacterSheetData>>,
+    wrapped: libWrapper.RegisterCallback,
     options?: ActorSheetOptions
 ) {
-    const data = await wrapped(options);
+    const data = (await wrapped(options)) as CharacterSheetData;
 
     try {
         const actor = this.actor;
@@ -391,9 +398,9 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
                     return message;
                 }
 
-                return ChatMessage.implementation.create(messageSource, {
+                return getDocumentClass("ChatMessage").create(messageSource, {
                     renderSheet: false,
-                }) as Promise<ChatMessagePF2e>;
+                });
             }
         }
 

@@ -1,4 +1,4 @@
-import { R, getActorMaxRank, getFlag, openApplication, setFlag } from "pf2e-api";
+import { R, getActorMaxRank, getFlag, setFlag } from "foundry-pf2e";
 import { DailyInterface } from "./apps/interface";
 import { getDailies } from "./dailies";
 import type { DailyActorFlags, SimplifiableValue } from "./types";
@@ -18,7 +18,8 @@ async function openDailiesInterface(actor: CharacterPF2e) {
 
     const id = `pf2e-dailies-interface-${actor.uuid}`;
     const dailies = await getDailies(actor);
-    openApplication(DailyInterface, actor, dailies, { id });
+
+    new DailyInterface(actor, dailies, { id }).render(true);
 }
 
 function getDisabledDailies(actor: CharacterPF2e) {
@@ -48,7 +49,7 @@ function isSimplifiableValue(value: any): value is SimplifiableValue {
     );
 }
 
-function createUpdateCollection<T extends EmbeddedDocumentUpdateData<ItemSourcePF2e>>(): [
+function createUpdateCollection<T extends EmbeddedDocumentUpdateData>(): [
     Collection<T>,
     (data: T) => void
 ] {

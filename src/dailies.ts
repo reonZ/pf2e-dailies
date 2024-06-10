@@ -1,4 +1,4 @@
-import { AsyncFunction, R, error, getSetting } from "pf2e-api";
+import { R, error, getSetting } from "foundry-pf2e";
 import { createDaily } from "./daily";
 import { ancestralLongevity } from "./data/ancestral-longevity";
 import { bladeAlly } from "./data/blade-ally";
@@ -135,7 +135,7 @@ function prepareDailies(dailies: Daily[], prefix: "custom" | "dailies" | "module
 
 async function parseCustomDaily(custom: CustomDaily) {
     try {
-        const fn = new AsyncFunction<Daily>(
+        const fn = new foundry.utils.AsyncFunction<Daily>(
             "utils",
             "createDaily",
             "createComboSkillDaily",

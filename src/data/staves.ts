@@ -2,20 +2,20 @@ import {
     ErrorPF2e,
     R,
     createCounteractStatistic,
-    createHTMLFromString,
-    elementData,
+    createHTMLElement,
+    elementDataset,
     error,
     getActorMaxRank,
     getRankLabel,
     hasItemWithSourceId,
-    htmlElement,
+    htmlQuery,
+    htmlQueryAll,
     localize,
-    querySelector,
-    querySelectorArray,
+    render,
     subLocalize,
     waitDialog,
     warn,
-} from "pf2e-api";
+} from "foundry-pf2e";
 import { canCastRank, getStaffFlags, setStaffChargesValue } from "../api";
 import { createDaily } from "../daily";
 import {
@@ -89,7 +89,7 @@ const staves = createDaily({
                 R.pipe(
                     entries,
                     R.map((entry) => entry.highestRank),
-                    R.firstBy([R.identity, "desc"])
+                    R.firstBy([R.identity(), "desc"])
                 ) ?? 0;
         }
 
@@ -131,7 +131,7 @@ const staves = createDaily({
                     for (const [index, { id, expended }] of Object.entries(data.prepared)) {
                         if (expended) continue;
 
-                        const spell = entry.spells?.get(id);
+                        const spell = id ? entry.spells?.get(id) : undefined;
 
                         preparedEntries[entryId] ??= {
                             id: entryId,
@@ -244,11 +244,11 @@ const staves = createDaily({
         const staff = actor.inventory.get(rows.staff);
         if (!custom.entries || !staff) return;
 
-        const descriptionEl = createHTMLFromString(staff.description);
+        const descriptionEl = createHTMLElement("div", { innerHTML: staff.description });
         const spellList = descriptionEl.querySelectorAll("ul");
         if (!spellList.length) return;
 
-        const spellRanksList = querySelectorArray(spellList[spellList.length - 1], "li");
+        const spellRanksList = htmlQueryAll(spellList[spellList.length - 1], "li");
         const staffSpellData = R.pipe(
             spellRanksList,
             R.flatMap((SpellRankEL) => {
@@ -262,7 +262,7 @@ const staves = createDaily({
             R.filter(({ rank }) => rank <= custom.maxCharges)
         );
 
-        const staffSpells = R.compact(
+        const staffSpells = R.filter(
             await Promise.all(
                 staffSpellData.map(async ({ rank, uuid }) => {
                     const spell = await fromUuid<SpellPF2e>(uuid);
@@ -277,7 +277,8 @@ const staves = createDaily({
                         { inplace: false }
                     );
                 })
-            )
+            ),
+            R.isTruthy
         );
 
         if (!staffSpells.length) return;
@@ -289,7 +290,7 @@ const staves = createDaily({
         const emptyLabel = localize("interface.staves.empty");
         const expendedSpells: { name: string; rank: ZeroToTen; uuid?: string }[] = [];
         const slotsUpdates: Record<string, Record<string, number>> = {};
-        const expendedRows = R.pipe(rows, R.omit(["staff"]), R.values, R.compact);
+        const expendedRows = R.pipe(rows, R.omit(["staff"]), R.values(), R.filter(R.isTruthy));
 
         for (const preparedPath of expendedRows) {
             const entryId = preparedPath?.split(".")[0];
@@ -339,7 +340,7 @@ const staves = createDaily({
                     [`system.slots.slot${rank}.prepared`]: prepared,
                 });
 
-                const spell = actor.items.get(preparedSlot.id);
+                const spell = preparedSlot.id ? actor.items.get(preparedSlot.id) : undefined;
 
                 expendedSpells.push({
                     uuid: spell?.uuid,
@@ -585,11 +586,8 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
                 });
 
                 const callback = (html: JQuery) => {
-                    const el = querySelector<HTMLInputElement>(
-                        htmlElement(html),
-                        "[name=entry]:checked"
-                    );
-                    return elementData(el!) as { entry: string; slot: SlotKey };
+                    const el = htmlQuery<HTMLInputElement>(html[0], "[name=entry]:checked");
+                    return elementDataset(el!) as { entry: string; slot: SlotKey };
                 };
 
                 useSpontaneous = await waitDialog({
@@ -659,11 +657,11 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
         const maxCantripRank = Math.max(1, Math.ceil(actor.level / 2)) as OneToTen;
         const groups = R.pipe(
             Array.from(spells?.values() ?? []),
-            R.groupBy.strict((s) => (s.isCantrip ? 0 : s.rank)),
-            R.toPairs.strict,
+            R.groupBy((s) => (s.isCantrip ? 0 : s.rank)),
+            R.entries(),
             R.sortBy((x) => x[0]),
-            R.map(([rank, spells]): SpellcastingSlotGroup => {
-                rank = Number(rank) as ZeroToTen;
+            R.map(([_rank, spells]): SpellcastingSlotGroup => {
+                const rank = Number(_rank) as ZeroToTen;
                 return {
                     id: rank === 0 ? "cantrips" : rank,
                     label:

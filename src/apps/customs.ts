@@ -1,14 +1,13 @@
 import {
     addListener,
     addListenerAll,
-    closest,
     getSetting,
-    htmlElement,
-    querySelector,
+    htmlClosest,
+    htmlQuery,
     setSetting,
     subLocalize,
     templatePath,
-} from "pf2e-api";
+} from "foundry-pf2e";
 import { DAILY_SCHEMA, parseCustomDaily } from "../dailies";
 import type { CustomDaily } from "../types";
 
@@ -58,7 +57,7 @@ class CustomDailies extends FormApplication {
         return getSetting<CustomDaily[]>("customDailies");
     }
 
-    getData(options?: object | undefined) {
+    async getData(options?: Partial<FormApplicationOptions> | undefined) {
         const selected = this.#selected;
         const dailies = this.dailies;
         const daily = dailies.find(({ key }) => key === selected);
@@ -78,7 +77,7 @@ class CustomDailies extends FormApplication {
     }
 
     activateListeners($html: JQuery<HTMLElement>) {
-        const html = htmlElement($html);
+        const html = $html[0];
 
         addListener(html, ".editor", "keydown", this.#onEditorKeyup.bind(this));
         addListener(html, "[data-action='create-daily']", this.#onCreateDaily.bind(this));
@@ -96,8 +95,8 @@ class CustomDailies extends FormApplication {
     async #onSaveDaily() {
         if (!this.#selected) return;
 
-        const html = htmlElement(this.element);
-        const code = querySelector<HTMLTextAreaElement>(html, ".editor")!.value;
+        const html = this.element[0];
+        const code = htmlQuery<HTMLTextAreaElement>(html, ".editor")!.value;
         const daily = await parseCustomDaily({ code, key: this.#selected });
 
         if (!daily) {
@@ -129,13 +128,13 @@ class CustomDailies extends FormApplication {
     }
 
     #onUnlockDaily() {
-        const html = htmlElement(this.element);
+        const html = this.element[0];
         const readonlyEl = html.querySelector<HTMLElement>(".right .readonly");
         if (!readonlyEl) return;
 
         readonlyEl.remove();
-        querySelector<HTMLTextAreaElement>(html, ".editor")!.disabled = false;
-        querySelector<HTMLButtonElement>(html, "[data-action='save-daily']")!.disabled = false;
+        htmlQuery<HTMLTextAreaElement>(html, ".editor")!.disabled = false;
+        htmlQuery<HTMLButtonElement>(html, "[data-action='save-daily']")!.disabled = false;
     }
 
     #onEditorKeyup(event: KeyboardEvent, editor: HTMLTextAreaElement) {
@@ -163,7 +162,7 @@ class CustomDailies extends FormApplication {
     }
 
     #onSelectDaily(event: MouseEvent, el: HTMLElement) {
-        const key = closest(el, ".row")!.dataset.key!;
+        const key = htmlClosest(el, ".row")!.dataset.key!;
         this.#selected = key;
         this.render();
     }
@@ -185,7 +184,7 @@ class CustomDailies extends FormApplication {
     }
 
     async #onDeleteDaily(event: MouseEvent, el: HTMLElement) {
-        const key = closest(el, ".row")!.dataset.key!;
+        const key = htmlClosest(el, ".row")!.dataset.key!;
         const dailies = this.dailies.slice();
         const index = dailies.findIndex((daily) => daily.key === key);
         if (index === -1) return false;

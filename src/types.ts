@@ -75,7 +75,7 @@ type ExtractRows<
 
 type DailyRestOptions = {
     actor: CharacterPF2e;
-    updateItem: (data: EmbeddedDocumentUpdateData<ItemSourcePF2e>) => void;
+    updateItem: (data: EmbeddedDocumentUpdateData) => void;
     removeItem: (id: string) => void;
 };
 
@@ -111,7 +111,7 @@ type DailyProcessOptions<
         addGroup: (name: string, label?: string, order?: number) => void;
         addRaw: (message: string, order?: number) => void;
     };
-    updateItem: (data: EmbeddedDocumentUpdateData<ItemSourcePF2e>) => void;
+    updateItem: (data: EmbeddedDocumentUpdateData) => void;
     addItem: (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e) => void;
     addFeat: (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e, parent?: ItemPF2e) => void;
     removeRule: (item: ItemPF2e, signature: (rule: DailyRuleElement) => boolean) => void;
@@ -262,9 +262,9 @@ interface DailyRowDropSearchBase<TCategory extends string> {
         | { selected: (string | { value: string; not?: boolean })[]; conjunction?: "or" | "and" };
 }
 
-type DailyRowDropFeatSearch = DailyRowDropSearchBase<FeatCategory> & {
+type DailyRowDropFeatSearch = DailyRowDropSearchBase<FeatOrFeatureCategory> & {
     level?: number | { min?: number; max?: number } | "level" | "half";
-    skills?: SkillLongForm[];
+    skills?: SkillSlug[];
 };
 
 type DailyRowSpellSearch = DailyRowDropSearchBase<SpellCategory> & {

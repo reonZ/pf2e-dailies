@@ -1,11 +1,11 @@
-import { R, getFlag, getSetting, localeCompare, localize, setFlagProperty } from "pf2e-api";
+import { R, getFlag, getSetting, localeCompare, localize, setFlagProperty } from "foundry-pf2e";
 import { isTemporary } from "../api";
 import { createDaily } from "../daily";
 import { DailyMessageOptions } from "../types";
 
 const SKIP_UNIQUES = ["jevzf9JbJJibpqaI"];
 
-function getPack(): CompendiumCollection<AbilityItemPF2e> {
+function getPack(): CompendiumCollection<AbilityItemPF2e<null>> {
     return game.packs.get("pf2e.familiar-abilities")!;
 }
 
@@ -68,7 +68,9 @@ const familiar = createDaily({
         await Promise.all(
             Object.values(rows).map(async (value) => {
                 const isCustom = value.includes(".");
-                const item = await (isCustom ? fromUuid<ItemPF2e>(value) : pack.getDocument(value));
+                const item = await (isCustom
+                    ? fromUuid<AbilityItemPF2e>(value)
+                    : pack.getDocument(value));
 
                 if (!item?.isOfType("action")) return;
 

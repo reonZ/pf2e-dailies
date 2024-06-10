@@ -1,28 +1,30 @@
 import {
     addListener,
     addListenerAll,
-    elementData,
-    htmlElement,
-    queryInParent,
+    elementDataset,
+    htmlQuery,
     setFlag,
     templateLocalize,
     templatePath,
     unsetFlag,
-    withEventManager,
-    type WithEventManager,
-} from "pf2e-api";
+} from "foundry-pf2e";
 import { getDisabledDailies } from "../api";
 import { getFamiliarAbilityCount } from "../data/familiar";
 import type { PreparedDaily } from "../types";
 
-interface DailyConfig extends WithEventManager {}
+// interface DailyConfig extends WithEventManager {}
 
-@withEventManager
-class DailyConfig extends Application {
+class DailyConfig extends foundry.utils.EventEmitterMixin<typeof Application, "update" | "close">(
+    Application
+) {
     #actor: CharacterPF2e;
     #dailies: PreparedDaily[];
 
-    constructor(actor: CharacterPF2e, dailies: PreparedDaily[], options?: ApplicationOptions) {
+    constructor(
+        actor: CharacterPF2e,
+        dailies: PreparedDaily[],
+        options?: Partial<ApplicationOptions>
+    ) {
         super(options);
 
         this.#actor = actor;
@@ -43,11 +45,8 @@ class DailyConfig extends Application {
 
     close(options?: { force?: boolean; noEmit?: boolean }) {
         if (!options?.noEmit) {
-            this.emitEvent("close");
+            this.dispatchEvent("close");
         }
-
-        this.purgeListeners();
-
         return super.close(options);
     }
 
@@ -73,7 +72,7 @@ class DailyConfig extends Application {
     }
 
     activateListeners($html: JQuery<HTMLElement>): Promisable<void> {
-        const html = htmlElement($html);
+        const html = $html[0];
 
         addListenerAll(
             html,
@@ -105,16 +104,16 @@ class DailyConfig extends Application {
             max: actor.attributes.familiarAbilities.value,
         });
 
-        this.emitEvent("update");
+        this.dispatchEvent("update");
     }
 
     #onFamiliarRangeInput(event: Event, el: HTMLInputElement) {
-        const valueInput = queryInParent<HTMLInputElement>(el, "[name='familiar-value']");
+        const valueInput = htmlQuery<HTMLInputElement>(el.parentElement, "[name='familiar-value']");
         if (valueInput) valueInput.value = el.value;
     }
 
     async #onDailyEnabledChange(event: Event, el: HTMLInputElement) {
-        const { dailyKey } = elementData(el);
+        const { dailyKey } = elementDataset(el);
 
         if (el.checked) {
             await unsetFlag(this.actor, "disabled", dailyKey);
@@ -122,7 +121,7 @@ class DailyConfig extends Application {
             await setFlag(this.actor, "disabled", dailyKey, true);
         }
 
-        this.emitEvent("update");
+        this.dispatchEvent("update");
     }
 }
 

@@ -5,7 +5,7 @@ type CustomRow = {
     rank: OneToFour;
     label: string;
     options: {
-        value: SkillLongForm;
+        value: SkillSlug;
         label: string;
     }[];
 };
@@ -14,7 +14,7 @@ const tomeUUID = "Compendium.pf2e.classfeatures.Item.MyN1cQgE0HsLF20e";
 
 function itemCondition(actor: CharacterPF2e, item: ItemPF2e): Promisable<boolean> {
     const selected = utils.getChoiSetRuleSelection<string>(item);
-    return actor.items.get(selected)?.sourceId === tomeUUID;
+    return selected ? actor.items.get(selected)?.sourceId === tomeUUID : false;
 }
 
 const thaumaturgeTome = createDaily({
@@ -128,7 +128,7 @@ const thaumaturgeTome = createDaily({
                 const source = utils.createLoreSource({ name: selected, rank });
                 addItem(source);
             } else {
-                const skill = selected as SkillLongForm;
+                const skill = selected as SkillSlug;
                 const source = utils.createSkillRuleElement({
                     skill,
                     value: rank,

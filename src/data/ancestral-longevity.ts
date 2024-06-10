@@ -61,7 +61,7 @@ const ancestralLongevity = createDaily({
                 const source = utils.createLoreSource({ name: selected, rank });
                 addItem(source);
             } else {
-                const skill = selected as SkillLongForm;
+                const skill = selected as SkillSlug;
                 const source = utils.createSkillRuleElement({
                     skill,
                     value: rank,

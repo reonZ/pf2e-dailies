@@ -1,4 +1,4 @@
-import { MODULE, getFlag, updateFlag, type libWrapper } from "pf2e-api";
+import { MODULE, getFlag, libWrapper, updateFlag } from "foundry-pf2e";
 import { createUpdateCollection, isTemporary } from "./api";
 import { filterDailies, getDailies } from "./dailies";
 import { DailyActorFlags } from "./types";

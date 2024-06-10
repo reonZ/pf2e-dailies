@@ -7,7 +7,7 @@ import {
     spellSlotGroupIdToNumber,
     warn,
     warnInvalidDrop,
-} from "pf2e-api";
+} from "foundry-pf2e";
 import { ChargesSpellcastingSheetData } from "./types";
 
 function spellcastingEntryPrepareSiblingData(

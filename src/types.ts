@@ -87,6 +87,7 @@ type DailyActorFlags = {
     disabled?: { [k: string]: { [k: string]: DailyRowData } };
     dailies?: { [k: string]: { [k: string]: DailyRowData } };
     custom?: { [k: string]: { [k: string]: DailyRowData } };
+    tooltip?: string;
 };
 
 type DailyOptionsItems<TItemSlug extends string = string> = Record<TItemSlug, ItemPF2e | undefined>;

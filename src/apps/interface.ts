@@ -1028,14 +1028,6 @@ class DailyInterface extends Application {
             await actor.deleteEmbeddedDocuments("Item", deletedItems);
         }
 
-        await updateFlag<DailyActorFlags>(actor, {
-            ...flags,
-            extra: extraFlags,
-            rested: false,
-            schema: ACTOR_DAILY_SCHEMA,
-            addedItems: addedItemIds,
-        });
-
         const messages = Object.entries(messageGroups);
         const chatGroups = rawMessages.map(({ message, order }) => ({
             message: `<p>${message}</p>`,
@@ -1086,6 +1078,15 @@ class DailyInterface extends Application {
         ChatMessage.create({
             content: `<div class="pf2e-dailies-summary">${chatContent}</div>`,
             speaker: ChatMessage.getSpeaker({ actor }),
+        });
+
+        await updateFlag<DailyActorFlags>(actor, {
+            ...flags,
+            extra: extraFlags,
+            rested: false,
+            schema: ACTOR_DAILY_SCHEMA,
+            addedItems: addedItemIds,
+            tooltip: await TextEditor.enrichHTML(chatContent),
         });
     }
 

@@ -14,6 +14,7 @@ import {
     getSpellClass,
     templateLocalize,
     getSpellCollectionClass,
+    getFlag,
 } from "foundry-pf2e";
 import {
     canPrepareDailies,
@@ -164,7 +165,9 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQue
                 classes,
                 dataset: {
                     action: "prepare-dailies",
-                    tooltip: localize(canPrep ? "sheet.title" : "sheet.unrested"),
+                    tooltip: canPrep
+                        ? localize("sheet.title")
+                        : getFlag(actor, "tooltip") || localize("sheet.unrested"),
                 },
             });
 
@@ -391,7 +394,7 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
                 const messageSource = message.toObject();
                 const flags = messageSource.flags.pf2e;
 
-                flags.casting.embeddedSpell = this.toObject();
+                flags.casting!.embeddedSpell = this.toObject();
 
                 if (!create) {
                     message.updateSource(messageSource);

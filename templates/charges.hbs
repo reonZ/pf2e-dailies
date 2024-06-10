@@ -11,6 +11,6 @@
 {{/if}}
 {{#if action}}
 <button type="button" class="cast-spell blue" data-item-id="{{action.id}}">
-    <span class="action-glyph">{{action.cost}}</span> {{localize action.label}}
+    {{localize action.label}} <span class="action-glyph">{{action.cost}}</span>
 </button>
 {{/if}}

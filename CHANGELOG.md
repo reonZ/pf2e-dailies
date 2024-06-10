@@ -1,3 +1,12 @@
+# 3.4.0
+
+-   this is a system `6.0.1` release
+-   some internal changes have been made
+-   now generates a dailly preparation summary tooltip
+    -   shows when hovering over the coffee cup icon in the character sheet
+    -   contains the same details as the ones put in the chat message
+-   add Polish localization (thanks to [Lioheart](https://github.com/Lioheart))
+
 # 3.3.0
 
 -   this is a foundry `12.324` release

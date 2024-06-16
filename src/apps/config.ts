@@ -20,6 +20,8 @@ class DailyConfig extends foundry.utils.EventEmitterMixin<typeof Application, "u
     #actor: CharacterPF2e;
     #dailies: PreparedDaily[];
 
+    static emittedEvents = ["update", "close"];
+
     constructor(
         actor: CharacterPF2e,
         dailies: PreparedDaily[],
@@ -45,7 +47,7 @@ class DailyConfig extends foundry.utils.EventEmitterMixin<typeof Application, "u
 
     close(options?: { force?: boolean; noEmit?: boolean }) {
         if (!options?.noEmit) {
-            this.dispatchEvent("close");
+            this.dispatchEvent(new Event("close", { bubbles: true, cancelable: true }));
         }
         return super.close(options);
     }
@@ -104,7 +106,7 @@ class DailyConfig extends foundry.utils.EventEmitterMixin<typeof Application, "u
             max: actor.attributes.familiarAbilities.value,
         });
 
-        this.dispatchEvent("update");
+        this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
     }
 
     #onFamiliarRangeInput(event: Event, el: HTMLInputElement) {
@@ -121,7 +123,7 @@ class DailyConfig extends foundry.utils.EventEmitterMixin<typeof Application, "u
             await setFlag(this.actor, "disabled", dailyKey, true);
         }
 
-        this.dispatchEvent("update");
+        this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
     }
 }
 

@@ -1,44 +1,29 @@
 [id^="pf2e-dailies-settings-"] {
-    --daily-hover-color: #00000026;
+    --daily-hover-color: #ffffff26;
 
     max-height: 80%;
     width: 300px;
 
-    .window-content {
-        gap: 1em;
+    h3:not(:first-child) {
+        margin-top: 1em;
     }
 
     .familiar {
-        .group {
-            display: grid;
-            grid-template-columns: 1fr min-content;
-            align-items: center;
-            gap: 0.5em;
-            padding-inline: 0.2em;
-
-            input[type="number"] {
-                width: 4ch;
-                border: 1px solid var(--color-border-light-tertiary);
-                border-radius: 3px;
-                text-align: center;
-            }
+        input[type="number"] {
+            height: 1.6em;
+            flex: 0 0 2em;
+            font-size: unset;
         }
     }
 
-    .dailies {
+    .daily {
         display: flex;
-        flex-direction: column;
-        gap: 0.3em;
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 5px;
 
-        .daily {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-left: 5px;
-
-            &:hover {
-                background: var(--daily-hover-color);
-            }
+        &:hover {
+            background: var(--daily-hover-color);
         }
     }
 }

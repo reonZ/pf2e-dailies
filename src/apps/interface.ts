@@ -346,7 +346,7 @@ class DailyInterface extends Application {
             icon: "fa-solid fa-user-gear",
             onclick: (event) => {
                 if (this.#settingsApp) {
-                    this.#settingsApp.bringToTop();
+                    this.#settingsApp.bringToFront();
                     return;
                 }
 
@@ -368,7 +368,7 @@ class DailyInterface extends Application {
     }
 
     async close(options?: { force?: boolean | undefined }) {
-        this.#settingsApp?.close({ noEmit: true });
+        this.#settingsApp?.close();
         clearInterval(this.#randomInterval);
         return super.close(options);
     }

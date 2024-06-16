@@ -214,7 +214,8 @@
         },
         "config": {
             "filters": "Enabled Dailies",
-            "familiar": "Familiar Abilities"
+            "familiar": "Familiar Abilities",
+            "title": "{actor} - Daily Configs"
         }
     }
 }

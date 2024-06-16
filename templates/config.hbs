@@ -1,21 +1,18 @@
 {{#if familiar}}
-<div class="familiar">
-    <h3>{{i18n 'familiar'}}</h3>
-    <div class="group">
-        <input type="range" name="familiar-range" value="{{familiar.value}}" min="0"
-            max="{{familiar.max}}">
-        <input type="number" name="familiar-value" value="{{familiar.value}}" disabled>
+<h3>{{i18n 'familiar'}}</h3>
+<div class="form-group familiar">
+    <div class="form-fields">
+        <range-picker name="familiar-range" value="{{familiar.value}}" min="0"
+            max="{{familiar.max}}" step="1" tabindex="-1"></range-picker>
     </div>
 </div>
 {{/if}}
 
-<div class="dailies">
-    <h3>{{i18n 'filters'}}</h3>
-    {{#each dailies as |daily|}}
-    <div class="daily">
-        <span class="name">{{daily.label}}</span>
-        <input type="checkbox" name="daily-enabled" data-daily-key="{{daily.key}}" {{checked
-            daily.enabled}}>
-    </div>
-    {{/each}}
+<h3>{{i18n 'filters'}}</h3>
+{{#each dailies as |daily|}}
+<div class="form-group daily">
+    <label>{{daily.label}}</label>
+    <input type="checkbox" name="daily-enabled" data-daily-key="{{daily.key}}" {{checked
+        daily.enabled}}>
 </div>
+{{/each}}

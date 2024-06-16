@@ -1,58 +1,55 @@
 import {
     addListener,
     addListenerAll,
+    createHTMLElement,
     elementDataset,
-    htmlQuery,
+    localize,
+    render,
     setFlag,
     templateLocalize,
-    templatePath,
     unsetFlag,
 } from "foundry-pf2e";
 import { getDisabledDailies } from "../api";
 import { getFamiliarAbilityCount } from "../data/familiar";
 import type { PreparedDaily } from "../types";
 
-// interface DailyConfig extends WithEventManager {}
+const ApplicationV2 = foundry.applications.api.ApplicationV2;
 
-class DailyConfig extends foundry.utils.EventEmitterMixin<typeof Application, "update" | "close">(
-    Application
-) {
+class DailyConfig extends ApplicationV2 {
     #actor: CharacterPF2e;
     #dailies: PreparedDaily[];
-
-    static emittedEvents = ["update", "close"];
 
     constructor(
         actor: CharacterPF2e,
         dailies: PreparedDaily[],
-        options?: Partial<ApplicationOptions>
+        options?: PartialApplicationConfiguration
     ) {
         super(options);
-
         this.#actor = actor;
         this.#dailies = dailies;
     }
 
-    get template() {
-        return templatePath("config");
-    }
+    static emittedEvents = Object.freeze([...ApplicationV2.emittedEvents, "update"]);
+
+    static DEFAULT_OPTIONS: PartialApplicationConfiguration = {
+        id: "pf2e-hud-popup-{id}",
+        window: {
+            positioned: true,
+            resizable: true,
+            minimizable: true,
+            frame: true,
+        },
+    };
 
     get title() {
-        return this.actor.name;
+        return localize("config.title", { actor: this.actor.name });
     }
 
     get actor() {
         return this.#actor;
     }
 
-    close(options?: { force?: boolean; noEmit?: boolean }) {
-        if (!options?.noEmit) {
-            this.dispatchEvent(new Event("close", { bubbles: true, cancelable: true }));
-        }
-        return super.close(options);
-    }
-
-    getData(options?: any) {
+    async _prepareContext(options: ApplicationRenderOptions): Promise<ConfigContext> {
         const actor = this.actor;
         const disabled = getDisabledDailies(actor);
         const familiar = actor.familiar
@@ -66,28 +63,39 @@ class DailyConfig extends foundry.utils.EventEmitterMixin<typeof Application, "u
             familiar,
             dailies: this.#dailies.map((daily) => ({
                 key: daily.key,
-                label: daily.label,
+                label: daily.label as string,
                 enabled: disabled[daily.key] !== true,
             })),
             i18n: templateLocalize("config"),
         };
     }
 
-    activateListeners($html: JQuery<HTMLElement>): Promisable<void> {
-        const html = $html[0];
+    _renderHTML(context: ConfigContext, options: ApplicationRenderOptions): Promise<string> {
+        return render("config", context);
+    }
 
+    _replaceHTML(result: string, content: HTMLElement, options: ApplicationRenderOptions) {
+        const wrapper = createHTMLElement("div", { innerHTML: result });
+        content.replaceChildren(...wrapper.children);
+        this.#activateListeners(content);
+    }
+
+    _onRender() {
+        const familiarInput = this.element.querySelector<HTMLInputElement>(
+            ".window-content .familiar [name='familiar-range'] input[type='number']"
+        );
+
+        if (familiarInput) {
+            familiarInput.disabled = true;
+        }
+    }
+
+    #activateListeners(html: HTMLElement) {
         addListenerAll(
             html,
             "[name='daily-enabled']",
             "change",
             this.#onDailyEnabledChange.bind(this)
-        );
-
-        addListener(
-            html,
-            "[name='familiar-range']",
-            "input",
-            this.#onFamiliarRangeInput.bind(this)
         );
 
         addListener(
@@ -109,11 +117,6 @@ class DailyConfig extends foundry.utils.EventEmitterMixin<typeof Application, "u
         this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
     }
 
-    #onFamiliarRangeInput(event: Event, el: HTMLInputElement) {
-        const valueInput = htmlQuery<HTMLInputElement>(el.parentElement, "[name='familiar-value']");
-        if (valueInput) valueInput.value = el.value;
-    }
-
     async #onDailyEnabledChange(event: Event, el: HTMLInputElement) {
         const { dailyKey } = elementDataset(el);
 
@@ -126,5 +129,18 @@ class DailyConfig extends foundry.utils.EventEmitterMixin<typeof Application, "u
         this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
     }
 }
+
+type ConfigContext = {
+    familiar: Maybe<{
+        value: number;
+        max: number;
+    }>;
+    dailies: {
+        key: string;
+        label: string;
+        enabled: boolean;
+    }[];
+    i18n: ReturnType<typeof templateLocalize>;
+};
 
 export { DailyConfig };

@@ -1,4 +1,5 @@
 import {
+    R,
     addListener,
     addListenerAll,
     createHTMLElement,
@@ -32,7 +33,6 @@ class DailyConfig extends ApplicationV2 {
     static emittedEvents = Object.freeze([...ApplicationV2.emittedEvents, "update"]);
 
     static DEFAULT_OPTIONS: PartialApplicationConfiguration = {
-        id: "pf2e-hud-popup-{id}",
         window: {
             positioned: true,
             resizable: true,
@@ -59,13 +59,19 @@ class DailyConfig extends ApplicationV2 {
               }
             : undefined;
 
-        return {
-            familiar,
-            dailies: this.#dailies.map((daily) => ({
+        const dailies = R.pipe(
+            this.#dailies,
+            R.map((daily) => ({
                 key: daily.key,
                 label: daily.label as string,
                 enabled: disabled[daily.key] !== true,
             })),
+            R.sortBy(R.prop("label"))
+        );
+
+        return {
+            familiar,
+            dailies,
             i18n: templateLocalize("config"),
         };
     }

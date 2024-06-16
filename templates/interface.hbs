@@ -69,7 +69,7 @@
 {{/inline}}
 
 {{#*inline 'dropRow'}}
-<label data-row="{{this.row}}" data-droppable="true">{{this.label}}</label>
+<label data-row="{{this.row}}">{{this.label}}</label>
 <div class="drop">
     {{#if this.note}}
     <span class="note">
@@ -78,7 +78,7 @@
     </span>
     {{/if}}
     <input type="text" data-cache-tooltip="{{@root.i18n 'tooltip.exists'}}" value="{{this.value}}"
-        {{{this.data}}} data-droppable="true" readonly />
+        {{{this.data}}} readonly />
     <a class="browser" data-action="open-browser" data-tooltip="{{@root.i18n 'tooltip.search'}}">
         <i class="fa-solid fa-search"></i>
     </a>

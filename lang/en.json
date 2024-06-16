@@ -87,6 +87,7 @@
             "mind-runic": "Runic Smithing"
         },
         "interface": {
+            "title": "{actor} - Daily Preparation",
             "config": "Config",
             "noDailies": "This character doesn't have any daily",
             "accept": "Accept",

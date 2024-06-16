@@ -35,6 +35,7 @@ import {
     addListener,
     addListenerAll,
     createChatLink,
+    createHTMLElement,
     dataToDatasetString,
     elementDataset,
     error,
@@ -50,6 +51,7 @@ import {
     htmlQueryInClosest,
     localize,
     localizeIfExist,
+    render,
     setFlag,
     setFlagProperty,
     stringBoolean,
@@ -219,7 +221,7 @@ async function migration(actor: CharacterPF2e) {
     }, 200);
 }
 
-class DailyInterface extends Application {
+class DailyInterface extends foundry.applications.api.ApplicationV2 {
     #actor: CharacterPF2e;
     #dailies: PreparedDailies;
     #dailiesArray: PreparedDaily[];
@@ -241,12 +243,6 @@ class DailyInterface extends Application {
         dailies: PreparedDailies,
         options: Partial<ApplicationOptions> = {}
     ) {
-        options.dragDrop = [
-            {
-                dropSelector: '[data-droppable="true"]',
-            },
-        ];
-
         super(options);
 
         this.#actor = actor;
@@ -254,126 +250,58 @@ class DailyInterface extends Application {
         this.#dailiesArray = filterDailies(dailies);
     }
 
-    get template() {
-        return templatePath("interface");
+    static DEFAULT_OPTIONS: PartialApplicationConfiguration = {
+        window: {
+            positioned: true,
+            resizable: true,
+            minimizable: true,
+            frame: true,
+        },
+        actions: {
+            configs: this.#openConfigs,
+        },
+    };
+
+    static #openConfigs(this: DailyInterface, event: PointerEvent, target: HTMLElement) {
+        if (this.#settingsApp) {
+            this.#settingsApp.bringToFront();
+            return;
+        }
+
+        const actor = this.actor;
+        const id = `pf2e-dailies-settings-${actor.uuid}`;
+
+        this.#settingsApp = new DailyConfig(actor, this.#dailiesArray, { id });
+        this.#settingsApp.addEventListener("update", () =>
+            this.render({ position: { height: "auto" } })
+        );
+        this.#settingsApp.addEventListener("close", () => (this.#settingsApp = null), {
+            once: true,
+        });
+        this.#settingsApp.render(true);
     }
 
     get title() {
-        return this.actor.name;
+        return localize("interface.title", { actor: this.actor.name });
     }
 
     get actor() {
         return this.#actor;
     }
 
-    _canDragDrop(selector: string) {
-        return true;
+    async _renderFrame(options: ApplicationRenderOptions) {
+        const frame = await super._renderFrame(options);
+
+        const configLabel = localize("interface.config");
+        const configBtn = `<button type="button" class="header-control fa-solid fa-user-gear" 
+        data-action="configs" data-tooltip="${configLabel}" aria-label="${configLabel}"></button>`;
+
+        this.window.close.insertAdjacentHTML("beforebegin", configBtn);
+
+        return frame;
     }
 
-    async _onDrop(event: DragEvent) {
-        const localize = subLocalize("interface.drop.error");
-        const target =
-            event.target instanceof HTMLInputElement
-                ? event.target
-                : event.target instanceof HTMLLabelElement
-                ? htmlQueryInClosest<HTMLInputElement>(
-                      event.target,
-                      ".group",
-                      `input[data-row="${event.target.dataset.row}"]`
-                  )
-                : null;
-
-        if (!target) return;
-
-        const data = TextEditor.getDragEventData(event);
-
-        if (data?.type !== "Item" || typeof data.uuid !== "string") {
-            return localize.warn("wrongDataType");
-        }
-
-        const item = await fromUuid<SpellPF2e | FeatPF2e>(data.uuid);
-        const compendium = await this.#compendiumFilterFromElement(target);
-
-        if (!item || !compendium) {
-            return localize.warn("wrongDataType");
-        }
-
-        if (item.type !== compendium.type) {
-            return this.#dropDataWarning(
-                "type",
-                game.i18n.localize(`TYPES.Item.${compendium.type}`),
-                game.i18n.localize(`TYPES.Item.${item.type}`)
-            );
-        }
-
-        const dailyRow = this.#getDailyRow<DailyRowDrop>(compendium.daily, compendium.row);
-        if (typeof dailyRow.onDrop === "function") {
-            // @ts-ignore
-            const result = await dailyRow.onDrop(item, this.actor);
-
-            if (result === false) {
-                return localize.warn("exclude", { item: item.name });
-            }
-            if (typeof result === "string") {
-                return ui.notifications.warn(result);
-            }
-        }
-
-        const isFeat = item.isOfType("feat");
-        const isValid = isFeat
-            ? this.#validateFeat(item, compendium.filter as FeatFilters)
-            : this.#validateSpell(item, compendium.filter as SpellFilters);
-
-        if (!isValid) return;
-
-        target.value = item.name;
-        target.dataset.uuid = item.uuid;
-        htmlQueryInClosest(target, ".drop", ".clear")!.classList.remove("disabled");
-
-        if (isFeat) {
-            const exists = !!this.actor.itemTypes.feat.find((feat) => feat.sourceId === data.uuid);
-            target.classList.toggle("exists", exists);
-            target.dataset.tooltip = exists ? target.dataset.cacheTooltip : "";
-        }
-    }
-
-    _getHeaderButtons() {
-        const buttons = super._getHeaderButtons();
-
-        buttons.splice(-1, 0, {
-            class: "pf2e-dailies-config",
-            label: MODULE.path("interface.config"),
-            icon: "fa-solid fa-user-gear",
-            onclick: (event) => {
-                if (this.#settingsApp) {
-                    this.#settingsApp.bringToFront();
-                    return;
-                }
-
-                const actor = this.actor;
-                const id = `pf2e-dailies-settings-${actor.uuid}`;
-
-                this.#settingsApp = new DailyConfig(actor, this.#dailiesArray, { id });
-                this.#settingsApp.addEventListener("update", () =>
-                    this.render(false, { height: "auto" })
-                );
-                this.#settingsApp.addEventListener("close", () => (this.#settingsApp = null), {
-                    once: true,
-                });
-                this.#settingsApp.render(true);
-            },
-        });
-
-        return buttons;
-    }
-
-    async close(options?: { force?: boolean | undefined }) {
-        this.#settingsApp?.close();
-        clearInterval(this.#randomInterval);
-        return super.close(options);
-    }
-
-    async getData() {
+    async _prepareContext(options: ApplicationRenderOptions): Promise<DailyContext> {
         const actor = this.actor;
         await migration(actor);
 
@@ -556,8 +484,23 @@ class DailyInterface extends Application {
         };
     }
 
-    activateListeners($html: JQuery<HTMLElement>): void {
-        const html = $html[0];
+    async _renderHTML(context: DailyContext, options: ApplicationRenderOptions): Promise<string> {
+        return render("interface", context);
+    }
+
+    _replaceHTML(result: string, content: HTMLElement, options: ApplicationRenderOptions) {
+        const wrapper = createHTMLElement("div", { innerHTML: result });
+        content.replaceChildren(...wrapper.children);
+        this.#activateListeners(content);
+    }
+
+    _onClose() {
+        this.#settingsApp?.close();
+        clearInterval(this.#randomInterval);
+    }
+
+    #activateListeners(html: HTMLElement) {
+        addListenerAll(html, ".group > .drop", "drop", this.#onDrop.bind(this));
 
         addListener(html, "[data-action='accept']", () => this.#onAccept(html));
         addListener(html, "[data-action='cancel']", () => this.close());
@@ -617,7 +560,7 @@ class DailyInterface extends Application {
         const data = elementDataset<RowElementDataset>(el);
         const row = this.#getDailyRow<DailyRowAlert>(data.daily, data.row);
         const resolved = await row.resolve();
-        if (resolved) this.render(false, { height: "auto" });
+        if (resolved) this.render({ position: { height: "auto" } });
     }
 
     #onInputChange(event: Event, el: HTMLInputElement) {
@@ -1091,11 +1034,64 @@ class DailyInterface extends Application {
     }
 
     #lock() {
-        this.element.addClass("disabled");
+        this.element.classList.add("disabled");
     }
 
-    #unlock() {
-        this.element.removeClass("disabled");
+    async #onDrop(event: DragEvent, el: HTMLElement) {
+        const localize = subLocalize("interface.drop.error");
+        const target = htmlQuery<HTMLInputElement>(el, "input");
+        if (!target) return;
+
+        const data = TextEditor.getDragEventData(event);
+
+        if (data?.type !== "Item" || typeof data.uuid !== "string") {
+            return localize.warn("wrongDataType");
+        }
+
+        const item = await fromUuid<SpellPF2e | FeatPF2e>(data.uuid);
+        const compendium = await this.#compendiumFilterFromElement(target);
+
+        if (!item || !compendium) {
+            return localize.warn("wrongDataType");
+        }
+
+        if (item.type !== compendium.type) {
+            return this.#dropDataWarning(
+                "type",
+                game.i18n.localize(`TYPES.Item.${compendium.type}`),
+                game.i18n.localize(`TYPES.Item.${item.type}`)
+            );
+        }
+
+        const dailyRow = this.#getDailyRow<DailyRowDrop>(compendium.daily, compendium.row);
+        if (typeof dailyRow.onDrop === "function") {
+            // @ts-ignore
+            const result = await dailyRow.onDrop(item, this.actor);
+
+            if (result === false) {
+                return localize.warn("exclude", { item: item.name });
+            }
+            if (typeof result === "string") {
+                return ui.notifications.warn(result);
+            }
+        }
+
+        const isFeat = item.isOfType("feat");
+        const isValid = isFeat
+            ? this.#validateFeat(item, compendium.filter as FeatFilters)
+            : this.#validateSpell(item, compendium.filter as SpellFilters);
+
+        if (!isValid) return;
+
+        target.value = item.name;
+        target.dataset.uuid = item.uuid;
+        htmlQueryInClosest(target, ".drop", ".clear")!.classList.remove("disabled");
+
+        if (isFeat) {
+            const exists = !!this.actor.itemTypes.feat.find((feat) => feat.sourceId === data.uuid);
+            target.classList.toggle("exists", exists);
+            target.dataset.tooltip = exists ? target.dataset.cacheTooltip : "";
+        }
     }
 
     #dropDataWarning(type: string, need?: string | string[], has?: string | string[]) {
@@ -1287,10 +1283,6 @@ class DailyInterface extends Application {
         return true;
     }
 
-    #getDailyRow<T extends DailyRow>(daily: string, row: string) {
-        return this.#dailies[daily]?.prepared.rows[row] as T;
-    }
-
     async #compendiumFilterFromElement(el: HTMLElement, init?: boolean) {
         try {
             const data = elementDataset<RowElementDataset>(el);
@@ -1313,6 +1305,10 @@ class DailyInterface extends Application {
             console.error(err);
             console.error(`The error occured when trying to open a drop filter.`);
         }
+    }
+
+    #getDailyRow<T extends DailyRow>(daily: string, row: string) {
+        return this.#dailies[daily]?.prepared.rows[row] as T;
     }
 
     async #convertToCompendiumFilter<T extends DailyRowDropType>(
@@ -1414,5 +1410,21 @@ class DailyInterface extends Application {
         return compendiumFilter;
     }
 }
+
+type DailyContext = {
+    rows: RowTemplate[];
+    groups: DailyTemplate[];
+    i18n: (
+        key: string,
+        {
+            hash,
+        }: {
+            hash: Record<string, string>;
+        }
+    ) => string;
+    hasDailies: boolean;
+    hasAlert: boolean;
+    canAccept: boolean;
+};
 
 export { DailyInterface };

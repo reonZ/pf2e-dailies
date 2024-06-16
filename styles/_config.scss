@@ -4,26 +4,34 @@
     max-height: 80%;
     width: 300px;
 
-    h3:not(:first-child) {
-        margin-top: 1em;
-    }
+    .window-content {
+        padding: 0.5em 0.6em;
 
-    .familiar {
-        input[type="number"] {
-            height: 1.6em;
-            flex: 0 0 2em;
-            font-size: unset;
+        h3:not(:first-child) {
+            margin-top: 1em;
+        }
+
+        .familiar {
+            input[type="number"] {
+                height: 1.6em;
+                flex: 0 0 2em;
+                font-size: unset;
+            }
+        }
+
+        .daily {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 5px;
+
+            &:hover {
+                background: var(--daily-hover-color);
+            }
         }
     }
+}
 
-    .daily {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-left: 5px;
-
-        &:hover {
-            background: var(--daily-hover-color);
-        }
-    }
+.theme-light [id^="pf2e-dailies-settings-"] {
+    --daily-hover-color: #00000026;
 }

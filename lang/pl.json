@@ -87,6 +87,7 @@
             "mind-runic": "Kowalstwo Runiczne"
         },
         "interface": {
+            "title": "{actor} - Dzienne przygotowanie",
             "config": "Konfiguracja",
             "noDailies": "Ta postać nie ma żadnych dziennych przygotowań",
             "accept": "Akceptuj",
@@ -214,7 +215,8 @@
         },
         "config": {
             "filters": "Włączono Dzienne Aktywności",
-            "familiar": "Zdolności chowańca"
+            "familiar": "Zdolności chowańca",
+            "title": "{actor} - Dzienna konfiguracja"
         }
     }
 }

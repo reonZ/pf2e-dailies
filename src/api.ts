@@ -78,6 +78,11 @@ function getStaffFlags(actor: CharacterPF2e) {
     return getFlag<dailies.StaffFlags>(actor, "extra.staffData");
 }
 
+function getStaffItem(actor: CharacterPF2e) {
+    const flag = getStaffFlags(actor);
+    return (flag && actor.inventory.get(flag.staffId)) || null;
+}
+
 function setStaffChargesValue(actor: CharacterPF2e, value?: number) {
     const charges = getStaffFlags(actor)?.charges;
     if (!charges || (value != null && charges.value === value)) return;
@@ -130,6 +135,7 @@ export {
     getActorFlag,
     getDisabledDailies,
     getStaffFlags,
+    getStaffItem,
     isSimplifiableValue,
     isTemporary,
     openDailiesInterface,

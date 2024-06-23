@@ -1,3 +1,7 @@
+# 3.5.1
+
+-   add `getStaffItem` function to the API
+
 # 3.5.0
 
 -   switched the daily preparation & configs applications to `ApplicationV2`

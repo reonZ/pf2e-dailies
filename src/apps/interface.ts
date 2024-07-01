@@ -1191,7 +1191,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             const prerequisitesArr = prereqs.map((prerequisite) =>
                 prerequisite?.value ? prerequisite.value.toLowerCase() : ""
             );
-            const translatedSkills = getTranslatedSkills();
+            const translatedSkills = getTranslatedSkills(true);
             const skillList = Object.entries(translatedSkills);
             const skills: Set<SkillSlug> = new Set();
 

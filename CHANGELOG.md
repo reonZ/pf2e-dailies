@@ -1,3 +1,7 @@
+# 3.5.2
+
+-   fixed issue preventing the use of `counteract` with staff spells
+
 # 3.5.1
 
 -   add `getStaffItem` function to the API

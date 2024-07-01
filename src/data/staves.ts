@@ -11,7 +11,6 @@ import {
     htmlQuery,
     htmlQueryAll,
     localize,
-    render,
     subLocalize,
     waitDialog,
     warn,

@@ -1,3 +1,7 @@
+# 3.5.3
+
+-   added `canPrepareDailies` and `getDailiesSummary` api functions
+
 # 3.5.2
 
 -   fixed issue preventing the use of `counteract` with staff spells

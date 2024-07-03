@@ -1,17 +1,17 @@
-import { R, getActorMaxRank, getFlag, setFlag } from "foundry-pf2e";
+import { R, getActorMaxRank, getFlag, localize, setFlag } from "foundry-pf2e";
 import { DailyInterface } from "./apps/interface";
 import { getDailies } from "./dailies";
 import type { DailyActorFlags, SimplifiableValue } from "./types";
 
-function isValidActor(actor: CharacterPF2e) {
+function isValidActor(actor: ActorPF2e): actor is CharacterPF2e {
     return actor instanceof Actor && actor.isOfType("character");
 }
 
-function canPrepareDailies(actor: CharacterPF2e) {
+function canPrepareDailies(actor: ActorPF2e) {
     return isValidActor(actor) && getActorFlag(actor, "rested") !== false;
 }
 
-async function openDailiesInterface(actor: CharacterPF2e) {
+async function openDailiesInterface(actor: ActorPF2e) {
     if (!isValidActor(actor) || !actor.isOwner || !canPrepareDailies(actor)) {
         return;
     }
@@ -20,6 +20,10 @@ async function openDailiesInterface(actor: CharacterPF2e) {
     const dailies = await getDailies(actor);
 
     new DailyInterface(actor, dailies, { id }).render(true);
+}
+
+function getDailiesSummary(actor: ActorPF2e): string {
+    return (isValidActor(actor) && getFlag(actor, "tooltip")) || localize("sheet.unrested");
 }
 
 function getDisabledDailies(actor: CharacterPF2e) {
@@ -133,6 +137,7 @@ export {
     canPrepareDailies,
     createUpdateCollection,
     getActorFlag,
+    getDailiesSummary,
     getDisabledDailies,
     getStaffFlags,
     getStaffItem,

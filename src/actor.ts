@@ -6,19 +6,19 @@ import {
     elementDataset,
     getHighestSpellcastingStatistic,
     getSetting,
+    getSpellClass,
+    getSpellCollectionClass,
     htmlQuery,
     itemIsOfType,
     libWrapper,
     localize,
     render,
-    getSpellClass,
     templateLocalize,
-    getSpellCollectionClass,
-    getFlag,
 } from "foundry-pf2e";
 import {
     canPrepareDailies,
     getActorFlag,
+    getDailiesSummary,
     getStaffFlags,
     isTemporary,
     openDailiesInterface,
@@ -165,9 +165,7 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQue
                 classes,
                 dataset: {
                     action: "prepare-dailies",
-                    tooltip: canPrep
-                        ? localize("sheet.title")
-                        : getFlag(actor, "tooltip") || localize("sheet.unrested"),
+                    tooltip: canPrep ? localize("sheet.title") : getDailiesSummary(actor),
                     tooltipClass: canPrep ? "pf2e" : "pf2e pf2e-dailies-summary",
                 },
             });

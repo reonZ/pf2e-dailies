@@ -15,7 +15,14 @@ import {
     onRenderNPCSheetPF2e,
     performDailyCrafting,
 } from "./actor";
-import { canCastRank, getStaffItem, openDailiesInterface, setStaffChargesValue } from "./api";
+import {
+    canCastRank,
+    canPrepareDailies,
+    getDailiesSummary,
+    getStaffItem,
+    openDailiesInterface,
+    setStaffChargesValue,
+} from "./api";
 import { CustomDailies } from "./apps/customs";
 import { DAILY_SCHEMA, initDailies, parseDailies, registerCustomDailies } from "./dailies";
 import { createLanguageDaily } from "./data/languages";
@@ -79,6 +86,8 @@ Hooks.once("init", () => {
         setStaffChargesValue,
         openDailiesInterface,
         registerCustomDailies,
+        getDailiesSummary,
+        canPrepareDailies,
         utils,
         dailyHelpers: {
             createComboSkillDaily,

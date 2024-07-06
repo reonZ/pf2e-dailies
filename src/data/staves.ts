@@ -584,22 +584,20 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
                     }),
                 });
 
-                const callback = (html: JQuery) => {
-                    const el = htmlQuery<HTMLInputElement>(html[0], "[name=entry]:checked");
-                    return elementDataset(el!) as { entry: string; slot: SlotKey };
-                };
-
                 useSpontaneous = await waitDialog({
                     title: localize("title"),
-                    template: "spontaneous",
-                    default: "no",
+                    content: "spontaneous",
+                    classes: ["pf2e-dailies-spontaneous"],
                     yes: {
                         label: game.i18n.localize("Yes"),
-                        callback,
+                        callback: async (event, btn, html) => {
+                            const el = htmlQuery(html, "[name=entry]:checked")!;
+                            return elementDataset(el) as { entry: string; slot: SlotKey };
+                        },
                     },
                     no: {
                         label: game.i18n.localize(mustUseSpontaneous ? "Cancel" : "No"),
-                        callback: () => false,
+                        default: true,
                     },
                     data: {
                         hint,

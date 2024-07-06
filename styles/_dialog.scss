@@ -1,4 +1,4 @@
-.app.dialog {
+.application.dialog {
     .pf2e-dailies-spontaneous {
         margin-bottom: 0.7em;
 
@@ -8,7 +8,6 @@
 
         .hint {
             text-align: center;
-            margin-bottom: 0.5em;
         }
 
         h3 {
@@ -21,7 +20,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.2em;
-            margin-left: 0.3em;
+            margin: 0 0 0 0.3em;
         }
 
         input {

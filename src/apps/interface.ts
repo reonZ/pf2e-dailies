@@ -51,6 +51,7 @@ import {
     htmlQueryInClosest,
     localize,
     localizeIfExist,
+    promptDialog,
     render,
     setFlag,
     setFlagProperty,
@@ -186,7 +187,7 @@ async function migration(actor: CharacterPF2e) {
             const formated = messageList
                 .map((x) => {
                     const str = localize("interface.migration", x);
-                    return `<p>${str}</p>`;
+                    return `<div>${str}</div>`;
                 })
                 .join("");
 
@@ -194,12 +195,12 @@ async function migration(actor: CharacterPF2e) {
         }
 
         if (migrationMessages.length) {
-            messages.push(`<h3>${migration.schema}</h3>`, migrationMessages.join("<hr />"));
+            messages.push(`<h3>${migration.schema}</h3>`, migrationMessages.join(""));
         }
     }
 
     if (reset) {
-        messages.unshift(localize("interface.migration.reset"), "<br>");
+        messages.unshift(`<div>${localize("interface.migration.reset")}</div>`);
         await unsetMofuleFlag(actor);
     } else {
         await setFlag(actor, "schema", ACTOR_DAILY_SCHEMA);
@@ -209,15 +210,16 @@ async function migration(actor: CharacterPF2e) {
         return;
     }
 
-    messages.push("<br>");
-
     setTimeout(() => {
-        Dialog.prompt({
-            content: messages.join(""),
-            title: localize("interface.migration.title"),
-            label: localize("interface.migration.label"),
-            rejectClose: false,
-        });
+        promptDialog(
+            {
+                title: localize("interface.migration.title"),
+                label: localize("interface.migration.label"),
+                content: messages.join(""),
+                classes: ["pf2e-dailies-migration"],
+            },
+            { width: 500 }
+        );
     }, 200);
 }
 

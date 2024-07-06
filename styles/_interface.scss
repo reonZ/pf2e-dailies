@@ -1,5 +1,5 @@
 [id^="pf2e-dailies-interface-"] {
-    --alert-color: #830000;
+    --alert-color: #fd3737;
     --unallowed-color: red;
     --disabled-color: grey;
     --exists-color: #ffa900;
@@ -57,6 +57,7 @@
                         input {
                             background: none;
                             text-align: end;
+                            border: none;
                         }
 
                         input:read-only,
@@ -109,6 +110,7 @@
                     }
 
                     h3 {
+                        font-size: 1.5em;
                         grid-column: 1 / -1;
                         margin-bottom: 0.2em;
                     }

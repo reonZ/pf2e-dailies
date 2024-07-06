@@ -7,8 +7,12 @@
     .window-content {
         padding: 0.5em 0.6em;
 
-        h3:not(:first-child) {
-            margin-top: 1em;
+        h3 {
+            font-size: 1.5em;
+
+            &:not(:first-child) {
+                margin-top: 1em;
+            }
         }
 
         .familiar {

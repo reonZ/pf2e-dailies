@@ -1,4 +1,4 @@
-import { MODULE, R, htmlQuery, localize, subLocalize } from "foundry-pf2e";
+import { MODULE, R, localize, subLocalize, waitDialog } from "foundry-pf2e";
 import { createDaily } from "../daily";
 import { DailyRowSelectOption } from "../types";
 import { utils } from "../utils";
@@ -75,49 +75,32 @@ async function createMindWeapon(actor: CharacterPF2e) {
         })
     );
 
-    const runeSelect = `<label class="runes">
-        ${game.i18n.localize("PF2E.PotencyRuneLabel")}
-        <select name="rune">
-            ${potencyRunes.join("")}
-        </select>
-    </label>`;
+    const runeSelect = `<div class="form-group">
+        <label class="runes">${game.i18n.localize("PF2E.PotencyRuneLabel")}</label>
+        <div class="form-fields">
+            <select name="rune">${potencyRunes.join("")}</select>
+        </div>
+    </div>`;
 
-    const selection = await Dialog.wait(
+    const selection = await waitDialog<{ type: StringNumber; rune: StringNumber }>(
         {
             title: weaponLocalize("title"),
             content: flavor + weaponRows.join("") + runeSelect,
-            buttons: {
-                yes: {
-                    icon: '<i class="fas fa-save"></i>',
-                    label: weaponLocalize("yes"),
-                    callback: ($html) => {
-                        const html = $html[0];
-                        const input = htmlQuery<HTMLInputElement>(
-                            html,
-                            "input[name='type']:checked"
-                        );
-                        const select = htmlQuery<HTMLSelectElement>(html, "select[name='rune']");
-
-                        return {
-                            type: Number(input!.value),
-                            rune: Number(select!.value) as ZeroToFour,
-                        };
-                    },
-                },
-                no: {
-                    icon: '<i class="fas fa-times"></i>',
-                    label: weaponLocalize("no"),
-                    callback: () => null,
-                },
+            classes: ["pf2e-dailies-mind-weapon"],
+            yes: {
+                label: weaponLocalize("yes"),
+                icon: "fas fa-save",
             },
-            close: () => null,
+            no: {
+                label: weaponLocalize("no"),
+            },
         },
-        { id: "pf2e-dailies-weapon", width: 600 }
+        { width: 600 }
     );
 
-    if (selection === null) return false;
+    if (!selection) return false;
 
-    const { die, traits, usage } = weaponBases[selection.type];
+    const { die, traits, usage } = weaponBases[Number(selection.type)];
 
     const source: PreCreate<WeaponSource> = {
         type: "weapon",
@@ -139,7 +122,7 @@ async function createMindWeapon(actor: CharacterPF2e) {
                 value: usage,
             },
             runes: {
-                potency: selection.rune,
+                potency: Number(selection.rune) as ZeroToFour,
             },
         },
     };

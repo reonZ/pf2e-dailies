@@ -33,36 +33,18 @@
             margin: 0;
         }
     }
-}
 
-#pf2e-dailies-weapon {
-    .window-content {
-        .dialog-content {
-            .flavor {
-                text-align: center;
-            }
-
-            input {
-                margin-right: 0.5em;
-            }
-
-            label:not(:first-child) {
-                margin-top: 0.5em;
-                display: block;
-            }
-
-            .runes {
-                margin-left: 2em;
-
-                label {
-                    font-weight: bold;
-                    margin-right: 0.5em;
-                }
-            }
+    .pf2e-dailies-mind-weapon {
+        .flavor {
+            text-align: center;
         }
 
-        .dialog-buttons {
-            margin-top: 1em;
+        input {
+            margin-right: 0.5em;
+        }
+
+        .runes {
+            margin-left: 1em;
         }
     }
 }

@@ -1,35 +1,4 @@
 import {
-    createUpdateCollection,
-    getActorFlag,
-    getDisabledDailies,
-    isSimplifiableValue,
-    simplifyValue,
-} from "../api";
-import { filterDailies } from "../dailies";
-import { filterIsOfType, rowIsOfType } from "../daily";
-import { hasStaves } from "../data/staves";
-import type {
-    DailyActorFlags,
-    DailyMessageGroup,
-    DailyRow,
-    DailyRowAlert,
-    DailyRowComboData,
-    DailyRowData,
-    DailyRowDrop,
-    DailyRowDropData,
-    DailyRowDropFeatFilter,
-    DailyRowDropFilters,
-    DailyRowDropType,
-    DailyRowSelectOption,
-    DailyRowSelectOptionValue,
-    DailyRowType,
-    DailyRuleElement,
-    PreparedDailies,
-    PreparedDaily,
-} from "../types";
-import { DailyConfig } from "./config";
-import { utils } from "../utils";
-import {
     MODULE,
     R,
     addListener,
@@ -59,11 +28,41 @@ import {
     stringNumber,
     subLocalize,
     templateLocalize,
-    templatePath,
     unsetMofuleFlag,
     updateFlag,
     warn,
 } from "foundry-pf2e";
+import {
+    createUpdateCollection,
+    getActorFlag,
+    getDisabledDailies,
+    isSimplifiableValue,
+    simplifyValue,
+} from "../api";
+import { filterDailies } from "../dailies";
+import { filterIsOfType, rowIsOfType } from "../daily";
+import { hasStaves } from "../data/staves";
+import type {
+    DailyActorFlags,
+    DailyMessageGroup,
+    DailyRow,
+    DailyRowAlert,
+    DailyRowComboData,
+    DailyRowData,
+    DailyRowDrop,
+    DailyRowDropData,
+    DailyRowDropFeatFilter,
+    DailyRowDropFilters,
+    DailyRowDropType,
+    DailyRowSelectOption,
+    DailyRowSelectOptionValue,
+    DailyRowType,
+    DailyRuleElement,
+    PreparedDailies,
+    PreparedDaily,
+} from "../types";
+import { utils } from "../utils";
+import { DailyConfig } from "./config";
 
 type DailyTemplate = {
     label: string;

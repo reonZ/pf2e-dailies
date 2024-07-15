@@ -92,8 +92,9 @@
 {{#*inline 'comboRow'}}
 <label data-row="{{this.row}}">{{this.label}}</label>
 <div class="combo">
-    <select data-dailykey="{{this.daily}}" data-unique="{{this.unique}}" {{#unless
-        this.options.length}}data-tooltip="{{@root.i18n 'tooltip.noSelect'}}" disabled{{/unless}}>
+    <select data-dailykey="{{this.daily}}" {{#if this.unique}} data-unique="{{this.unique}}" {{/if}}
+        {{#unless this.options.length}}data-tooltip="{{@root.i18n 'tooltip.noSelect'}}"
+        disabled{{/unless}}>
         <option value="" data-skip-unique="true"></option>
         {{> selectOptions this}}
     </select>
@@ -103,8 +104,8 @@
 
 {{#*inline 'selectRow'}}
 <label data-row="{{this.row}}">{{this.label}}</label>
-<select {{{this.data}}} data-dailykey="{{this.daily}}" data-unique="{{this.unique}}" {{disabled (lte
-    this.options.length 1)}}>
+<select {{{this.data}}} data-dailykey="{{this.daily}}" {{#if this.unique}}
+    data-unique="{{this.unique}}" {{/if}} {{disabled (lte this.options.length 1)}}>
     {{> selectOptions this}}
 </select>
 {{/inline}}

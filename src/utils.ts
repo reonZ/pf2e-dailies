@@ -36,25 +36,32 @@ const utils = {
         return localize ? game.i18n.localize(label).capitalize() : label;
     },
     getResistances: () => {
-        return configToOptions("resistanceTypes").map(({ label, value }) => ({
-            value,
-            label: label.capitalize(),
-        }));
+        return R.pipe(
+            CONFIG.PF2E.resistanceTypes,
+            R.entries(),
+            R.map(([value, label]) => ({ value, label: label.capitalize() }))
+        );
     },
     getLanguageLabel: (language: string, localize = true) => {
         const label = CONFIG.PF2E.languages[language];
         return localize ? game.i18n.localize(label) : label;
     },
     getLanguages: () => {
-        return configToOptions("languages");
+        return R.pipe(
+            CONFIG.PF2E.languages,
+            R.entries(),
+            R.map(([value, label]) => ({ value, label }))
+        );
     },
     getSkillLabel: (skill: SkillSlug, localize = true) => {
-        const label = CONFIG.PF2E.skillList[skill];
+        const label = CONFIG.PF2E.skills[skill].label;
         return localize ? game.i18n.localize(label) : label;
     },
     getSkills: () => {
-        return configToOptions("skillList").filter(
-            (x): x is { value: SkillSlug; label: string } => x.value !== "lore"
+        return R.pipe(
+            CONFIG.PF2E.skills,
+            R.entries(),
+            R.map(([value, { label }]) => ({ value, label }))
         );
     },
     getSpellRankLabel: (rank: ZeroToTen) => {
@@ -304,14 +311,6 @@ const utils = {
         return `${name} (${getRankLabel(rank)})`;
     },
 };
-
-function configToOptions<T extends keyof typeof CONFIG.PF2E>(type: T, capitalize = false) {
-    return R.pipe(
-        CONFIG.PF2E[type],
-        R.entries(),
-        R.map(([value, label]) => ({ value, label }))
-    );
-}
 
 async function createSpellConsumableSource(
     type: SpellConsumableItemType,

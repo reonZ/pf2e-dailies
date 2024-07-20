@@ -1,3 +1,10 @@
+# 3.6.0
+
+-   this is a system `6.1.0` release
+-   switched the remaining applications used by the module to `ApplicationV2`
+-   minor styling updates for headers and the `Alert` field
+-   fixed breaking changes with skills
+
 # 3.5.3
 
 -   added `canPrepareDailies` and `getDailiesSummary` api functions

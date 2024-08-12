@@ -1,3 +1,7 @@
+# 3.6.1
+
+-   fixed `Blade Armament` not being updated to PC2
+
 # 3.6.0
 
 -   this is a system `6.1.0` release

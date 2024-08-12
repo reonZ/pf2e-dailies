@@ -40,7 +40,7 @@ const BUILTINS_DAILIES: Daily[] = [
     ceremonialKnife, // Ceremonial Knife
     tricksterAce, // Trickster Ace
     thaumaturgeTome, //Thaumaturge Tome
-    bladeAlly, // Blade Ally
+    bladeAlly, // Blessed Armament
     mindSmith, // Mind Smith
     createLoreSkillDaily(
         "quick-study", // Quick Study

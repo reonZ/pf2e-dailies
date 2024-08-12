@@ -13,19 +13,11 @@ const bladeAlly = createDaily({
             required: true,
         },
         {
-            slug: "good", // The Tenets of Good
-            uuid: "Compendium.pf2e.classfeatures.Item.nxZYP3KGfTSkaW6J",
-        },
-        {
-            slug: "evil", // The Tenets of Evil
-            uuid: "Compendium.pf2e.classfeatures.Item.JiY2ZB4FkK8RJm4T",
-        },
-        {
-            slug: "spirit", // Radiant Blade Spirit
+            slug: "radiant", // Radiant Armament
             uuid: "Compendium.pf2e.feats-srd.Item.h5ksUZlrVGBjq6p4",
         },
         {
-            slug: "master", // Radiant Blade Master
+            slug: "paragon", // Armament Paragon
             uuid: "Compendium.pf2e.feats-srd.Item.jYEMVfrXJLpXS6aC",
         },
     ],
@@ -34,30 +26,36 @@ const bladeAlly = createDaily({
         const weapons = actor.itemTypes.weapon.filter((weapon) => !weapon.isAlchemical);
         if (!weapons.length) return [];
 
-        const isHoly = actor.traits.has("holy");
-        const isUnholy = actor.traits.has("unholy");
-        const runes: WeaponPropertyRuneType[] = [];
+        const runes: WeaponPropertyRuneType[] = [
+            "fearsome",
+            "ghostTouch",
+            "returning",
+            "shifting",
+            "disrupting", // disrupting = vitalizing
+        ];
 
-        runes.push("returning", "shifting");
+        if (items.radiant) {
+            runes.push("astral", "brilliant");
 
-        if (items.spirit) {
-            runes.push("flaming");
-            if (isHoly) runes.push("holy");
-            if (isUnholy) runes.push("unholy");
+            if (actor.traits.has("holy")) {
+                runes.push("holy");
+            } else if (actor.traits.has("unholy")) {
+                runes.push("unholy");
+            }
         }
 
-        if (items.master) {
-            // greaterDisrupting = greaterVitalizing
-            runes.push("dancing", "greaterDisrupting", "keen");
-        }
+        if (items.paragon) {
+            runes.push(
+                "dancing", // dancing = animated
+                "greaterFearsome",
+                "grievous",
+                "keen",
+                "greaterDisrupting" // greaterDisrupting = greaterVitalizing
+            );
 
-        if (items.good) {
-            // disrupting = vitalizing
-            runes.push("ghostTouch", "disrupting");
-        }
-
-        if (items.evil) {
-            runes.push("fearsome");
+            if (items.radiant) {
+                runes.push("greaterAstral", "greaterBrilliant");
+            }
         }
 
         return [

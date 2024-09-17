@@ -18,15 +18,15 @@
         {{/each}}
         {{else}}
         <div class="nothing">
-            {{i18n 'noDailies'}}
+            {{@root.i18n 'noDailies'}}
         </div>
         {{/if}}
     </div>
     <div class="buttons{{#unless canAccept}} no-accept{{/unless}}">
         {{#if canAccept}}
-        <button data-action="accept"><i class="fas fa-mug-saucer"></i> {{i18n 'accept'}}</button>
+        <button data-action="accept"><i class="fas fa-mug-saucer"></i> {{@root.i18n 'accept'}}</button>
         {{/if}}
-        <button data-action="cancel"><i class="fas fa-times"></i> {{i18n 'cancel'}}</button>
+        <button data-action="cancel"><i class="fas fa-times"></i> {{@root.i18n 'cancel'}}</button>
     </div>
 </div>
 <div class="cover">

@@ -1,4 +1,4 @@
-<label>{{i18n 'label'}}</label>
+<label>{{@root.i18n 'label'}}</label>
 <input type="number" data-action="change-charges" min="0" value="{{charges.value}}"
     max="{{charges.max}}" step="1" {{disabled (not isOwner)}}>
 {{#if withMax}}
@@ -7,7 +7,7 @@
 {{/if}}
 {{#if isOwner}}
 <a {{#if (eq charges.value charges.max)}}class="disabled" {{/if}} data-action="reset-charges"><i
-        class="fas fa-redo" data-tooltip="{{i18n 'tooltip' max=charges.max}}"></i></a>
+        class="fas fa-redo" data-tooltip="{{@root.i18n 'tooltip' max=charges.max}}"></i></a>
 {{/if}}
 {{#if action}}
 <button type="button" class="cast-spell blue" data-item-id="{{action.id}}">

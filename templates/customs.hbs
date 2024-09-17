@@ -13,20 +13,20 @@
         </div>
         <div class="buttons">
             <button type="button" data-action="create-daily">
-                <i class="fas fa-mug-saucer"></i> {{i18n 'list.create'}}
+                <i class="fas fa-mug-saucer"></i> {{@root.i18n 'list.create'}}
             </button>
         </div>
     </div>
     <div class="right">
         {{#if readonly}}
         <div class="readonly">
-            {{{i18n 'readonly.flavor'}}}
+            {{{@root.i18n 'readonly.flavor'}}}
         </div>
         {{/if}}
         <textarea class="editor" {{disabled (or readonly disabled)}}
             spellcheck="false">{{code}}</textarea>
         <button type="button" data-action="save-daily" {{disabled (or readonly disabled)}}>
-            <i class="fas fa-save"></i> {{i18n 'code.save'}}
+            <i class="fas fa-save"></i> {{@root.i18n 'code.save'}}
         </button>
     </div>
 </form>

@@ -1,5 +1,5 @@
 {{#if familiar}}
-<h3>{{i18n 'familiar'}}</h3>
+<h3>{{@root.i18n 'familiar'}}</h3>
 <div class="form-group familiar">
     <div class="form-fields">
         <range-picker name="familiar-range" value="{{familiar.value}}" min="0"
@@ -8,7 +8,7 @@
 </div>
 {{/if}}
 
-<h3>{{i18n 'filters'}}</h3>
+<h3>{{@root.i18n 'filters'}}</h3>
 {{#each dailies as |daily|}}
 <div class="form-group daily">
     <label>{{daily.label}}</label>

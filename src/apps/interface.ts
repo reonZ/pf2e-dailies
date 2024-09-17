@@ -8,6 +8,7 @@ import {
     dataToDatasetString,
     elementDataset,
     error,
+    getCompendiumFilters,
     getFlag,
     getFlagProperty,
     getHighestSpellcastingStatistic,
@@ -1317,12 +1318,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         init?: boolean
     ) {
         const type = dropFilter.type;
-        const compendiumTab = game.pf2e.compendiumBrowser.tabs[type];
-        const compendiumFilter = init
-            ? await compendiumTab.getFilterData()
-            : compendiumTab.isInitialized
-            ? foundry.utils.deepClone(compendiumTab.defaultFilterData)
-            : foundry.utils.deepClone(compendiumTab.filterData);
+        const compendiumFilter = await getCompendiumFilters(type, init);
 
         if (filterIsOfType(dropFilter, "spell")) {
             const rank = Array.isArray(dropFilter.search.rank)

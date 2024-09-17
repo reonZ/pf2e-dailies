@@ -1,3 +1,9 @@
+# 3.7.0
+
+-   this is a system `6.4.0` release
+-   mainly some behind the scene stuff
+-   fix `performDailyCrafting` not working properly with the latest system version
+
 # 3.6.1
 
 -   fixed `Blade Armament` not being updated to PC2

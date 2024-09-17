@@ -3,6 +3,7 @@ import {
     createChatLink,
     createConsumableFromSpell,
     getActorMaxRank,
+    getChoiceSetSelection,
     getRankLabel,
     getSetting,
     hasFreePropertySlot,
@@ -20,13 +21,12 @@ type CreateSpellConsumableSourceOptions = {
 };
 
 const utils = {
-    getChoiSetRuleSelection: <T>(item: ItemPF2e, option?: string) => {
-        const rules = item._source.system.rules;
-        const rule = rules.find(
-            (rule: ChoiceSetSource): rule is ChoiceSetSource =>
-                rule.key === "ChoiceSet" && (!option || rule.rollOption === option)
-        );
-        return rule?.selection as T | undefined;
+    getChoiSetRuleSelection: <T extends any = string>(
+        item: ItemPF2e,
+        option?: string | { option?: string; flag?: string }
+    ) => {
+        const options = typeof option === "string" ? { option } : option;
+        return getChoiceSetSelection(item, options);
     },
     hasFreePropertySlot: (item: WeaponPF2e) => {
         return hasFreePropertySlot(item);

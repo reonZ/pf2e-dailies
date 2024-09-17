@@ -27,9 +27,11 @@ import {
 import { StaffSpellcasting } from "./data/staves";
 
 async function performDailyCrafting(this: CharacterPF2e) {
-    const entries = (await this.getCraftingEntries()).filter((e) => e.isDailyPrep);
+    const entries = this.crafting.abilities.filter((e) => e.isDailyPrep);
     const alchemicalEntries = entries.filter((e) => e.isAlchemical);
-    const reagentCost = alchemicalEntries.reduce((sum, entry) => sum + entry.reagentCost, 0);
+    const reagentCost = (
+        await Promise.all(alchemicalEntries.map((e) => e.calculateReagentCost()))
+    ).reduce((sum, cost) => sum + cost, 0);
     const reagentValue = (this.system.resources.crafting.infusedReagents.value || 0) - reagentCost;
     if (reagentValue < 0) {
         ui.notifications.warn(game.i18n.localize("PF2E.CraftingTab.Alerts.MissingReagents"));
@@ -45,13 +47,13 @@ async function performDailyCrafting(this: CharacterPF2e) {
         );
     }
 
-    // Remove infused/temp items
+    // // Remove infused/temp items
     // for (const item of this.inventory) {
     //     if (item.system.temporary) await item.delete();
     // }
 
     for (const entry of entries) {
-        for (const formula of entry.preparedCraftingFormulas) {
+        for (const formula of await entry.getPreparedCraftingFormulas()) {
             const itemSource: PhysicalItemSource = formula.item.toObject();
             itemSource.system.quantity = formula.quantity;
             itemSource.system.temporary = true;

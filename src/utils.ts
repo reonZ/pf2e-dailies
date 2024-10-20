@@ -8,6 +8,7 @@ import {
     getChoiceSetSelection,
     getRankLabel,
     getSetting,
+    getSpellcastingMaxRank,
     hasFreePropertySlot,
     rollDie,
     setFlagProperty,
@@ -89,9 +90,10 @@ const utils = {
         const maxRank = R.pipe(
             actor.spellcasting.spellcastingFeatures,
             tradition ? R.filter((entry) => entry.tradition === tradition) : R.identity(),
-            R.map((entry) => entry.highestRank),
+            R.map(getSpellcastingMaxRank),
             R.firstBy([R.identity(), "desc"])
         );
+        console.log(maxRank);
         return maxRank ?? 0;
     },
     getActors: (actor?: CharacterPF2e) => {

@@ -1,3 +1,8 @@
+# 3.7.1
+
+-   improve how spellcasting entries are checked for the purpose of finding the highest rank
+    -   this will fix issues with characters who can only cast spells at a lower rank (due to dedication)
+
 # 3.7.0
 
 -   this is a system `6.4.0` release

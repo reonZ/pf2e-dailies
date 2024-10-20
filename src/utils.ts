@@ -1,7 +1,9 @@
 import {
+    CreateSpellcastingSource,
     R,
     createChatLink,
     createConsumableFromSpell,
+    createSpellcastingSource,
     getActorMaxRank,
     getChoiceSetSelection,
     getRankLabel,
@@ -229,57 +231,13 @@ const utils = {
 
         return typeof result === "object" ? result.value : result;
     },
-    createSpellcastingEntrySource: ({
-        category,
-        identifier,
-        name,
-        sort,
-        attribute,
-        proficiencySlug,
-        showSlotlessRanks,
-        proficiencyRank,
-        tradition,
-        flags,
-    }: {
-        category: SpellcastingCategory;
-        identifier: string;
-        name: string;
-        sort?: number;
-        attribute?: AttributeString | null;
-        proficiencySlug?: string;
-        showSlotlessRanks?: boolean;
-        proficiencyRank?: ZeroToFour | null;
-        tradition?: MagicTradition;
-        flags?: Record<string, JSONValue>;
-    }) => {
-        const source: PreCreate<SpellcastingEntrySource> = {
-            type: "spellcastingEntry",
-            name,
-            sort: sort ?? 0,
-            system: {
-                ability: {
-                    value: (!proficiencySlug && attribute) || "",
-                },
-                prepared: {
-                    value: category,
-                },
-                showSlotlessLevels: {
-                    value: showSlotlessRanks ?? false,
-                },
-                proficiency: {
-                    value: proficiencyRank ?? 1,
-                    slug: proficiencySlug ?? "",
-                },
-                tradition: {
-                    value: tradition ?? "arcane",
-                },
-            },
-        };
+    createSpellcastingEntrySource: (
+        options: CreateSpellcastingSource & { identifier?: string }
+    ) => {
+        const source = createSpellcastingSource(options);
 
-        setFlagProperty(source, "identifier", identifier);
-
-        if (R.isPlainObject(flags)) {
-            setFlagProperty(source, "extra", flags);
+        if (options.identifier) {
+            setFlagProperty(source, "identifier", options.identifier);
         }
 
         return source;

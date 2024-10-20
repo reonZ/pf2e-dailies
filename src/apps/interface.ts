@@ -5,14 +5,13 @@ import {
     addListenerAll,
     createChatLink,
     createHTMLElement,
+    createSpellcastingWithHighestStatisticSource,
     dataToDatasetString,
     elementDataset,
     error,
     getCompendiumFilters,
     getFlag,
     getFlagProperty,
-    getHighestSpellcastingStatistic,
-    getHighestSyntheticStatistic,
     getTranslatedSkills,
     hasModuleFlag,
     htmlClosest,
@@ -891,30 +890,13 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         }
 
         if (hasOrphanSpells) {
-            const highestEntry = getHighestSpellcastingStatistic(actor);
-            const highestSynthetic = getHighestSyntheticStatistic(actor);
+            const source = createSpellcastingWithHighestStatisticSource(actor, {
+                name: localize("spellEntry.name"),
+            });
 
-            const [tradition, statistic] =
-                highestEntry &&
-                (!highestSynthetic || highestEntry.statistic.mod >= highestSynthetic.mod)
-                    ? [highestEntry.tradition, highestEntry.statistic]
-                    : highestSynthetic
-                    ? [null, highestSynthetic]
-                    : [null, null];
-
-            if (statistic) {
-                const source = utils.createSpellcastingEntrySource({
-                    name: localize("spellEntry.name"),
-                    identifier: entryIdentifier,
-                    category: "innate",
-                    tradition: tradition ?? "arcane",
-                    attribute: statistic.attribute,
-                    showSlotlessRanks: false,
-                    proficiencyRank: statistic.rank ?? 1,
-                    proficiencySlug: statistic === highestSynthetic ? statistic.slug : undefined,
-                });
-
+            if (source) {
                 setFlagProperty(source, "temporary", true);
+                setFlagProperty(source, "identifier", entryIdentifier);
                 addedItems.push(source);
             }
         }

@@ -85,15 +85,14 @@ const utils = {
     getActorMaxRank,
     getSpellcastingMaxRank: (
         actor: CharacterPF2e,
-        { tradition }: { tradition?: MagicTradition } = {}
+        { tradition, rankLimit }: { tradition?: MagicTradition; rankLimit?: OneToTen } = {}
     ) => {
         const maxRank = R.pipe(
             actor.spellcasting.spellcastingFeatures,
             tradition ? R.filter((entry) => entry.tradition === tradition) : R.identity(),
-            R.map(getSpellcastingMaxRank),
+            R.map((entry) => getSpellcastingMaxRank(entry, rankLimit)),
             R.firstBy([R.identity(), "desc"])
         );
-        console.log(maxRank);
         return maxRank ?? 0;
     },
     getActors: (actor?: CharacterPF2e) => {

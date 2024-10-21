@@ -84,11 +84,7 @@ const staves = createDaily({
         if (activationType) {
             maxCharges = Math.max(maxCharges, actorCharges);
         } else {
-            maxCharges = utils.getSpellcastingMaxRank(actor);
-        }
-
-        if (maxCharges > actorCharges) {
-            maxCharges = actorCharges;
+            maxCharges = utils.getSpellcastingMaxRank(actor, { rankLimit: actorCharges });
         }
 
         if (!maxCharges) {

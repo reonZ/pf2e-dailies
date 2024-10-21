@@ -1,3 +1,8 @@
+# 3.7.2
+
+-   remove debug stuff
+-   make sure spellcasting entries max rank is never higher than actor level / 2
+
 # 3.7.1
 
 -   improve how spellcasting entries are checked for the purpose of finding the highest rank

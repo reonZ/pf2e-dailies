@@ -1,3 +1,7 @@
+# 3.7.3
+
+-   fix being able to drop an embedded spell/feat into the drop field
+
 # 3.7.2
 
 -   remove debug stuff

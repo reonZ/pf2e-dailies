@@ -1029,14 +1029,18 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         const data = TextEditor.getDragEventData(event);
 
         if (data?.type !== "Item" || typeof data.uuid !== "string") {
-            return localize.warn("wrongDataType");
+            return localize.error("wrongDataType");
         }
 
         const item = await fromUuid<SpellPF2e | FeatPF2e>(data.uuid);
         const compendium = await this.#compendiumFilterFromElement(target);
 
         if (!item || !compendium) {
-            return localize.warn("wrongDataType");
+            return localize.error("wrongDataType");
+        }
+
+        if (item.parent) {
+            return localize.error("wrongSource");
         }
 
         if (item.type !== compendium.type) {

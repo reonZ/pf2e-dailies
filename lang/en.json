@@ -109,6 +109,7 @@
                 },
                 "error": {
                     "wrongDataType": "Invalid data type dropped.",
+                    "wrongSource": "Only compendium or world items can be used.",
                     "wrongData": "The dropped item does not have the right <strong>{type}</strong> ({require}).",
                     "require": "require: <strong>{need}</strong>, has: <strong>{has}</strong>",
                     "missing": "missing: <strong>{need}</strong>",

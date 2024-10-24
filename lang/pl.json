@@ -109,6 +109,7 @@
                 },
                 "error": {
                     "wrongDataType": "Upuszczono nieprawidłowy typ danych.",
+                    "wrongSource": "Można używać tylko przedmiotów z kompendium lub świata.",
                     "wrongData": "Upuszczony przedmiot nie ma uprawnień <strong>{type}</strong> ({require}).",
                     "require": "wymaga: <strong>{need}</strong>, posiada: <strong>{has}</strong>",
                     "missing": "brakuje: <strong>{need}</strong>",

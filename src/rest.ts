@@ -1,16 +1,12 @@
-import { MODULE, getFlag, libWrapper, updateFlag } from "foundry-pf2e";
+import { MODULE, getFlag, updateFlag } from "foundry-pf2e";
 import { createUpdateCollection, isTemporary } from "./api";
 import { filterDailies, getDailies } from "./dailies";
 import { DailyActorFlags } from "./types";
 
-interface RestForTheNightOptions extends ActionDefaultOptions {
-    skipDialog?: boolean;
-}
-
 async function restForTheNight(
     wrapped: libWrapper.RegisterCallback,
     options: RestForTheNightOptions
-) {
+): Promise<ChatMessagePF2e[]> {
     const result = await wrapped(options);
 
     try {
@@ -96,8 +92,9 @@ async function cleanup(actor: CharacterPF2e) {
 
     await updateFlag<DailyActorFlags>(actor, {
         rested: true,
-        addedItems: [],
+        "-=addedItems": true,
         "-=extra": true,
+        "-=tooltip": true,
     });
 }
 

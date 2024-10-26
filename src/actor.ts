@@ -10,7 +10,6 @@ import {
     getSpellCollectionClass,
     htmlQuery,
     itemIsOfType,
-    libWrapper,
     localize,
     render,
     templateLocalize,

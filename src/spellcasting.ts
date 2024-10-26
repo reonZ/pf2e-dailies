@@ -3,7 +3,6 @@ import {
     getRankLabel,
     getSpellCollectionClass,
     isInstanceOf,
-    libWrapper,
     spellSlotGroupIdToNumber,
     warn,
     warnInvalidDrop,

@@ -64,51 +64,6 @@ import type {
 import { utils } from "../utils";
 import { DailyConfig } from "./config";
 
-type DailyTemplate = {
-    label: string;
-    rows: RowTemplate[];
-};
-
-type RowTemplate = {
-    type: DailyRowType;
-    label: string;
-    daily: string;
-    row: string;
-    value?: string;
-    note?: string;
-    selected?: string;
-    unique?: string;
-    order: number;
-    data: string;
-    options?: (DailyRowSelectOption | { groupEnd: true })[];
-};
-
-type RowElementDatasetBase = {
-    daily: string;
-    row: string;
-    save: `${boolean}`;
-};
-
-type RowElementTypes = {
-    select: HTMLSelectElement & { dataset: RowElementDatasetBase };
-    random: HTMLSelectElement & { dataset: RowElementDatasetBase };
-    combo: HTMLInputElement & { dataset: RowElementDatasetBase & { input: StringBoolean } };
-    alert: HTMLInputElement & { dataset: RowElementDatasetBase };
-    input: HTMLInputElement & { dataset: RowElementDatasetBase };
-    notify: HTMLInputElement & { dataset: RowElementDatasetBase };
-    drop: HTMLInputElement & { dataset: RowElementDatasetBase & { uuid: string } };
-};
-
-type RowElementDataset = RowElementDatasetBase & {
-    type: DailyRowType;
-    dailykey: string;
-    droptype: DailyRowDropType;
-    unique: string;
-    input: StringBoolean;
-    uuid: string;
-    empty: StringBoolean;
-};
-
 const ACTOR_DAILY_SCHEMA = "3.0.0";
 
 const TEMPLATE_ORDER = {
@@ -120,13 +75,6 @@ const TEMPLATE_ORDER = {
     notify: 20,
     drop: 0,
 };
-
-function rowElementIsOFType<T extends DailyRowType>(
-    el: HTMLSelectElement | HTMLInputElement,
-    ...types: T[]
-): el is RowElementTypes[T] {
-    return types.some((type) => el.dataset.type === type);
-}
 
 const MIGRATIONS: {
     schema: string;
@@ -156,71 +104,6 @@ const MIGRATIONS: {
         ],
     },
 ];
-
-async function migration(actor: CharacterPF2e) {
-    if (!hasModuleFlag(actor)) return;
-
-    let reset = false;
-    const messages: string[] = [];
-    const schema = getActorFlag(actor, "schema") ?? "";
-
-    if (!foundry.utils.isNewerVersion(ACTOR_DAILY_SCHEMA, schema)) return;
-
-    for (const migration of MIGRATIONS) {
-        if (!foundry.utils.isNewerVersion(migration.schema, schema)) continue;
-
-        reset ||= migration.reset === true;
-
-        const migrationMessages: string[] = [];
-
-        for (let messageList of migration.messages) {
-            if (R.isPlainObject(messageList)) {
-                if (R.isFunction(messageList.condition) && !(await messageList.condition(actor))) {
-                    continue;
-                }
-                messageList = messageList.messages;
-            }
-
-            messageList = R.isArray(messageList) ? messageList : [messageList];
-
-            const formated = messageList
-                .map((x) => {
-                    const str = localize("interface.migration", x);
-                    return `<div>${str}</div>`;
-                })
-                .join("");
-
-            migrationMessages.push(formated);
-        }
-
-        if (migrationMessages.length) {
-            messages.push(`<h3>${migration.schema}</h3>`, migrationMessages.join(""));
-        }
-    }
-
-    if (reset) {
-        messages.unshift(`<div>${localize("interface.migration.reset")}</div>`);
-        await unsetMofuleFlag(actor);
-    } else {
-        await setFlag(actor, "schema", ACTOR_DAILY_SCHEMA);
-    }
-
-    if (!messages.length) {
-        return;
-    }
-
-    setTimeout(() => {
-        promptDialog(
-            {
-                title: localize("interface.migration.title"),
-                label: localize("interface.migration.label"),
-                content: messages.join(""),
-                classes: ["pf2e-dailies-migration"],
-            },
-            { width: 500 }
-        );
-    }, 200);
-}
 
 class DailyInterface extends foundry.applications.api.ApplicationV2 {
     #actor: CharacterPF2e;
@@ -434,14 +317,23 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
                         rowData.uuid = uuid ?? "";
                         rowData.droptype = row.filter.type;
-                    } else if (rowIsOfType(row, "alert")) {
-                        hasAlert = true;
-
-                        rowData.save = stringBoolean(false);
-                        rowData.empty = stringBoolean(false);
+                    } else if (rowIsOfType(row, "alert", "notify")) {
+                        rowData.save = "false";
+                        rowData.empty = "false";
 
                         delete rowTemplate.unique;
                         rowTemplate.value = row.message;
+
+                        if (rowIsOfType(row, "alert")) {
+                            hasAlert ||= true;
+                        } else {
+                            rowTemplate.color =
+                                row.color === true
+                                    ? "var(--notify-color)"
+                                    : typeof row.color === "string"
+                                    ? row.color
+                                    : "var(--color-text-primary)";
+                        }
                     } else if (rowIsOfType(row, "input")) {
                         rowTemplate.value = getSavedFlag<string>() ?? "";
                     }
@@ -461,7 +353,10 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         const groups: DailyTemplate[] = [];
 
         for (const template of templates) {
-            if (template.rows.length === 1 && template.rows[0].type !== "alert") {
+            if (
+                template.rows.length === 1 &&
+                !["alert", "notify"].includes(template.rows[0].type)
+            ) {
                 const row = template.rows[0];
                 row.label = template.label;
                 rows.push(row);
@@ -738,6 +633,8 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                 row = rowElement.value.trim();
             } else if (rowElementIsOFType(rowElement, "random")) {
                 row = utils.selectRandomOption(rowElement);
+            } else if (rowElementIsOFType(rowElement, "notify")) {
+                row = true;
             } else {
                 continue;
             }
@@ -1394,6 +1291,83 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
     }
 }
 
+function rowElementIsOFType<T extends DailyRowType>(
+    el: HTMLSelectElement | HTMLInputElement,
+    ...types: T[]
+): el is RowElementTypes[T] {
+    return types.some((type) => el.dataset.type === type);
+}
+
+async function migration(actor: CharacterPF2e) {
+    if (!hasModuleFlag(actor)) return;
+
+    let reset = false;
+    const messages: string[] = [];
+    const schema = getActorFlag(actor, "schema") ?? "";
+
+    if (!foundry.utils.isNewerVersion(ACTOR_DAILY_SCHEMA, schema)) return;
+
+    for (const migration of MIGRATIONS) {
+        if (!foundry.utils.isNewerVersion(migration.schema, schema)) continue;
+
+        reset ||= migration.reset === true;
+
+        const migrationMessages: string[] = [];
+
+        for (let messageList of migration.messages) {
+            if (R.isPlainObject(messageList)) {
+                if (R.isFunction(messageList.condition) && !(await messageList.condition(actor))) {
+                    continue;
+                }
+                messageList = messageList.messages;
+            }
+
+            messageList = R.isArray(messageList) ? messageList : [messageList];
+
+            const formated = messageList
+                .map((x) => {
+                    const str = localize("interface.migration", x);
+                    return `<div>${str}</div>`;
+                })
+                .join("");
+
+            migrationMessages.push(formated);
+        }
+
+        if (migrationMessages.length) {
+            messages.push(`<h3>${migration.schema}</h3>`, migrationMessages.join(""));
+        }
+    }
+
+    if (reset) {
+        messages.unshift(`<div>${localize("interface.migration.reset")}</div>`);
+        await unsetMofuleFlag(actor);
+    } else {
+        await setFlag(actor, "schema", ACTOR_DAILY_SCHEMA);
+    }
+
+    if (!messages.length) {
+        return;
+    }
+
+    setTimeout(() => {
+        promptDialog(
+            {
+                title: localize("interface.migration.title"),
+                label: localize("interface.migration.label"),
+                content: messages.join(""),
+                classes: ["pf2e-dailies-migration"],
+            },
+            { width: 500 }
+        );
+    }, 200);
+}
+
+type DailyTemplate = {
+    label: string;
+    rows: RowTemplate[];
+};
+
 type DailyContext = {
     rows: RowTemplate[];
     groups: DailyTemplate[];
@@ -1408,6 +1382,47 @@ type DailyContext = {
     hasDailies: boolean;
     hasAlert: boolean;
     canAccept: boolean;
+};
+
+type RowTemplate = {
+    type: DailyRowType;
+    label: string;
+    daily: string;
+    row: string;
+    value?: string;
+    note?: string;
+    selected?: string;
+    unique?: string;
+    order: number;
+    data: string;
+    options?: (DailyRowSelectOption | { groupEnd: true })[];
+    color?: string;
+};
+
+type RowElementDatasetBase = {
+    daily: string;
+    row: string;
+    save: `${boolean}`;
+};
+
+type RowElementTypes = {
+    select: HTMLSelectElement & { dataset: RowElementDatasetBase };
+    random: HTMLSelectElement & { dataset: RowElementDatasetBase };
+    combo: HTMLInputElement & { dataset: RowElementDatasetBase & { input: StringBoolean } };
+    alert: HTMLInputElement & { dataset: RowElementDatasetBase };
+    input: HTMLInputElement & { dataset: RowElementDatasetBase };
+    notify: HTMLInputElement & { dataset: RowElementDatasetBase };
+    drop: HTMLInputElement & { dataset: RowElementDatasetBase & { uuid: string } };
+};
+
+type RowElementDataset = RowElementDatasetBase & {
+    type: DailyRowType;
+    dailykey: string;
+    droptype: DailyRowDropType;
+    unique: string;
+    input: StringBoolean;
+    uuid: string;
+    empty: StringBoolean;
 };
 
 export { DailyInterface };

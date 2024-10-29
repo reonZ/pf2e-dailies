@@ -1,4 +1,5 @@
 [id^="pf2e-dailies-interface-"] {
+    --notify-color: #d9cf40;
     --alert-color: #fd3737;
     --unallowed-color: red;
     --disabled-color: grey;
@@ -50,7 +51,8 @@
                         font-size: 1.1em;
                     }
 
-                    .alert {
+                    .alert,
+                    .notify {
                         grid-column: 1 / -1;
                         margin-right: 0.1em;
 
@@ -60,13 +62,16 @@
                             border: none;
                         }
 
+                        a > i,
+                        span > i {
+                            font-size: 1.3em;
+                        }
+                    }
+
+                    .alert {
                         input:read-only,
                         a {
                             color: var(--alert-color);
-                        }
-
-                        a {
-                            font-size: 1.3em;
                         }
                     }
 

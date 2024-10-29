@@ -24,7 +24,10 @@
     </div>
     <div class="buttons{{#unless canAccept}} no-accept{{/unless}}">
         {{#if canAccept}}
-        <button data-action="accept"><i class="fas fa-mug-saucer"></i> {{@root.i18n 'accept'}}</button>
+        <button data-action="accept">
+            <i class="fas fa-mug-saucer"></i>
+            {{@root.i18n 'accept'}}
+        </button>
         {{/if}}
         <button data-action="cancel"><i class="fas fa-times"></i> {{@root.i18n 'cancel'}}</button>
     </div>
@@ -63,8 +66,18 @@
 <div class="alert">
     <input type="text" value="{{this.value}}" disabled>
     <a data-action="resolve-alert" {{{this.data}}} data-tooltip="{{@root.i18n 'tooltip.alert'}}">
-        <i class="fa-solid fa-triangle-exclamation"></i>
+        <i class="fa-solid fa-circle-exclamation"></i>
     </a>
+</div>
+{{/inline}}
+
+{{#*inline 'notifyRow'}}
+<div class="notify">
+    <input type="text" {{{this.data}}} value="{{this.value}}" disabled
+        style="color: {{this.color}}">
+    <span data-tooltip="{{@root.i18n 'tooltip.notify'}}" style="color: {{this.color}}">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+    </span>
 </div>
 {{/inline}}
 
@@ -109,8 +122,6 @@
     {{> selectOptions this}}
 </select>
 {{/inline}}
-
-
 
 {{#*inline 'selectOptions'}}
 {{#each this.options as |option|}}

@@ -48,7 +48,7 @@ type DailyRowDropData = {
     name: string;
 };
 
-type DailyRowData = DailyRowComboData | DailyRowDropData | string;
+type DailyRowData = DailyRowComboData | DailyRowDropData | string | true;
 
 type ExtractRows<
     TRowSlug extends string,
@@ -69,6 +69,10 @@ type ExtractRows<
               ? Extract<TRows[number], { slug: k }> extends { condition: boolean }
                   ? string | undefined
                   : string
+              : Extract<TRows[number], { slug: k }> extends { type: "notify" }
+              ? Extract<TRows[number], { slug: k }> extends { condition: boolean }
+                  ? true | undefined
+                  : true
               : never;
       }
     : never;
@@ -204,7 +208,10 @@ type DailyRowAlert<TRowSlug extends string = string> = DailyRowBase<TRowSlug, "a
 
 type DailyRowInput<TRowSlug extends string> = DailyRowBase<TRowSlug, "input">;
 
-type DailyRowNotify<TRowSlug extends string> = DailyRowBase<TRowSlug, "notify">;
+type DailyRowNotify<TRowSlug extends string> = DailyRowBase<TRowSlug, "notify"> & {
+    message: string;
+    color?: boolean | string;
+};
 
 interface DailyRowDropBase<
     TRowSlug extends string,

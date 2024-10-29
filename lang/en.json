@@ -95,6 +95,7 @@
             "tooltip": {
                 "random": "This will be randomly selected",
                 "alert": "Click here to resolve",
+                "notify": "Purely informative entry",
                 "search": "Open the compendium browser",
                 "clear": "Clear selection",
                 "noSelect": "No options available",

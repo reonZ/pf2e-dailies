@@ -126,9 +126,9 @@ const utils = {
         return game.i18n.localize(CONFIG.PF2E.preciousMaterials[material]);
     },
     createFeatSource: async (uuid: string) => {
-        const source = (await fromUuid<FeatPF2e>(uuid))?.toObject();
+        const source = await getItemSource(uuid, "FeatPF2e");
 
-        if (source?.type !== "feat") {
+        if (!source) {
             throw new Error(
                 `An error occured while trying to create a feat source with uuid: ${uuid}`
             );
@@ -249,9 +249,9 @@ const utils = {
         uuid: string,
         { identifier, rank }: { identifier?: string; rank?: ZeroToTen } = {}
     ) => {
-        const source = (await fromUuid<SpellPF2e>(uuid))?.toObject();
+        const source = await getItemSource(uuid, "SpellPF2e");
 
-        if (source?.type !== "spell") {
+        if (!source) {
             throw new Error(
                 `An error occured while trying to create a spell source with uuid: ${uuid}`
             );

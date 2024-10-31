@@ -18,7 +18,9 @@ import {
 import {
     canCastRank,
     canPrepareDailies,
+    getAnimistConfigs,
     getDailiesSummary,
+    getDisabledDailies,
     getStaffItem,
     openDailiesInterface,
     setStaffChargesValue,
@@ -88,6 +90,8 @@ Hooks.once("init", () => {
         registerCustomDailies,
         getDailiesSummary,
         canPrepareDailies,
+        getDisabledDailies,
+        getAnimistConfigs,
         utils,
         dailyHelpers: {
             createComboSkillDaily,

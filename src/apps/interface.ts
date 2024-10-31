@@ -844,15 +844,14 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                             update["system.location.signature"] = true;
                         }
 
-                        if (
-                            hasFocusSpells < currentFocus.cap &&
-                            spell.system.traits.value.includes("focus")
-                        ) {
-                            hasFocusSpells += 1;
-                        }
-
                         updateItem(update);
                     }
+                } else if (
+                    hasFocusSpells < currentFocus.cap &&
+                    item.isOfType("spell") &&
+                    item.system.traits.value.includes("focus")
+                ) {
+                    hasFocusSpells += 1;
                 }
             }
         }

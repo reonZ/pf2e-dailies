@@ -1,7 +1,12 @@
+# 3.8.2
+
+-   `Apparition Attunement`:
+    -   fix 10th rank slot only being considered at character level 20 instead of level 19
+
 # 3.8.1
 
 -   make sure all added spells are considered when checking for extra focus spells/points
--   `Apparition Attunement`
+-   `Apparition Attunement`:
     -   no longer add the vessel spell from all apparitions, only the primary
         -   the first apparition select is now considered as the primary
         -   adding more focus spells also adds more focus points, so this was "breaking" the character

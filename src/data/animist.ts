@@ -140,6 +140,8 @@ const animist = createDaily({
 
                 const spellsEl = loresEl?.nextElementSibling as HTMLElement | undefined;
                 if (spellsEl) {
+                    UUID_REGEX.lastIndex = 0;
+
                     const text = spellsEl.textContent ?? "";
                     const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
 
@@ -161,10 +163,10 @@ const animist = createDaily({
                     }
                 }
 
-                UUID_REGEX.lastIndex = 0;
-
                 const vesselEl = spellsEl?.nextElementSibling as HTMLElement | undefined;
                 if (vesselEl) {
+                    UUID_REGEX.lastIndex = 0;
+
                     const match = UUID_REGEX.exec(vesselEl.textContent ?? "");
                     const uuid = match ? getUuidFromInlineMatch(match) : null;
 

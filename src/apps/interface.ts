@@ -834,6 +834,11 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                             "system.location.value": item.id,
                             "system.location.heightenedLevel": rank,
                         };
+
+                        if (getFlag(spell, "signature")) {
+                            update["system.location.signature"] = true;
+                        }
+
                         updateItem(update);
                     }
                 }

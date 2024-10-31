@@ -247,7 +247,11 @@ const utils = {
     },
     createSpellSource: async (
         uuid: string,
-        { identifier, rank }: { identifier?: string; rank?: ZeroToTen } = {}
+        {
+            identifier,
+            signature,
+            rank,
+        }: { identifier?: string; signature?: boolean; rank?: ZeroToTen } = {}
     ) => {
         const source = await getItemSource(uuid, "SpellPF2e");
 
@@ -259,6 +263,10 @@ const utils = {
 
         if (identifier) {
             setFlagProperty(source, "identifier", identifier);
+        }
+
+        if (signature && !source.system.traits.value.includes("cantrip")) {
+            setFlagProperty(source, "signature", true);
         }
 
         if (R.isNumber(rank)) {

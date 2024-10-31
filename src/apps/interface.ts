@@ -798,6 +798,11 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             }
         }
 
+        const currentFocus = actor.system.resources.focus;
+        const currentMaxFocus = Math.clamp(currentFocus.max, 0, currentFocus.cap);
+
+        let hasFocusSpells = currentMaxFocus;
+
         if (addedItems.length) {
             const items = await actor.createEmbeddedDocuments("Item", addedItems);
 
@@ -837,6 +842,13 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
                         if (getFlag(spell, "signature")) {
                             update["system.location.signature"] = true;
+                        }
+
+                        if (
+                            hasFocusSpells < currentFocus.cap &&
+                            spell.system.traits.value.includes("focus")
+                        ) {
+                            hasFocusSpells += 1;
                         }
 
                         updateItem(update);
@@ -909,7 +921,20 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             speaker: ChatMessage.getSpeaker({ actor }),
         });
 
-        await updateFlag<DailyActorFlags>(actor, {
+        const actorUpdates: Record<string, any> = {};
+
+        if (currentMaxFocus !== hasFocusSpells) {
+            const newMaxValue = Math.min(hasFocusSpells, currentFocus.cap);
+            const newValue = currentFocus.value + (newMaxValue - currentMaxFocus);
+
+            actorUpdates["system.resources.focus.max"] = newMaxValue;
+
+            if (newValue !== currentFocus.value) {
+                actorUpdates["system.resources.focus.value"] = newValue;
+            }
+        }
+
+        setFlagProperty<DailyActorFlags>(actorUpdates, {
             ...flags,
             extra: extraFlags,
             rested: false,
@@ -917,6 +942,8 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             addedItems: addedItemIds,
             tooltip: await TextEditor.enrichHTML(chatContent),
         });
+
+        await actor.update(actorUpdates);
     }
 
     #lock() {

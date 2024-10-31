@@ -1,3 +1,22 @@
+# 3.8.0
+
+-   this is a system `6.6.0` release
+-   add `Apparition Attunement` built-in daily (for the `Animist`)
+    -   lets you select the apparition feats for the day (2~4 based on character level)
+    -   automatically generates the focus and spontaneous spellcasting entries
+    -   parse and add spells to the entries as well as setup the number of slots
+        -   spells are not set as signature by default because of the crazy amount of rows it can create
+    -   add the `Heal` & `Harm` spells if you have the `Embodiment of the Balance` class feat
+        -   set them as signature spells by default for convenience
+    -   add the `Avatar` spell if you have the `Supreme Incarnation` class feature
+-   add a new `Notify` row
+    -   this is a purely informative entry and has no interactivity
+    -   there are no built-in dailies that use it, this is for custom dailies
+-   add a new `getItemSource` helper in the `utils` collection
+-   change the icon of the `Alert` row for a circle, the triangle is now used for the `Notify` row
+-   if the number of max focus points has changed between the rest and daily preparation (because focus spells were added during preparation), the module will now add a number of current focus points equal to the difference between the before and after max values
+-   expose `getDisabledDailies` and `getAnimistConfigs` to the API
+
 # 3.7.3
 
 -   fix being able to drop an embedded spell/feat into the drop field

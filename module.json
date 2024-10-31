@@ -16,11 +16,11 @@
         "verified": "12.331",
         "maximum": "12"
     },
-    "version": "3.7.3",
+    "version": "3.8.0",
     "url": "https://github.com/reonZ/pf2e-dailies",
     "readme": "https://github.com/reonZ/pf2e-dailies/blob/master/README.md",
     "manifest": "https://raw.githubusercontent.com/reonZ/pf2e-dailies/master/module.json",
-    "download": "https://github.com/reonZ/pf2e-dailies/releases/download/3.7.3/module.zip",
+    "download": "https://github.com/reonZ/pf2e-dailies/releases/download/3.8.0/module.zip",
     "changelog": "https://github.com/reonZ/pf2e-dailies/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/pf2e-dailies/issues",
     "styles": [

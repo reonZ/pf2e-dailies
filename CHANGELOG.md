@@ -1,3 +1,14 @@
+# 3.8.1
+
+-   make sure all added spells are considered when checking for extra focus spells/points
+-   `Apparition Attunement`
+    -   no longer add the vessel spell from all apparitions, only the primary
+        -   the first apparition select is now considered as the primary
+        -   adding more focus spells also adds more focus points, so this was "breaking" the character
+    -   set static identifiers for the generated spellcasting entries
+        -   useful for third parties
+    -   fix cantrips missing on subsequent preparations (after the first one on load)
+
 # 3.8.0
 
 -   this is a system `6.6.0` release

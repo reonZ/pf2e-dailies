@@ -64,6 +64,7 @@
                 "tome": "Studied their thaumaturgy tome",
                 "spells": "Is ready to use the spells",
                 "familiar": "Has selected the familiar abilities",
+                "apparition": "Has attuned with their apparitions",
                 "feats": "Learned the feats",
                 "scrolls": "Created the temporary scrolls",
                 "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell",
@@ -79,6 +80,7 @@
         },
         "label": {
             "ability": "Ability #{nb}",
+            "apparition": "Apparition #{nb}",
             "expend": "Expend #{nb}",
             "rune": "Property Rune",
             "select": "Select {that}",
@@ -188,6 +190,11 @@
                 "draw": "Draw"
             }
         },
+        "animist": {
+            "spellcasting": {
+                "focus": "Vessel Spells"
+            }
+        },
         "spellEntry": {
             "name": "Temporary Spells"
         },
@@ -218,7 +225,11 @@
         "config": {
             "filters": "Enabled Dailies",
             "familiar": "Familiar Abilities",
-            "title": "{actor} - Daily Configs"
+            "title": "{actor} - Daily Configs",
+            "animist": {
+                "lores": "Show Lores Summary",
+                "spells": "Show Spells Summary"
+            }
         }
     }
 }

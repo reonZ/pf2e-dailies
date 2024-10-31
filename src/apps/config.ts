@@ -10,7 +10,7 @@ import {
     templateLocalize,
     unsetFlag,
 } from "foundry-pf2e";
-import { getDisabledDailies } from "../api";
+import { getAnimistConfigs, getDisabledDailies } from "../api";
 import { getFamiliarAbilityCount } from "../data/familiar";
 import type { PreparedDaily } from "../types";
 
@@ -69,9 +69,18 @@ class DailyConfig extends ApplicationV2 {
             R.sortBy(R.prop("label"))
         );
 
+        const animistDaily = this.#dailies.find(({ key }) => key === "dailies.animist");
+        const animist = animistDaily
+            ? {
+                  ...getAnimistConfigs(actor),
+                  title: animistDaily.label as string,
+              }
+            : undefined;
+
         return {
             familiar,
             dailies,
+            animist,
             i18n: templateLocalize("config"),
         };
     }
@@ -101,38 +110,44 @@ class DailyConfig extends ApplicationV2 {
             html,
             "[name='daily-enabled']",
             "change",
-            this.#onDailyEnabledChange.bind(this)
+            async (event, el: HTMLInputElement) => {
+                const { dailyKey } = elementDataset(el);
+
+                if (el.checked) {
+                    await unsetFlag(this.actor, "disabled", dailyKey);
+                } else {
+                    await setFlag(this.actor, "disabled", dailyKey, true);
+                }
+
+                this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
+            }
         );
 
         addListener(
             html,
             "[name='familiar-range']",
             "change",
-            this.#onFamiliarRangeChange.bind(this)
+            async (event, el: HTMLInputElement) => {
+                const actor = this.actor;
+
+                await setFlag(actor, "familiar", {
+                    value: el.valueAsNumber,
+                    max: actor.attributes.familiarAbilities.value,
+                });
+
+                this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
+            }
         );
-    }
 
-    async #onFamiliarRangeChange(event: Event, el: HTMLInputElement) {
-        const actor = this.actor;
+        addListenerAll(html, "[name='animist']", "change", async (event, el: HTMLInputElement) => {
+            const key = el.dataset.key as string;
 
-        await setFlag(actor, "familiar", {
-            value: el.valueAsNumber,
-            max: actor.attributes.familiarAbilities.value,
+            if (el.checked) {
+                await unsetFlag(this.actor, "animist", key);
+            } else {
+                await setFlag(this.actor, "animist", key, false);
+            }
         });
-
-        this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
-    }
-
-    async #onDailyEnabledChange(event: Event, el: HTMLInputElement) {
-        const { dailyKey } = elementDataset(el);
-
-        if (el.checked) {
-            await unsetFlag(this.actor, "disabled", dailyKey);
-        } else {
-            await setFlag(this.actor, "disabled", dailyKey, true);
-        }
-
-        this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
     }
 }
 
@@ -146,6 +161,10 @@ type ConfigContext = {
         label: string;
         enabled: boolean;
     }[];
+    animist: Maybe<{
+        lores: boolean;
+        spells: boolean;
+    }>;
     i18n: ReturnType<typeof templateLocalize>;
 };
 

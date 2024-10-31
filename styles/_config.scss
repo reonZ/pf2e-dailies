@@ -23,12 +23,15 @@
             }
         }
 
-        .daily {
+        .daily,
+        .animist {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding-left: 5px;
+        }
 
+        .daily {
             &:hover {
                 background: var(--daily-hover-color);
             }

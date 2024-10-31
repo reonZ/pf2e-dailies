@@ -7,9 +7,11 @@ import {
     error,
     getActorMaxRank,
     getRankLabel,
+    getUuidFromInlineMatch,
     hasItemWithSourceId,
     htmlQuery,
     htmlQueryAll,
+    isInstanceOf,
     localize,
     subLocalize,
     waitDialog,
@@ -244,9 +246,9 @@ const staves = createDaily({
             R.flatMap((SpellRankEL) => {
                 const label = SpellRankEL.firstChild as HTMLElement;
                 const rank = Number(label.textContent?.match(LABEL_REGEX)?.[0] || "0") as ZeroToTen;
-                const uuids = Array.from(SpellRankEL.textContent!.matchAll(UUID_REGEX)).map(
-                    (match) => (match[1] === "Compendium" ? `Compendium.${match[2]}` : match[2])
-                );
+                const text = SpellRankEL.textContent ?? "";
+                const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
+
                 return uuids.map((uuid) => ({ rank, uuid }));
             }),
             R.filter(({ rank }) => rank <= custom.maxCharges)
@@ -255,8 +257,8 @@ const staves = createDaily({
         const staffSpells = R.filter(
             await Promise.all(
                 staffSpellData.map(async ({ rank, uuid }) => {
-                    const spell = await fromUuid<SpellPF2e>(uuid);
-                    if (!spell?.isOfType("spell")) return;
+                    const spell = await fromUuid(uuid);
+                    if (!isInstanceOf(spell, "SpellPF2e")) return;
 
                     return foundry.utils.mergeObject(
                         spell._source,

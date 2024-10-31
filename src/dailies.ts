@@ -19,6 +19,7 @@ import { thaumaturgeTome } from "./data/thaumaturge-tome";
 import { tricksterAce } from "./data/trickster-ace";
 import type { CustomDaily, Daily, DailyItem, PreparedDailies, PreparedDaily } from "./types";
 import { utils } from "./utils";
+import { animist } from "./data/animist";
 
 type PreConditionDaily = {
     daily: Daily;
@@ -42,6 +43,7 @@ const BUILTINS_DAILIES: Daily[] = [
     thaumaturgeTome, //Thaumaturge Tome
     bladeAlly, // Blessed Armament
     mindSmith, // Mind Smith
+    animist, // Animist
     createLoreSkillDaily(
         "quick-study", // Quick Study
         "Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW"

@@ -132,11 +132,19 @@ function canCastRank<TPArent extends CharacterPF2e>(actor: TPArent, rank: number
     return nbSlots >= 1;
 }
 
+function getAnimistConfigs(actor: CharacterPF2e) {
+    return foundry.utils.mergeObject(
+        { lores: true, spells: true },
+        getFlag(actor, "animist") ?? {}
+    );
+}
+
 export {
     canCastRank,
     canPrepareDailies,
     createUpdateCollection,
     getActorFlag,
+    getAnimistConfigs,
     getDailiesSummary,
     getDisabledDailies,
     getStaffFlags,

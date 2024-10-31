@@ -108,8 +108,8 @@ const animist = createDaily({
         const loreRank = actorLevel >= 16 ? 3 : actorLevel >= 8 ? 2 : 1;
         const spellsToAdd: { source: SpellSource; uuid: string }[] = [];
         const vesselsToAdd: { source: SpellSource; uuid: string }[] = [];
-        const spellsIdentifier = foundry.utils.randomID();
-        const vesselsIdentifier = foundry.utils.randomID();
+        const spellsIdentifier = "animist-spontaneous";
+        const vesselsIdentifier = "animist-focus";
         const animistConfig = getAnimistConfigs(actor);
 
         messages.addGroup("apparition", undefined, 100);

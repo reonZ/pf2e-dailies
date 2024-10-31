@@ -80,7 +80,10 @@
         },
         "label": {
             "ability": "Ability #{nb}",
-            "apparition": "Apparition #{nb}",
+            "apparition": {
+                "first": "Primary Apparition",
+                "other": "Apparition #{nb}"
+            },
             "expend": "Expend #{nb}",
             "rune": "Property Rune",
             "select": "Select {that}",

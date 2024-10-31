@@ -94,7 +94,7 @@ const animist = createDaily({
             return {
                 type: "select",
                 slug: `apparition${i}`,
-                label: localize("label.apparition", { nb: i }),
+                label: localize(`label.apparition.${i === 1 ? "first" : "other"}`, { nb: i }),
                 unique: uniqueId,
                 options: options,
             };
@@ -115,7 +115,7 @@ const animist = createDaily({
         messages.addGroup("apparition", undefined, 100);
 
         await Promise.all(
-            Object.values(rows).map(async (value) => {
+            Object.values(rows).map(async (value, index) => {
                 const item = await pack.getDocument(value);
                 if (!item) return;
 
@@ -123,10 +123,10 @@ const animist = createDaily({
                 addFeat(itemSource, parent);
 
                 const descriptionEl = createHTMLElement("div", { innerHTML: item.description });
+
                 const loresEl = htmlQuery(descriptionEl, "hr + p");
                 const lores = splitListString(loresEl?.childNodes[1].textContent?.trim() ?? "");
                 const filteredLores = R.filter(lores, R.isTruthy);
-
                 for (const lore of filteredLores) {
                     const name = lore.replace(LORE_STRIP_REGEX, "$1");
                     const loreSource = utils.createLoreSource({ name, rank: loreRank });
@@ -163,18 +163,20 @@ const animist = createDaily({
                     }
                 }
 
-                const vesselEl = spellsEl?.nextElementSibling as HTMLElement | undefined;
-                if (vesselEl) {
-                    UUID_REGEX.lastIndex = 0;
+                if (index === 0) {
+                    const vesselEl = spellsEl?.nextElementSibling as HTMLElement | undefined;
+                    if (vesselEl) {
+                        UUID_REGEX.lastIndex = 0;
 
-                    const match = UUID_REGEX.exec(vesselEl.textContent ?? "");
-                    const uuid = match ? getUuidFromInlineMatch(match) : null;
+                        const match = UUID_REGEX.exec(vesselEl.textContent ?? "");
+                        const uuid = match ? getUuidFromInlineMatch(match) : null;
 
-                    if (uuid) {
-                        const source = await utils.createSpellSource(uuid, {
-                            identifier: vesselsIdentifier,
-                        });
-                        vesselsToAdd.push({ source, uuid });
+                        if (uuid) {
+                            const source = await utils.createSpellSource(uuid, {
+                                identifier: vesselsIdentifier,
+                            });
+                            vesselsToAdd.push({ source, uuid });
+                        }
                     }
                 }
 

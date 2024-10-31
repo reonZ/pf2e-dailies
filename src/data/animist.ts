@@ -184,10 +184,9 @@ const animist = createDaily({
             })
         );
 
-        const hasSupreme = actorLevel === 20 && items.supreme;
         const extraSpells: string[] = [];
 
-        if (hasSupreme) extraSpells.push(AVATAR_UUID);
+        if (items.supreme) extraSpells.push(AVATAR_UUID);
         if (items.balance) extraSpells.push(HEAL_UUID, HARM_UUID);
 
         for (const uuid of extraSpells) {
@@ -243,7 +242,7 @@ const animist = createDaily({
                 });
             }
 
-            if (hasSupreme) {
+            if (items.supreme && actorLevel >= 19) {
                 foundry.utils.setProperty(spellsEntry, "system.slots.slot10", {
                     value: 1,
                     max: 1,

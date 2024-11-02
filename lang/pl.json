@@ -64,6 +64,7 @@
                 "tome": "Studiował swój tom Taumaturga",
                 "spells": "Jest gotowy do użycia zaklęć",
                 "familiar": "Wybrał zdolności chowańca",
+                "apparition": "Dostroił się do ich objawień",
                 "feats": "Nauczył się atutów",
                 "scrolls": "Utworzył tymczasowe zwoje",
                 "ceremonial": "Przeprowadził rytuał, aby stworzyć nóż ceremonialny nasycony zaklęciem",
@@ -79,6 +80,10 @@
         },
         "label": {
             "ability": "Zdolność #{nb}",
+            "apparition": {
+                "first": "Podstawowe objawienie",
+                "other": "Objawienie #{nb}"
+            },
             "expend": "Wydano #{nb}",
             "rune": "Runa Właściwości",
             "select": "Wybierz {that}",
@@ -95,6 +100,7 @@
             "tooltip": {
                 "random": "Zostanie on wybrany losowo",
                 "alert": "Kliknij tutaj, aby rozwiązać",
+                "notify": "Wpis czysto informacyjny",
                 "search": "Otwórz przeglądarkę kompendium",
                 "clear": "Wyczyść zaznaczenie",
                 "noSelect": "Brak dostępnych opcji",
@@ -187,6 +193,11 @@
                 "draw": "Losowanie"
             }
         },
+        "animist": {
+            "spellcasting": {
+                "focus": "Zaklęcia naczyń"
+            }
+        },
         "spellEntry": {
             "name": "Zaklęcia tymczasowe"
         },
@@ -217,7 +228,11 @@
         "config": {
             "filters": "Włączono Dzienne Aktywności",
             "familiar": "Zdolności chowańca",
-            "title": "{actor} - Dzienna konfiguracja"
+            "title": "{actor} - Dzienna konfiguracja",
+            "animist": {
+                "lores": "Pokaż podsumowanie Wiedzy",
+                "spells": "Pokaż podsumowanie Zaklęć"
+            }
         }
     }
 }

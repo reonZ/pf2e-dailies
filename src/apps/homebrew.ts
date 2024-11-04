@@ -13,7 +13,7 @@ const localize = subLocalize("homebrew");
 
 const INDEX = ["familiar", "animist"] as const;
 
-const INDEX_VALIDATION: Record<HomebrewIndex, (entry: CompendiumIndexData) => boolean> = {
+const INDEX_VALIDATION: Record<HomebrewIndex, (entry: { type: string }) => boolean> = {
     familiar: (entry) => entry.type === "action",
     animist: (entry) => entry.type === "feat",
 } as const;
@@ -43,11 +43,29 @@ class HomebrewDailies extends FormApplication {
         return getSetting<Record<HomebrewIndex, string[]>>("homebrewEntries");
     }
 
-    static getEntries(index: string): string[] {
-        return (INDEX.includes(index) && HomebrewDailies.homebrews[index]) || [];
+    static getEntries(index: HomebrewIndex) {
+        if (!INDEX.includes(index)) return [];
+
+        return R.pipe(
+            HomebrewDailies.homebrews[index] ?? [],
+            R.map((id) => {
+                const result = HomebrewDailies.getEntry(index, id);
+                if (!result) return;
+
+                if (!result.isPack) return [result];
+
+                return R.pipe(
+                    result.entry.index.contents,
+                    R.filter((entry) => INDEX_VALIDATION[index](entry)),
+                    R.map((entry) => ({ isPack: true, entry }))
+                );
+            }),
+            R.flat(),
+            R.filter(R.isTruthy)
+        );
     }
 
-    static getEntry(index: string, id: string): HomebrewEntry | undefined {
+    static getEntry(index: HomebrewIndex, id: string): PackHomebrew | ItemHomebrew | undefined {
         if (!INDEX.includes(index)) return;
 
         const pack = game.packs.get(id);
@@ -193,23 +211,33 @@ type EventAction = "add-homebrew" | "open-entry" | "delete-entry";
 
 type HomebrewIndex = (typeof INDEX)[number];
 
-type HomebrewEntry =
-    | {
-          isPack: false;
-          entry: CompendiumIndexData;
-      }
-    | {
-          isPack: true;
-          entry: CompendiumCollection<
-              | ActorPF2e<null>
-              | ItemPF2e<null>
-              | MacroPF2e
-              | ScenePF2e
-              | JournalEntry
-              | Playlist
-              | RollTable
-          >;
-      };
+type PackHomebrew = {
+    isPack: true;
+    entry: CompendiumCollection<
+        | ActorPF2e<null>
+        | ItemPF2e<null>
+        | MacroPF2e
+        | ScenePF2e
+        | JournalEntry
+        | Playlist
+        | RollTable
+    >;
+};
+
+type ItemHomebrew = {
+    isPack: false;
+    entry: CompendiumIndexData;
+};
+
+type ItemHomebrewPromise = Promise<{
+    isPack: false;
+    entry: ItemPF2e<null>;
+}>;
+
+type HomebrewEntry<T extends ItemPF2e<null> = ItemPF2e<null>> = {
+    isPack: boolean;
+    entry: T;
+};
 
 type Homebrew = {
     index: HomebrewIndex;

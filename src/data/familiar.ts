@@ -1,5 +1,6 @@
-import { R, getFlag, getSetting, localeCompare, localize, setFlagProperty } from "foundry-pf2e";
+import { R, getFlag, localeCompare, localize, setFlagProperty } from "foundry-pf2e";
 import { isTemporary } from "../api";
+import { HomebrewDailies } from "../apps/homebrew";
 import { createDaily } from "../daily";
 import { DailyMessageOptions } from "../types";
 
@@ -34,15 +35,13 @@ const familiar = createDaily({
             label: name,
             skipUnique: SKIP_UNIQUES.includes(_id),
         }));
-        const customUUIDS = getSetting<String>("familiarAbilities").split(",");
 
-        for (let uuid of customUUIDS) {
-            uuid = uuid.trim();
-            const item = await fromUuid<ItemPF2e>(uuid);
-
-            if (item?.isOfType("action")) {
-                options.push({ value: uuid, label: item.name, skipUnique: false });
-            }
+        for (const { entry } of HomebrewDailies.getEntries("familiar")) {
+            options.push({
+                value: entry.uuid,
+                label: entry.name,
+                skipUnique: false,
+            });
         }
 
         options.sort((a, b) => localeCompare(a.label, b.label));

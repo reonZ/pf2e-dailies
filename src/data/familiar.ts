@@ -6,10 +6,6 @@ import { DailyMessageOptions } from "../types";
 
 const SKIP_UNIQUES = ["jevzf9JbJJibpqaI"];
 
-function getPack(): CompendiumCollection<AbilityItemPF2e<null>> {
-    return game.packs.get("pf2e.familiar-abilities")!;
-}
-
 function getFamiliarAbilityCount(actor: CharacterPF2e) {
     const max = actor.attributes.familiarAbilities.value;
     const flag = getFlag<ValueAndMax>(actor, "familiar");
@@ -26,12 +22,12 @@ const familiar = createDaily({
     condition: (actor) => !!actor.familiar,
     rows: async (actor) => {
         const nbAbilities = getFamiliarAbilityCount(actor);
-        if (!nbAbilities) return [];
+        const pack = game.packs.get("pf2e.familiar-abilities");
+        if (!nbAbilities || !pack) return [];
 
-        const pack = getPack();
         const uniqueId = foundry.utils.randomID();
-        const options = pack.index.map(({ _id, name }) => ({
-            value: _id,
+        const options = pack.index.map(({ _id, uuid, name }) => ({
+            value: uuid,
             label: name,
             skipUnique: SKIP_UNIQUES.includes(_id),
         }));
@@ -60,17 +56,12 @@ const familiar = createDaily({
 
         if (!familiar) return;
 
-        const pack = getPack();
         const abilities: AbilitySource[] = [];
         const messageList: DailyMessageOptions[] = [];
 
         await Promise.all(
             Object.values(rows).map(async (value) => {
-                const isCustom = value.includes(".");
-                const item = await (isCustom
-                    ? fromUuid<AbilityItemPF2e>(value)
-                    : pack.getDocument(value));
-
+                const item = await fromUuid<ItemPF2e>(value);
                 if (!item?.isOfType("action")) return;
 
                 const source = item.toObject();

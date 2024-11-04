@@ -7,6 +7,7 @@ import {
     getActorMaxRank,
     getChoiceSetSelection,
     getItemSource,
+    getItemTypeLabel,
     getRankLabel,
     getSetting,
     getSpellcastingMaxRank,
@@ -26,6 +27,7 @@ type CreateSpellConsumableSourceOptions = {
 
 const utils = {
     getItemSource,
+    getItemTypeLabel,
     getChoiSetRuleSelection: <T extends any = string>(
         item: ItemPF2e,
         option?: string | { option?: string; flag?: string }

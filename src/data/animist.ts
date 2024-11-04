@@ -10,6 +10,7 @@ import {
 import { createDaily } from "../daily";
 import { utils } from "../utils";
 import { getAnimistConfigs } from "../api";
+import { HomebrewDailies } from "../apps/homebrew";
 
 const LORE_STRIP_REGEX = /^(.+?) Lore$/;
 
@@ -43,10 +44,6 @@ const SPELLS_SLOTS = [
     [2, 2, 2, 2, 2, 2, 2, 2, 1],
 ] as const;
 
-function getPack(): CompendiumCollection<FeatPF2e<null>> {
-    return game.packs.get("pf2e.classfeatures")!;
-}
-
 const animist = createDaily({
     key: "animist",
     items: [
@@ -74,7 +71,9 @@ const animist = createDaily({
     ],
     label: (actor, items) => items.attunement.name,
     rows: async (actor, items) => {
-        const pack = getPack();
+        const pack = game.packs.get("pf2e.classfeatures");
+        if (!pack) return [];
+
         const uniqueId = foundry.utils.randomID();
         const index = await pack.getIndex({ fields: ["system.traits.otherTags"] });
         const apparitions = index.filter((entry) =>
@@ -82,9 +81,16 @@ const animist = createDaily({
         );
         const options = R.pipe(
             apparitions,
-            R.map(({ name, _id }) => ({ value: _id, label: name })),
+            R.map(({ name, uuid }) => ({ value: uuid, label: name })),
             R.sortBy(R.prop("label"))
         );
+
+        for (const { entry } of HomebrewDailies.getEntries("animist")) {
+            options.push({
+                value: entry.uuid,
+                label: entry.name,
+            });
+        }
 
         let nbApparitions = 2;
         if (items.third) nbApparitions += 1;
@@ -101,7 +107,6 @@ const animist = createDaily({
         });
     },
     process: async ({ actor, rows, messages, items, addItem, addFeat }) => {
-        const pack = getPack();
         const parent = items.attunement;
         const actorLevel = actor.level;
         const maxRank = getActorMaxRank(actor);
@@ -116,8 +121,8 @@ const animist = createDaily({
 
         await Promise.all(
             Object.values(rows).map(async (value, index) => {
-                const item = await pack.getDocument(value);
-                if (!item) return;
+                const item = await fromUuid<ItemPF2e>(value);
+                if (!item?.isOfType("feat")) return;
 
                 const itemSource = item.toObject();
                 addFeat(itemSource, parent);

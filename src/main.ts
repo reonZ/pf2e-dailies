@@ -1,12 +1,4 @@
-import {
-    MODULE,
-    getSetting,
-    registerSetting,
-    registerSettingMenu,
-    registerWrapper,
-    renderCharacterSheets,
-    warn,
-} from "foundry-pf2e";
+import { MODULE, getSetting, registerWrapper, warn } from "foundry-pf2e";
 import {
     onCharacterPrepareData,
     onCharacterSheetGetData,
@@ -25,13 +17,13 @@ import {
     openDailiesInterface,
     setStaffChargesValue,
 } from "./api";
-import { CustomDailies } from "./apps/customs";
-import { DAILY_SCHEMA, initDailies, parseDailies, registerCustomDailies } from "./dailies";
+import { DAILY_SCHEMA, initDailies, registerCustomDailies } from "./dailies";
 import { createLanguageDaily } from "./data/languages";
 import { createResistanceDaily } from "./data/resistances";
 import { createScrollChainDaily } from "./data/scrolls";
 import { createComboSkillDaily, createLoreSkillDaily } from "./data/skills";
 import { restForTheNight } from "./rest";
+import { registerSettings } from "./settings";
 import {
     spellcastingEntryConsume,
     spellcastingEntryGetSheetData,
@@ -43,38 +35,7 @@ import { utils } from "./utils";
 MODULE.register("pf2e-dailies", "PF2e Dailies");
 
 Hooks.once("init", () => {
-    registerSetting({
-        key: "customDailies",
-        type: Array,
-        default: [],
-        config: false,
-        onChange: parseDailies,
-    });
-
-    registerSettingMenu({
-        key: "customs",
-        type: CustomDailies,
-    });
-
-    registerSetting({
-        key: "familiarAbilities",
-        type: String,
-        default: "",
-    });
-
-    registerSetting({
-        key: "partyMembers",
-        type: Boolean,
-        default: true,
-    });
-
-    registerSetting({
-        key: "addedHighlight",
-        type: Boolean,
-        default: true,
-        scope: "client",
-        onChange: renderCharacterSheets,
-    });
+    registerSettings();
 
     registerWrapper(
         "CONFIG.PF2E.Actor.documentClasses.character.prototype.prepareData",

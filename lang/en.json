@@ -244,9 +244,9 @@
             "pack": "Compendium Pack",
             "add": "Add Entry",
             "delete": "Delete Entry",
-            "tooltip": "Compendium pack ID or feat UUID",
-            "invalid": "<strong>{entry}</strong> isn't the ID of a compendium pack nor the UUID of a feat",
-            "empty": "You must provide a compendium pack ID or the UUID of a feat"
+            "tooltip": "Compendium pack ID or <strong>{type}</strong> UUID",
+            "invalid": "<strong>{entry}</strong> isn't the ID of a compendium pack nor the UUID of a <strong>{type}</strong>",
+            "empty": "You must provide a compendium pack ID or the UUID of a <strong>{type}</strong>"
         }
     }
 }

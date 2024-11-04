@@ -8,15 +8,16 @@ import {
     subLocalize,
     templatePath,
 } from "foundry-pf2e";
+import { utils } from "../utils";
 
 const localize = subLocalize("homebrew");
 
 const INDEX = ["familiar", "animist"] as const;
 
-const INDEX_VALIDATION: Record<HomebrewIndex, (entry: { type: string }) => boolean> = {
-    familiar: (entry) => entry.type === "action",
-    animist: (entry) => entry.type === "feat",
-} as const;
+const INDEX_TYPE: Record<HomebrewIndex, ItemType> = {
+    familiar: "action",
+    animist: "feat",
+};
 
 class HomebrewDailies extends FormApplication {
     static get defaultOptions() {
@@ -56,7 +57,7 @@ class HomebrewDailies extends FormApplication {
 
                 return R.pipe(
                     result.entry.index.contents,
-                    R.filter((entry) => INDEX_VALIDATION[index](entry)),
+                    R.filter((entry) => entry.type === INDEX_TYPE[index]),
                     R.map((entry) => ({ isPack: true, entry }))
                 );
             }),
@@ -74,7 +75,7 @@ class HomebrewDailies extends FormApplication {
         }
 
         const entry = fromUuidSync<CompendiumIndexData>(id);
-        return entry && INDEX_VALIDATION[index](entry) ? { entry, isPack: false } : undefined;
+        return entry?.type === INDEX_TYPE[index] ? { entry, isPack: false } : undefined;
     }
 
     static isValidEntry(index: HomebrewIndex, id: Maybe<string>): id is string {
@@ -145,6 +146,7 @@ class HomebrewDailies extends FormApplication {
                 case "add-homebrew": {
                     const index = this._tabs[0].active as HomebrewIndex;
                     const id = htmlQuery<HTMLInputElement>(html, "[name='entry']")?.value.trim();
+                    const type = utils.getItemTypeLabel(INDEX_TYPE[index]);
 
                     if (HomebrewDailies.isValidEntry(index, id)) {
                         const homebrews = foundry.utils.deepClone(HomebrewDailies.homebrews);
@@ -155,9 +157,9 @@ class HomebrewDailies extends FormApplication {
                             await setSetting("homebrewEntries", homebrews);
                         }
                     } else if (id) {
-                        localize.warn("invalid", { entry: id });
+                        localize.warn("invalid", { entry: id, type });
                     } else {
-                        localize.warn("empty");
+                        localize.warn("empty", { type });
                     }
 
                     this.render();

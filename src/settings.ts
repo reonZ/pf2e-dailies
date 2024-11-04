@@ -1,6 +1,7 @@
 import { registerSetting, registerSettingMenu, renderCharacterSheets } from "foundry-pf2e";
 import { parseDailies } from "./dailies";
 import { CustomDailies } from "./apps/customs";
+import { HomebrewDailies } from "./apps/homebrew";
 
 function registerSettings() {
     registerSetting({
@@ -11,15 +12,21 @@ function registerSettings() {
         onChange: parseDailies,
     });
 
+    registerSetting({
+        key: "homebrewEntries",
+        type: Object,
+        default: {},
+        config: false,
+    });
+
     registerSettingMenu({
         key: "customs",
         type: CustomDailies,
     });
 
-    registerSetting({
-        key: "familiarAbilities",
-        type: String,
-        default: "",
+    registerSettingMenu({
+        key: "homebrew",
+        type: HomebrewDailies,
     });
 
     registerSetting({

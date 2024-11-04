@@ -1,0 +1,106 @@
+#pf2e-dailies-homebrew {
+    .window-content {
+        flex-direction: row;
+        padding: 0;
+    }
+
+    aside.sidebar {
+        flex: 0 0 220px;
+        height: 100%;
+        padding: 1rem;
+        border-right: 1px solid var(--color-border-light-primary);
+        font-size: var(--font-size-12);
+
+        .tabs {
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            overflow: hidden auto;
+
+            .item {
+                display: flex;
+                justify-content: space-between;
+                padding: 6px 0;
+                border-bottom: 1px solid var(--color-border-light-primary);
+                text-align: left;
+                width: 100%;
+
+                &.active {
+                    font-weight: bold;
+                    border-bottom: 1px solid var(--color-underline-active);
+                }
+            }
+        }
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+
+        .scrollable {
+            flex: 1;
+            padding: 1rem;
+            overflow: hidden auto;
+
+            .entry {
+                gap: 0.5em;
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+                align-items: center;
+                height: 2.5em;
+
+                &:not(:first-child) {
+                    margin-top: 0.3em;
+                }
+
+                img,
+                .pack {
+                    width: 2rem;
+                    height: 2rem;
+                }
+
+                .pack {
+                    font-size: 2em;
+                    text-align: center;
+                    margin: 0;
+                }
+
+                img {
+                    border: none;
+                    border-radius: 2px;
+                    box-shadow: 0 0 0 1px var(--tertiary), 0 0 0 2px #9f725b,
+                        inset 0 0 0.25rem rgba(0, 0, 0, 0.5);
+                }
+
+                .name {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+
+        > hr {
+            width: 100%;
+            margin: 0;
+        }
+
+        footer {
+            margin: 1rem;
+            flex: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+
+            button {
+                width: max-content;
+                white-space: nowrap;
+                height: calc(var(--form-field-height) + 2px);
+                line-height: 1;
+                border-radius: 3px;
+            }
+        }
+    }
+}

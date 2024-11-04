@@ -1,0 +1,37 @@
+<aside class="sidebar">
+    <nav class="tabs">
+        {{#each index}}
+        <a class="item" data-tab="{{this.id}}">
+            {{this.label}}
+        </a>
+        {{/each}}
+    </nav>
+</aside>
+<form class="entries">
+    <div class="scrollable">
+        {{#each homebrews as |homebrew|}}
+        <section class="tab" data-tab="{{homebrew.index}}">
+            {{#each homebrew.entries as |entry|}}
+            <div class="entry" data-id="{{entry.id}}">
+                {{#if entry.img}}
+                <img src="{{entry.img}}">
+                {{else}}
+                <i class="fa-solid fa-folder pack" data-tooltip="{{@root.i18n.path 'pack'}}"></i>
+                {{/if}}
+                <a class="name" data-action="open-entry">{{entry.name}}</a>
+                <a data-action="delete-entry" data-tooltip="{{@root.i18n.path 'delete'}}">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </div>
+            {{/each}}
+        </section>
+        {{/each}}
+    </div>
+    <hr>
+    <footer>
+        <input type="text" name="entry">
+        <button type="button" data-action="add-homebrew">
+            {{@root.i18n 'add'}}
+        </button>
+    </footer>
+</form>

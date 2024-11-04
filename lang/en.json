@@ -1,10 +1,6 @@
 {
     "pf2e-dailies": {
         "settings": {
-            "familiarAbilities": {
-                "name": "Familiar Abilities",
-                "hint": "Comma separated ability UUIDs. Those will be added to the list of familiar abilities."
-            },
             "addedHighlight": {
                 "name": "Highlight Added Items",
                 "hint": "Temporary \"items\" added by the module will be highlighted in the character and familiar sheets."
@@ -18,6 +14,11 @@
                     "name": "Custom Dailies",
                     "hint": "Register you own dailies with the module.",
                     "label": "Register"
+                },
+                "homebrew": {
+                    "name": "Homebrew Settings",
+                    "hint": "Add your custom stuff for the module to use in some of its dailies.",
+                    "label": "Homebrew"
                 }
             }
         },
@@ -233,6 +234,19 @@
                 "lores": "Show Lores Summary",
                 "spells": "Show Spells Summary"
             }
+        },
+        "homebrew": {
+            "title": "Homebrew Settings",
+            "index": {
+                "familiar": "Familiar Abilities",
+                "animist": "Animist Apparitions"
+            },
+            "pack": "Compendium Pack",
+            "add": "Add Entry",
+            "delete": "Delete Entry",
+            "tooltip": "Compendium pack ID or feat UUID",
+            "invalid": "<strong>{entry}</strong> isn't the ID of a compendium pack nor the UUID of a feat",
+            "empty": "You must provide a compendium pack ID or the UUID of a feat"
         }
     }
 }

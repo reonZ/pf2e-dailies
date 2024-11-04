@@ -1,10 +1,6 @@
 {
     "pf2e-dailies": {
         "settings": {
-            "familiarAbilities": {
-                "name": "Zdolności chowańca",
-                "hint": "Identyfikatory UUID umiejętności oddzielone przecinkami. Zostaną one dodane do listy zdolności chowańców."
-            },
             "addedHighlight": {
                 "name": "Wyróżnij dodane przedmioty",
                 "hint": "Tymczasowe \"przedmioty\" dodane przez moduł zostaną wyróżnione w kartach postaci i chowańców."

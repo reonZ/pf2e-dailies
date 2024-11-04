@@ -119,6 +119,17 @@ const animist = createDaily({
 
         messages.addGroup("apparition", undefined, 100);
 
+        const addSpell = async (uuid: string, signature: boolean) => {
+            const source = await utils.createSpellSource(uuid, {
+                identifier: spellsIdentifier,
+                signature,
+            });
+
+            if (source.system.level.value > maxRank) return;
+
+            spellsToAdd.push({ source, uuid });
+        };
+
         await Promise.all(
             Object.values(rows).map(async (value, index) => {
                 const item = await fromUuid<ItemPF2e>(value);
@@ -150,22 +161,7 @@ const animist = createDaily({
                     const text = spellsEl.textContent ?? "";
                     const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
 
-                    const spellsSources = R.filter(
-                        await Promise.all(
-                            uuids.map(async (uuid) => {
-                                const source = await utils.createSpellSource(uuid, {
-                                    identifier: spellsIdentifier,
-                                });
-                                return { source, uuid };
-                            })
-                        ),
-                        R.isTruthy
-                    );
-
-                    for (const { source, uuid } of spellsSources) {
-                        if (source.system.level.value > maxRank) continue;
-                        spellsToAdd.push({ source, uuid });
-                    }
+                    await Promise.all(uuids.map((uuid) => addSpell(uuid, false)));
                 }
 
                 if (index === 0) {
@@ -180,6 +176,7 @@ const animist = createDaily({
                             const source = await utils.createSpellSource(uuid, {
                                 identifier: vesselsIdentifier,
                             });
+
                             vesselsToAdd.push({ source, uuid });
                         }
                     }
@@ -194,17 +191,13 @@ const animist = createDaily({
         if (items.supreme) extraSpells.push(AVATAR_UUID);
         if (items.balance) extraSpells.push(HEAL_UUID, HARM_UUID);
 
-        for (const uuid of extraSpells) {
-            const source = await utils.createSpellSource(uuid, {
-                identifier: spellsIdentifier,
-                signature: uuid !== AVATAR_UUID,
-            });
-            spellsToAdd.push({ source, uuid });
-        }
+        // add extraSpells
+        await Promise.all(extraSpells.map((uuid) => addSpell(uuid, uuid !== AVATAR_UUID)));
 
         const attribute = actor.classDC?.attribute ?? "wis";
 
-        if (vesselsToAdd.length) {
+        const vessels = R.uniqueBy(vesselsToAdd, R.prop("uuid"));
+        if (vessels.length) {
             const spellsEntry = utils.createSpellcastingEntrySource({
                 category: "focus",
                 identifier: vesselsIdentifier,
@@ -216,7 +209,7 @@ const animist = createDaily({
 
             addItem(spellsEntry);
 
-            for (const { source, uuid } of vesselsToAdd) {
+            for (const { source, uuid } of vessels) {
                 addItem(source);
 
                 if (animistConfig.spells) {
@@ -225,7 +218,8 @@ const animist = createDaily({
             }
         }
 
-        if (spellsToAdd.length) {
+        const spells = R.uniqueBy(spellsToAdd, R.prop("uuid"));
+        if (spells.length) {
             const spellsEntry = utils.createSpellcastingEntrySource({
                 category: "spontaneous",
                 identifier: spellsIdentifier,
@@ -256,7 +250,7 @@ const animist = createDaily({
 
             addItem(spellsEntry);
 
-            for (const { source, uuid } of spellsToAdd) {
+            for (const { source, uuid } of spells) {
                 addItem(source);
 
                 if (animistConfig.spells) {

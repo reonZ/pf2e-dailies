@@ -14,6 +14,11 @@
                     "name": "Niestandardowe dzienne czynności",
                     "hint": "Zarejestruj własne dzienne czynności w module.",
                     "label": "Rejestracja"
+                },
+                "homebrew": {
+                    "name": "Ustawienia Zasad Domowych",
+                    "hint": "Dodaj własne elementy, które moduł będzie mógł wykorzystać w niektórych dziennych aktywnościach.",
+                    "label": "Zasady Domowe"
                 }
             }
         },
@@ -60,7 +65,7 @@
                 "tome": "Studiował swój tom Taumaturga",
                 "spells": "Jest gotowy do użycia zaklęć",
                 "familiar": "Wybrał zdolności chowańca",
-                "apparition": "Dostroił się do ich objawień",
+                "apparition": "Dostroił się do tych projekcji",
                 "feats": "Nauczył się atutów",
                 "scrolls": "Utworzył tymczasowe zwoje",
                 "ceremonial": "Przeprowadził rytuał, aby stworzyć nóż ceremonialny nasycony zaklęciem",
@@ -77,8 +82,8 @@
         "label": {
             "ability": "Zdolność #{nb}",
             "apparition": {
-                "first": "Podstawowe objawienie",
-                "other": "Objawienie #{nb}"
+                "first": "Podstawowe projekcje",
+                "other": "Projekcja #{nb}"
             },
             "expend": "Wydano #{nb}",
             "rune": "Runa Właściwości",
@@ -229,6 +234,18 @@
                 "lores": "Pokaż podsumowanie Wiedzy",
                 "spells": "Pokaż podsumowanie Zaklęć"
             }
+        },
+        "homebrew": {
+            "title": "Ustawienia Zasad Domowych",
+            "index": {
+                "familiar": "Zdolności chowańca",
+                "animist": "Animistyczne projekcje"
+            },
+            "pack": "Pakiet kompendium",
+            "add": "Dodaj wpis",
+            "delete": "Usuń wpis",
+            "invalid": "<strong>{entry}</strong> nie jest identyfikatorem pakietu kompendium ani identyfikatorem UUID pliku <strong>{type}</strong>",
+            "empty": "Należy podać identyfikator pakietu kompendium lub identyfikator UUID pliku <strong>{type}</strong>"
         }
     }
 }

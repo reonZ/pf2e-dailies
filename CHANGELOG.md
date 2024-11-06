@@ -1,3 +1,17 @@
+# 3.9.0
+
+-   add a new `Homebrew Settings` menu
+    -   this is the place to add homebrew entries for the dailies that allow it
+        -   hombrew entries will be added as options to the daily
+        -   you can use the ID of a compendium pack or the UUID of an item to add entries
+        -   this remplaces the previous `Familiar Abilities` setting, you have to set it up again
+-   `Apparition Attunement`:
+    -   now accepts the use of homebrew apparitions via the new `Homebrew Settings`
+    -   make sure to not add duplicate spells
+-   `Familiar Abilities`:
+    -   now uses the new `Homebrew Settings` feature instead, the old `Familiar Abilities` setting is removed and its value not kept, you gonna have to set it up anew
+-   add `getItemTypeLabel` helper to the `utils` collection
+
 # 3.8.2
 
 -   `Apparition Attunement`:

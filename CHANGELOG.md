@@ -4,7 +4,7 @@
     -   this is the place to add homebrew entries for the dailies that allow it
         -   hombrew entries will be added as options to the daily
         -   you can use the ID of a compendium pack or the UUID of an item to add entries
-        -   this remplaces the previous `Familiar Abilities` setting, you have to set it up again
+        -   this replaces the previous `Familiar Abilities` setting, you have to set it up again
 -   `Apparition Attunement`:
     -   now accepts the use of homebrew apparitions via the new `Homebrew Settings`
     -   make sure to not add duplicate spells

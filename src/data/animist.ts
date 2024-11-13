@@ -19,6 +19,7 @@ const UUID_REGEX = /@(uuid|compendium)\[([a-z0-9\._-]+)\]/gi;
 const AVATAR_UUID = "Compendium.pf2e.spells-srd.Item.ckUOoqOM7Kg7VqxB";
 const HEAL_UUID = "Compendium.pf2e.spells-srd.Item.rfZpqmj0AIIdkVIs";
 const HARM_UUID = "Compendium.pf2e.spells-srd.Item.wdA52JJnsuQWeyqz";
+const ANIMAL_FORM_UUID = "Compendium.pf2e.spells-srd.Item.wp09USMB3GIW1qbp";
 
 // level 1 to 20 / rank 1 to 9
 const SPELLS_SLOTS = [
@@ -67,6 +68,10 @@ const animist = createDaily({
         {
             slug: "balance", // Embodiment of the Balance
             uuid: "Compendium.pf2e.feats-srd.Item.8Y9DCalsSnXHDCeV",
+        },
+        {
+            slug: "walk", // Walk the Wilds
+            uuid: "Compendium.pf2e.feats-srd.Item.zKUtZxlQw5jWnX9z",
         },
     ],
     label: (actor, items) => items.attunement.name,
@@ -190,6 +195,7 @@ const animist = createDaily({
 
         if (items.supreme) extraSpells.push(AVATAR_UUID);
         if (items.balance) extraSpells.push(HEAL_UUID, HARM_UUID);
+        if (items.walk) extraSpells.push(ANIMAL_FORM_UUID);
 
         // add extraSpells
         await Promise.all(extraSpells.map((uuid) => addSpell(uuid, uuid !== AVATAR_UUID)));

@@ -146,6 +146,7 @@
                         &.random {
                             pointer-events: none;
                             appearance: none;
+                            line-height: 1;
                         }
 
                         &:disabled {

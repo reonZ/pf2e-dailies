@@ -1,3 +1,10 @@
+# 3.10.0
+
+-   add support for the `Proteankin` feat (from `Nephilim` heritage)
+-   `Apparition Attunement`:
+    -   now add the `Animal Form` spell if you have the `Walk the Wilds` class feat
+        -   set it as signature spells by default
+
 # 3.9.0
 
 -   add a new `Homebrew Settings` menu

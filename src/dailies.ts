@@ -81,6 +81,13 @@ const BUILTINS_DAILIES: Daily[] = [
         "half",
         true
     ),
+    createResistanceDaily(
+        "proteankin", // Proteankin (Nephilim feat)
+        "Compendium.pf2e.feats-srd.Item.gNFPwTHDygxdf9pw",
+        ["acid", "electricity", "sonic"],
+        "half",
+        true
+    ),
     createScrollChainDaily("esoterica", [
         "Compendium.pf2e.feats-srd.Item.OqObuRB8oVSAEKFR", // Scroll Esoterica
         "Compendium.pf2e.feats-srd.Item.nWd7m0yRcIEVUy7O", // Elaborate Scroll Esoterica

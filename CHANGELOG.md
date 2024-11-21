@@ -1,3 +1,9 @@
+# 3.11.0
+
+-   this is a system `6.7.0` release
+-   updated the `performDailyCrafting` to be compatible with latest system version
+    -   it will now delete any temporary item that isn't part of the crafting special resource as well as not have been added by the module
+
 # 3.10.0
 
 -   add support for the `Proteankin` feat (from `Nephilim` heritage)

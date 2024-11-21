@@ -25,47 +25,85 @@ import {
 } from "./api";
 import { StaffSpellcasting } from "./data/staves";
 
-async function performDailyCrafting(this: CharacterPF2e) {
-    const entries = this.crafting.abilities.filter((e) => e.isDailyPrep);
-    const alchemicalEntries = entries.filter((e) => e.isAlchemical);
-    const reagentCost = (
-        await Promise.all(alchemicalEntries.map((e) => e.calculateReagentCost()))
-    ).reduce((sum, cost) => sum + cost, 0);
-    const reagentValue = (this.system.resources.crafting.infusedReagents.value || 0) - reagentCost;
-    if (reagentValue < 0) {
-        ui.notifications.warn(game.i18n.localize("PF2E.CraftingTab.Alerts.MissingReagents"));
-        return;
-    } else {
-        await this.update({ "system.resources.crafting.infusedReagents.value": reagentValue });
-        const key =
-            reagentCost === 0 ? "ZeroConsumed" : reagentCost === 1 ? "OneConsumed" : "NConsumed";
-        ui.notifications.info(
-            game.i18n.format(`PF2E.Actor.Character.Crafting.Daily.Complete.${key}`, {
-                quantity: reagentCost,
-            })
-        );
+function onCharacterPrepareDerivedData(this: CharacterPF2e, wrapped: libWrapper.RegisterCallback) {
+    wrapped();
+
+    this.crafting.performDailyCrafting = performDailyCrafting.bind(this.crafting);
+}
+
+async function performDailyCrafting(this: CharacterCrafting) {
+    const actor = this.actor;
+    const abilities = this.abilities.filter((e) => e.isDailyPrep);
+
+    // Compute total resource cost by resource
+    const resourceCosts: Record<string, number> = {};
+    for (const ability of abilities) {
+        if (ability.resource) {
+            const cost = await ability.calculateResourceCost();
+            resourceCosts[ability.resource] ??= 0;
+            resourceCosts[ability.resource] += cost;
+        }
     }
 
-    // // Remove infused/temp items
-    // for (const item of this.inventory) {
-    //     if (item.system.temporary) await item.delete();
-    // }
+    // Validate if resources are sufficient and compute new resource values
+    const resourceUpdates: Record<string, number> = {};
+    for (const [slug, cost] of Object.entries(resourceCosts)) {
+        const resource = actor.getResource(slug);
+        if (!resource || cost > resource.value) {
+            ui.notifications.warn("PF2E.Actor.Character.Crafting.MissingResource", {
+                localize: true,
+            });
+            return;
+        }
 
-    for (const entry of entries) {
-        for (const formula of await entry.getPreparedCraftingFormulas()) {
+        resourceUpdates[slug] = resource.value - cost;
+    }
+
+    // Perform resource updates
+    for (const [slug, value] of Object.entries(resourceUpdates)) {
+        await actor.updateResource(slug, value);
+    }
+
+    // Remove infused/temp items
+    const specialResourceItems = Object.values(actor.synthetics.resources)
+        .map((r) => r.itemUUID)
+        .filter((i) => !!i);
+    const itemsToDelete = this.actor.inventory
+        .filter(
+            (i) =>
+                i.system.temporary &&
+                !isTemporary(i) &&
+                (!i.sourceId || !specialResourceItems.includes(i.sourceId))
+        )
+        .map((i) => i.id);
+    if (itemsToDelete.length) {
+        await actor.deleteEmbeddedDocuments("Item", itemsToDelete);
+    }
+
+    // Assemble the items we need to create, grouped by uuid, then add the items
+    const itemsToAdd: PreCreate<PhysicalItemSource>[] = [];
+    for (const ability of abilities) {
+        for (const formula of await ability.getPreparedCraftingFormulas()) {
+            if (formula.expended) continue;
+
             const itemSource: PhysicalItemSource = formula.item.toObject();
             itemSource.system.quantity = formula.quantity;
             itemSource.system.temporary = true;
-            itemSource.system.size = this.ancestry?.size === "tiny" ? "tiny" : "med";
-
+            itemSource.system.size = this.actor.ancestry?.size === "tiny" ? "tiny" : "med";
             if (
-                entry.isAlchemical &&
+                formula.item.isAlchemical &&
                 itemIsOfType(itemSource, "consumable", "equipment", "weapon")
             ) {
                 itemSource.system.traits.value.push("infused");
+                itemSource.system.traits.value.sort(); // required for stack matching
             }
-            await this.addToInventory(itemSource);
+
+            itemsToAdd.push(itemSource);
         }
+    }
+    if (itemsToAdd.length) {
+        actor.inventory.add(itemsToAdd, { stack: true });
+        ui.notifications.info("PF2E.Actor.Character.Crafting.Daily.Complete", { localize: true });
     }
 }
 
@@ -430,9 +468,9 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
 
 export {
     onCharacterPrepareData,
+    onCharacterPrepareDerivedData,
     onCharacterSheetGetData,
     onRenderCharacterSheetPF2e,
     onRenderFamiliarSheetPF2e,
     onRenderNPCSheetPF2e,
-    performDailyCrafting,
 };

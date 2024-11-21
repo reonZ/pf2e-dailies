@@ -772,9 +772,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         const entryIdentifier = foundry.utils.randomID();
 
         for (const source of addedItems) {
-            if (!foundry.utils.getProperty(source, "system.temporary")) {
-                setFlagProperty(source, "temporary", true);
-            }
+            setFlagProperty(source, "temporary", true);
 
             if (
                 source.type === "spell" &&

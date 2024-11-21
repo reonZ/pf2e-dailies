@@ -1,11 +1,11 @@
 import { MODULE, getSetting, registerWrapper, warn } from "foundry-pf2e";
 import {
     onCharacterPrepareData,
+    onCharacterPrepareDerivedData,
     onCharacterSheetGetData,
     onRenderCharacterSheetPF2e,
     onRenderFamiliarSheetPF2e,
     onRenderNPCSheetPF2e,
-    performDailyCrafting,
 } from "./actor";
 import {
     canCastRank,
@@ -90,9 +90,9 @@ Hooks.once("ready", () => {
     registerWrapper("game.pf2e.actions.restForTheNight", restForTheNight, "WRAPPER");
 
     registerWrapper(
-        "CONFIG.PF2E.Actor.documentClasses.character.prototype.performDailyCrafting",
-        performDailyCrafting,
-        "OVERRIDE"
+        "CONFIG.PF2E.Actor.documentClasses.character.prototype.prepareDerivedData",
+        onCharacterPrepareDerivedData,
+        "WRAPPER"
     );
 
     registerWrapper(

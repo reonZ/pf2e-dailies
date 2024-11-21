@@ -1,4 +1,4 @@
-import { MODULE, getFlag, updateFlag } from "foundry-pf2e";
+import { MODULE, R, getFlag, updateFlag } from "foundry-pf2e";
 import { createUpdateCollection, isTemporary } from "./api";
 import { filterDailies, getDailies } from "./dailies";
 import { DailyActorFlags } from "./types";
@@ -14,9 +14,9 @@ async function restForTheNight(
             return result;
         }
 
-        const actors = Array.isArray(options.actors) ? options.actors : [options.actors];
-        const characters = actors.filter(
-            (actor): actor is CharacterPF2e => !!actor?.isOfType("character")
+        const characters = R.pipe(
+            Array.isArray(options.actors) ? options.actors : [options.actors],
+            R.filter((actor): actor is CharacterPF2e => !!actor?.isOfType("character"))
         );
 
         await Promise.all(characters.map(cleanup));

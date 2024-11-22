@@ -1,3 +1,10 @@
+# 3.12.0
+
+-   `Apparition Attunement`:
+    -   add support for the `Medium` dual invocation
+        -   both vessels will be added which will automatically give a second focus point to the animist
+-   some internal changes as well
+
 # 3.11.0
 
 -   this is a system `6.7.0` release

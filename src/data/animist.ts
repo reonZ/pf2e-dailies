@@ -73,6 +73,10 @@ const animist = createDaily({
             slug: "walk", // Walk the Wilds
             uuid: "Compendium.pf2e.feats-srd.Item.zKUtZxlQw5jWnX9z",
         },
+        {
+            slug: "medium", // Medium
+            uuid: "Compendium.pf2e.classfeatures.Item.k6c2gesVQ8QuEWGm",
+        },
     ],
     label: (actor, items) => items.attunement.name,
     rows: async (actor, items) => {
@@ -80,6 +84,7 @@ const animist = createDaily({
         if (!pack) return [];
 
         const uniqueId = foundry.utils.randomID();
+        const nbPrimary = items.medium && actor.level >= 9 ? 2 : 1;
         const index = await pack.getIndex({ fields: ["system.traits.otherTags"] });
         const apparitions = index.filter((entry) =>
             entry.system.traits.otherTags?.includes("animist-apparition")
@@ -102,10 +107,12 @@ const animist = createDaily({
         if (items.fourth) nbApparitions += 1;
 
         return R.range(1, nbApparitions + 1).map((i) => {
+            const labelKey = i <= nbPrimary ? (nbPrimary > 1 ? "primary" : "first") : "other";
+
             return {
                 type: "select",
                 slug: `apparition${i}`,
-                label: localize(`label.apparition.${i === 1 ? "first" : "other"}`, { nb: i }),
+                label: localize(`label.apparition.${labelKey}`, { nb: i }),
                 unique: uniqueId,
                 options: options,
             };
@@ -121,6 +128,7 @@ const animist = createDaily({
         const spellsIdentifier = "animist-spontaneous";
         const vesselsIdentifier = "animist-focus";
         const animistConfig = getAnimistConfigs(actor);
+        const nbPrimary = items.medium && actor.level >= 9 ? 2 : 1;
 
         messages.addGroup("apparition", undefined, 100);
 
@@ -169,7 +177,7 @@ const animist = createDaily({
                     await Promise.all(uuids.map((uuid) => addSpell(uuid, false)));
                 }
 
-                if (index === 0) {
+                if (index < nbPrimary) {
                     const vesselEl = spellsEl?.nextElementSibling as HTMLElement | undefined;
                     if (vesselEl) {
                         UUID_REGEX.lastIndex = 0;
@@ -201,6 +209,8 @@ const animist = createDaily({
         await Promise.all(extraSpells.map((uuid) => addSpell(uuid, uuid !== AVATAR_UUID)));
 
         const attribute = actor.classDC?.attribute ?? "wis";
+
+        console.log(vesselsToAdd);
 
         const vessels = R.uniqueBy(vesselsToAdd, R.prop("uuid"));
         if (vessels.length) {

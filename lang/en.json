@@ -83,6 +83,7 @@
             "ability": "Ability #{nb}",
             "apparition": {
                 "first": "Primary Apparition",
+                "primary": "Primary #{nb} ",
                 "other": "Apparition #{nb}"
             },
             "expend": "Expend #{nb}",

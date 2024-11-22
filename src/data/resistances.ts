@@ -1,10 +1,11 @@
+import { ResistanceType } from "foundry-pf2e";
 import { createDaily } from "../daily";
 import { utils, type SimplifiableRuleValue } from "../utils";
 
 function createResistanceDaily(
     key: string,
     uuid: string,
-    resistances: string[],
+    resistances: ResistanceType[],
     resistance: SimplifiableRuleValue,
     isRandom = false
 ) {
@@ -33,15 +34,16 @@ function createResistanceDaily(
             ];
         },
         process: ({ rows, items, messages, addRule }) => {
+            const type = rows.resistance as ResistanceType;
             const source = utils.createResistanceRuleElement({
-                type: rows.resistance,
+                type,
                 value: resistance,
             });
 
             addRule(items.item, source);
             messages.add("resistances", {
                 uuid,
-                selected: utils.getResistanceLabel(rows.resistance),
+                selected: utils.getResistanceLabel(type),
                 random: isRandom,
             });
         },

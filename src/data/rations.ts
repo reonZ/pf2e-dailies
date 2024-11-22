@@ -1,6 +1,7 @@
-import { localize } from "foundry-pf2e";
+import { localize } from "module-helpers";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
+import { ConsumablePF2e } from "foundry-pf2e";
 
 const rationsUUID = "Compendium.pf2e.equipment-srd.Item.L9ZV076913otGtiB";
 

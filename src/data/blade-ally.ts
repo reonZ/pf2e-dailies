@@ -1,6 +1,7 @@
-import { MODULE, R } from "foundry-pf2e";
+import { MODULE, R } from "module-helpers";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
+import { CharacterPF2e, WeaponPF2e, WeaponPropertyRuneType } from "foundry-pf2e";
 
 const bladeUUID = "Compendium.pf2e.classfeatures.Item.EtltLdiy9kNfHU0c";
 

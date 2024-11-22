@@ -1,4 +1,4 @@
-import { R, error, getSetting } from "foundry-pf2e";
+import { R, error, getSetting } from "module-helpers";
 import { createDaily } from "./daily";
 import { ancestralLongevity } from "./data/ancestral-longevity";
 import { bladeAlly } from "./data/blade-ally";
@@ -20,6 +20,7 @@ import { tricksterAce } from "./data/trickster-ace";
 import type { CustomDaily, Daily, DailyItem, PreparedDailies, PreparedDaily } from "./types";
 import { utils } from "./utils";
 import { animist } from "./data/animist";
+import { CharacterPF2e, ItemPF2e } from "foundry-pf2e";
 
 type PreConditionDaily = {
     daily: Daily;

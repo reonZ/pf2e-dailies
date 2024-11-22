@@ -1,11 +1,13 @@
-import { MODULE, R, getFlag, updateFlag } from "foundry-pf2e";
+import { MODULE, R, getFlag, updateFlag } from "module-helpers";
 import { createUpdateCollection, isTemporary } from "./api";
 import { filterDailies, getDailies } from "./dailies";
 import { DailyActorFlags } from "./types";
+import { CharacterPF2e, ChatMessagePF2e } from "foundry-pf2e";
+import { ActionDefaultOptions } from "foundry-pf2e/pf2e/module/system/action-macros/index.js";
 
 async function restForTheNight(
     wrapped: libWrapper.RegisterCallback,
-    options: RestForTheNightOptions
+    options: ActionDefaultOptions
 ): Promise<ChatMessagePF2e[]> {
     const result = await wrapped(options);
 

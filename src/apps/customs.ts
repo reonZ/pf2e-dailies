@@ -7,7 +7,7 @@ import {
     setSetting,
     subLocalize,
     templatePath,
-} from "foundry-pf2e";
+} from "module-helpers";
 import { DAILY_SCHEMA, parseCustomDaily } from "../dailies";
 import type { CustomDaily } from "../types";
 
@@ -62,7 +62,7 @@ class CustomDailies extends FormApplication {
         const dailies = this.dailies;
         const daily = dailies.find(({ key }) => key === selected);
 
-        return {
+        return foundry.utils.mergeObject(super.getData(options), {
             i18n: localize.i18n,
             list: dailies.map(({ key, schema }) => ({
                 key,
@@ -73,7 +73,7 @@ class CustomDailies extends FormApplication {
             readonly:
                 (daily && foundry.utils.isNewerVersion(DAILY_SCHEMA, daily?.schema ?? "")) || false,
             disabled: !daily,
-        };
+        });
     }
 
     activateListeners($html: JQuery<HTMLElement>) {

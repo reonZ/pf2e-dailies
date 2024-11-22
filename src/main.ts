@@ -1,4 +1,4 @@
-import { MODULE, getSetting, registerWrapper, warn } from "foundry-pf2e";
+import { MODULE, getSetting, registerWrapper, warn } from "module-helpers";
 import {
     onCharacterPrepareData,
     onCharacterPrepareDerivedData,
@@ -63,6 +63,7 @@ Hooks.once("init", () => {
         },
     };
 
+    // @ts-expect-error
     CONFIG.PF2E.preparationType.charges = "Charges";
 
     registerWrapper(

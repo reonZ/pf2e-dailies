@@ -1,10 +1,29 @@
 import {
-    ErrorPF2e,
-    R,
+    AttributeString,
+    CastOptions,
+    CharacterPF2e,
+    CreaturePF2e,
+    ItemPF2e,
+    MagicTradition,
+    OneToFour,
+    OneToTen,
+    Predicate,
+    PredicateStatement,
+    SlotKey,
+    SpellcastingEntryPF2e,
+    SpellcastingEntrySystemData,
+    SpellcastingSlotGroup,
+    SpellCollection,
+    SpellPF2e,
+    Statistic,
+    ZeroToTen,
+} from "foundry-pf2e";
+import {
     createCounteractStatistic,
     createHTMLElement,
     elementDataset,
     error,
+    ErrorPF2e,
     getActorMaxRank,
     getRankLabel,
     getUuidFromInlineMatch,
@@ -13,10 +32,12 @@ import {
     htmlQueryAll,
     isInstanceOf,
     localize,
+    R,
+    SpellcastingEntryWithCharges,
     subLocalize,
     waitDialog,
     warn,
-} from "foundry-pf2e";
+} from "module-helpers";
 import { canCastRank, getStaffFlags, setStaffChargesValue } from "../api";
 import { createDaily } from "../daily";
 import {
@@ -286,10 +307,10 @@ const staves = createDaily({
 
         for (const preparedPath of expendedRows) {
             const entryId = preparedPath?.split(".")[0];
-            const entry = spellcasting.get<SpellcastingEntryPF2e<CharacterPF2e>>(entryId);
-            const preparedData = foundry.utils.getProperty<
-                FlexiblePreparedEntryGroup["slots"][number] | PreparedEntryGroup["spells"][number]
-            >(preparedEntries, preparedPath);
+            const entry = spellcasting.get(entryId) as SpellcastingEntryPF2e<CharacterPF2e>;
+            const preparedData = foundry.utils.getProperty(preparedEntries, preparedPath) as
+                | FlexiblePreparedEntryGroup["slots"][number]
+                | PreparedEntryGroup["spells"][number];
 
             if (!entry || !preparedData) continue;
 
@@ -394,7 +415,7 @@ interface StaffSpellcastingConstructorParams<TActor extends CreaturePF2e> {
     castPredicate: PredicateStatement[];
 }
 
-class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
+class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
     id: string;
     name: string;
     actor: CharacterPF2e;
@@ -610,8 +631,7 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
         }
 
         const spontaneousValue = useSpontaneous
-            ? actor.spellcasting.get<SpellcastingEntryPF2e<CharacterPF2e>>(useSpontaneous.entry)
-                  ?.system.slots[useSpontaneous.slot].value
+            ? actor.spellcasting.get(useSpontaneous.entry)?.system?.slots[useSpontaneous.slot].value
             : undefined;
 
         if (charges < 1 || (mustUseSpontaneous && !spontaneousValue)) {
@@ -635,9 +655,7 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
         });
     }
 
-    async getSheetData({
-        spells,
-    }: { spells?: SpellCollection<CharacterPF2e> } = {}): Promise<ChargesSpellcastingSheetData> {
+    async getSheetData({ spells }: { spells?: SpellCollection<CharacterPF2e> } = {}) {
         const actor = this.actor;
 
         if (!actor?.isOfType("character", "npc")) {
@@ -692,7 +710,7 @@ class StaffSpellcasting implements SpellcastingEntry<CharacterPF2e> {
             isCharges: true,
             isStaff: true,
             uses: getStaffFlags(actor)?.charges ?? { value: 0, max: 0 },
-        };
+        } satisfies ChargesSpellcastingSheetData;
     }
 }
 
@@ -700,4 +718,4 @@ interface StaffSpellcasting {
     system: SpellcastingEntrySystemData;
 }
 
-export { StaffSpellcasting, hasStaves, staves };
+export { hasStaves, StaffSpellcasting, staves };

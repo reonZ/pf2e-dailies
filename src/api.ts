@@ -1,7 +1,8 @@
-import { R, getActorMaxRank, getFlag, localize, setFlag } from "foundry-pf2e";
+import { R, getActorMaxRank, getFlag, localize, setFlag } from "module-helpers";
 import { DailyInterface } from "./apps/interface";
 import { getDailies } from "./dailies";
 import type { DailyActorFlags, SimplifiableValue } from "./types";
+import { ActorPF2e, CharacterPF2e, ItemPF2e, OneToTen, SpellcastingEntryPF2e } from "foundry-pf2e";
 
 function isValidActor(actor: ActorPF2e): actor is CharacterPF2e {
     return actor instanceof Actor && actor.isOfType("character");

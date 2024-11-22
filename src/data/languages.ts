@@ -1,3 +1,4 @@
+import { Language } from "foundry-pf2e";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
 
@@ -26,7 +27,7 @@ function createLanguageDaily(key: string, uuid: string) {
             ];
         },
         process: ({ rows, items, messages, addRule }) => {
-            const language = rows.language;
+            const language = rows.language as Language;
             const source = utils.createLanguageRuleElement({ language });
 
             addRule(items.item, source);

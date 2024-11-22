@@ -1,7 +1,8 @@
-import { R } from "foundry-pf2e";
+import { R } from "module-helpers";
 import { createDaily } from "../daily";
 import { DailyRowDropSpell } from "../types";
 import { utils } from "../utils";
+import { OneToSix } from "foundry-pf2e";
 
 type OneToSeven = OneToSix | 7;
 

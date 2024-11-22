@@ -1,16 +1,26 @@
 import {
-    MODULE,
+    ActorPF2e,
+    CharacterPF2e,
+    CreaturePF2e,
+    SpellCollection,
+    SpellPF2e,
+    SpellSlotGroupId,
+    ZeroToTen,
+} from "foundry-pf2e";
+import {
     getRankLabel,
     getSpellCollectionClass,
     isInstanceOf,
+    MODULE,
+    SpellcastingEntryPF2eWithCharges,
     spellSlotGroupIdToNumber,
     warn,
     warnInvalidDrop,
-} from "foundry-pf2e";
+} from "module-helpers";
 import { ChargesSpellcastingSheetData } from "./types";
 
 function spellcastingEntryPrepareSiblingData(
-    this: SpellcastingEntryPF2e<CreaturePF2e>,
+    this: SpellcastingEntryPF2eWithCharges<CreaturePF2e>,
     wrapped: libWrapper.RegisterCallback
 ): void {
     const actor = this.actor;
@@ -25,9 +35,15 @@ function spellcastingEntryPrepareSiblingData(
     }
 
     try {
-        const SpellCollection = getSpellCollectionClass(actor);
+        const SpellCollectionCls = getSpellCollectionClass(actor) as unknown as {
+            prototype: SpellCollection<CreaturePF2e>;
+            new (
+                entry: SpellcastingEntryPF2eWithCharges,
+                name?: string
+            ): SpellCollection<CreaturePF2e>;
+        };
 
-        class ChargesSpellCollection extends SpellCollection {
+        class ChargesSpellCollection extends SpellCollectionCls {
             async addSpell(
                 spell: SpellPF2e<ActorPF2e>,
                 options?: { groupId?: Maybe<SpellSlotGroupId> } | undefined
@@ -107,7 +123,7 @@ function spellcastingEntryPrepareSiblingData(
 }
 
 async function spellcastingEntryConsume(
-    this: SpellcastingEntryPF2e<NonNullable<CreaturePF2e>>,
+    this: SpellcastingEntryPF2eWithCharges<NonNullable<CreaturePF2e>>,
     wrapped: libWrapper.RegisterCallback,
     spell: SpellPF2e<ActorPF2e>,
     rank: ZeroToTen,
@@ -140,7 +156,7 @@ async function spellcastingEntryConsume(
 }
 
 async function spellcastingEntryGetSheetData(
-    this: SpellcastingEntryPF2e<NonNullable<CreaturePF2e>>,
+    this: SpellcastingEntryPF2eWithCharges<NonNullable<CreaturePF2e>>,
     wrapped: libWrapper.RegisterCallback,
     options: { spells?: SpellCollection<CharacterPF2e> } = {}
 ): Promise<ChargesSpellcastingSheetData> {

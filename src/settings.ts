@@ -1,4 +1,4 @@
-import { registerSetting, registerSettingMenu, renderCharacterSheets } from "foundry-pf2e";
+import { registerSetting, registerSettingMenu, renderCharacterSheets } from "module-helpers";
 import { parseDailies } from "./dailies";
 import { CustomDailies } from "./apps/customs";
 import { HomebrewDailies } from "./apps/homebrew";

@@ -29,9 +29,8 @@ import {
     subLocalize,
     templateLocalize,
     unsetMofuleFlag,
-    updateFlag,
     warn,
-} from "foundry-pf2e";
+} from "module-helpers";
 import {
     createUpdateCollection,
     getActorFlag,
@@ -63,6 +62,29 @@ import type {
 } from "../types";
 import { utils } from "../utils";
 import { DailyConfig } from "./config";
+import {
+    CharacterPF2e,
+    CheckboxData,
+    FeatFilters,
+    FeatOrFeatureCategory,
+    FeatPF2e,
+    ItemPF2e,
+    ItemSourcePF2e,
+    MagicTradition,
+    MultiselectData,
+    OneToTen,
+    Rarity,
+    SkillSlug,
+    SliderData,
+    SpellFilters,
+    SpellPF2e,
+    SpellTrait,
+    TabName,
+} from "foundry-pf2e";
+import {
+    ApplicationConfiguration,
+    ApplicationRenderOptions,
+} from "foundry-pf2e/foundry/client-esm/applications/_types.js";
 
 const ACTOR_DAILY_SCHEMA = "3.0.0";
 
@@ -134,7 +156,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         this.#dailiesArray = filterDailies(dailies);
     }
 
-    static DEFAULT_OPTIONS: PartialApplicationConfiguration = {
+    static DEFAULT_OPTIONS: DeepPartial<ApplicationConfiguration> = {
         window: {
             positioned: true,
             resizable: true,
@@ -552,6 +574,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         const compendium = await this.#compendiumFilterFromElement(inputEl, true);
 
         if (compendium) {
+            // @ts-ignore
             game.pf2e.compendiumBrowser.openTab(compendium.type, compendium.filter);
         }
     }
@@ -1039,10 +1062,11 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
     #validateDefault(item: FeatPF2e | SpellPF2e, filter: FeatFilters | SpellFilters) {
         const { multiselects, checkboxes } = filter;
-        const tab = game.pf2e.compendiumBrowser.tabs[item.type as TabName];
+        const tab = game.pf2e.compendiumBrowser.tabs[item.type as "spell" | "feat"];
         const itemTraits = item.system.traits.value.map((t: string) => t.replace(/^hb_/, ""));
 
         if (
+            // @ts-expect-error
             !tab.filterTraits(
                 itemTraits,
                 multiselects.traits.selected,
@@ -1065,7 +1089,9 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
         const sources = checkboxes.source.selected;
         if (sources.length) {
-            const { system } = item._source;
+            const { system } = item._source as {
+                system: { source?: { value: string }; publication?: { title: string } };
+            };
             const pubSource = String(
                 system.publication?.title ?? system.source?.value ?? ""
             ).trim();
@@ -1146,7 +1172,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             return false;
         }
 
-        const filterCategories = checkboxes.category.selected;
+        const filterCategories = checkboxes.category.selected as SpellTrait[];
         if (filterCategories.length) {
             const isCantrip = item.isCantrip;
             const isFocusSpell = item.isFocusSpell;
@@ -1158,7 +1184,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                     isCantrip ? "cantrip" : null,
                     isFocusSpell ? "focus" : null,
                     isRitual ? "ritual" : null,
-                ],
+                ] as SpellTrait[],
                 R.isTruthy
             );
 
@@ -1293,7 +1319,9 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             for (const select of multiselect.selected) {
                 const selection =
                     typeof select === "string" ? { value: select, not: undefined } : select;
-                filterMultiselect.selected.push(selection);
+                filterMultiselect.selected.push(
+                    selection as { value: string; not: undefined; label: string }
+                );
             }
         }
 

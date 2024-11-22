@@ -4,6 +4,7 @@
         "build": "esbuild src/main.ts --bundle --keep-names --minify --sourcemap --outdir=scripts",
         "dev": "esbuild src/main.ts --bundle --keep-names --watch --sourcemap --outdir=scripts"
     },
+    "type": "module",
     "author": "Idle",
     "homepage": "https://github.com/reonZ/pf2e-dailies#readme",
     "repository": {
@@ -15,9 +16,10 @@
     },
     "devDependencies": {
         "esbuild": "^0.20.1",
+        "foundry-pf2e": "github:7H3LaughingMan/foundry-pf2e",
         "typescript": "5.3.3"
     },
     "dependencies": {
-        "foundry-pf2e": "github:reonZ/foundry-pf2e"
+        "module-helpers": "github:reonZ/module-helpers"
     }
 }

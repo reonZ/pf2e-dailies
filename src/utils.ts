@@ -1,4 +1,27 @@
 import {
+    CharacterPF2e,
+    DamageType,
+    FeatOrFeatureCategory,
+    FeatTrait,
+    ItemPF2e,
+    Language,
+    LoreSource,
+    MagicTradition,
+    OneToFour,
+    OneToTen,
+    PreciousMaterialType,
+    ResistanceType,
+    SkillSlug,
+    SpellConsumableItemType,
+    SpellPF2e,
+    WeaponGroup,
+    WeaponPF2e,
+    WeaponPropertyRuneType,
+    WeaponTrait,
+    ZeroToFour,
+    ZeroToTen,
+} from "foundry-pf2e";
+import {
     CreateSpellcastingSource,
     R,
     createChatLink,
@@ -14,7 +37,7 @@ import {
     hasFreePropertySlot,
     rollDie,
     setFlagProperty,
-} from "foundry-pf2e";
+} from "module-helpers";
 
 type SimplifiableRuleValue = string | number | "half" | "level";
 
@@ -28,7 +51,7 @@ type CreateSpellConsumableSourceOptions = {
 const utils = {
     getItemSource,
     getItemTypeLabel,
-    getChoiSetRuleSelection: <T extends any = string>(
+    getChoiSetRuleSelection: (
         item: ItemPF2e,
         option?: string | { option?: string; flag?: string }
     ) => {
@@ -38,7 +61,7 @@ const utils = {
     hasFreePropertySlot: (item: WeaponPF2e) => {
         return hasFreePropertySlot(item);
     },
-    getResistanceLabel: (resistance: string, localize = true) => {
+    getResistanceLabel: (resistance: ResistanceType, localize = true) => {
         const label = CONFIG.PF2E.resistanceTypes[resistance];
         return localize ? game.i18n.localize(label).capitalize() : label;
     },
@@ -49,7 +72,7 @@ const utils = {
             R.map(([value, label]) => ({ value, label: label.capitalize() }))
         );
     },
-    getLanguageLabel: (language: string, localize = true) => {
+    getLanguageLabel: (language: Language, localize = true) => {
         const label = CONFIG.PF2E.languages[language];
         return localize ? game.i18n.localize(label) : label;
     },
@@ -77,7 +100,7 @@ const utils = {
     createExcludeFeatList: (
         actor: CharacterPF2e,
         categories: FeatOrFeatureCategory[],
-        traits: string[]
+        traits: FeatTrait[]
     ) => {
         return R.pipe(
             actor.itemTypes.feat,
@@ -115,7 +138,7 @@ const utils = {
     getWeaponPotencyRuneLabel: (potency: ZeroToFour) => {
         return game.i18n.localize(`PF2E.WeaponPotencyRune${potency}`);
     },
-    getWeaponTraitLabel: (trait: string) => {
+    getWeaponTraitLabel: (trait: WeaponTrait) => {
         return game.i18n.localize(CONFIG.PF2E.weaponTraits[trait]);
     },
     getWeaponDamageLabel: (damage: DamageType) => {
@@ -180,7 +203,7 @@ const utils = {
         value,
         predicate,
     }: {
-        type: string;
+        type: ResistanceType;
         value: SimplifiableRuleValue;
         predicate?: any[];
     }) => {

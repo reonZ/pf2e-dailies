@@ -1,3 +1,4 @@
+import { SkillSlug } from "foundry-pf2e";
 import { createDaily } from "../daily";
 import { DailyRowComboData } from "../types";
 import { utils } from "../utils";

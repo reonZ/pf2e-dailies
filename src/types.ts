@@ -1,3 +1,18 @@
+import {
+    CharacterPF2e,
+    FeatOrFeatureCategory,
+    FeatPF2e,
+    ItemPF2e,
+    ItemSourcePF2e,
+    MagicTradition,
+    Rarity,
+    RuleElementSource,
+    SkillSlug,
+    SpellcastingSheetData,
+    SpellPF2e,
+} from "foundry-pf2e";
+import { SpellcastingSheetDataWithCharges } from "module-helpers";
+
 type Daily<
     TItemSlug extends string = string,
     TCustom extends DailyCustom = DailyCustom,
@@ -304,7 +319,7 @@ type PreparedDailies = Record<string, PreparedDaily | null>;
 
 type SimplifiableValue = number | StringNumber | "level" | "half";
 
-type ChargesSpellcastingSheetData = SpellcastingSheetData & {
+type ChargesSpellcastingSheetData = SpellcastingSheetDataWithCharges & {
     isStaff: boolean;
     isCharges: boolean;
     uses: { value: number; max: number };
@@ -317,9 +332,9 @@ export type {
     DailyActorFlags,
     DailyCustom,
     DailyItem,
-    DailyOptionsItems,
     DailyMessageGroup,
     DailyMessageOptions,
+    DailyOptionsItems,
     DailyRow,
     DailyRowAlert,
     DailyRowCombo,

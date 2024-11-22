@@ -6,11 +6,12 @@ import {
     localize,
     R,
     splitListString,
-} from "foundry-pf2e";
+} from "module-helpers";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
 import { getAnimistConfigs } from "../api";
 import { HomebrewDailies } from "../apps/homebrew";
+import { ItemPF2e, SpellSource } from "foundry-pf2e";
 
 const LORE_STRIP_REGEX = /^(.+?) Lore$/;
 

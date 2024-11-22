@@ -7,8 +7,9 @@ import {
     setSetting,
     subLocalize,
     templatePath,
-} from "foundry-pf2e";
+} from "module-helpers";
 import { utils } from "../utils";
+import { ActorPF2e, ItemPF2e, ItemType, MacroPF2e, ScenePF2e } from "foundry-pf2e";
 
 const localize = subLocalize("homebrew");
 
@@ -246,7 +247,7 @@ type Homebrew = {
     entries: { id: string; img: string | null; name: string; isPack: boolean }[];
 };
 
-type HomebrewData = {
+type HomebrewData = FormApplicationData & {
     index: { id: HomebrewIndex; label: string }[];
     i18n: typeof localize.i18n;
     homebrews: Homebrew[];

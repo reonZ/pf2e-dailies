@@ -1,3 +1,4 @@
+import { CharacterPF2e, ItemPF2e, OneToFour, SkillSlug } from "foundry-pf2e";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
 
@@ -13,7 +14,7 @@ type CustomRow = {
 const tomeUUID = "Compendium.pf2e.classfeatures.Item.MyN1cQgE0HsLF20e";
 
 function itemCondition(actor: CharacterPF2e, item: ItemPF2e): Promisable<boolean> {
-    const selected = utils.getChoiSetRuleSelection<string>(item);
+    const selected = utils.getChoiSetRuleSelection(item);
     return selected ? actor.items.get(selected)?.sourceId === tomeUUID : false;
 }
 

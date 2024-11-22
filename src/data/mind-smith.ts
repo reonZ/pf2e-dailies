@@ -1,7 +1,16 @@
-import { MODULE, R, localize, subLocalize, waitDialog } from "foundry-pf2e";
+import { MODULE, R, localize, subLocalize, waitDialog } from "module-helpers";
 import { createDaily } from "../daily";
 import { DailyRowSelectOption } from "../types";
 import { utils } from "../utils";
+import {
+    CharacterPF2e,
+    DamageDieSize,
+    PreciousMaterialType,
+    WeaponPropertyRuneType,
+    WeaponSource,
+    WeaponTrait,
+    ZeroToFour,
+} from "foundry-pf2e";
 
 const mindUUID = "Compendium.pf2e.feats-srd.Item.juikoiIA0Jy8PboY";
 const mentalUUID = "Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky";
@@ -11,7 +20,7 @@ const advancedUUID = "Compendium.pf2e.feats-srd.Item.fgnfXwFcn9jZlXGD";
 
 const weaponSlug = "mind-weapon";
 
-const weaponBases: { die: DamageDieSize; traits: string[]; usage: WeaponUsage }[] = [
+const weaponBases: { die: DamageDieSize; traits: WeaponTrait[]; usage: WeaponUsage }[] = [
     { die: "d4", traits: ["finesse", "agile"], usage: "held-in-one-hand" },
     { die: "d6", traits: ["finesse"], usage: "held-in-one-hand" },
     { die: "d8", traits: [], usage: "held-in-one-hand" },
@@ -291,7 +300,7 @@ const mindSmith = createDaily({
 
         const traits = R.pipe(
             [1, 2] as const,
-            R.map((i) => rows[`trait${i}`]),
+            R.map((i) => rows[`trait${i}`] as WeaponTrait),
             R.filter(R.isTruthy)
         );
 

@@ -1,5 +1,20 @@
 import {
-    MODULE,
+    ActorPF2e,
+    CharacterCrafting,
+    CharacterPF2e,
+    CharacterSheetData,
+    CharacterSheetPF2e,
+    ChatMessagePF2e,
+    FamiliarPF2e,
+    FamiliarSheetPF2e,
+    NPCPF2e,
+    NPCSheetPF2e,
+    PhysicalItemSource,
+    SpellcastingEntry,
+    SpellSource,
+    SpellToMessageOptions,
+} from "foundry-pf2e";
+import {
     addListener,
     changeCarryType,
     createHTMLElement,
@@ -11,9 +26,11 @@ import {
     htmlQuery,
     itemIsOfType,
     localize,
+    MODULE,
     render,
+    SpellcastingEntryPF2eWithCharges,
     templateLocalize,
-} from "foundry-pf2e";
+} from "module-helpers";
 import {
     canPrepareDailies,
     getActorFlag,
@@ -117,7 +134,7 @@ async function renderChargesEntries(
     ) => void
 ) {
     const chargesEntries = actor.spellcasting.regular.filter(
-        (entry) => entry.system.prepared.value === "charges"
+        (entry: SpellcastingEntryPF2eWithCharges) => entry.system.prepared.value === "charges"
     );
 
     for (const entry of chargesEntries) {
@@ -181,7 +198,7 @@ function onRenderNPCSheetPF2e(sheet: NPCSheetPF2e, $html: JQuery) {
     });
 }
 
-async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e, $html: JQuery) {
+async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e<CharacterPF2e>, $html: JQuery) {
     const actor = sheet.actor;
     const html = $html[0];
     const contentElement = htmlQuery(html, ".sheet-content");
@@ -334,7 +351,7 @@ async function createChargesElement(
     });
 }
 
-function onRenderFamiliarSheetPF2e(sheet: FamiliarSheetPF2e, $html: JQuery) {
+function onRenderFamiliarSheetPF2e(sheet: FamiliarSheetPF2e<FamiliarPF2e>, $html: JQuery) {
     const actor = sheet.actor;
     const html = $html[0];
     const itemElements = html.querySelectorAll<HTMLElement>(
@@ -352,7 +369,7 @@ function onRenderFamiliarSheetPF2e(sheet: FamiliarSheetPF2e, $html: JQuery) {
 }
 
 async function onCharacterSheetGetData(
-    this: CharacterSheetPF2e,
+    this: CharacterSheetPF2e<CharacterPF2e>,
     wrapped: libWrapper.RegisterCallback,
     options?: ActorSheetOptions
 ) {
@@ -419,7 +436,7 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
                 ],
             },
             staff
-        );
+        ) as unknown as SpellcastingEntry<CharacterPF2e>;
 
         class StaffSpell extends getSpellClass()<CharacterPF2e> {
             override async toMessage(

@@ -1,6 +1,7 @@
-import { R, error, getSetting } from "module-helpers";
+import { CharacterPF2e, ItemPF2e, R, error, getSetting } from "module-helpers";
 import { createDaily } from "./daily";
 import { ancestralLongevity } from "./data/ancestral-longevity";
+import { animist } from "./data/animist";
 import { bladeAlly } from "./data/blade-ally";
 import { ceremonialKnife } from "./data/ceremonial-knife";
 import { combatFlexibility } from "./data/combat-flexibility";
@@ -19,8 +20,6 @@ import { thaumaturgeTome } from "./data/thaumaturge-tome";
 import { tricksterAce } from "./data/trickster-ace";
 import type { CustomDaily, Daily, DailyItem, PreparedDailies, PreparedDaily } from "./types";
 import { utils } from "./utils";
-import { animist } from "./data/animist";
-import { CharacterPF2e, ItemPF2e } from "foundry-pf2e";
 
 type PreConditionDaily = {
     daily: Daily;

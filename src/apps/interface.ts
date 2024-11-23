@@ -1,6 +1,24 @@
 import {
+    ApplicationConfiguration,
+    ApplicationRenderOptions,
+    CharacterPF2e,
+    CheckboxData,
+    FeatFilters,
+    FeatOrFeatureCategory,
+    FeatPF2e,
+    ItemPF2e,
+    ItemSourcePF2e,
     MODULE,
+    MagicTradition,
+    MultiselectData,
+    OneToTen,
     R,
+    Rarity,
+    SkillSlug,
+    SliderData,
+    SpellFilters,
+    SpellPF2e,
+    SpellTrait,
     addListener,
     addListenerAll,
     createChatLink,
@@ -62,29 +80,6 @@ import type {
 } from "../types";
 import { utils } from "../utils";
 import { DailyConfig } from "./config";
-import {
-    CharacterPF2e,
-    CheckboxData,
-    FeatFilters,
-    FeatOrFeatureCategory,
-    FeatPF2e,
-    ItemPF2e,
-    ItemSourcePF2e,
-    MagicTradition,
-    MultiselectData,
-    OneToTen,
-    Rarity,
-    SkillSlug,
-    SliderData,
-    SpellFilters,
-    SpellPF2e,
-    SpellTrait,
-    TabName,
-} from "foundry-pf2e";
-import {
-    ApplicationConfiguration,
-    ApplicationRenderOptions,
-} from "foundry-pf2e/foundry/client-esm/applications/_types.js";
 
 const ACTOR_DAILY_SCHEMA = "3.0.0";
 
@@ -934,11 +929,12 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         chatGroups.unshift({ message: preface, order: Infinity });
         chatGroups.sort((a, b) => b.order - a.order);
 
+        const ChatMessagePF2e = getDocumentClass("ChatMessage");
         const chatContent = chatGroups.map((group) => group.message).join("<hr />");
 
-        ChatMessage.create({
+        ChatMessagePF2e.create({
             content: `<div class="pf2e-dailies-summary">${chatContent}</div>`,
-            speaker: ChatMessage.getSpeaker({ actor }),
+            speaker: ChatMessagePF2e.getSpeaker({ actor }),
         });
 
         const actorUpdates: Record<string, any> = {};

@@ -1,4 +1,4 @@
-import { ResistanceType } from "foundry-pf2e";
+import { ResistanceType } from "module-helpers";
 import { createDaily } from "../daily";
 import { utils, type SimplifiableRuleValue } from "../utils";
 

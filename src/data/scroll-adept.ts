@@ -1,8 +1,7 @@
-import { R } from "module-helpers";
+import { OneToTen, R } from "module-helpers";
 import { createDaily } from "../daily";
 import { DailyRowDropSpell } from "../types";
 import { utils } from "../utils";
-import { OneToTen } from "foundry-pf2e";
 
 const adeptUUID = "Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ";
 

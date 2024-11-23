@@ -1,4 +1,4 @@
-import { OneToTen } from "foundry-pf2e";
+import { OneToTen } from "module-helpers";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
 

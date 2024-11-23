@@ -1,15 +1,19 @@
 import {
+    ActorPF2e,
     addListenerAll,
     getSetting,
     htmlClosest,
     htmlQuery,
+    ItemPF2e,
+    ItemType,
+    MacroPF2e,
     R,
+    ScenePF2e,
     setSetting,
     subLocalize,
     templatePath,
 } from "module-helpers";
 import { utils } from "../utils";
-import { ActorPF2e, ItemPF2e, ItemType, MacroPF2e, ScenePF2e } from "foundry-pf2e";
 
 const localize = subLocalize("homebrew");
 
@@ -72,7 +76,10 @@ class HomebrewDailies extends FormApplication {
 
         const pack = game.packs.get(id);
         if (pack) {
-            return pack.metadata.type === "Item" ? { entry: pack, isPack: true } : undefined;
+            return (pack.metadata.type === "Item" ? { entry: pack, isPack: true } : undefined) as
+                | PackHomebrew
+                | ItemHomebrew
+                | undefined;
         }
 
         const entry = fromUuidSync<CompendiumIndexData>(id);
@@ -216,30 +223,12 @@ type HomebrewIndex = (typeof INDEX)[number];
 
 type PackHomebrew = {
     isPack: true;
-    entry: CompendiumCollection<
-        | ActorPF2e<null>
-        | ItemPF2e<null>
-        | MacroPF2e
-        | ScenePF2e
-        | JournalEntry
-        | Playlist
-        | RollTable
-    >;
+    entry: CompendiumCollection;
 };
 
 type ItemHomebrew = {
     isPack: false;
     entry: CompendiumIndexData;
-};
-
-type ItemHomebrewPromise = Promise<{
-    isPack: false;
-    entry: ItemPF2e<null>;
-}>;
-
-type HomebrewEntry<T extends ItemPF2e<null> = ItemPF2e<null>> = {
-    isPack: boolean;
-    entry: T;
 };
 
 type Homebrew = {

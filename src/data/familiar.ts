@@ -1,9 +1,18 @@
-import { R, getFlag, localeCompare, localize, setFlagProperty } from "module-helpers";
+import {
+    AbilitySource,
+    CharacterPF2e,
+    ItemPF2e,
+    R,
+    ValueAndMax,
+    getFlag,
+    localeCompare,
+    localize,
+    setFlagProperty,
+} from "module-helpers";
 import { isTemporary } from "../api";
 import { HomebrewDailies } from "../apps/homebrew";
 import { createDaily } from "../daily";
 import { DailyMessageOptions } from "../types";
-import { AbilitySource, CharacterPF2e, ItemPF2e, ValueAndMax } from "foundry-pf2e";
 
 const SKIP_UNIQUES = ["jevzf9JbJJibpqaI"];
 

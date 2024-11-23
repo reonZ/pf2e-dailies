@@ -2,20 +2,18 @@ import {
     ActorPF2e,
     CharacterPF2e,
     CreaturePF2e,
-    SpellCollection,
-    SpellPF2e,
-    SpellSlotGroupId,
-    ZeroToTen,
-} from "foundry-pf2e";
-import {
     getRankLabel,
     getSpellCollectionClass,
     isInstanceOf,
     MODULE,
     SpellcastingEntryPF2eWithCharges,
+    SpellCollection,
+    SpellPF2e,
+    SpellSlotGroupId,
     spellSlotGroupIdToNumber,
     warn,
     warnInvalidDrop,
+    ZeroToTen,
 } from "module-helpers";
 import { ChargesSpellcastingSheetData } from "./types";
 

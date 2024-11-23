@@ -1,4 +1,4 @@
-import { OneToFour, SkillSlug } from "foundry-pf2e";
+import { OneToFour, SkillSlug } from "module-helpers";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
 

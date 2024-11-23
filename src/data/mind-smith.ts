@@ -1,16 +1,20 @@
-import { MODULE, R, localize, subLocalize, waitDialog } from "module-helpers";
-import { createDaily } from "../daily";
-import { DailyRowSelectOption } from "../types";
-import { utils } from "../utils";
 import {
     CharacterPF2e,
     DamageDieSize,
+    MODULE,
     PreciousMaterialType,
+    R,
     WeaponPropertyRuneType,
     WeaponSource,
     WeaponTrait,
     ZeroToFour,
-} from "foundry-pf2e";
+    localize,
+    subLocalize,
+    waitDialog,
+} from "module-helpers";
+import { createDaily } from "../daily";
+import { DailyRowSelectOption } from "../types";
+import { utils } from "../utils";
 
 const mindUUID = "Compendium.pf2e.feats-srd.Item.juikoiIA0Jy8PboY";
 const mentalUUID = "Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky";

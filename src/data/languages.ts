@@ -1,4 +1,4 @@
-import { Language } from "foundry-pf2e";
+import { Language } from "module-helpers";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
 

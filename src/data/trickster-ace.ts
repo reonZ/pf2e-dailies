@@ -1,7 +1,6 @@
-import { localize } from "module-helpers";
+import { localize, SpellPF2e } from "module-helpers";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
-import { SpellPF2e } from "foundry-pf2e";
 
 const tricksterAce = createDaily({
     key: "trickster-ace",

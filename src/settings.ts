@@ -1,7 +1,7 @@
 import { registerSetting, registerSettingMenu, renderCharacterSheets } from "module-helpers";
-import { parseDailies } from "./dailies";
 import { CustomDailies } from "./apps/customs";
 import { HomebrewDailies } from "./apps/homebrew";
+import { parseDailies } from "./dailies";
 
 function registerSettings() {
     registerSetting({

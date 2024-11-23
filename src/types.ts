@@ -8,10 +8,9 @@ import {
     Rarity,
     RuleElementSource,
     SkillSlug,
-    SpellcastingSheetData,
+    SpellcastingSheetDataWithCharges,
     SpellPF2e,
-} from "foundry-pf2e";
-import { SpellcastingSheetDataWithCharges } from "module-helpers";
+} from "module-helpers";
 
 type Daily<
     TItemSlug extends string = string,

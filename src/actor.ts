@@ -1,24 +1,16 @@
 import {
     ActorPF2e,
+    addListener,
+    changeCarryType,
     CharacterCrafting,
     CharacterPF2e,
     CharacterSheetData,
     CharacterSheetPF2e,
     ChatMessagePF2e,
-    FamiliarPF2e,
-    FamiliarSheetPF2e,
-    NPCPF2e,
-    NPCSheetPF2e,
-    PhysicalItemSource,
-    SpellcastingEntry,
-    SpellSource,
-    SpellToMessageOptions,
-} from "foundry-pf2e";
-import {
-    addListener,
-    changeCarryType,
     createHTMLElement,
     elementDataset,
+    FamiliarPF2e,
+    FamiliarSheetPF2e,
     getHighestSpellcastingStatistic,
     getSetting,
     getSpellClass,
@@ -27,8 +19,14 @@ import {
     itemIsOfType,
     localize,
     MODULE,
+    NPCPF2e,
+    NPCSheetPF2e,
+    PhysicalItemSource,
     render,
+    SpellcastingEntry,
     SpellcastingEntryPF2eWithCharges,
+    SpellSource,
+    SpellToMessageOptions,
     templateLocalize,
 } from "module-helpers";
 import {
@@ -455,6 +453,8 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
                     message.updateSource(messageSource);
                     return message;
                 }
+
+                messageSource.whisper;
 
                 return getDocumentClass("ChatMessage").create(messageSource, {
                     renderSheet: false,

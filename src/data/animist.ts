@@ -3,15 +3,16 @@ import {
     getActorMaxRank,
     getUuidFromInlineMatch,
     htmlQuery,
+    ItemPF2e,
     localize,
     R,
+    SpellSource,
     splitListString,
 } from "module-helpers";
-import { createDaily } from "../daily";
-import { utils } from "../utils";
 import { getAnimistConfigs } from "../api";
 import { HomebrewDailies } from "../apps/homebrew";
-import { ItemPF2e, SpellSource } from "foundry-pf2e";
+import { createDaily } from "../daily";
+import { utils } from "../utils";
 
 const LORE_STRIP_REGEX = /^(.+?) Lore$/;
 

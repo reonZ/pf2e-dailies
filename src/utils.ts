@@ -1,5 +1,6 @@
 import {
     CharacterPF2e,
+    CreateSpellcastingSource,
     DamageType,
     FeatOrFeatureCategory,
     FeatTrait,
@@ -10,6 +11,7 @@ import {
     OneToFour,
     OneToTen,
     PreciousMaterialType,
+    R,
     ResistanceType,
     SkillSlug,
     SpellConsumableItemType,
@@ -20,10 +22,6 @@ import {
     WeaponTrait,
     ZeroToFour,
     ZeroToTen,
-} from "foundry-pf2e";
-import {
-    CreateSpellcastingSource,
-    R,
     createChatLink,
     createConsumableFromSpell,
     createSpellcastingSource,

@@ -83,6 +83,7 @@
             "ability": "Zdolność #{nb}",
             "apparition": {
                 "first": "Podstawowe projekcje",
+                "primary": "Główny #{nb} ",
                 "other": "Projekcja #{nb}"
             },
             "expend": "Wydano #{nb}",

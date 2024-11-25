@@ -137,7 +137,7 @@ const animist = createDaily({
         const addSpell = async (uuid: string, signature: boolean) => {
             const source = await utils.createSpellSource(uuid, {
                 identifier: spellsIdentifier,
-                signature,
+                signature: animistConfig.signatures || signature,
             });
 
             if (source.system.level.value > maxRank) return;

@@ -233,7 +233,8 @@
             "title": "{actor} - Daily Configs",
             "animist": {
                 "lores": "Show Lores Summary",
-                "spells": "Show Spells Summary"
+                "spells": "Show Spells Summary",
+                "signatures": "Set Signature Spells"
             }
         },
         "homebrew": {

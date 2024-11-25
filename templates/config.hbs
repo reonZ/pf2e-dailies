@@ -10,14 +10,12 @@
 
 {{#if animist}}
 <h3>{{animist.title}}</h3>
+{{#each animist.toggles}}
 <div class="form-group animist">
-    <label>{{@root.i18n 'animist.lores'}}</label>
-    <input type="checkbox" name="animist" data-key="lores" {{checked animist.lores}}>
+    <label>{{@root.i18n (concat 'animist.' @key)}}</label>
+    <input type="checkbox" name="animist" data-key="{{@key}}" {{checked this}}>
 </div>
-<div class="form-group animist">
-    <label>{{@root.i18n 'animist.spells'}}</label>
-    <input type="checkbox" name="animist" data-key="spells" {{checked animist.spells}}>
-</div>
+{{/each}}
 {{/if}}
 
 <h3>{{@root.i18n 'filters'}}</h3>

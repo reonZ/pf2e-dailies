@@ -79,8 +79,8 @@ class DailyConfig extends ApplicationV2 {
         const animistDaily = this.#dailies.find(({ key }) => key === "dailies.animist");
         const animist = animistDaily
             ? {
-                  ...getAnimistConfigs(actor),
                   title: animistDaily.label as string,
+                  toggles: getAnimistConfigs(actor),
               }
             : undefined;
 
@@ -169,8 +169,12 @@ type ConfigContext = {
         enabled: boolean;
     }[];
     animist: Maybe<{
-        lores: boolean;
-        spells: boolean;
+        title: string;
+        toggles: {
+            lores: boolean;
+            spells: boolean;
+            signatures: boolean;
+        };
     }>;
     i18n: ReturnType<typeof templateLocalize>;
 };

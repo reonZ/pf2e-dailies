@@ -31,6 +31,7 @@ import {
     getItemTypeLabel,
     getRankLabel,
     getSetting,
+    getSkillLabel,
     getSpellcastingMaxRank,
     hasFreePropertySlot,
     rollDie,
@@ -81,10 +82,7 @@ const utils = {
             R.map(([value, label]) => ({ value, label }))
         );
     },
-    getSkillLabel: (skill: SkillSlug, localize = true) => {
-        const label = CONFIG.PF2E.skills[skill].label;
-        return localize ? game.i18n.localize(label) : label;
-    },
+    getSkillLabel,
     getSkills: () => {
         return R.pipe(
             CONFIG.PF2E.skills,

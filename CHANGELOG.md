@@ -1,3 +1,13 @@
+# 3.13.0
+
+-   this is a system `6.7.1` release
+-   change the `Perform Daily Crafting` handling to work with the latest system changes
+    -   move from `Actor#performDailyCrafting` to `ActorInventory#deleteTemporaryItems`
+-   `Apparition Attunement`:
+    -   add new `Set Signature Spells` config option (enabled by default)
+        -   when enabled, all spells added by the module will be set as signature spells by default
+        -   when disabled, only the `Heal`, `Harm` and `Animal Form` will
+
 # 3.12.0
 
 -   `Apparition Attunement`:

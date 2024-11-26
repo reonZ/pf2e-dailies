@@ -5,7 +5,11 @@ import { utils } from "../utils";
 function createComboSkillDaily(
     key: string,
     uuid: string,
-    { rank = 1, removeRules = true }: { rank?: OneToFour; removeRules?: boolean } = {}
+    {
+        rank = 1,
+        removeRules = true,
+        label,
+    }: { label?: string; rank?: OneToFour; removeRules?: boolean } = {}
 ) {
     return createDaily({
         key,
@@ -16,7 +20,7 @@ function createComboSkillDaily(
                 required: true,
             },
         ],
-        label: (actor, items) => items.item.name,
+        label: (actor, items) => label ?? items.item.name,
         rows: (actor) => {
             const skillList = utils.getSkills();
             const actorSkills = actor.skills;

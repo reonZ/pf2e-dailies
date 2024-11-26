@@ -233,7 +233,8 @@
             "title": "{actor} - Dzienna konfiguracja",
             "animist": {
                 "lores": "Pokaż podsumowanie Wiedzy",
-                "spells": "Pokaż podsumowanie Zaklęć"
+                "spells": "Pokaż podsumowanie Zaklęć",
+                "signatures": "Ustaw Zaklęcia Popisowe"
             }
         },
         "homebrew": {

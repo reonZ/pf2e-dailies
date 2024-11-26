@@ -16,10 +16,6 @@ import {
 import { getAnimistConfigs, getDisabledDailies } from "../api";
 import { getFamiliarAbilityCount } from "../data/familiar";
 import type { PreparedDaily } from "../types";
-// import {
-//     ApplicationConfiguration,
-//     ApplicationRenderOptions,
-// } from "foundry-pf2e/foundry/client-esm/applications/_types.js";
 
 const ApplicationV2 = foundry.applications.api.ApplicationV2;
 

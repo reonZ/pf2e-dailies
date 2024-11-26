@@ -1,8 +1,8 @@
 import {
+    ActorInventory,
     ActorPF2e,
     addListener,
     changeCarryType,
-    CharacterCrafting,
     CharacterPF2e,
     CharacterSheetData,
     CharacterSheetPF2e,
@@ -16,18 +16,18 @@ import {
     getSpellClass,
     getSpellCollectionClass,
     htmlQuery,
-    itemIsOfType,
     localize,
     MODULE,
     NPCPF2e,
     NPCSheetPF2e,
-    PhysicalItemSource,
+    PhysicalItemPF2e,
     render,
     SpellcastingEntry,
     SpellcastingEntryPF2eWithCharges,
     SpellSource,
     SpellToMessageOptions,
     templateLocalize,
+    wrapperError,
 } from "module-helpers";
 import {
     canPrepareDailies,
@@ -40,85 +40,48 @@ import {
 } from "./api";
 import { StaffSpellcasting } from "./data/staves";
 
-function onCharacterPrepareDerivedData(this: CharacterPF2e, wrapped: libWrapper.RegisterCallback) {
+const ACTOR_PREPARE_EMBEDDED_DOCUMENTS =
+    "CONFIG.Actor.documentClass.prototype.prepareEmbeddedDocuments";
+
+function onCharacterPrepareEmbeddedDocuments<TActor extends CharacterPF2e = CharacterPF2e>(
+    this: TActor,
+    wrapped: libWrapper.RegisterCallback
+): void {
     wrapped();
 
-    this.crafting.performDailyCrafting = performDailyCrafting.bind(this.crafting);
-}
+    try {
+        Object.defineProperty(this.inventory, "deleteTemporaryItems", {
+            value: async function (
+                this: ActorInventory<TActor>,
+                operation?: Partial<DatabaseDeleteOperation<TActor>>
+            ): Promise<PhysicalItemPF2e<TActor>[]> {
+                const actor = this.actor;
+                const specialResourceItems = Object.values(actor.synthetics.resources)
+                    .map((r) => r.itemUUID)
+                    .filter((i) => !!i);
+                const itemsToDelete = this.actor.inventory
+                    .filter(
+                        (i) =>
+                            i.system.temporary &&
+                            !isTemporary(i as PhysicalItemPF2e) &&
+                            (!i.sourceId || !specialResourceItems.includes(i.sourceId))
+                    )
+                    .map((i) => i.id);
 
-async function performDailyCrafting(this: CharacterCrafting) {
-    const actor = this.actor;
-    const abilities = this.abilities.filter((e) => e.isDailyPrep);
+                if (itemsToDelete.length) {
+                    const deletedItems = await actor.deleteEmbeddedDocuments(
+                        "Item",
+                        itemsToDelete,
+                        operation
+                    );
+                    return deletedItems as PhysicalItemPF2e<TActor>[];
+                }
 
-    // Compute total resource cost by resource
-    const resourceCosts: Record<string, number> = {};
-    for (const ability of abilities) {
-        if (ability.resource) {
-            const cost = await ability.calculateResourceCost();
-            resourceCosts[ability.resource] ??= 0;
-            resourceCosts[ability.resource] += cost;
-        }
-    }
-
-    // Validate if resources are sufficient and compute new resource values
-    const resourceUpdates: Record<string, number> = {};
-    for (const [slug, cost] of Object.entries(resourceCosts)) {
-        const resource = actor.getResource(slug);
-        if (!resource || cost > resource.value) {
-            ui.notifications.warn("PF2E.Actor.Character.Crafting.MissingResource", {
-                localize: true,
-            });
-            return;
-        }
-
-        resourceUpdates[slug] = resource.value - cost;
-    }
-
-    // Perform resource updates
-    for (const [slug, value] of Object.entries(resourceUpdates)) {
-        await actor.updateResource(slug, value);
-    }
-
-    // Remove infused/temp items
-    const specialResourceItems = Object.values(actor.synthetics.resources)
-        .map((r) => r.itemUUID)
-        .filter((i) => !!i);
-    const itemsToDelete = this.actor.inventory
-        .filter(
-            (i) =>
-                i.system.temporary &&
-                !isTemporary(i) &&
-                (!i.sourceId || !specialResourceItems.includes(i.sourceId))
-        )
-        .map((i) => i.id);
-    if (itemsToDelete.length) {
-        await actor.deleteEmbeddedDocuments("Item", itemsToDelete);
-    }
-
-    // Assemble the items we need to create, grouped by uuid, then add the items
-    const itemsToAdd: PreCreate<PhysicalItemSource>[] = [];
-    for (const ability of abilities) {
-        for (const formula of await ability.getPreparedCraftingFormulas()) {
-            if (formula.expended) continue;
-
-            const itemSource: PhysicalItemSource = formula.item.toObject();
-            itemSource.system.quantity = formula.quantity;
-            itemSource.system.temporary = true;
-            itemSource.system.size = this.actor.ancestry?.size === "tiny" ? "tiny" : "med";
-            if (
-                formula.item.isAlchemical &&
-                itemIsOfType(itemSource, "consumable", "equipment", "weapon")
-            ) {
-                itemSource.system.traits.value.push("infused");
-                itemSource.system.traits.value.sort(); // required for stack matching
-            }
-
-            itemsToAdd.push(itemSource);
-        }
-    }
-    if (itemsToAdd.length) {
-        actor.inventory.add(itemsToAdd, { stack: true });
-        ui.notifications.info("PF2E.Actor.Character.Crafting.Daily.Complete", { localize: true });
+                return [];
+            },
+        });
+    } catch (error) {
+        wrapperError(ACTOR_PREPARE_EMBEDDED_DOCUMENTS, error);
     }
 }
 
@@ -131,9 +94,8 @@ async function renderChargesEntries(
         toggleElement: HTMLElement
     ) => void
 ) {
-    const chargesEntries = actor.spellcasting.regular.filter(
-        (entry: SpellcastingEntryPF2eWithCharges) => entry.system.prepared.value === "charges"
-    );
+    const entries = actor.spellcasting.regular as SpellcastingEntryPF2eWithCharges[];
+    const chargesEntries = entries.filter((entry) => entry.system.prepared.value === "charges");
 
     for (const entry of chargesEntries) {
         const entryContainer = htmlQuery(parentElement, `[data-container-id="${entry.id}"]`);
@@ -484,8 +446,9 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
 }
 
 export {
+    ACTOR_PREPARE_EMBEDDED_DOCUMENTS,
     onCharacterPrepareData,
-    onCharacterPrepareDerivedData,
+    onCharacterPrepareEmbeddedDocuments,
     onCharacterSheetGetData,
     onRenderCharacterSheetPF2e,
     onRenderFamiliarSheetPF2e,

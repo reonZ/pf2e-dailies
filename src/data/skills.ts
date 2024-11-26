@@ -1,4 +1,4 @@
-import { OneToFour, SkillSlug } from "module-helpers";
+import { OneToFour, SkillSlug, ZeroToFour } from "module-helpers";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
 
@@ -58,7 +58,11 @@ function createComboSkillDaily(
     });
 }
 
-function createLoreSkillDaily(key: string, uuid: string) {
+function createLoreSkillDaily(
+    key: string,
+    uuid: string,
+    { label, rank = 1 }: { label?: string; rank?: ZeroToFour } = {}
+) {
     return createDaily({
         key,
         items: [
@@ -68,7 +72,7 @@ function createLoreSkillDaily(key: string, uuid: string) {
                 required: true,
             },
         ],
-        label: (actor, items) => items.item.name,
+        label: (actor, items) => label ?? items.item.name,
         rows: () => {
             return [
                 {
@@ -78,7 +82,7 @@ function createLoreSkillDaily(key: string, uuid: string) {
             ];
         },
         process: ({ rows, messages, addItem }) => {
-            const source = utils.createLoreSource({ name: rows.lore, rank: 1 });
+            const source = utils.createLoreSource({ name: rows.lore, rank });
             addItem(source);
             messages.add("skills", { uuid, selected: rows.lore });
         },

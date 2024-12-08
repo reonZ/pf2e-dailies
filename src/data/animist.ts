@@ -79,6 +79,10 @@ const animist = createDaily({
             slug: "medium", // Medium
             uuid: "Compendium.pf2e.classfeatures.Item.k6c2gesVQ8QuEWGm",
         },
+        {
+            slug: "spirit", // Circle of Spirits
+            uuid: "Compendium.pf2e.feats-srd.Item.M8jbV0il124Ve5oV",
+        },
     ],
     label: (actor, items) => items.attunement.name,
     rows: async (actor, items) => {
@@ -120,7 +124,7 @@ const animist = createDaily({
             };
         });
     },
-    process: async ({ actor, rows, messages, items, addItem, addFeat }) => {
+    process: async ({ actor, rows, messages, items, addItem, addFeat, addRule }) => {
         const parent = items.attunement;
         const actorLevel = actor.level;
         const maxRank = getActorMaxRank(actor);
@@ -145,10 +149,15 @@ const animist = createDaily({
             spellsToAdd.push({ source, uuid });
         };
 
+        let nbApparitions = 0;
+        let nbActualPrimary = 0;
+
         await Promise.all(
             Object.values(rows).map(async (value, index) => {
                 const item = await fromUuid<ItemPF2e>(value);
                 if (!item?.isOfType("feat")) return;
+
+                nbApparitions++;
 
                 const itemSource = item.toObject();
                 addFeat(itemSource, parent);
@@ -179,21 +188,29 @@ const animist = createDaily({
                     await Promise.all(uuids.map((uuid) => addSpell(uuid, false)));
                 }
 
-                if (index < nbPrimary) {
-                    const vesselEl = spellsEl?.nextElementSibling as HTMLElement | undefined;
-                    if (vesselEl) {
-                        UUID_REGEX.lastIndex = 0;
+                const isPrimary = index < nbPrimary;
 
-                        const match = UUID_REGEX.exec(vesselEl.textContent ?? "");
-                        const uuid = match ? getUuidFromInlineMatch(match) : null;
+                if (isPrimary) {
+                    nbActualPrimary++;
+                }
 
-                        if (uuid) {
-                            const source = await utils.createSpellSource(uuid, {
-                                identifier: vesselsIdentifier,
-                            });
+                const vesselEl = spellsEl?.nextElementSibling as HTMLElement | undefined;
+                if (vesselEl) {
+                    UUID_REGEX.lastIndex = 0;
 
-                            vesselsToAdd.push({ source, uuid });
+                    const match = UUID_REGEX.exec(vesselEl.textContent ?? "");
+                    const uuid = match ? getUuidFromInlineMatch(match) : null;
+
+                    if (uuid) {
+                        const source = await utils.createSpellSource(uuid, {
+                            identifier: vesselsIdentifier,
+                        });
+
+                        if (isPrimary) {
+                            source.name = `* ${source.name}`;
                         }
+
+                        vesselsToAdd.push({ source, uuid });
                     }
                 }
 
@@ -211,8 +228,6 @@ const animist = createDaily({
         await Promise.all(extraSpells.map((uuid) => addSpell(uuid, uuid !== AVATAR_UUID)));
 
         const attribute = actor.classDC?.attribute ?? "wis";
-
-        console.log(vesselsToAdd);
 
         const vessels = R.uniqueBy(vesselsToAdd, R.prop("uuid"));
         if (vessels.length) {
@@ -275,6 +290,18 @@ const animist = createDaily({
                     messages.add("spells", { uuid });
                 }
             }
+        }
+
+        const focusPoints = items.spirit ? nbApparitions : items.medium ? nbActualPrimary : 1;
+
+        if (vessels.length > focusPoints) {
+            addRule(items.attunement, {
+                key: "ActiveEffectLike",
+                mode: "subtract",
+                path: "system.resources.focus.max",
+                priority: 9,
+                value: vessels.length - focusPoints,
+            });
         }
     },
 });

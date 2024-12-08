@@ -932,7 +932,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         const ChatMessagePF2e = getDocumentClass("ChatMessage");
         const chatContent = chatGroups.map((group) => group.message).join("<hr />");
 
-        ChatMessagePF2e.create({
+        await ChatMessagePF2e.create({
             content: `<div class="pf2e-dailies-summary">${chatContent}</div>`,
             speaker: ChatMessagePF2e.getSpeaker({ actor }),
         });

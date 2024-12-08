@@ -1,3 +1,16 @@
+# 3.14.0
+
+-   `Apparition Attunement`:
+    -   add support for the `Circle of Spirits` feat
+    -   now add all vessel spells to the focus spellcasting entry
+        -   make it easier to swap during the day
+        -   mark the primary vessel spells with a prefix `*` in their name
+        -   subtract the excess focus points to leave only the amount the character should have without the extra vessel spells
+-   `Custom Dailies`:
+    -   add `label` to the options argument of `createComboSkillDaily`
+    -   add an extra options argument to `createLoreSkillDaily`
+    -   add a new `hasItemWithSourceId` helper to `utils`
+
 # 3.13.0
 
 -   this is a system `6.7.1` release

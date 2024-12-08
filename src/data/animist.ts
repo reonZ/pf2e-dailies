@@ -256,7 +256,7 @@ const animist = createDaily({
             const spellsEntry = utils.createSpellcastingEntrySource({
                 category: "spontaneous",
                 identifier: spellsIdentifier,
-                name: items.attunement.name,
+                name: parent.name,
                 tradition: "divine",
                 attribute,
                 showSlotlessRanks: false,
@@ -295,7 +295,7 @@ const animist = createDaily({
         const focusPoints = items.spirit ? nbApparitions : items.medium ? nbActualPrimary : 1;
 
         if (vessels.length > focusPoints) {
-            addRule(items.attunement, {
+            addRule(parent, {
                 key: "ActiveEffectLike",
                 mode: "subtract",
                 path: "system.resources.focus.max",

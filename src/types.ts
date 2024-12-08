@@ -10,6 +10,7 @@ import {
     SkillSlug,
     SpellcastingSheetDataWithCharges,
     SpellPF2e,
+    ValueAndMax,
 } from "module-helpers";
 
 type Daily<
@@ -33,6 +34,7 @@ type Daily<
         options: DailyProcessOptions<TItemSlug, TCustom, TRowSlug, TItems, TRows>
     ) => Promisable<void>;
     rest?: (options: DailyRestOptions) => Promisable<void>;
+    config?: (actor: CharacterPF2e) => Promisable<DailyConfigRow[] | undefined>;
 } & RequireAtLeastOne<
     {
         condition?: (actor: CharacterPF2e) => Promisable<boolean>;
@@ -40,6 +42,29 @@ type Daily<
     },
     "condition" | "items"
 >;
+
+type DailyConfigRow = DailyConfigRowRange | DailyConfigCheckbox;
+
+type DailyConfigRowType = "range" | "checkbox";
+
+type DailyConfigRowValue = boolean | number | string | ValueAndMax;
+
+type DailyConfigRowBase<TInput extends DailyConfigRowType> = {
+    type: TInput;
+    name: string;
+    value?: Exclude<DailyConfigRowValue, ValueAndMax>;
+    label?: string;
+    dispatchUpdateEvent?: boolean;
+};
+
+type DailyConfigCheckbox = DailyConfigRowBase<"checkbox">;
+
+type DailyConfigRowRange = DailyConfigRowBase<"range"> & {
+    min?: number;
+    max?: number;
+    step?: number;
+    saveMaxValue?: boolean;
+};
 
 type ExtractItems<
     TItemSlug extends string,
@@ -329,6 +354,10 @@ export type {
     CustomDaily,
     Daily,
     DailyActorFlags,
+    DailyConfigRow,
+    DailyConfigCheckbox,
+    DailyConfigRowType,
+    DailyConfigRowValue,
     DailyCustom,
     DailyItem,
     DailyMessageGroup,

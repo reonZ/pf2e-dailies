@@ -229,7 +229,6 @@
         },
         "config": {
             "filters": "Włączono Dzienne Aktywności",
-            "familiar": "Zdolności chowańca",
             "title": "{actor} - Dzienna konfiguracja",
             "animist": {
                 "lores": "Pokaż podsumowanie Wiedzy",

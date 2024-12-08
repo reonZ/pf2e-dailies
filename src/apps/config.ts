@@ -3,19 +3,19 @@ import {
     ApplicationRenderOptions,
     CharacterPF2e,
     R,
-    addListener,
     addListenerAll,
     createHTMLElement,
     elementDataset,
+    getFlag,
+    getInputValue,
     localize,
     render,
     setFlag,
     templateLocalize,
     unsetFlag,
 } from "module-helpers";
-import { getAnimistConfigs, getDisabledDailies } from "../api";
-import { getFamiliarAbilityCount } from "../data/familiar";
-import type { PreparedDaily } from "../types";
+import { getDisabledDailies } from "../api";
+import type { DailyConfigRow, DailyConfigRowValue, PreparedDaily } from "../types";
 
 const ApplicationV2 = foundry.applications.api.ApplicationV2;
 
@@ -55,35 +55,46 @@ class DailyConfig extends ApplicationV2 {
     async _prepareContext(options: ApplicationRenderOptions): Promise<ConfigContext> {
         const actor = this.actor;
         const disabled = getDisabledDailies(actor);
-        const familiar = actor.familiar
-            ? {
-                  value: getFamiliarAbilityCount(actor),
-                  max: actor.attributes.familiarAbilities.value,
-              }
-            : undefined;
 
         const dailies = R.pipe(
-            this.#dailies,
-            R.map((daily) => ({
-                key: daily.key,
-                label: daily.label as string,
-                enabled: disabled[daily.key] !== true,
-            })),
+            await Promise.all(
+                this.#dailies.map(async (daily): Promise<ConfigContextDaily> => {
+                    const configs = R.pipe(
+                        (R.isFunction(daily.config) && (await daily.config(actor))) || [],
+                        R.map((config) => {
+                            config.value ??= (() => {
+                                const value = getFlag<DailyConfigRowValue>(
+                                    actor,
+                                    "config",
+                                    daily.key,
+                                    config.name
+                                );
+
+                                return R.isPlainObject(value) ? value.value : value;
+                            })();
+
+                            if (config.type === "range") {
+                                config.min ??= 0;
+                                config.step ??= 1;
+                            }
+
+                            return config;
+                        })
+                    );
+
+                    return {
+                        key: daily.key,
+                        label: daily.label as string,
+                        enabled: disabled[daily.key] !== true,
+                        configs: configs?.length ? configs : undefined,
+                    };
+                })
+            ),
             R.sortBy(R.prop("label"))
         );
 
-        const animistDaily = this.#dailies.find(({ key }) => key === "dailies.animist");
-        const animist = animistDaily
-            ? {
-                  title: animistDaily.label as string,
-                  toggles: getAnimistConfigs(actor),
-              }
-            : undefined;
-
         return {
-            familiar,
             dailies,
-            animist,
             i18n: templateLocalize("config"),
         };
     }
@@ -109,69 +120,46 @@ class DailyConfig extends ApplicationV2 {
     }
 
     #activateListeners(html: HTMLElement) {
-        addListenerAll(
-            html,
-            "[name='daily-enabled']",
-            "change",
-            async (event, el: HTMLInputElement) => {
-                const { dailyKey } = elementDataset(el);
+        const actor = this.actor;
 
-                if (el.checked) {
-                    await unsetFlag(this.actor, "disabled", dailyKey);
-                } else {
-                    await setFlag(this.actor, "disabled", dailyKey, true);
-                }
-
-                this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
-            }
-        );
-
-        addListener(
-            html,
-            "[name='familiar-range']",
-            "change",
-            async (event, el: HTMLInputElement) => {
-                const actor = this.actor;
-
-                await setFlag(actor, "familiar", {
-                    value: el.valueAsNumber,
-                    max: actor.attributes.familiarAbilities.value,
-                });
-
-                this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
-            }
-        );
-
-        addListenerAll(html, "[name='animist']", "change", async (event, el: HTMLInputElement) => {
-            const key = el.dataset.key as string;
+        addListenerAll(html, ".daily [name]", "change", async (event, el: HTMLInputElement) => {
+            const { dailyKey } = elementDataset(el);
 
             if (el.checked) {
-                await unsetFlag(this.actor, "animist", key);
+                await unsetFlag(this.actor, "disabled", dailyKey);
             } else {
-                await setFlag(this.actor, "animist", key, false);
+                await setFlag(this.actor, "disabled", dailyKey, true);
+            }
+
+            this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
+        });
+
+        addListenerAll(html, ".config [name]", "change", async (event, el: HTMLInputElement) => {
+            const dailyKey = el.dataset.dailyKey as string;
+            const value = getInputValue(el);
+            const saveValue =
+                el.dataset.saveMaxValue === "true"
+                    ? { value, max: Number(el.getAttribute("max")) }
+                    : value;
+
+            await setFlag(actor, "config", dailyKey, el.name, saveValue);
+
+            if (el.dataset.dispatchUpdateEvent === "true") {
+                this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
             }
         });
     }
 }
 
+type ConfigContextDaily = {
+    key: string;
+    label: string;
+    enabled: boolean;
+    configs: DailyConfigRow[] | undefined;
+};
+
 type ConfigContext = {
-    familiar: Maybe<{
-        value: number;
-        max: number;
-    }>;
-    dailies: {
-        key: string;
-        label: string;
-        enabled: boolean;
-    }[];
-    animist: Maybe<{
-        title: string;
-        toggles: {
-            lores: boolean;
-            spells: boolean;
-            signatures: boolean;
-        };
-    }>;
+    dailies: ConfigContextDaily[];
     i18n: ReturnType<typeof templateLocalize>;
 };
 

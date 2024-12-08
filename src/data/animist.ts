@@ -12,6 +12,7 @@ import {
 import { getAnimistConfigs } from "../api";
 import { HomebrewDailies } from "../apps/homebrew";
 import { createDaily } from "../daily";
+import { DailyConfigCheckbox } from "../types";
 import { utils } from "../utils";
 
 const LORE_STRIP_REGEX = /^(.+?) Lore$/;
@@ -303,6 +304,19 @@ const animist = createDaily({
                 value: vessels.length - focusPoints,
             });
         }
+    },
+    config: (actor) => {
+        return R.pipe(
+            R.entries(getAnimistConfigs(actor)),
+            R.map(([name, value]): DailyConfigCheckbox => {
+                return {
+                    type: "checkbox",
+                    name,
+                    value,
+                    label: localize("config.animist", name),
+                };
+            })
+        );
     },
 });
 

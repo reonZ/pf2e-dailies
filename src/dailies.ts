@@ -110,7 +110,7 @@ let BUILTINS_ALWAYS: AlwaysDaily[] = [];
 const UUIDS: Map<string, PreConditionDaily> = new Map();
 let ALWAYS: AlwaysDaily[] = [];
 
-function prepareDailies(dailies: Daily[], prefix: "custom" | "dailies" | "module") {
+function prepareDailies(dailies: Daily[], prefix: DailyPrefix) {
     const uuids = new Map<string, PreConditionDaily>();
     const always: AlwaysDaily[] = [];
 
@@ -325,6 +325,8 @@ function registerCustomDailies(dailies: Daily[]) {
     parseDailies();
 }
 
+type DailyPrefix = "custom" | "dailies" | "module";
+
 export {
     DAILY_SCHEMA,
     filterDailies,
@@ -336,3 +338,5 @@ export {
     parseDailies,
     registerCustomDailies,
 };
+
+export type { DailyPrefix };

@@ -15,25 +15,17 @@
             }
         }
 
-        .familiar {
-            input[type="number"] {
-                height: 1.6em;
-                flex: 0 0 2em;
-                font-size: unset;
-            }
-        }
-
-        .daily,
-        .animist {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .form-group {
             padding-left: 5px;
-        }
 
-        .daily {
-            &:hover {
-                background: var(--daily-hover-color);
+            &:not(:has(.form-fields)) {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                &:hover {
+                    background: var(--daily-hover-color);
+                }
             }
         }
     }

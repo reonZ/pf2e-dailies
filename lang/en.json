@@ -229,7 +229,6 @@
         },
         "config": {
             "filters": "Enabled Dailies",
-            "familiar": "Familiar Abilities",
             "title": "{actor} - Daily Configs",
             "animist": {
                 "lores": "Show Lores Summary",

@@ -1,22 +1,29 @@
-{{#if familiar}}
-<h3>{{@root.i18n 'familiar'}}</h3>
-<div class="form-group familiar">
+{{#each dailies as |daily|}}
+{{#if daily.configs}}
+<h3>{{daily.label}}</h3>
+{{#each daily.configs as |config|}}
+<div class="form-group config">
+    {{#if config.label}}
+    <label>{{config.label}}</label>
+    {{/if}}
+    {{!-- range --}}
+    {{#if (eq config.type 'range')}}
     <div class="form-fields">
-        <range-picker name="familiar-range" value="{{familiar.value}}" min="0"
-            max="{{familiar.max}}" step="1" tabindex="-1"></range-picker>
+        <range-picker name="{{config.name}}" data-daily-key="{{daily.key}}"
+            data-save-max-value="{{config.saveMaxValue}}"
+            data-dispatch-update-event="{{config.dispatchUpdateEvent}}" value="{{config.value}}"
+            min="{{config.min}}" max="{{config.max}}" step="{{config.step}}"
+            tabindex="-1"></range-picker>
     </div>
-</div>
-{{/if}}
-
-{{#if animist}}
-<h3>{{animist.title}}</h3>
-{{#each animist.toggles}}
-<div class="form-group animist">
-    <label>{{@root.i18n (concat 'animist.' @key)}}</label>
-    <input type="checkbox" name="animist" data-key="{{@key}}" {{checked this}}>
+    {{!-- checkbox --}}
+    {{else if (eq config.type 'checkbox')}}
+    <input type="checkbox" name="{{config.name}}" data-daily-key="{{daily.key}}"
+        data-dispatch-update-event="{{config.dispatchUpdateEvent}}" {{checked config.value}}>
+    {{/if}}
 </div>
 {{/each}}
 {{/if}}
+{{/each}}
 
 <h3>{{@root.i18n 'filters'}}</h3>
 {{#each dailies as |daily|}}

@@ -18,7 +18,7 @@ const SKIP_UNIQUES = ["jevzf9JbJJibpqaI"];
 
 function getFamiliarAbilityCount(actor: CharacterPF2e) {
     const max = actor.attributes.familiarAbilities.value;
-    const flag = getFlag<ValueAndMax>(actor, "familiar");
+    const flag = getFlag<ValueAndMax>(actor, "config.dailies.familiar.familiar-range");
 
     if (!flag) return max;
     if (flag.max === max) return flag.value;
@@ -102,6 +102,20 @@ const familiar = createDaily({
         if (ids.length) {
             await familiar.deleteEmbeddedDocuments("Item", ids);
         }
+    },
+    config: (actor) => {
+        if (!actor.familiar) return;
+
+        return [
+            {
+                type: "range",
+                name: "familiar-range",
+                value: getFamiliarAbilityCount(actor),
+                max: actor.attributes.familiarAbilities.value,
+                dispatchUpdateEvent: true,
+                saveMaxValue: true,
+            },
+        ];
     },
 });
 

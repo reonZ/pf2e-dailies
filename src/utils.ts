@@ -49,8 +49,26 @@ type CreateSpellConsumableSourceOptions = {
 };
 
 const utils = {
+    /**
+     * getSkillLabel(skill: SkillSlug, localize?: boolean): string
+     */
+    getSkillLabel,
+    /**
+     * getItemSource(uuid: string, instance?: string): Promise<ItemSourcePF2e | null>
+     */
     getItemSource,
+    /**
+     * getActorMaxRank(actor: CreaturePF2e): OneToTen
+     */
+    getActorMaxRank,
+    /**
+     * getItemTypeLabel(type: ItemType): string
+     */
     getItemTypeLabel,
+    /**
+     * hasItemWithSourceId(actor: ActorPF2e, uuid: string | string[], type?: ItemType | ItemType[]): boolean
+     */
+    hasItemWithSourceId,
     getChoiSetRuleSelection: (
         item: ItemPF2e,
         option?: string | { option?: string; flag?: string }
@@ -58,7 +76,6 @@ const utils = {
         const options = typeof option === "string" ? { option } : option;
         return getChoiceSetSelection(item, options);
     },
-    hasItemWithSourceId,
     hasFreePropertySlot: (item: WeaponPF2e) => {
         return hasFreePropertySlot(item);
     },
@@ -84,7 +101,6 @@ const utils = {
             R.map(([value, label]) => ({ value, label }))
         );
     },
-    getSkillLabel,
     getSkills: () => {
         return R.pipe(
             CONFIG.PF2E.skills,
@@ -107,7 +123,6 @@ const utils = {
             R.map((feat) => feat.sourceId)
         );
     },
-    getActorMaxRank,
     getSpellcastingMaxRank: (
         actor: CharacterPF2e,
         { tradition, rankLimit }: { tradition?: MagicTradition; rankLimit?: OneToTen } = {}

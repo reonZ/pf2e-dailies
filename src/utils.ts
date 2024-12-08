@@ -34,6 +34,7 @@ import {
     getSkillLabel,
     getSpellcastingMaxRank,
     hasFreePropertySlot,
+    hasItemWithSourceId,
     rollDie,
     setFlagProperty,
 } from "module-helpers";
@@ -57,6 +58,7 @@ const utils = {
         const options = typeof option === "string" ? { option } : option;
         return getChoiceSetSelection(item, options);
     },
+    hasItemWithSourceId,
     hasFreePropertySlot: (item: WeaponPF2e) => {
         return hasFreePropertySlot(item);
     },

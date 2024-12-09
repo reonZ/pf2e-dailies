@@ -10,6 +10,7 @@ import {
 import { createUpdateCollection, isTemporary } from "./api";
 import { filterDailies, getDailies } from "./dailies";
 import { DailyActorFlags } from "./types";
+import { ACTOR_DAILY_SCHEMA } from "./apps/interface";
 
 async function restForTheNight(
     wrapped: libWrapper.RegisterCallback,
@@ -100,6 +101,7 @@ async function cleanup(actor: CharacterPF2e) {
 
     await updateFlag<DailyActorFlags>(actor, {
         rested: true,
+        schema: ACTOR_DAILY_SCHEMA,
         "-=addedItems": true,
         "-=extra": true,
         "-=tooltip": true,

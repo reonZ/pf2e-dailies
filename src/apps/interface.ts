@@ -1478,4 +1478,4 @@ type RowElementDataset = RowElementDatasetBase & {
     empty: StringBoolean;
 };
 
-export { DailyInterface };
+export { ACTOR_DAILY_SCHEMA, DailyInterface };

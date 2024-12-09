@@ -2,7 +2,7 @@ import { ModuleMigration } from "module-helpers/dist/migration";
 import { createMigrateActorFlag } from "./base";
 
 export default {
-    version: 315,
+    version: 3.15,
     migrateActor: createMigrateActorFlag((actorFlag) => {
         let updated = false;
 

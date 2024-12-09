@@ -124,8 +124,8 @@ type DailyRestOptions = {
 
 type DailyActorFlags = {
     rested?: boolean;
-    schema?: string;
     addedItems?: string[];
+    config?: Record<string, DailyConfigRowValue>;
     extra?: Record<string, any>;
     disabled?: { [k: string]: { [k: string]: DailyRowData } };
     dailies?: { [k: string]: { [k: string]: DailyRowData } };

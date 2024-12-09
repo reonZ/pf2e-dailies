@@ -23,6 +23,7 @@ import { createLanguageDaily } from "./data/languages";
 import { createResistanceDaily } from "./data/resistances";
 import { createScrollChainDaily } from "./data/scrolls";
 import { createComboSkillDaily, createLoreSkillDaily } from "./data/skills";
+import * as migrations from "./migrations";
 import { restForTheNight } from "./rest";
 import { registerSettings } from "./settings";
 import {
@@ -33,7 +34,11 @@ import {
 import { CustomDaily } from "./types";
 import { utils } from "./utils";
 
-MODULE.register("pf2e-dailies", "PF2e Dailies");
+MODULE.register("pf2e-dailies");
+
+for (const migration of Object.values(migrations)) {
+    MODULE.registerMigration(migration);
+}
 
 Hooks.once("init", () => {
     registerSettings();

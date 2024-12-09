@@ -31,34 +31,28 @@ import {
     getFlag,
     getFlagProperty,
     getTranslatedSkills,
-    hasModuleFlag,
     htmlClosest,
     htmlQuery,
     htmlQueryAll,
     htmlQueryInClosest,
     localize,
     localizeIfExist,
-    promptDialog,
     render,
-    setFlag,
     setFlagProperty,
     stringBoolean,
     stringNumber,
     subLocalize,
     templateLocalize,
-    unsetMofuleFlag,
     warn,
 } from "module-helpers";
 import {
     createUpdateCollection,
-    getActorFlag,
     getDisabledDailies,
     isSimplifiableValue,
     simplifyValue,
 } from "../api";
 import { filterDailies } from "../dailies";
 import { filterIsOfType, rowIsOfType } from "../daily";
-import { hasStaves } from "../data/staves";
 import type {
     DailyActorFlags,
     DailyMessageGroup,
@@ -81,8 +75,6 @@ import type {
 import { utils } from "../utils";
 import { DailyConfig } from "./config";
 
-const ACTOR_DAILY_SCHEMA = "3.0.0";
-
 const TEMPLATE_ORDER = {
     select: 100,
     combo: 80,
@@ -92,35 +84,6 @@ const TEMPLATE_ORDER = {
     notify: 20,
     drop: 0,
 };
-
-const MIGRATIONS: {
-    schema: string;
-    reset?: boolean;
-    messages: (
-        | string
-        | string[]
-        | {
-              condition?: (actor: CharacterPF2e) => Promisable<boolean>;
-              messages: string | string[];
-          }
-    )[];
-}[] = [
-    {
-        schema: "3.0.0",
-        reset: true,
-        messages: [
-            "filter",
-            {
-                condition: (actor) => !!actor.familiar,
-                messages: ["familiar.now-remove", "familiar.cant-remove"],
-            },
-            {
-                condition: (actor) => hasStaves(actor),
-                messages: "staves.moved",
-            },
-        ],
-    },
-];
 
 class DailyInterface extends foundry.applications.api.ApplicationV2 {
     #actor: CharacterPF2e;
@@ -204,7 +167,6 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
     async _prepareContext(options: ApplicationRenderOptions): Promise<DailyContext> {
         const actor = this.actor;
-        await migration(actor);
 
         let hasAlert = false;
         const dailies = this.#dailiesArray;
@@ -954,7 +916,6 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             ...flags,
             extra: extraFlags,
             rested: false,
-            schema: ACTOR_DAILY_SCHEMA,
             addedItems: addedItemIds,
             tooltip: await TextEditor.enrichHTML(chatContent),
         });
@@ -1351,71 +1312,6 @@ function rowElementIsOFType<T extends DailyRowType>(
     return types.some((type) => el.dataset.type === type);
 }
 
-async function migration(actor: CharacterPF2e) {
-    if (!hasModuleFlag(actor)) return;
-
-    let reset = false;
-    const messages: string[] = [];
-    const schema = getActorFlag(actor, "schema") ?? "";
-
-    if (!foundry.utils.isNewerVersion(ACTOR_DAILY_SCHEMA, schema)) return;
-
-    for (const migration of MIGRATIONS) {
-        if (!foundry.utils.isNewerVersion(migration.schema, schema)) continue;
-
-        reset ||= migration.reset === true;
-
-        const migrationMessages: string[] = [];
-
-        for (let messageList of migration.messages) {
-            if (R.isPlainObject(messageList)) {
-                if (R.isFunction(messageList.condition) && !(await messageList.condition(actor))) {
-                    continue;
-                }
-                messageList = messageList.messages;
-            }
-
-            messageList = R.isArray(messageList) ? messageList : [messageList];
-
-            const formated = messageList
-                .map((x) => {
-                    const str = localize("interface.migration", x);
-                    return `<div>${str}</div>`;
-                })
-                .join("");
-
-            migrationMessages.push(formated);
-        }
-
-        if (migrationMessages.length) {
-            messages.push(`<h3>${migration.schema}</h3>`, migrationMessages.join(""));
-        }
-    }
-
-    if (reset) {
-        messages.unshift(`<div>${localize("interface.migration.reset")}</div>`);
-        await unsetMofuleFlag(actor);
-    } else {
-        await setFlag(actor, "schema", ACTOR_DAILY_SCHEMA);
-    }
-
-    if (!messages.length) {
-        return;
-    }
-
-    setTimeout(() => {
-        promptDialog(
-            {
-                title: localize("interface.migration.title"),
-                label: localize("interface.migration.label"),
-                content: messages.join(""),
-                classes: ["pf2e-dailies-migration"],
-            },
-            { width: 500 }
-        );
-    }, 200);
-}
-
 type DailyTemplate = {
     label: string;
     rows: RowTemplate[];
@@ -1478,4 +1374,4 @@ type RowElementDataset = RowElementDatasetBase & {
     empty: StringBoolean;
 };
 
-export { ACTOR_DAILY_SCHEMA, DailyInterface };
+export { DailyInterface };

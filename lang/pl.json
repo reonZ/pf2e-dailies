@@ -1,5 +1,27 @@
 {
     "pf2e-dailies": {
+        "SHARED": {
+            "migration": {
+                "warning": {
+                    "title": "Migracja modułu",
+                    "start": "Rozpoczęcie migracji",
+                    "cancel": "Anuluj",
+                    "content": {
+                        "modules": "Następujące moduły muszą zmigrować dane:",
+                        "wait": "Jeśli system przeprowadza migrację własnych danych, należy poczekać przed jej rozpoczęciem"
+                    }
+                },
+                "summary": {
+                    "title": "Podsumowanie migracji",
+                    "content": "Następujące dokumenty zostały zmigrowane",
+                    "nothing": "Żaden dokument nie wymagał migracji."
+                },
+                "error": {
+                    "actors": "Wystąpił błąd podczas migracji danych aktorów świata.",
+                    "token": "Wystąpił błąd podczas migracji danych dla aktora tokenu {uuid}."
+                }
+            }
+        },
         "settings": {
             "addedHighlight": {
                 "name": "Wyróżnij dodane przedmioty",
@@ -29,6 +51,10 @@
         "sheet": {
             "title": "Codzienne przygotowania",
             "unrested": "Wymagany odpoczynek",
+            "primary": {
+                "assign": "Przypisanie jako główne naczynie",
+                "unassign": "Anulowanie przypisania głównego naczynia"
+            },
             "charges": {
                 "label": "Ładunki",
                 "tooltip": "Zresetuj ładunki do wartości maksymalnej (maks.: {max})"

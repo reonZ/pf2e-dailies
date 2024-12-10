@@ -382,7 +382,7 @@ const staves = createDaily({
             }
         }
 
-        setExtraFlags({ staffData });
+        setExtraFlags(staffData);
 
         messages.addGroup("staff", undefined, 45);
         messages.add("staff", { uuid: staff.uuid });

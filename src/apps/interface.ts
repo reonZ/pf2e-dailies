@@ -737,7 +737,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                             getRules(item).push(source);
                         },
                         setExtraFlags: (data: Record<string, any>) => {
-                            foundry.utils.mergeObject(extraFlags, data);
+                            foundry.utils.mergeObject((extraFlags[daily.key] ??= {}), data);
                         },
                     });
                 } catch (err) {

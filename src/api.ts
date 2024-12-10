@@ -90,7 +90,7 @@ function isTemporary(item: ItemPF2e) {
 }
 
 function getStaffFlags(actor: CharacterPF2e) {
-    return getFlag<dailies.StaffFlags>(actor, "extra.staffData");
+    return getFlag<dailies.StaffFlags>(actor, "extra.dailies.staves");
 }
 
 function getStaffItem(actor: CharacterPF2e) {
@@ -104,7 +104,7 @@ function setStaffChargesValue(actor: CharacterPF2e, value?: number) {
 
     return setFlag(
         actor,
-        "extra.staffData.charges.value",
+        "extra.dailies.staves.charges.value",
         Math.clamp(value ?? charges.max, 0, charges.max)
     );
 }

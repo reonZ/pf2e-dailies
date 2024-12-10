@@ -56,6 +56,7 @@ import { filterIsOfType, rowIsOfType } from "../daily";
 import type {
     DailyActorFlags,
     DailyMessageGroup,
+    DailyProcessOptions,
     DailyRow,
     DailyRowAlert,
     DailyRowComboData,
@@ -671,42 +672,70 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             return rules;
         };
 
+        const processOptions = (
+            daily: PreparedDaily,
+            rows: Record<string, DailyRowData>
+        ): Omit<DailyProcessOptions, "addItem" | "addFeat" | "addRule"> => {
+            const items = daily.prepared.items;
+            const custom = daily.prepared.custom;
+
+            return {
+                actor,
+                items,
+                custom,
+                // @ts-ignore
+                rows,
+                messages: {
+                    add: (group, message) => {
+                        messageGroups[group] ??= { order: 0, messages: [] };
+                        messageGroups[group].messages.push(message);
+                    },
+                    addGroup: (name, label, order = 0) => {
+                        if (name in messageGroups) {
+                            messageGroups[name].label ??= label;
+                            messageGroups[name].order ??= order;
+                        } else {
+                            messageGroups[name] = {
+                                label,
+                                order,
+                                messages: [],
+                            };
+                        }
+                    },
+                    addRaw: (message, order: number = 1) => {
+                        rawMessages.push({ message, order });
+                    },
+                },
+                updateItem,
+                deleteItem: (item) => deletedItems.push(item.id),
+                removeRule: (item: ItemPF2e, signature: (rule: DailyRuleElement) => boolean) => {
+                    const rules = getRules(item);
+
+                    for (let i = rules.length - 1; i >= 0; i--) {
+                        const rule = rules[i];
+
+                        if (signature(rule)) {
+                            rules.splice(i, 1);
+                        }
+                    }
+                },
+                setExtraFlags: (data: Record<string, any>) => {
+                    foundry.utils.mergeObject((extraFlags[daily.key] ??= {}), data);
+                },
+            };
+        };
+
         await Promise.all(
             Object.values(dailies).map(({ daily, rows }) => {
                 try {
-                    const items = daily.prepared.items;
-                    const custom = daily.prepared.custom;
-
-                    return daily.process({
-                        actor,
-                        items,
-                        custom,
-                        // @ts-ignore
-                        rows,
-                        messages: {
-                            add: (group, message) => {
-                                messageGroups[group] ??= { order: 0, messages: [] };
-                                messageGroups[group].messages.push(message);
-                            },
-                            addGroup: (name, label, order = 0) => {
-                                if (name in messageGroups) {
-                                    messageGroups[name].label ??= label;
-                                    messageGroups[name].order ??= order;
-                                } else {
-                                    messageGroups[name] = {
-                                        label,
-                                        order,
-                                        messages: [],
-                                    };
-                                }
-                            },
-                            addRaw: (message, order: number = 1) => {
-                                rawMessages.push({ message, order });
-                            },
+                    const options = R.merge(processOptions(daily, rows), {
+                        addItem: (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e) => {
+                            addedItems.push(source);
                         },
-                        updateItem,
-                        addItem: (source) => addedItems.push(source),
-                        addFeat: (source, parent) => {
+                        addFeat: (
+                            source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e,
+                            parent?: ItemPF2e
+                        ) => {
                             if (parent?.isOfType("feat")) {
                                 const parentId = parent.id;
                                 foundry.utils.setProperty(source, "flags.pf2e.grantedBy", {
@@ -717,29 +746,13 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                             }
                             addedItems.push(source);
                         },
-                        deleteItem: (item) => deletedItems.push(item.id),
-                        removeRule: (
-                            item: ItemPF2e,
-                            signature: (rule: DailyRuleElement) => boolean
-                        ) => {
-                            const rules = getRules(item);
-
-                            for (let i = rules.length - 1; i >= 0; i--) {
-                                const rule = rules[i];
-
-                                if (signature(rule)) {
-                                    rules.splice(i, 1);
-                                }
-                            }
-                        },
                         addRule: (item: ItemPF2e, source: DailyRuleElement) => {
                             source[MODULE.id] = true;
                             getRules(item).push(source);
                         },
-                        setExtraFlags: (data: Record<string, any>) => {
-                            foundry.utils.mergeObject((extraFlags[daily.key] ??= {}), data);
-                        },
                     });
+
+                    return daily.process(options);
                 } catch (err) {
                     error("error.unexpected");
                     console.error(err);
@@ -781,14 +794,16 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
         let hasFocusSpells = currentMaxFocus;
 
-        if (addedItems.length) {
-            const items = await actor.createEmbeddedDocuments("Item", addedItems);
+        const actualAddedItems = addedItems.length
+            ? await actor.createEmbeddedDocuments("Item", addedItems)
+            : [];
 
-            for (const item of items) {
+        if (actualAddedItems.length) {
+            for (const item of actualAddedItems) {
                 addedItemIds.push(item.id);
             }
 
-            for (const item of items) {
+            for (const item of actualAddedItems) {
                 if (item.isOfType("feat")) {
                     const parentId = getFlag<string>(item, "grantedBy");
 
@@ -805,7 +820,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                     const identifier = getFlag(item, "identifier");
                     if (!identifier) continue;
 
-                    const spells = items.filter(
+                    const spells = actualAddedItems.filter(
                         (spell): spell is SpellPF2e<CharacterPF2e> =>
                             spell.isOfType("spell") && getFlag(spell, "identifier") === identifier
                     );
@@ -832,6 +847,24 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                     hasFocusSpells += 1;
                 }
             }
+
+            await Promise.all(
+                Object.values(dailies).map(({ daily, rows }) => {
+                    if (!R.isFunction(daily.afterItemAdded)) return;
+
+                    try {
+                        const options = R.merge(processOptions(daily, rows), {
+                            addedItems: actualAddedItems,
+                        });
+
+                        return daily.afterItemAdded(options);
+                    } catch (err) {
+                        error("error.unexpected");
+                        console.error(err);
+                        console.error(`The error occured during processing of ${daily.key}`);
+                    }
+                })
+            );
         }
 
         for (const [id, rules] of itemsRules) {

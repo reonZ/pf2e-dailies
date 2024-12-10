@@ -33,6 +33,9 @@ type Daily<
     process: (
         options: DailyProcessOptions<TItemSlug, TCustom, TRowSlug, TItems, TRows>
     ) => Promisable<void>;
+    afterItemAdded?: (
+        options: DailyAfterItemAddedOptions<TItemSlug, TCustom, TRowSlug, TItems, TRows>
+    ) => Promisable<void>;
     rest?: (options: DailyRestOptions) => Promisable<void>;
     config?: (actor: CharacterPF2e) => Promisable<DailyConfigRow[] | undefined>;
 } & RequireAtLeastOne<
@@ -137,6 +140,20 @@ type DailyOptionsItems<TItemSlug extends string = string> = Record<TItemSlug, It
 
 type DailyRuleElement = RuleElementSource & { [k: string]: any };
 
+type DailyAfterItemAddedOptions<
+    TItemSlug extends string = string,
+    TCustom extends DailyCustom = DailyCustom,
+    TRowSlug extends string = string,
+    TItems extends DailyItem<TItemSlug>[] = DailyItem<TItemSlug>[],
+    TRows extends DailyRow<TRowSlug>[] | ReadonlyArray<TRowSlug> = DailyRow<TRowSlug>[],
+    TRowMap = ExtractRows<TRowSlug, TRows>
+> = Omit<
+    DailyProcessOptions<TItemSlug, TCustom, TRowSlug, TItems, TRows, TRowMap>,
+    "addItem" | "addFeat" | "addRule"
+> & {
+    addedItems: ItemPF2e<CharacterPF2e>[];
+};
+
 type DailyProcessOptions<
     TItemSlug extends string = string,
     TCustom extends DailyCustom = DailyCustom,
@@ -155,11 +172,11 @@ type DailyProcessOptions<
         addGroup: (name: string, label?: string, order?: number) => void;
         addRaw: (message: string, order?: number) => void;
     };
-    updateItem: (data: EmbeddedDocumentUpdateData) => void;
     addItem: (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e) => void;
     addFeat: (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e, parent?: ItemPF2e) => void;
-    removeRule: (item: ItemPF2e, signature: (rule: DailyRuleElement) => boolean) => void;
     addRule: (item: ItemPF2e, source: DailyRuleElement) => void;
+    updateItem: (data: EmbeddedDocumentUpdateData) => void;
+    removeRule: (item: ItemPF2e, signature: (rule: DailyRuleElement) => boolean) => void;
     deleteItem: (item: ItemPF2e) => void;
     setExtraFlags: (data: Record<string, any>) => void;
 };
@@ -354,6 +371,7 @@ export type {
     CustomDaily,
     Daily,
     DailyActorFlags,
+    DailyAfterItemAddedOptions,
     DailyConfigRow,
     DailyConfigCheckbox,
     DailyConfigRowType,
@@ -363,6 +381,7 @@ export type {
     DailyMessageGroup,
     DailyMessageOptions,
     DailyOptionsItems,
+    DailyProcessOptions,
     DailyRow,
     DailyRowAlert,
     DailyRowCombo,

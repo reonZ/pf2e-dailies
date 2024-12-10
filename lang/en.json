@@ -51,6 +51,10 @@
         "sheet": {
             "title": "Daily Preparations",
             "unrested": "Rest Required",
+            "primary": {
+                "assign": "Assign as primary vessel",
+                "unassign": "Unassign primary vessel"
+            },
             "charges": {
                 "label": "Charges",
                 "tooltip": "Reset charges to maximum (max: {max})"

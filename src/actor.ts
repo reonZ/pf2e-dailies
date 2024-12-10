@@ -32,11 +32,13 @@ import {
 import {
     canPrepareDailies,
     getActorFlag,
+    getAnimistVesselsData,
     getDailiesSummary,
     getStaffFlags,
     isTemporary,
     openDailiesInterface,
     setStaffChargesValue,
+    toggleAnimistVesselPrimary,
 } from "./api";
 import { StaffSpellcasting } from "./data/staves";
 
@@ -164,10 +166,11 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e<CharacterPF2
     const contentElement = htmlQuery(html, ".sheet-content");
     if (!contentElement) return;
 
+    const isOwner = actor.isOwner;
     const spellsTab = htmlQuery(contentElement, ".tab[data-tab='spellcasting']");
     const highlightItems = getSetting("addedHighlight");
 
-    if (actor.isOwner) {
+    if (isOwner) {
         const targetEl = htmlQuery(html, "aside .sidebar .hitpoints .hp-small");
 
         if (targetEl) {
@@ -203,6 +206,45 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e<CharacterPF2
                 htmlQuery(container, ".action-header .item-controls")?.prepend(toggle);
             }
         });
+
+        const vesselsData = getAnimistVesselsData(actor);
+        if (vesselsData) {
+            const { entry, primary } = vesselsData;
+            const entryEl = htmlQuery(spellsTab, `[data-item-id="${entry.id}"]`);
+            const spellElements = entryEl?.querySelectorAll<HTMLElement>(".spell") ?? [];
+
+            for (const spellEl of spellElements) {
+                const itemId = spellEl.dataset.itemId ?? "";
+                const isPrimary = primary.includes(itemId);
+
+                const star = isPrimary ? "solid" : "regular";
+                const starEl = createHTMLElement(isOwner ? "a" : "span", {
+                    innerHTML: `<i class="fa-${star} fa-fw fa-star"></i>`,
+                    dataset: {
+                        action: "toggle-assign-primary",
+                        tooltip: localize("sheet.primary", isPrimary ? "unassign" : "assign"),
+                    },
+                });
+
+                if (isOwner) {
+                    starEl.addEventListener("click", async (event) => {
+                        await toggleAnimistVesselPrimary(actor, itemId);
+                    });
+                }
+
+                htmlQuery(spellEl, ".item-controls")?.prepend(starEl);
+
+                if (!isPrimary) {
+                    htmlQuery(spellEl, "button.cast-spell")?.setAttribute("disabled", "true");
+
+                    const nameEl = htmlQuery(spellEl, ".name");
+                    if (nameEl) {
+                        nameEl.style.color = "var(--color-disabled)";
+                        nameEl.style.textDecoration = "line-through";
+                    }
+                }
+            }
+        }
     }
 
     {
@@ -276,14 +318,14 @@ async function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e<CharacterPF2
     }
 
     {
-        const addedItems = getActorFlag(actor, "addedItems");
-
         if (highlightItems) {
-            for (const id of addedItems ?? []) {
+            const addedItems = getActorFlag(actor, "addedItems") ?? [];
+
+            for (const id of addedItems) {
                 const itemElements = contentElement.querySelectorAll(`[data-item-id="${id}"]`);
 
                 for (const itemElement of itemElements) {
-                    itemElement.classList.add(`temporary`);
+                    itemElement.classList.add("temporary");
                 }
             }
         }
@@ -447,8 +489,8 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
 
 export {
     ACTOR_PREPARE_EMBEDDED_DOCUMENTS,
-    onCharacterPrepareData,
     onActorPrepareEmbeddedDocuments,
+    onCharacterPrepareData,
     onCharacterSheetGetData,
     onRenderCharacterSheetPF2e,
     onRenderFamiliarSheetPF2e,

@@ -1,8 +1,8 @@
 import { MODULE, getSetting, registerWrapper, warn } from "module-helpers";
 import {
     ACTOR_PREPARE_EMBEDDED_DOCUMENTS,
-    onCharacterPrepareData,
     onActorPrepareEmbeddedDocuments,
+    onCharacterPrepareData,
     onCharacterSheetGetData,
     onRenderCharacterSheetPF2e,
     onRenderFamiliarSheetPF2e,
@@ -12,6 +12,7 @@ import {
     canCastRank,
     canPrepareDailies,
     getAnimistConfigs,
+    getAnimistVesselsData,
     getDailiesSummary,
     getDisabledDailies,
     getStaffItem,
@@ -59,6 +60,7 @@ Hooks.once("init", () => {
         canPrepareDailies,
         getDisabledDailies,
         getAnimistConfigs,
+        getAnimistVesselsData,
         utils,
         dailyHelpers: {
             createComboSkillDaily,

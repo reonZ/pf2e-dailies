@@ -7,6 +7,8 @@ import {
     SpellcastingEntryPF2e,
     getActorMaxRank,
     getFlag,
+    getFlagProperty,
+    isInstanceOf,
     localize,
     setFlag,
 } from "module-helpers";
@@ -150,12 +152,37 @@ function getAnimistConfigs(actor: CharacterPF2e) {
     );
 }
 
+function getAnimistVesselsData(actor: CharacterPF2e) {
+    const primaryVessels = getFlag<string[]>(actor, "extra.dailies.animist.primaryVessels");
+    if (!primaryVessels) return;
+
+    const vesselsEntry = actor.spellcasting.find(
+        (entry) => getFlagProperty(entry, "identifier") === "animist-focus"
+    );
+    if (!isInstanceOf(vesselsEntry, "SpellcastingEntryPF2e")) return;
+
+    return { entry: vesselsEntry, primary: primaryVessels.slice() };
+}
+
+function toggleAnimistVesselPrimary(actor: CharacterPF2e, id: string) {
+    const primaryVessels =
+        getFlag<string[]>(actor, "extra.dailies.animist.primaryVessels")?.slice() ?? [];
+    const exist = primaryVessels.findSplice((x) => x === id);
+
+    if (!exist) {
+        primaryVessels.push(id);
+    }
+
+    return setFlag(actor, "extra.dailies.animist.primaryVessels", primaryVessels);
+}
+
 export {
     canCastRank,
     canPrepareDailies,
     createUpdateCollection,
     getActorFlag,
     getAnimistConfigs,
+    getAnimistVesselsData,
     getDailiesSummary,
     getDisabledDailies,
     getStaffFlags,
@@ -165,4 +192,5 @@ export {
     openDailiesInterface,
     setStaffChargesValue,
     simplifyValue,
+    toggleAnimistVesselPrimary,
 };

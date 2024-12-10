@@ -1,11 +1,13 @@
 import {
     createHTMLElement,
     getActorMaxRank,
+    getFlag,
     getUuidFromInlineMatch,
     htmlQuery,
     ItemPF2e,
     localize,
     R,
+    setFlagProperty,
     SpellSource,
     splitListString,
 } from "module-helpers";
@@ -207,9 +209,7 @@ const animist = createDaily({
                             identifier: vesselsIdentifier,
                         });
 
-                        if (isPrimary) {
-                            source.name = `* ${source.name}`;
-                        }
+                        setFlagProperty(source, "isPrimary", isPrimary);
 
                         vesselsToAdd.push({ source, uuid });
                     }
@@ -304,6 +304,15 @@ const animist = createDaily({
                 value: vessels.length - focusPoints,
             });
         }
+    },
+    afterItemAdded: async ({ addedItems, setExtraFlags }) => {
+        const primaryVessels = R.pipe(
+            addedItems,
+            R.filter((item) => item.isOfType("spell") && !!getFlag(item, "isPrimary")),
+            R.map((item) => item.id)
+        );
+
+        setExtraFlags({ primaryVessels });
     },
     config: (actor) => {
         return R.pipe(

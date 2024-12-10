@@ -2,7 +2,7 @@ import { MODULE, getSetting, registerWrapper, warn } from "module-helpers";
 import {
     ACTOR_PREPARE_EMBEDDED_DOCUMENTS,
     onCharacterPrepareData,
-    onCharacterPrepareEmbeddedDocuments,
+    onActorPrepareEmbeddedDocuments,
     onCharacterSheetGetData,
     onRenderCharacterSheetPF2e,
     onRenderFamiliarSheetPF2e,
@@ -96,11 +96,7 @@ Hooks.once("ready", () => {
 
     registerWrapper("game.pf2e.actions.restForTheNight", restForTheNight, "WRAPPER");
 
-    registerWrapper(
-        ACTOR_PREPARE_EMBEDDED_DOCUMENTS,
-        onCharacterPrepareEmbeddedDocuments,
-        "WRAPPER"
-    );
+    registerWrapper(ACTOR_PREPARE_EMBEDDED_DOCUMENTS, onActorPrepareEmbeddedDocuments, "WRAPPER");
 
     registerWrapper(
         "CONFIG.Actor.sheetClasses.character['pf2e.CharacterSheetPF2e'].cls.prototype.getData",

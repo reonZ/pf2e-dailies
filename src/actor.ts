@@ -43,7 +43,7 @@ import { StaffSpellcasting } from "./data/staves";
 const ACTOR_PREPARE_EMBEDDED_DOCUMENTS =
     "CONFIG.Actor.documentClass.prototype.prepareEmbeddedDocuments";
 
-function onCharacterPrepareEmbeddedDocuments<TActor extends CharacterPF2e = CharacterPF2e>(
+function onActorPrepareEmbeddedDocuments<TActor extends CharacterPF2e = CharacterPF2e>(
     this: TActor,
     wrapped: libWrapper.RegisterCallback
 ): void {
@@ -448,7 +448,7 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
 export {
     ACTOR_PREPARE_EMBEDDED_DOCUMENTS,
     onCharacterPrepareData,
-    onCharacterPrepareEmbeddedDocuments,
+    onActorPrepareEmbeddedDocuments,
     onCharacterSheetGetData,
     onRenderCharacterSheetPF2e,
     onRenderFamiliarSheetPF2e,

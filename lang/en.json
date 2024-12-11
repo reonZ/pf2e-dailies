@@ -18,7 +18,8 @@
                 },
                 "error": {
                     "actors": "An error occured while migrating data for world actors.",
-                    "token": "An error occured while migrating data for the token actor {uuid}."
+                    "token": "An error occured while migrating data for the token actor {uuid}.",
+                    "users": "An error occured while migrating data for users."
                 }
             }
         },

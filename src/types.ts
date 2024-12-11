@@ -52,17 +52,20 @@ type DailyConfigRowType = "range" | "checkbox";
 
 type DailyConfigRowValue = boolean | number | string | ValueAndMax;
 
-type DailyConfigRowBase<TInput extends DailyConfigRowType> = {
+type DailyConfigRowBase<
+    TInput extends DailyConfigRowType,
+    TValue extends Exclude<DailyConfigRowValue, ValueAndMax>
+> = {
     type: TInput;
     name: string;
-    value?: Exclude<DailyConfigRowValue, ValueAndMax>;
+    value?: TValue;
     label?: string;
     dispatchUpdateEvent?: boolean;
 };
 
-type DailyConfigCheckbox = DailyConfigRowBase<"checkbox">;
+type DailyConfigCheckbox = DailyConfigRowBase<"checkbox", boolean>;
 
-type DailyConfigRowRange = DailyConfigRowBase<"range"> & {
+type DailyConfigRowRange = DailyConfigRowBase<"range", number> & {
     min?: number;
     max?: number;
     step?: number;

@@ -727,11 +727,14 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
         await Promise.all(
             Object.values(dailies).map(({ daily, rows }) => {
+                const addItem = (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e) => {
+                    setFlagProperty(source, "daily", daily.key);
+                    addedItems.push(source);
+                };
+
                 try {
                     const options = R.merge(processOptions(daily, rows), {
-                        addItem: (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e) => {
-                            addedItems.push(source);
-                        },
+                        addItem,
                         addFeat: (
                             source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e,
                             parent?: ItemPF2e
@@ -744,10 +747,10 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                                 });
                                 setFlagProperty(source, "grantedBy", parentId);
                             }
-                            addedItems.push(source);
+                            addItem(source);
                         },
                         addRule: (item: ItemPF2e, source: DailyRuleElement) => {
-                            source[MODULE.id] = true;
+                            source[MODULE.id] = daily.key;
                             getRules(item).push(source);
                         },
                     });
@@ -854,7 +857,9 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
                     try {
                         const options = R.merge(processOptions(daily, rows), {
-                            addedItems: actualAddedItems,
+                            addedItems: actualAddedItems.filter(
+                                (item) => getFlag(item, "daily") === daily.key
+                            ),
                         });
 
                         return daily.afterItemAdded(options);

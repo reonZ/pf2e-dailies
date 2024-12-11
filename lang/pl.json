@@ -173,19 +173,6 @@
                 "no": "Nie używaj żadnych",
                 "last": "Zużyj ostatni dostępny"
             },
-            "migration": {
-                "title": "PF2e Dailies - Migracja",
-                "label": "Odczyt i potwierdzenie",
-                "reset": "Dzienne wybory zapisane na tej postaci nie były kompatybilne z aktualną wersją modułu i zostały zresetowane.",
-                "filter": "Można teraz odfiltrować dzienne przygotowania na podstawie poszczególnych znaków, opcja jest dostępna bezpośrednio w nagłówku okna przygotowania (oryginalne ustawienie zostało usunięte).",
-                "familiar": {
-                    "now-remove": "Moduł nie usuwa już bezkrytycznie zdolności chowańca, teraz usuwa tylko te, które zostały dodane przez sam moduł, dzięki czemu możliwe jest posiadanie więcej niż całkowita liczba ustawiona na karcie.",
-                    "cant-remove": "UWAGA: Z tego powodu moduł nie usunie żadnych starych zdolności z chowańca, nawet jeśli zostały one pierwotnie dodane przez poprzednią wersję modułu."
-                },
-                "staves": {
-                    "moved": "Przygotowany kostur znajduje się teraz w zakładce <strong>Zwoje i Różdżki</strong> na karcie postaci."
-                }
-            },
             "mindsmith": {
                 "missing": "Brakuje Broni Umysłu"
             }

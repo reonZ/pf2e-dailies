@@ -173,19 +173,6 @@
                 "no": "Do not consume any",
                 "last": "Consume last available"
             },
-            "migration": {
-                "title": "PF2e Dailies - Migration",
-                "label": "Read and Acknowledge",
-                "reset": "The daily selections saved on this character were not compatible with the current version of the module and have been reset.",
-                "filter": "You can now filter out dailies on a per-character basis, the option is directly available in the header of the preparation window (the original setting has been removed).",
-                "familiar": {
-                    "now-remove": "The module doesn't indiscriminately remove familiar abilities anymore, it will now only remove those that were added by the module itself, making it possible to have more than the total number set on the sheet.",
-                    "cant-remove": "NOTE: Because of this, the module will not remove any old ability from the familiar, even if they were originally added by a previous version of the module."
-                },
-                "staves": {
-                    "moved": "You will now find your prepared staff in the <strong>Activations</strong> tab of the character sheet."
-                }
-            },
             "mindsmith": {
                 "missing": "Mind Weapon is missing"
             }

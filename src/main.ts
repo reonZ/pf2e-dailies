@@ -35,11 +35,7 @@ import {
 import { CustomDaily } from "./types";
 import { utils } from "./utils";
 
-MODULE.register("pf2e-dailies");
-
-for (const migration of Object.values(migrations)) {
-    MODULE.registerMigration(migration);
-}
+MODULE.register("pf2e-dailies", migrations);
 
 Hooks.once("init", () => {
     registerSettings();

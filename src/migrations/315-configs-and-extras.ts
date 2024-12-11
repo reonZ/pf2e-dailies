@@ -15,13 +15,18 @@ export default {
             }
         }
 
-        if ("extra" in actorFlag) {
+        if (R.isPlainObject(actorFlag.extra)) {
             const customs = R.omit(actorFlag.extra, ["staffData"]);
             const customKeys = R.keys(customs);
 
             if (customKeys.length) {
                 updated = true;
-                actorFlag.extra.custom = customs;
+
+                actorFlag.extra.custom = foundry.utils.mergeObject(
+                    actorFlag.extra.custom ?? {},
+                    customs,
+                    { inplace: false }
+                );
 
                 for (const key of customKeys) {
                     actorFlag.extra[`-=${key}`] = true;

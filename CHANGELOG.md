@@ -3,6 +3,10 @@
 -   the module now uses a migration manager
     -   the main GM will be asked to migrate on load
     -   if the system is migrating data, make sure to wait until it is done before starting
+-   `Apparition Attunement`:
+    -   no longer add the `*` prefix to primary vessel spells
+    -   now add a star icon to assign/unassign primary vessel spells
+        -   unassigned primary vessel spells cannot be cast
 -   `Custom Dailies`:
     -   the `setExtraFlags` object is now put behind the daily key context
         -   so what was before `flags.pf2e-dailies.extra.{}` is now `flags.pf2e-dailies.extra.custom.my-daily.{}`

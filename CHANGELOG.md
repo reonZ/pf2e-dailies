@@ -1,3 +1,20 @@
+# 3.15.0
+
+-   the module now uses a migration manager
+    -   the main GM will be asked to migrate on load
+    -   if the system is migrating data, make sure to wait until it is done before starting
+-   `Custom Dailies`:
+    -   the `setExtraFlags` object is now put behind the daily key context
+        -   so what was before `flags.pf2e-dailies.extra.{}` is now `flags.pf2e-dailies.extra.custom.my-daily.{}`
+    -   add a `temporary` option to the `deleteItem` process helper
+        -   on rest, items deleted while using this option will be re-added to the actor as they were
+    -   add `config` function to dailies
+        -   used to register the daily own configs like the `animist` and `familiar` dailies do
+    -   add `afterItemAdded` function to dailies
+        -   called after all items (from all dailies) have been added to the actor but before any were removed or updated
+        -   the `addedItems` contains the items related to the current daily
+        -   you can use all the process helpers except the ones that add anything to the actor
+
 # 3.14.0
 
 -   `Apparition Attunement`:

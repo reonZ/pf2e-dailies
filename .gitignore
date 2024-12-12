@@ -5,3 +5,4 @@ scripts/
 *.code-workspace
 release.mjs
 ignore.txt
+src/data/test.ts

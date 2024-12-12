@@ -1,16 +1,21 @@
 import { ActorSourcePF2e, getFlagProperty, R } from "module-helpers";
+import { ModuleMigration } from "module-helpers/dist/migration";
 
-function createMigrateActorFlag(
-    callback: (actorFlag: { [k: string]: unknown }) => Promisable<boolean>
+function createMigrateCharacterFlag(
+    version: number,
+    migrateActor: (actorFlag: { [k: string]: unknown }) => Promisable<boolean>
 ) {
-    return (actorSource: ActorSourcePF2e) => {
-        if (actorSource.type !== "character") return false;
+    return {
+        version,
+        migrateActor: (actorSource: ActorSourcePF2e) => {
+            if (actorSource.type !== "character") return false;
 
-        const flag = getFlagProperty(actorSource);
-        if (!R.isPlainObject(flag)) return false;
+            const flag = getFlagProperty(actorSource);
+            if (!R.isPlainObject(flag)) return false;
 
-        return callback(flag);
-    };
+            return migrateActor(flag);
+        },
+    } satisfies ModuleMigration;
 }
 
-export { createMigrateActorFlag };
+export { createMigrateCharacterFlag };

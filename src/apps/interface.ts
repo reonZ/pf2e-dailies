@@ -642,6 +642,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         const [updatedItems, updateItem] = createUpdateCollection();
         const rawMessages: { message: string; order: number }[] = [];
         const addedItemIds: string[] = [];
+        const temporaryDeleted: Record<string, ItemSourcePF2e> = {};
 
         const messageGroups: Record<string, DailyMessageGroup> = {
             languages: { order: 80, messages: [] },
@@ -707,7 +708,13 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                     },
                 },
                 updateItem,
-                deleteItem: (item) => deletedItems.push(item.id),
+                deleteItem: (item, temporary = false) => {
+                    if (temporary) {
+                        temporaryDeleted[item.id] = item.toObject();
+                    }
+
+                    deletedItems.push(item.id);
+                },
                 removeRule: (item: ItemPF2e, signature: (rule: DailyRuleElement) => boolean) => {
                     const rules = getRules(item);
 
@@ -955,6 +962,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             extra: extraFlags,
             rested: false,
             addedItems: addedItemIds,
+            temporaryDeleted,
             tooltip: await TextEditor.enrichHTML(chatContent),
         });
 

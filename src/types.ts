@@ -133,10 +133,11 @@ type DailyActorFlags = {
     addedItems?: string[];
     config?: Record<string, DailyConfigRowValue>;
     extra?: Record<string, any>;
-    disabled?: { [k: string]: { [k: string]: DailyRowData } };
-    dailies?: { [k: string]: { [k: string]: DailyRowData } };
-    custom?: { [k: string]: { [k: string]: DailyRowData } };
+    disabled?: Record<string, Record<string, DailyRowData>>;
+    dailies?: Record<string, Record<string, DailyRowData>>;
+    custom?: Record<string, Record<string, DailyRowData>>;
     tooltip?: string;
+    temporaryDeleted?: Record<string, ItemSourcePF2e>;
 };
 
 type DailyOptionsItems<TItemSlug extends string = string> = Record<TItemSlug, ItemPF2e | undefined>;
@@ -180,7 +181,7 @@ type DailyProcessOptions<
     addRule: (item: ItemPF2e, source: DailyRuleElement) => void;
     updateItem: (data: EmbeddedDocumentUpdateData) => void;
     removeRule: (item: ItemPF2e, signature: (rule: DailyRuleElement) => boolean) => void;
-    deleteItem: (item: ItemPF2e) => void;
+    deleteItem: (item: ItemPF2e, temporary?: boolean) => void;
     setExtraFlags: (data: Record<string, any>) => void;
 };
 

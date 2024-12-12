@@ -90,6 +90,14 @@ async function cleanup(actor: CharacterPF2e) {
         })
     );
 
+    const temporaryDeleted = Object.values(
+        getFlag<DailyActorFlags["temporaryDeleted"]>(actor, "temporaryDeleted") ?? {}
+    );
+
+    if (temporaryDeleted.length) {
+        await actor.createEmbeddedDocuments("Item", temporaryDeleted, { keepId: true });
+    }
+
     if (updatedItems.size) {
         await actor.updateEmbeddedDocuments("Item", updatedItems.contents);
     }
@@ -103,6 +111,7 @@ async function cleanup(actor: CharacterPF2e) {
         "-=addedItems": true,
         "-=extra": true,
         "-=tooltip": true,
+        "-=temporaryDeleted": true,
     });
 }
 

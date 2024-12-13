@@ -529,11 +529,14 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
     async #onOpenBrowser(event: Event, el: HTMLElement) {
         const inputEl = htmlQueryInClosest(el, ".drop", "input")!;
-        const compendium = await this.#compendiumFilterFromElement(inputEl, true);
+        const compendium = await this.#compendiumFilterFromElement(inputEl);
 
         if (compendium) {
-            // @ts-ignore
-            game.pf2e.compendiumBrowser.openTab(compendium.type, compendium.filter);
+            game.pf2e.compendiumBrowser.openTab(
+                // @ts-ignore
+                compendium.type,
+                { filter: compendium.filter }
+            );
         }
     }
 
@@ -1064,34 +1067,27 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
     }
 
     #validateDefault(item: FeatPF2e | SpellPF2e, filter: FeatFilters | SpellFilters) {
-        const { multiselects, checkboxes } = filter;
+        const { checkboxes, source, traits } = filter;
         const tab = game.pf2e.compendiumBrowser.tabs[item.type as "spell" | "feat"];
         const itemTraits = item.system.traits.value.map((t: string) => t.replace(/^hb_/, ""));
 
-        if (
-            // @ts-expect-error
-            !tab.filterTraits(
-                itemTraits,
-                multiselects.traits.selected,
-                multiselects.traits.conjunction
-            )
-        ) {
+        if (!tab.filterTraits(itemTraits, traits.selected, traits.conjunction)) {
             warn("interface.drop.error.wrongTraits");
             return false;
         }
 
-        const rarities = checkboxes.rarity.selected as Rarity[];
-        if (rarities.length && !rarities.includes(item.rarity)) {
+        const filterRarity = checkboxes.rarity.selected as Rarity[];
+        if (filterRarity.length && !filterRarity.includes(item.rarity)) {
             this.#dropDataWarning(
                 "rarity",
-                rarities.map((x) => game.i18n.localize(CONFIG.PF2E.rarityTraits[x])),
+                filterRarity.map((x) => game.i18n.localize(CONFIG.PF2E.rarityTraits[x])),
                 game.i18n.localize(CONFIG.PF2E.rarityTraits[item.rarity])
             );
             return false;
         }
 
-        const sources = checkboxes.source.selected;
-        if (sources.length) {
+        const filterSource = source.selected;
+        if (filterSource.length) {
             const { system } = item._source as {
                 system: { source?: { value: string }; publication?: { title: string } };
             };
@@ -1100,7 +1096,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             ).trim();
             const sourceSlug = game.pf2e.system.sluggify(pubSource);
 
-            if (!sources.includes(sourceSlug)) {
+            if (!filterSource.includes(sourceSlug)) {
                 this.#dropDataWarning("source", "", pubSource);
                 return false;
             }
@@ -1110,19 +1106,18 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
     }
 
     #validateFeat(item: FeatPF2e, filter: FeatFilters) {
-        const { checkboxes, sliders } = filter;
+        const { checkboxes, source, traits, level } = filter;
 
-        const level = sliders.level.values;
-        if (!item.level.between(level.min, level.max)) {
-            this.#dropDataWarning("level", `${level.min}-${level.max}`, String(item.level));
+        if (!item.level.between(level.from, level.to)) {
+            this.#dropDataWarning("level", `${level.from}-${level.to}`, String(item.level));
             return false;
         }
 
-        const categories = checkboxes.category.selected as FeatOrFeatureCategory[];
-        if (categories.length && !categories.includes(item.category)) {
+        const filterCategory = checkboxes.category.selected as FeatOrFeatureCategory[];
+        if (filterCategory.length && !filterCategory.includes(item.category)) {
             this.#dropDataWarning(
                 "category",
-                categories.map((x) => game.i18n.localize(CONFIG.PF2E.featCategories[x])),
+                filterCategory.map((x) => game.i18n.localize(CONFIG.PF2E.featCategories[x])),
                 game.i18n.localize(CONFIG.PF2E.featCategories[item.category])
             );
             return false;
@@ -1226,7 +1221,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         return true;
     }
 
-    async #compendiumFilterFromElement(el: HTMLElement, init?: boolean) {
+    async #compendiumFilterFromElement(el: HTMLElement) {
         try {
             const data = elementDataset<RowElementDataset>(el);
             const dailyRow = this.#getDailyRow<DailyRowDrop>(data.daily, data.row);
@@ -1238,7 +1233,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                     daily: data.daily,
                     row: data.row,
                     type: filter.type,
-                    filter: await this.#convertToCompendiumFilter(filter, init),
+                    filter: await this.#convertToCompendiumFilter(filter),
                 };
             })();
 
@@ -1255,11 +1250,10 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
     }
 
     async #convertToCompendiumFilter<T extends DailyRowDropType>(
-        dropFilter: DailyRowDropFilters[T],
-        init?: boolean
+        dropFilter: DailyRowDropFilters[T]
     ) {
         const type = dropFilter.type;
-        const compendiumFilter = await getCompendiumFilters(type, init);
+        const compendiumFilter = await getCompendiumFilters(type);
 
         if (filterIsOfType(dropFilter, "spell")) {
             const rank = Array.isArray(dropFilter.search.rank)
@@ -1275,22 +1269,20 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                 : undefined;
         }
 
-        if (filterIsOfType(dropFilter, "feat") && isSimplifiableValue(dropFilter.search.level)) {
-            const level = simplifyValue(this.actor, dropFilter.search.level) ?? 20;
-            dropFilter.search.level = {
-                min: 0,
-                max: level,
-            };
-        }
-
-        for (const checkboxEntry of Object.entries(compendiumFilter.checkboxes)) {
+        const checkboxes = Object.entries(compendiumFilter.checkboxes).concat([
+            ["source", compendiumFilter.source],
+        ]);
+        for (const checkboxEntry of checkboxes) {
             const [checkboxName, filterCheckbox] = checkboxEntry as [
                 keyof typeof compendiumFilter.checkboxes,
                 CheckboxData
             ];
             const searchCheckbox = dropFilter.search[checkboxName];
 
-            if (!searchCheckbox) continue;
+            if (!searchCheckbox) {
+                filterCheckbox.isExpanded = false;
+                continue;
+            }
 
             filterCheckbox.selected = searchCheckbox;
             filterCheckbox.isExpanded = true;
@@ -1304,46 +1296,33 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             }
         }
 
-        for (const multiselectEntry of Object.entries(compendiumFilter.multiselects)) {
-            const [multiselectName, filterMultiselect] = multiselectEntry as [
-                keyof typeof compendiumFilter.multiselects,
-                MultiselectData
-            ];
-            const searchMultiselect = dropFilter.search[multiselectName];
+        if ("traits" in dropFilter.search) {
+            const traitsFilter = compendiumFilter.traits;
+            const searchTraits = Array.isArray(dropFilter.search.traits)
+                ? { selected: dropFilter.search.traits }
+                : dropFilter.search.traits;
 
-            if (!searchMultiselect) continue;
+            if (searchTraits) {
+                traitsFilter.conjunction = searchTraits.conjunction ?? "and";
 
-            const multiselect = Array.isArray(searchMultiselect)
-                ? { selected: searchMultiselect }
-                : searchMultiselect;
-
-            filterMultiselect.conjunction = multiselect.conjunction ?? "and";
-
-            for (const select of multiselect.selected) {
-                const selection =
-                    typeof select === "string" ? { value: select, not: undefined } : select;
-                filterMultiselect.selected.push(
-                    selection as { value: string; not: undefined; label: string }
-                );
+                for (const select of searchTraits.selected) {
+                    const selection =
+                        typeof select === "string" ? { value: select, not: undefined } : select;
+                    traitsFilter.selected.push(selection);
+                }
             }
         }
 
-        if ("sliders" in compendiumFilter) {
-            for (const sliderEntry of Object.entries(compendiumFilter.sliders)) {
-                const [sliderName, filterSlider] = sliderEntry as [
-                    keyof typeof compendiumFilter.sliders,
-                    SliderData
-                ];
-                const searchSlider = (dropFilter as DailyRowDropFeatFilter).search[sliderName] as {
-                    min: number;
-                    max: number;
-                };
+        if ("level" in compendiumFilter && "level" in dropFilter.search) {
+            const levelFilter = compendiumFilter.level;
+            const searchLevel = isSimplifiableValue(dropFilter.search.level)
+                ? { min: 0, max: simplifyValue(this.actor, dropFilter.search.level) ?? 20 }
+                : dropFilter.search.level;
 
-                if (!searchSlider) continue;
-
-                filterSlider.values.min = searchSlider.min;
-                filterSlider.values.max = searchSlider.max;
-                filterSlider.isExpanded = true;
+            if (searchLevel) {
+                levelFilter.from = searchLevel.min;
+                levelFilter.to = searchLevel.max;
+                levelFilter.isExpanded = true;
             }
         }
 

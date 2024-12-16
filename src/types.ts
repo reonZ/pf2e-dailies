@@ -2,6 +2,7 @@ import {
     CharacterPF2e,
     FeatOrFeatureCategory,
     FeatPF2e,
+    FeatSource,
     ItemPF2e,
     ItemSourcePF2e,
     MagicTradition,
@@ -176,9 +177,14 @@ type DailyProcessOptions<
         addGroup: (name: string, label?: string, order?: number) => void;
         addRaw: (message: string, order?: number) => void;
     };
-    addItem: (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e) => void;
-    addFeat: (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e, parent?: ItemPF2e) => void;
+    addItem: (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e, temporary?: boolean) => void;
+    addFeat: (
+        source: PreCreate<FeatSource> | FeatSource,
+        parent?: ItemPF2e,
+        temporary?: boolean
+    ) => void;
     addRule: (item: ItemPF2e, source: DailyRuleElement) => void;
+    replaceFeat: (original: FeatPF2e, source: PreCreate<FeatSource> | FeatSource) => void;
     updateItem: (data: EmbeddedDocumentUpdateData) => void;
     removeRule: (item: ItemPF2e, signature: (rule: DailyRuleElement) => boolean) => void;
     deleteItem: (item: ItemPF2e, temporary?: boolean) => void;

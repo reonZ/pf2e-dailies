@@ -6,16 +6,15 @@ import {
     FeatFilters,
     FeatOrFeatureCategory,
     FeatPF2e,
+    FeatSource,
     ItemPF2e,
     ItemSourcePF2e,
     MODULE,
     MagicTradition,
-    MultiselectData,
     OneToTen,
     R,
     Rarity,
     SkillSlug,
-    SliderData,
     SpellFilters,
     SpellPF2e,
     SpellTrait,
@@ -63,7 +62,6 @@ import type {
     DailyRowData,
     DailyRowDrop,
     DailyRowDropData,
-    DailyRowDropFeatFilter,
     DailyRowDropFilters,
     DailyRowDropType,
     DailyRowSelectOption,
@@ -656,6 +654,17 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             scrolls: { order: 30, messages: [] },
         };
 
+        const addItemToActor = (
+            source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e,
+            temporary = true
+        ) => {
+            if (temporary) {
+                setFlagProperty(source, "temporary", true);
+            }
+
+            addedItems.push(source);
+        };
+
         const getRules = (item: ItemPF2e) => {
             const id = item.id;
             const existing = itemsRules.get(id);
@@ -737,31 +746,45 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
         await Promise.all(
             Object.values(dailies).map(({ daily, rows }) => {
-                const addItem = (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e) => {
+                const addItem = (
+                    source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e,
+                    temporary?: boolean
+                ) => {
                     setFlagProperty(source, "daily", daily.key);
-                    addedItems.push(source);
+                    addItemToActor(source, temporary);
+                };
+
+                const addFeat = (
+                    source: PreCreate<FeatSource> | FeatSource,
+                    parent?: ItemPF2e | null,
+                    temporary = true
+                ) => {
+                    if (parent?.isOfType("feat")) {
+                        const parentId = parent.id;
+                        foundry.utils.setProperty(source, "flags.pf2e.grantedBy", {
+                            id: parentId,
+                            onDelete: "cascade",
+                        });
+                        setFlagProperty(source, "grantedBy", parentId);
+                    }
+                    addItem(source, temporary);
                 };
 
                 try {
-                    const options = R.merge(processOptions(daily, rows), {
+                    const globalOptions = processOptions(daily, rows);
+                    const options = R.merge(globalOptions, {
                         addItem,
-                        addFeat: (
-                            source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e,
-                            parent?: ItemPF2e
-                        ) => {
-                            if (parent?.isOfType("feat")) {
-                                const parentId = parent.id;
-                                foundry.utils.setProperty(source, "flags.pf2e.grantedBy", {
-                                    id: parentId,
-                                    onDelete: "cascade",
-                                });
-                                setFlagProperty(source, "grantedBy", parentId);
-                            }
-                            addItem(source);
-                        },
+                        addFeat,
                         addRule: (item: ItemPF2e, source: DailyRuleElement) => {
                             source[MODULE.id] = daily.key;
                             getRules(item).push(source);
+                        },
+                        replaceFeat: (
+                            original: FeatPF2e,
+                            source: PreCreate<FeatSource> | FeatSource
+                        ) => {
+                            addFeat(source, original.grantedBy, false);
+                            globalOptions.deleteItem(original);
                         },
                     });
 
@@ -778,8 +801,6 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         const entryIdentifier = foundry.utils.randomID();
 
         for (const source of addedItems) {
-            setFlagProperty(source, "temporary", true);
-
             if (
                 source.type === "spell" &&
                 !foundry.utils.getProperty(source, "system.location.value") &&
@@ -813,7 +834,9 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
         if (actualAddedItems.length) {
             for (const item of actualAddedItems) {
-                addedItemIds.push(item.id);
+                if (getFlag(item, "temporary")) {
+                    addedItemIds.push(item.id);
+                }
             }
 
             for (const item of actualAddedItems) {

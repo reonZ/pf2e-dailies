@@ -1,3 +1,14 @@
+#
+
+-   this is a system `6.8.0` release
+-   updated the dailies filter validations to be compatible with the new compendium browser
+-   `Custom Dailies`:
+    -   add a `temporary` option to the `addItem` & `addFeat` process helpers
+        -   if set to `false` the item will not be temporary
+    -   add new `replaceFeat` process helper
+        -   it will replace an existing feat on the character by the one provided
+        -   if the original feat had a parent, the new feat will be place as a child to it in the sheet
+
 # 3.15.0
 
 -   the module now uses a migration manager

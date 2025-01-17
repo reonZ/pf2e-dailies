@@ -3,6 +3,7 @@ import {
     ApplicationRenderOptions,
     CharacterPF2e,
     CheckboxData,
+    CompendiumBrowserFeatTab,
     FeatFilters,
     FeatOrFeatureCategory,
     FeatPF2e,
@@ -1094,7 +1095,13 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         const tab = game.pf2e.compendiumBrowser.tabs[item.type as "spell" | "feat"];
         const itemTraits = item.system.traits.value.map((t: string) => t.replace(/^hb_/, ""));
 
-        if (!tab.filterTraits(itemTraits, traits.selected, traits.conjunction)) {
+        if (
+            !(tab as CompendiumBrowserFeatTab)["filterTraits"](
+                itemTraits,
+                traits.selected,
+                traits.conjunction
+            )
+        ) {
             warn("interface.drop.error.wrongTraits");
             return false;
         }
@@ -1129,7 +1136,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
     }
 
     #validateFeat(item: FeatPF2e, filter: FeatFilters) {
-        const { checkboxes, source, traits, level } = filter;
+        const { checkboxes, level } = filter;
 
         if (!item.level.between(level.from, level.to)) {
             this.#dropDataWarning("level", `${level.from}-${level.to}`, String(item.level));
@@ -1184,7 +1191,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
     }
 
     #validateSpell(item: SpellPF2e, filter: SpellFilters) {
-        const { checkboxes, selects } = filter;
+        const { checkboxes } = filter;
 
         const itemRank = String(item.rank);
         const filterRanks = checkboxes.rank.selected;
@@ -1331,7 +1338,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                 for (const select of searchTraits.selected) {
                     const selection =
                         typeof select === "string" ? { value: select, not: undefined } : select;
-                    traitsFilter.selected.push(selection);
+                    traitsFilter.selected.push(selection as any);
                 }
             }
         }
@@ -1343,8 +1350,8 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                 : dropFilter.search.level;
 
             if (searchLevel) {
-                levelFilter.from = searchLevel.min;
-                levelFilter.to = searchLevel.max;
+                levelFilter.from = searchLevel.min ?? 0;
+                levelFilter.to = searchLevel.max ?? 20;
                 levelFilter.isExpanded = true;
             }
         }

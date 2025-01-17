@@ -555,7 +555,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
             const entries = R.pipe(
                 actor.spellcasting.filter(
                     (entry): entry is SpellcastingEntryPF2e<CharacterPF2e> =>
-                        entry.isSpontaneous &&
+                        entry.category === "spontaneous" &&
                         (!options.spontaneous || options.spontaneous.entryId === entry.id)
                 ),
                 R.map((e) => ({

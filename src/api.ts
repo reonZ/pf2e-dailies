@@ -132,7 +132,7 @@ function canCastRank<TPArent extends CharacterPF2e>(actor: TPArent, rank: number
 
     const range = R.range(rank, maxRank + 1) as OneToTen[];
     const entries = actor.spellcasting.filter(
-        (entry): entry is SpellcastingEntryPF2e<TPArent> => entry.isSpontaneous
+        (entry): entry is SpellcastingEntryPF2e<TPArent> => entry.category === "spontaneous"
     );
 
     const nbSlots = R.pipe(

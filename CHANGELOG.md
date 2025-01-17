@@ -1,3 +1,9 @@
+# 3.17.0
+
+-   this is a system `6.8.2` release
+-   updated to be compatible with the last system spellcasting changes
+    -   i am not 100% confident of it all, this would mostly impact staves
+
 # 3.16.0
 
 -   this is a system `6.8.0` release

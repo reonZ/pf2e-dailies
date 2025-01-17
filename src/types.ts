@@ -11,7 +11,6 @@ import {
     SkillSlug,
     SpellcastingSheetDataWithCharges,
     SpellPF2e,
-    ValueAndMax,
 } from "module-helpers";
 
 type Daily<
@@ -51,12 +50,9 @@ type DailyConfigRow = DailyConfigRowRange | DailyConfigCheckbox;
 
 type DailyConfigRowType = "range" | "checkbox";
 
-type DailyConfigRowValue = boolean | number | string | ValueAndMax;
+type DailyConfigRowValue = boolean | number;
 
-type DailyConfigRowBase<
-    TInput extends DailyConfigRowType,
-    TValue extends Exclude<DailyConfigRowValue, ValueAndMax>
-> = {
+type DailyConfigRowBase<TInput extends DailyConfigRowType, TValue extends DailyConfigRowValue> = {
     type: TInput;
     name: string;
     value?: TValue;
@@ -382,8 +378,8 @@ export type {
     Daily,
     DailyActorFlags,
     DailyAfterItemAddedOptions,
-    DailyConfigRow,
     DailyConfigCheckbox,
+    DailyConfigRow,
     DailyConfigRowType,
     DailyConfigRowValue,
     DailyCustom,

@@ -62,16 +62,12 @@ class DailyConfig extends ApplicationV2 {
                     const configs = R.pipe(
                         (R.isFunction(daily.config) && (await daily.config(actor))) || [],
                         R.map((config) => {
-                            config.value ??= (() => {
-                                const value = getFlag<DailyConfigRowValue>(
-                                    actor,
-                                    "config",
-                                    daily.key,
-                                    config.name
-                                );
-
-                                return R.isPlainObject(value) ? value.value : value;
-                            })();
+                            config.value ??= getFlag<DailyConfigRowValue>(
+                                actor,
+                                "config",
+                                daily.key,
+                                config.name
+                            );
 
                             if (config.type === "range") {
                                 config.min ??= 0;

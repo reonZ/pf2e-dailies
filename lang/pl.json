@@ -245,6 +245,7 @@
             "filters": "Włączono Dzienne Aktywności",
             "title": "{actor} - Dzienna konfiguracja",
             "animist": {
+                "lore": "Usuń przyrostek Wiedzy",
                 "lores": "Pokaż podsumowanie Wiedzy",
                 "spells": "Pokaż podsumowanie Zaklęć",
                 "signatures": "Ustaw Zaklęcia Popisowe"

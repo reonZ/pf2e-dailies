@@ -147,7 +147,7 @@ function canCastRank<TPArent extends CharacterPF2e>(actor: TPArent, rank: number
 
 function getAnimistConfigs(actor: CharacterPF2e) {
     return foundry.utils.mergeObject(
-        { lores: true, spells: true, signatures: true },
+        { lore: true, lores: true, spells: true, signatures: true },
         getFlag(actor, "config.dailies.animist") ?? {}
     );
 }

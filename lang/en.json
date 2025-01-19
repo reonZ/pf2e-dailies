@@ -245,6 +245,7 @@
             "filters": "Enabled Dailies",
             "title": "{actor} - Daily Configs",
             "animist": {
+                "lore": "Remove Lore Suffix",
                 "lores": "Show Lores Summary",
                 "spells": "Show Spells Summary",
                 "signatures": "Set Signature Spells"

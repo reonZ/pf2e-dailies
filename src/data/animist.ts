@@ -171,7 +171,7 @@ const animist = createDaily({
                 const lores = splitListString(loresEl?.childNodes[1].textContent?.trim() ?? "");
                 const filteredLores = R.filter(lores, R.isTruthy);
                 for (const lore of filteredLores) {
-                    const name = lore.replace(LORE_STRIP_REGEX, "$1");
+                    const name = animistConfig.lore ? lore.replace(LORE_STRIP_REGEX, "$1") : lore;
                     const loreSource = utils.createLoreSource({ name, rank: loreRank });
 
                     addItem(loreSource);

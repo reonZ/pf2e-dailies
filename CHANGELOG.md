@@ -1,3 +1,11 @@
+# 3.17.1
+
+-   `Apparition Attunement`:
+    -   add a new `Remove Lore Suffix` config, disabling it will prevent the stripping of the suffix by the module
+-   `Prepare a Staff`:
+    -   add a new `Staff Type` select for `Staff Nexus` wizards
+        -   selecting the `Makeshift Staff` option will set the default charges to 0 instead of the regular charges
+
 # 3.17.0
 
 -   this is a system `6.8.2` release

@@ -40,6 +40,7 @@ import { canCastRank, getStaffFlags, setStaffChargesValue } from "../api";
 import { createDaily } from "../daily";
 import {
     ChargesSpellcastingSheetData,
+    DailyRowSelect,
     DailyRowSelectOption,
     DailyRowSelectOptionValue,
 } from "../types";
@@ -244,10 +245,31 @@ const staves = createDaily({
                 unique: uniqueId,
                 options,
             } as const;
-        });
+        }) as (DailyRowSelect<`expend${number}`> | DailyRowSelect<"makeshift">)[];
 
         // @ts-ignore
         rows.unshift(staffRow);
+
+        if (hasStaffNexus) {
+            const makeshiftRow = {
+                type: "select",
+                slug: "makeshift",
+                label: localize("interface.staves.makeshift.label"),
+                options: [
+                    {
+                        value: "yes",
+                        label: localize("interface.staves.makeshift.yes"),
+                    },
+                    {
+                        value: "no",
+                        label: localize("interface.staves.makeshift.no"),
+                    },
+                ],
+            } as const satisfies DailyRowSelect;
+
+            // @ts-ignore
+            rows.unshift(makeshiftRow);
+        }
 
         return rows;
     },
@@ -301,7 +323,13 @@ const staves = createDaily({
         const emptyLabel = localize("interface.staves.empty");
         const expendedSpells: { name: string; rank: ZeroToTen; uuid?: string }[] = [];
         const slotsUpdates: Record<string, Record<string, number>> = {};
-        const expendedRows = R.pipe(rows, R.omit(["staff"]), R.values(), R.filter(R.isTruthy));
+
+        const expendedRows = R.pipe(
+            rows,
+            R.omit(["staff", "makeshift"]),
+            R.values(),
+            R.filter(R.isTruthy)
+        );
 
         for (const preparedPath of expendedRows) {
             const entryId = preparedPath?.split(".")[0];
@@ -361,11 +389,19 @@ const staves = createDaily({
             }
         }
 
+        const isMakeshift = rows.makeshift === "yes";
+        const charges = (isMakeshift ? 0 : custom.maxCharges) + overcharge;
+
+        if (charges === 0) {
+            messages.addRaw(localize("interface.staves.chargless"));
+            return;
+        }
+
         const staffData: dailies.StaffFlags = {
             staffId: staff.id,
             charges: {
-                value: custom.maxCharges + overcharge,
-                max: custom.maxCharges + overcharge,
+                value: charges,
+                max: charges,
             },
             expended: expendedSpells.length > 0,
             spells: staffSpells,
@@ -384,7 +420,9 @@ const staves = createDaily({
 
         setExtraFlags(staffData);
 
-        messages.addGroup("staff", undefined, 45);
+        const groupLabel = localize("interface.staves", isMakeshift ? "makeshift.group" : "group");
+
+        messages.addGroup("staff", groupLabel, 45);
         messages.add("staff", { uuid: staff.uuid });
 
         for (const { name, rank, uuid } of expendedSpells) {

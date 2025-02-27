@@ -96,7 +96,6 @@
                 "feats": "Learned the feats",
                 "scrolls": "Created the temporary scrolls",
                 "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell",
-                "staff": "Has prepared a staff for the day",
                 "blade": "Imbued their spirit into their weapon",
                 "mindsmith": "Has focused their mind into their weapon"
             },
@@ -167,7 +166,15 @@
             },
             "staves": {
                 "empty": "Empty Slot",
-                "flexible": "Flexible Slot"
+                "flexible": "Flexible Slot",
+                "group": "Has prepared a staff for the day",
+                "makeshift": {
+                    "group": "Has prepared a makeshift staff for the day",
+                    "label": "Staff Type",
+                    "yes": "Makeshift Staff",
+                    "no": "Regular Staff"
+                },
+                "chargless": "Tried to charge their staff with good intention alone, nothing happend obviously."
             },
             "rations": {
                 "yes": "Consume ({nb} remaining)",

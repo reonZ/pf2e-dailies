@@ -96,7 +96,6 @@
                 "feats": "Nauczył się atutów",
                 "scrolls": "Utworzył tymczasowe zwoje",
                 "ceremonial": "Przeprowadził rytuał, aby stworzyć nóż ceremonialny nasycony zaklęciem",
-                "staff": "Przygotował kostur na ten dzień",
                 "blade": "Zaszczepił ducha w swojej broni",
                 "mindsmith": "Skupił swój umysł na broni"
             },
@@ -167,7 +166,8 @@
             },
             "staves": {
                 "empty": "Puste miejsce",
-                "flexible": "Elastyczne miejsce"
+                "flexible": "Elastyczne miejsce",
+                "group": "Przygotował kostur na ten dzień"
             },
             "rations": {
                 "yes": "Zużyj ({nb} pozostało)",

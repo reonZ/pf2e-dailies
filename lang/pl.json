@@ -167,7 +167,14 @@
             "staves": {
                 "empty": "Puste miejsce",
                 "flexible": "Elastyczne miejsce",
-                "group": "Przygotował kostur na ten dzień"
+                "group": "Przygotował kostur na ten dzień",
+                "makeshift": {
+                    "group": "Przygotował prowizoryczny kostur na ten dzień",
+                    "label": "Typ kosturu",
+                    "yes": "Prowizoryczny kostur",
+                    "no": "Zwykły kostur"
+                },
+                "chargless": "Próbował naładować swój kostur samymi dobrymi intencjami, oczywiście nic się nie stało."
             },
             "rations": {
                 "yes": "Zużyj ({nb} pozostało)",

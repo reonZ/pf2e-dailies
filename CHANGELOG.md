@@ -1,3 +1,8 @@
+# 3.17.2
+
+-   `Prepare a Staff`:
+-   fix new makeshift select not showing up to wizards lower than lv 8
+
 # 3.17.1
 
 -   `Apparition Attunement`:

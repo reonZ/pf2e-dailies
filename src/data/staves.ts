@@ -191,11 +191,11 @@ const staves = createDaily({
         }
 
         const level = actor.level;
-        const hasStaffNexus = level >= 8 && hasItemWithSourceId(actor, STAFF_NEXUS, "feat");
+        const hasStaffNexus = hasItemWithSourceId(actor, STAFF_NEXUS, "feat");
         const options: DailyRowSelectOption[] = [{ value: "", label: "" }];
         const flexibleLabel = localize("interface.staves.flexible");
         const emptyLabel = localize("interface.staves.empty");
-        const nbExpends = hasStaffNexus ? (level >= 16 ? 3 : 2) : 1;
+        const nbExpends = hasStaffNexus && level >= 8 ? (level >= 16 ? 3 : 2) : 1;
 
         for (const entry of Object.values(preparedEntries)) {
             options.push({ group: entry.name });

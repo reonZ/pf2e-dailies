@@ -1,3 +1,8 @@
+# 3.17.3
+
+-   `Prepare a Staff`:
+    -   fix staff with 0 charges not being added
+
 # 3.17.2
 
 -   `Prepare a Staff`:

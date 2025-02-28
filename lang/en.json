@@ -173,8 +173,7 @@
                     "label": "Staff Type",
                     "yes": "Makeshift Staff",
                     "no": "Regular Staff"
-                },
-                "chargless": "Tried to charge their staff with good intention alone, nothing happend obviously."
+                }
             },
             "rations": {
                 "yes": "Consume ({nb} remaining)",

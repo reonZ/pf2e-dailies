@@ -392,11 +392,6 @@ const staves = createDaily({
         const isMakeshift = rows.makeshift === "yes";
         const charges = (isMakeshift ? 0 : custom.maxCharges) + overcharge;
 
-        if (charges === 0) {
-            messages.addRaw(localize("interface.staves.chargless"));
-            return;
-        }
-
         const staffData: dailies.StaffFlags = {
             staffId: staff.id,
             charges: {

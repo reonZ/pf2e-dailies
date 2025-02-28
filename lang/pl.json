@@ -173,8 +173,7 @@
                     "label": "Typ kosturu",
                     "yes": "Prowizoryczny kostur",
                     "no": "Zwykły kostur"
-                },
-                "chargless": "Próbował naładować swój kostur samymi dobrymi intencjami, oczywiście nic się nie stało."
+                }
             },
             "rations": {
                 "yes": "Zużyj ({nb} pozostało)",

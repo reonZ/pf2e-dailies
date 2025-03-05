@@ -86,7 +86,9 @@ const familiar = createDaily({
         );
 
         if (abilities.length) {
-            await familiar.createEmbeddedDocuments("Item", abilities);
+            for (const ability of abilities) {
+                await familiar.createEmbeddedDocuments("Item", [ability]);
+            }
 
             for (const message of messageList) {
                 messages.add("familiar", message);

@@ -1,3 +1,11 @@
+# 3.18.0
+
+-   `Familiar Abilities`:
+    -   add `Fast Movement` to the list of non-unique abilities
+    -   now add abilities one at a time to the familiar
+        -   which makes it possible to pick abilities related to each other in order and have their `ChoiceSet` rule element trigger
+            -   e.g. picking `Flier` and then `Fast Movement (Fly)`
+
 # 3.17.3
 
 -   `Prepare a Staff`:

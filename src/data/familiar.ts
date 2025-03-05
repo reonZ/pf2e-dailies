@@ -14,7 +14,10 @@ import { HomebrewDailies } from "../apps/homebrew";
 import { createDaily } from "../daily";
 import { DailyMessageOptions } from "../types";
 
-const SKIP_UNIQUES = ["jevzf9JbJJibpqaI"];
+const SKIP_UNIQUES = [
+    "jevzf9JbJJibpqaI", // skilled
+    "BXssJhTJjKrfojwG", // fast movement
+];
 
 function getFamiliarAbilityCount(actor: CharacterPF2e) {
     const max = actor.attributes.familiarAbilities.value;

@@ -1,3 +1,14 @@
+# 3.19.0
+
+-   `Prepare a Staff`:
+    -   now support the `Runelord` class feature and dedication
+    -   the `Staff Type` row has been renamed to `Category`
+        -   the select is filled with different options depending on if the character
+            -   has the `Staff Nexus` feature
+            -   has the `Runelord` class feature or dedication
+    -   fix error when expending an empty slot on a character that never had any spell prepared on that rank
+    -   fix multiple prepared spells from the same rank not all being expended
+
 # 3.18.0
 
 -   `Familiar Abilities`:

@@ -167,13 +167,18 @@
             "staves": {
                 "empty": "Puste miejsce",
                 "flexible": "Elastyczne miejsce",
-                "group": "Przygotował kostur na ten dzień",
-                "makeshift": {
-                    "group": "Przygotował prowizoryczny kostur na ten dzień",
-                    "label": "Typ kosturu",
-                    "yes": "Prowizoryczny kostur",
-                    "no": "Zwykły kostur"
-                }
+                "group": {
+                    "prepared": "Has prepared a {type} for the day",
+                    "merged": "Has merged a {type} to their bonded weapon for the day",
+                    "bond": "Has prepared their bonded weapon for the day"
+                },
+                "staff": "Kosturu",
+                "type": "Category",
+                "bond": "Runelord Bond Alone",
+                "mergedshift": "Merged with Makeshift Staff",
+                "merged": "Merged with Regular Staff",
+                "makeshift": "Prowizoryczny kostur",
+                "regular": "Zwykły kostur"
             },
             "rations": {
                 "yes": "Zużyj ({nb} pozostało)",

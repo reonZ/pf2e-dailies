@@ -168,15 +168,15 @@
                 "empty": "Puste miejsce",
                 "flexible": "Elastyczne miejsce",
                 "group": {
-                    "prepared": "Has prepared a {type} for the day",
-                    "merged": "Has merged a {type} to their bonded weapon for the day",
-                    "bond": "Has prepared their bonded weapon for the day"
+                    "prepared": "Przygotował {type} na ten dzień",
+                    "merged": "Połączył {type} ze swoją bronią związaną na dany dzień",
+                    "bond": "Przygotował swoją broń na ten dzień"
                 },
-                "staff": "Kosturu",
-                "type": "Category",
-                "bond": "Runelord Bond Alone",
-                "mergedshift": "Merged with Makeshift Staff",
-                "merged": "Merged with Regular Staff",
+                "staff": "Kostur",
+                "type": "Kategoria",
+                "bond": "Samotna więź Władcy Run",
+                "mergedshift": "Połączono z Prowizorycznym kosturem",
+                "merged": "Połączono ze Zwykłym kosturem",
                 "makeshift": "Prowizoryczny kostur",
                 "regular": "Zwykły kostur"
             },

@@ -1,4 +1,4 @@
-import { CharacterPF2e, ItemPF2e, R, error, getSetting } from "module-helpers";
+import { CharacterPF2e, ItemPF2e, R, error, getSetting, isSupressedFeat } from "module-helpers";
 import { createDaily } from "./daily";
 import { ancestralLongevity } from "./data/ancestral-longevity";
 import { animist } from "./data/animist";
@@ -274,6 +274,10 @@ async function getDailies(actor: CharacterPF2e) {
 
     await Promise.all(
         actor.items.map((item) => {
+            if (isSupressedFeat(item)) {
+                return;
+            }
+
             const sourceId = item._stats.compendiumSource ?? item.sourceId;
 
             if (!sourceId || (item.isOfType("physical") && item.isInvested === false)) {

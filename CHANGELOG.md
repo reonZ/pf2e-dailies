@@ -1,12 +1,12 @@
 # 3.20.0
 
--   the module now make sure to not account for supressed feats
+-   the module now make sure to not account for suppressed feats
 -   `Prepare a Staff`:
     -   revisited the implementation of `Runelord` support
         -   check for the existence of one of the sin feats present on the character
         -   check for at least one non-staff weapon present in the character's inventory
             -   a list of those weapons will be used to select the bonded weapon
-            -   the selected bond will be the one required to be equiped to cast spells instead of the staff (if merged to one)
+            -   the selected bond will be the one required to be equipped to cast spells instead of the staff (if merged to one)
         -   allow the preparation of the staff even if the character doesn't own a staff (as long as the two checks above are met)
         -   parse the sin feat for its spells and add them to the staff spellcasting entry (potentially merged with staff spells)
 

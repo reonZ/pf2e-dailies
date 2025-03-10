@@ -460,9 +460,12 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
 
                 messageSource.whisper;
 
-                return getDocumentClass("ChatMessage").create(messageSource, {
-                    renderSheet: false,
-                });
+                return getDocumentClass("ChatMessage").create(
+                    messageSource as ChatMessageCreateData<ChatMessagePF2e>,
+                    {
+                        renderSheet: false,
+                    }
+                );
             }
         }
 

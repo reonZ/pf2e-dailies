@@ -126,7 +126,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         },
     };
 
-    static #openConfigs(this: DailyInterface, event: PointerEvent, target: HTMLElement) {
+    static async #openConfigs(this: DailyInterface, event: PointerEvent, target: HTMLElement) {
         if (this.#settingsApp) {
             this.#settingsApp.bringToFront();
             return;

@@ -9,6 +9,7 @@ import {
     error,
     ErrorPF2e,
     getActorMaxRank,
+    getItemWithSourceId,
     getRankLabel,
     getUuidFromInlineMatch,
     hasItemWithSourceId,
@@ -30,6 +31,7 @@ import {
     SpellcastingSlotGroup,
     SpellCollection,
     SpellPF2e,
+    SpellSource,
     Statistic,
     subLocalize,
     waitDialog,
@@ -70,34 +72,29 @@ const i18n = subLocalize("interface.staves");
 
 const KINETIC_ACTIVATION = "Compendium.pf2e.feats-srd.Item.NV9H39kbkbjhAK6X";
 const STAFF_NEXUS = "Compendium.pf2e.classfeatures.Item.Klb35AwlkNrq1gpB";
-const RUNELORD = [
-    "Compendium.pf2e.classfeatures.Item.HYTaibaCGE85rhbZ", // class feature
-    "Compendium.pf2e.feats-srd.Item.mz2x4HFrWT8usbEL", // dedication
+
+const RUNELORD_SINS = [
+    "Compendium.pf2e.classfeatures.Item.Fh5Khtx5bgGpBeOu", // envy
+    "Compendium.pf2e.classfeatures.Item.hzATJ1FV3lTPgeG9", // gluttony
+    "Compendium.pf2e.classfeatures.Item.COMhWWNBJOdaJqp7", // greed
+    "Compendium.pf2e.classfeatures.Item.MpZ0sdwMJ8fdZmtR", // lust
+    "Compendium.pf2e.classfeatures.Item.GI09dKNZVCPdSGZC", // pride
+    "Compendium.pf2e.classfeatures.Item.cz9fwc6KSkqxD3Nn", // sloth
+    "Compendium.pf2e.classfeatures.Item.wtPywk3wqEg3iYOP", // wrath
 ];
 
 const UUID_REGEX = /@(uuid|compendium)\[([a-z0-9\._-]+)\]/gi;
 const LABEL_REGEX = /\d+/;
 
-function isStaff(item: ItemPF2e) {
-    const trait = item.isOfType("weapon") ? "magical" : "coda";
-    const traits = item.system.traits?.value;
-    return traits?.includes("staff") && traits.includes(trait);
-}
-
-function getStaves(actor: CharacterPF2e) {
-    return [
-        ...actor.itemTypes.weapon.filter(isStaff),
-        ...actor.itemTypes.equipment.filter(isStaff),
-    ];
-}
-
-function hasStaves(actor: CharacterPF2e) {
-    return actor.itemTypes.weapon.some(isStaff) || actor.itemTypes.equipment.some(isStaff);
-}
-
 const staves = createDaily({
     key: "staves",
-    condition: (actor) => hasStaves(actor),
+    condition: (actor) => {
+        return (
+            actor.itemTypes.weapon.some(isStaff) ||
+            actor.itemTypes.equipment.some(isStaff) ||
+            (!!getRunelordSin(actor) && getPotentialBonds(actor).length > 0)
+        );
+    },
     prepare: (actor) => {
         const entries = actor.spellcasting.spellcastingFeatures;
 
@@ -171,34 +168,90 @@ const staves = createDaily({
             );
         }
 
-        return { entries, maxCharges, preparedEntries, activationType };
+        const runelordSin = getRunelordSin(actor);
+
+        return { entries, maxCharges, preparedEntries, activationType, runelordSin };
     },
     rows: (actor, items, custom) => {
         if (!custom.entries) {
             return [];
         }
 
-        const staves = getStaves(actor).map((staff) => ({
-            value: staff.id,
-            label: staff.name,
-        }));
+        const rows = [] as (
+            | DailyRowSelect<`expend${number}`>
+            | DailyRowSelect<"type">
+            | DailyRowSelect<"staff">
+            | DailyRowSelect<"bond">
+        )[];
 
-        const staffRow = {
-            type: "select",
-            slug: "staff",
-            label: "PF2E.Weapon.Base.staff",
-            options: staves,
-        } as const;
+        const isRunelord = !!custom.runelordSin;
+        const hasStaffNexus = hasItemWithSourceId(actor, STAFF_NEXUS, "feat");
+
+        if (isRunelord) {
+            const weapons = getPotentialBonds(actor).map((weapon): SelectOption => {
+                return { value: weapon.id, label: weapon.name };
+            });
+
+            rows.push({
+                type: "select",
+                slug: "bond",
+                label: i18n("bond"),
+                options: weapons,
+            });
+        }
+
+        const staves: SelectOptions = [
+            ...actor.itemTypes.weapon.filter(isStaff),
+            ...actor.itemTypes.equipment.filter(isStaff),
+        ].map((staff) => {
+            return { value: staff.id, label: staff.name };
+        });
+
+        if (staves.length) {
+            rows.push({
+                type: "select",
+                slug: "staff",
+                label: "PF2E.Weapon.Base.staff",
+                options: staves,
+            });
+        }
+
+        if (hasStaffNexus || isRunelord) {
+            const options: string[] = [];
+
+            if (isRunelord) {
+                options.push("bond");
+
+                if (staves.length) {
+                    if (hasStaffNexus) {
+                        options.push("mergedshift");
+                    }
+
+                    options.push("merged");
+                }
+            } else {
+                options.push("makeshift", "regular");
+            }
+
+            const typeRow = {
+                type: "select",
+                slug: "type",
+                label: i18n("type"),
+                options: options.map((value) => {
+                    return { value, label: i18n(value) };
+                }),
+            } as const satisfies DailyRowSelect;
+
+            rows.push(typeRow);
+        }
 
         const preparedEntries = Object.values(custom.preparedEntries);
 
         if (!preparedEntries.length) {
-            return [staffRow];
+            return rows;
         }
 
         const level = actor.level;
-        const hasStaffNexus = hasItemWithSourceId(actor, STAFF_NEXUS, "feat");
-        const isRunelord = hasItemWithSourceId(actor, RUNELORD, "feat");
         const options: DailyRowSelectOption[] = [{ value: "", label: "" }];
         const flexibleLabel = i18n("flexible");
         const emptyLabel = i18n("empty");
@@ -242,93 +295,33 @@ const staves = createDaily({
         }
 
         const uniqueId = foundry.utils.randomID();
-        const rows = R.range(1, nbExpends + 1).map((i) => {
-            return {
-                type: "select",
-                slug: `expend${i}`,
-                save: false,
-                empty: true,
-                label: localize("label.expend", { nb: i }),
-                unique: uniqueId,
-                options,
-            } as const;
-        }) as (
-            | DailyRowSelect<`expend${number}`>
-            | DailyRowSelect<"type">
-            | DailyRowSelect<"staff">
-        )[];
 
-        rows.unshift(staffRow);
-
-        if (hasStaffNexus || isRunelord) {
-            const typeRow = {
-                type: "select",
-                slug: "type",
-                label: i18n("type"),
-                options: [] as DailyRowSelectOption[],
-            } as const satisfies DailyRowSelect;
-
-            if (isRunelord) {
-                typeRow.options.push(
-                    ...["bond", "mergedshift", "merged"].map((value) => {
-                        return { value, label: i18n(value) };
-                    })
-                );
-            } else {
-                typeRow.options.push(
-                    ...["makeshift", "regular"].map((value) => {
-                        return { value, label: i18n(value) };
-                    })
-                );
-            }
-
-            rows.unshift(typeRow);
-        }
+        rows.push(
+            ...R.range(1, nbExpends + 1).map((i) => {
+                return {
+                    type: "select",
+                    slug: `expend${i}`,
+                    save: false,
+                    empty: true,
+                    label: localize("label.expend", { nb: i }),
+                    unique: uniqueId,
+                    options,
+                } as const;
+            })
+        );
 
         return rows;
     },
     process: async ({ actor, rows, custom, messages, updateItem, setExtraFlags }) => {
-        const staff = actor.inventory.get(rows.staff);
-        if (!custom.entries || !staff) return;
+        const sin = custom.runelordSin;
+        const bond = sin ? actor.inventory.get(rows.bond) : null;
+        const staff = !sin || rows.type !== "bond" ? actor.inventory.get(rows.staff) : null;
+        if (!custom.entries || (!staff && !bond)) return;
 
-        const descriptionEl = createHTMLElement("div", { innerHTML: staff.description });
-        const spellList = descriptionEl.querySelectorAll("ul");
-        if (!spellList.length) return;
-
-        const spellRanksList = htmlQueryAll(spellList[spellList.length - 1], "li");
-        const staffSpellData = R.pipe(
-            spellRanksList,
-            R.flatMap((SpellRankEL) => {
-                const label = SpellRankEL.firstChild as HTMLElement;
-                const rank = Number(label.textContent?.match(LABEL_REGEX)?.[0] || "0") as ZeroToTen;
-                const text = SpellRankEL.textContent ?? "";
-                const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
-
-                return uuids.map((uuid) => ({ rank, uuid }));
-            }),
-            R.filter(({ rank }) => rank <= custom.maxCharges)
-        );
-
-        const staffSpells = R.filter(
-            await Promise.all(
-                staffSpellData.map(async ({ rank, uuid }) => {
-                    const spell = await fromUuid(uuid);
-                    if (!isInstanceOf(spell, "SpellPF2e")) return;
-
-                    return foundry.utils.mergeObject(
-                        spell._source,
-                        {
-                            _id: foundry.utils.randomID(),
-                            system: { location: { value: null, heightenedLevel: rank } },
-                        },
-                        { inplace: false }
-                    );
-                })
-            ),
-            R.isTruthy
-        );
-
-        if (!staffSpells.length) return;
+        const maxCharges = custom.maxCharges;
+        const sinSpells = await getSpells(sin, maxCharges);
+        const staffSpells = await getSpells(staff, maxCharges);
+        if (!sinSpells.length && !staffSpells.length) return;
 
         let overcharge = 0;
         const spellcasting = actor.spellcasting!;
@@ -340,7 +333,7 @@ const staves = createDaily({
 
         const expendedRows = R.pipe(
             rows,
-            R.omit(["staff", "type"]),
+            R.omit(["staff", "type", "bond"]),
             R.values(),
             R.filter(R.isTruthy)
         );
@@ -414,17 +407,17 @@ const staves = createDaily({
         }
 
         const charges =
-            (rows.type === "makeshift" ? 0 : custom.maxCharges * (rows.type === "merged" ? 2 : 1)) +
+            (rows.type === "makeshift" ? 0 : maxCharges * (rows.type === "merged" ? 2 : 1)) +
             overcharge;
 
         const staffData: dailies.StaffFlags = {
-            staffId: staff.id,
+            staffId: bond?.id ?? staff!.id,
             charges: {
                 value: charges,
                 max: charges,
             },
             expended: expendedSpells.length > 0,
-            spells: staffSpells,
+            spells: [...sinSpells, ...staffSpells],
         };
 
         if (custom.activationType) {
@@ -451,7 +444,14 @@ const staves = createDaily({
             : "prepared";
 
         messages.addGroup("staff", i18n("group", groupLabel, { type: staffType }), 45);
-        messages.add("staff", { uuid: staff.uuid });
+
+        if (bond) {
+            messages.add("staff", { uuid: bond.uuid });
+        }
+
+        if (staff) {
+            messages.add("staff", { uuid: staff.uuid });
+        }
 
         for (const { name, rank, uuid } of expendedSpells) {
             const rankLabel = utils.getSpellRankLabel(rank);
@@ -778,8 +778,62 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
     }
 }
 
+function isStaff(item: ItemPF2e) {
+    const trait = item.isOfType("weapon") ? "magical" : "coda";
+    const traits = item.system.traits?.value;
+    return traits?.includes("staff") && traits.includes(trait);
+}
+
+function getRunelordSin(actor: CharacterPF2e) {
+    return getItemWithSourceId(actor, RUNELORD_SINS, "feat");
+}
+
+function getPotentialBonds(actor: CharacterPF2e) {
+    return actor.itemTypes.weapon.filter((weapon) => !isStaff(weapon));
+}
+
+async function getSpells(item: Maybe<ItemPF2e>, maxCharges: number): Promise<SpellSource[]> {
+    if (!item) return [];
+
+    const descriptionEl = createHTMLElement("div", { innerHTML: item.description });
+    const spellList = descriptionEl.querySelectorAll("ul");
+    if (!spellList.length) return [];
+
+    const spellRanksList = htmlQueryAll(spellList[spellList.length - 1], "li");
+    const staffSpellData = R.pipe(
+        spellRanksList,
+        R.flatMap((SpellRankEL) => {
+            const label = SpellRankEL.firstChild as HTMLElement;
+            const rank = Number(label.textContent?.match(LABEL_REGEX)?.[0] || "0") as ZeroToTen;
+            const text = SpellRankEL.textContent ?? "";
+            const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
+
+            return uuids.map((uuid) => ({ rank, uuid }));
+        }),
+        R.filter(({ rank }) => rank <= maxCharges)
+    );
+
+    const spells = await Promise.all(
+        staffSpellData.map(async ({ rank, uuid }) => {
+            const spell = await fromUuid(uuid);
+            if (!isInstanceOf(spell, "SpellPF2e")) return;
+
+            return foundry.utils.mergeObject(
+                spell._source,
+                {
+                    _id: foundry.utils.randomID(),
+                    system: { location: { value: null, heightenedLevel: rank } },
+                },
+                { inplace: false }
+            );
+        })
+    );
+
+    return R.filter(spells, R.isTruthy);
+}
+
 interface StaffSpellcasting {
     system: SpellcastingEntrySystemData;
 }
 
-export { hasStaves, StaffSpellcasting, staves };
+export { StaffSpellcasting, staves };

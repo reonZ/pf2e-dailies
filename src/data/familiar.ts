@@ -5,6 +5,7 @@ import {
     R,
     ValueAndMax,
     getFlag,
+    getSource,
     localeCompare,
     localize,
     setFlagProperty,
@@ -77,7 +78,7 @@ const familiar = createDaily({
                 const item = await fromUuid<ItemPF2e>(value);
                 if (!item?.isOfType("action")) return;
 
-                const source = item.toObject();
+                const source = getSource(item);
                 setFlagProperty(source, "temporary", true);
 
                 abilities.push(source);

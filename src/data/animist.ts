@@ -2,6 +2,7 @@ import {
     createHTMLElement,
     getActorMaxRank,
     getFlag,
+    getSource,
     getUuidFromInlineMatch,
     htmlQuery,
     ItemPF2e,
@@ -162,7 +163,7 @@ const animist = createDaily({
 
                 nbApparitions++;
 
-                const itemSource = item.toObject();
+                const itemSource = getSource(item);
                 addFeat(itemSource, parent);
 
                 const descriptionEl = createHTMLElement("div", { innerHTML: item.description });

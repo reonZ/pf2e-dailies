@@ -71,7 +71,7 @@ const BUILTINS_DAILIES: Daily[] = [
     createResistanceDaily(
         "elementalist", // Elementalist Dedication
         "Compendium.pf2e.feats-srd.Item.tx9pkrpmtqe4FnvS",
-        ["air", "earth", "fire", "water"],
+        ["air", "earth", "fire", "water", "wood", "metal"],
         "half"
     ),
     createResistanceDaily(

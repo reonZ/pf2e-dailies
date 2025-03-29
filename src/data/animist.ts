@@ -181,7 +181,7 @@ const animist = createDaily({
                     }
                 }
 
-                const spellsEl = loresEl?.nextElementSibling as HTMLElement | undefined;
+                const spellsEl = htmlQuery(descriptionEl, "ul");
                 if (spellsEl) {
                     UUID_REGEX.lastIndex = 0;
 

@@ -1,3 +1,9 @@
+# 3.21.0
+
+-   this is a system `6.11.1` release
+-   `Apparition Attunement`:
+    -   make it compatible with the new apparitions description format
+
 # 3.20.0
 
 -   the module now make sure to not account for suppressed feats

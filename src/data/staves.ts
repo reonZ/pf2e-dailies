@@ -11,10 +11,9 @@ import {
     getActorMaxRank,
     getItemWithSourceId,
     getRankLabel,
-    getUuidFromInlineMatch,
+    getSpellsDataFromDescriptionList,
     hasItemWithSourceId,
     htmlQuery,
-    htmlQueryAll,
     isInstanceOf,
     ItemPF2e,
     localize,
@@ -82,9 +81,6 @@ const RUNELORD_SINS = [
     "Compendium.pf2e.classfeatures.Item.cz9fwc6KSkqxD3Nn", // sloth
     "Compendium.pf2e.classfeatures.Item.wtPywk3wqEg3iYOP", // wrath
 ];
-
-const UUID_REGEX = /@(uuid|compendium)\[([a-z0-9\._-]+)\]/gi;
-const LABEL_REGEX = /\d+/;
 
 const staves = createDaily({
     key: "staves",
@@ -796,25 +792,13 @@ async function getSpells(item: Maybe<ItemPF2e>, maxCharges: number): Promise<Spe
     if (!item) return [];
 
     const descriptionEl = createHTMLElement("div", { innerHTML: item.description });
-    const spellList = descriptionEl.querySelectorAll("ul");
-    if (!spellList.length) return [];
+    const spellLists = descriptionEl.querySelectorAll("ul");
+    const spellList = spellLists[spellLists.length - 1];
+    if (!spellList) return [];
 
-    const spellRanksList = htmlQueryAll(spellList[spellList.length - 1], "li");
-    const staffSpellData = R.pipe(
-        spellRanksList,
-        R.flatMap((SpellRankEL) => {
-            const label = SpellRankEL.firstChild as HTMLElement;
-            const rank = Number(label.textContent?.match(LABEL_REGEX)?.[0] || "0") as ZeroToTen;
-            const text = SpellRankEL.textContent ?? "";
-            const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
-
-            return uuids.map((uuid) => ({ rank, uuid }));
-        }),
-        R.filter(({ rank }) => rank <= maxCharges)
-    );
-
+    const spellsData = getSpellsDataFromDescriptionList(spellList, maxCharges);
     const spells = await Promise.all(
-        staffSpellData.map(async ({ rank, uuid }) => {
+        spellsData.map(async ({ rank, uuid }) => {
             const spell = await fromUuid(uuid);
             if (!isInstanceOf(spell, "SpellPF2e")) return;
 

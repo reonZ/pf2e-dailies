@@ -6,9 +6,9 @@ import {
     ValueAndMax,
     getFlag,
     getSource,
-    localeCompare,
     localize,
     setFlagProperty,
+    sortByLocaleCompare,
 } from "module-helpers";
 import { isTemporary } from "../api";
 import { HomebrewDailies } from "../apps/homebrew";
@@ -54,7 +54,7 @@ const familiar = createDaily({
             });
         }
 
-        options.sort((a, b) => localeCompare(a.label, b.label));
+        sortByLocaleCompare(options, "label");
 
         return R.range(1, nbAbilities + 1).map((i) => ({
             type: "select",

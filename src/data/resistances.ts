@@ -1,4 +1,4 @@
-import { ResistanceType } from "module-helpers";
+import { ResistanceType, sortByLocaleCompare } from "module-helpers";
 import { createDaily } from "../daily";
 import { utils, type SimplifiableRuleValue } from "../utils";
 
@@ -24,6 +24,8 @@ function createResistanceDaily(
                 value,
                 label: utils.getResistanceLabel(value, true),
             }));
+
+            sortByLocaleCompare(options, "label");
 
             return [
                 {

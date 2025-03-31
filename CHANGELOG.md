@@ -1,3 +1,9 @@
+# 3.21.1
+
+-   `Elementalist Dedication`:
+    -   add missing `wood` and `metal` resistances
+-   now sort resistance related select options
+
 # 3.21.0
 
 -   this is a system `6.11.1` release

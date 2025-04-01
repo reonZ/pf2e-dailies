@@ -1,4 +1,4 @@
-import { CharacterPF2e, ItemPF2e, OneToFour, SkillSlug } from "module-helpers";
+import { OneToFour, SkillSlug } from "module-helpers";
 import { createDaily } from "../daily";
 import { utils } from "../utils";
 
@@ -11,39 +11,25 @@ type CustomRow = {
     }[];
 };
 
-const tomeUUID = "Compendium.pf2e.classfeatures.Item.MyN1cQgE0HsLF20e";
-
-function itemCondition(actor: CharacterPF2e, item: ItemPF2e): Promisable<boolean> {
-    const selected = utils.getChoiSetRuleSelection(item);
-    return selected ? actor.items.get(selected)?.sourceId === tomeUUID : false;
-}
-
 const thaumaturgeTome = createDaily({
     key: "thaumaturge-tome",
     items: [
         {
             slug: "tome", // Tome
-            uuid: tomeUUID,
+            uuid: "Compendium.pf2e.classfeatures.Item.MyN1cQgE0HsLF20e",
             required: true,
         },
         {
-            slug: "adept", // Implement Adept
-            uuid: "Compendium.pf2e.classfeatures.Item.Obm4ItMIIr0whYeO",
-            condition: itemCondition,
-        },
-        {
-            slug: "second", // Second Adept
-            uuid: "Compendium.pf2e.classfeatures.Item.ZEUxZ4Ta1kDPHiq5",
-            condition: itemCondition,
+            slug: "adept", // Adept Benefit (Tome)
+            uuid: "Compendium.pf2e.classfeatures.Item.gR8ODlO6au0laXo4",
         },
         {
             slug: "intense", // Intense Implement
             uuid: "Compendium.pf2e.feats-srd.Item.yRRM1dsY6jakEMaC",
         },
         {
-            slug: "paragon", // Implement Paragon
-            uuid: "Compendium.pf2e.classfeatures.Item.QEtgbY8N2V4wTbsI",
-            condition: itemCondition,
+            slug: "paragon", // Paragon Benefit (Tome)
+            uuid: "Compendium.pf2e.classfeatures.Item.IGv5wS17AAi0U87W",
         },
     ],
     prepare: (actor, items) => {
@@ -80,7 +66,7 @@ const thaumaturgeTome = createDaily({
             setCustom(4, 4);
         }
         // Intense Implement or Second Adept or Implement Adept
-        else if (items.intense || items.adept || items.second) {
+        else if (items.intense || items.adept) {
             if (actorLevel >= 9) {
                 setCustom(3, 3);
             } else {

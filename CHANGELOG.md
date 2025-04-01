@@ -1,3 +1,9 @@
+# 3.21.2
+
+-   `Thaumaturge Tome`:
+    -   fix adept and paragon functionalities not working with the new system class features
+        -   this means that old features will no longer work with the module and need to be replaced with the new ones
+
 # 3.21.1
 
 -   `Elementalist Dedication`:

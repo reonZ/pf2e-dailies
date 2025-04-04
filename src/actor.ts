@@ -167,22 +167,29 @@ function onRenderNPCSheetPF2e(sheet: NPCSheetPF2e, $html: JQuery) {
     const inventoryTab = htmlQuery(html, ".tab[data-tab='inventory'] .inventory-list");
     if (inventoryTab) {
         for (const staff of getStaves(actor)) {
-            const generateAttackBtn = htmlQuery(
-                inventoryTab,
-                `[data-item-id="${staff.id}"] .item-controls [data-action="generate-attack"]`
-            );
-            if (!generateAttackBtn) continue;
+            const controls = htmlQuery(inventoryTab, `[data-item-id="${staff.id}"] .item-controls`);
+            if (!controls) continue;
 
-            const generateStaffBtn = createHTMLElement("a", {
+            const staffBtn = createHTMLElement("a", {
                 dataset: {
                     tooltip: MODULE.path("sheet.generate.tooltip"),
                 },
                 innerHTML: "<i class='fa-solid fa-wand-magic fa-fw'></i>",
             });
 
-            generateStaffBtn.addEventListener("click", () => generateNpcStaff(actor, staff));
+            staffBtn.addEventListener("click", () => generateNpcStaff(actor, staff));
 
-            generateAttackBtn.replaceWith(generateStaffBtn);
+            const generateBtn = htmlQuery(controls, `[data-action="generate-attack"]`);
+            if (generateBtn) {
+                generateBtn.replaceWith(staffBtn);
+            } else {
+                const editBtn = htmlQuery(controls, "[data-action='edit-item']");
+                if (editBtn) {
+                    editBtn.before(staffBtn);
+                } else {
+                    controls.prepend(staffBtn);
+                }
+            }
         }
     }
 }

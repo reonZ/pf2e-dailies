@@ -6,18 +6,21 @@ import {
     createHTMLElement,
     CreaturePF2e,
     elementDataset,
+    EquipmentPF2e,
     error,
     ErrorPF2e,
     getActorMaxRank,
     getItemWithSourceId,
     getRankLabel,
-    getSpellsDataFromDescriptionList,
+    getUuidFromInlineMatch,
     hasItemWithSourceId,
     htmlQuery,
+    htmlQueryAll,
     isInstanceOf,
     ItemPF2e,
     localize,
     MagicTradition,
+    NPCPF2e,
     OneToFour,
     OneToTen,
     Predicate,
@@ -35,6 +38,7 @@ import {
     subLocalize,
     waitDialog,
     warn,
+    WeaponPF2e,
     ZeroToTen,
 } from "module-helpers";
 import { canCastRank, getStaffFlags, setStaffChargesValue } from "../api";
@@ -47,25 +51,8 @@ import {
 } from "../types";
 import { utils } from "../utils";
 
-type FlexiblePreparedEntryGroup = {
-    id: string;
-    name: string;
-    slots: {
-        rank: ZeroToTen;
-        value: number;
-        max: number;
-    }[];
-};
-
-type PreparedEntryGroup = {
-    id: string;
-    name: string;
-    spells: {
-        name?: string;
-        rank: ZeroToTen;
-        index: number;
-    }[];
-};
+const UUID_REGEX = /@(uuid|compendium)\[([a-z0-9\._-]+)\]/gi;
+const LABEL_REGEX = /\d+/;
 
 const i18n = subLocalize("interface.staves");
 
@@ -196,10 +183,7 @@ const staves = createDaily({
             });
         }
 
-        const staves: SelectOptions = [
-            ...actor.itemTypes.weapon.filter(isStaff),
-            ...actor.itemTypes.equipment.filter(isStaff),
-        ].map((staff) => {
+        const staves: SelectOptions = getStaves(actor).map((staff) => {
             return { value: staff.id, label: staff.name };
         });
 
@@ -780,6 +764,13 @@ function isStaff(item: ItemPF2e) {
     return traits?.includes("staff") && traits.includes(trait);
 }
 
+function getStaves<TActor extends CharacterPF2e | NPCPF2e>(actor: TActor): ActorStaff<TActor>[] {
+    return [
+        ...actor.itemTypes.weapon.filter(isStaff),
+        ...actor.itemTypes.equipment.filter(isStaff),
+    ] as ActorStaff<TActor>[];
+}
+
 function getRunelordSin(actor: CharacterPF2e) {
     return getItemWithSourceId(actor, RUNELORD_SINS, "feat");
 }
@@ -788,7 +779,11 @@ function getPotentialBonds(actor: CharacterPF2e) {
     return actor.itemTypes.weapon.filter((weapon) => !isStaff(weapon));
 }
 
-async function getSpells(item: Maybe<ItemPF2e>, maxCharges: number): Promise<SpellSource[]> {
+async function getSpells(
+    item: Maybe<ItemPF2e>,
+    maxCharges: number,
+    entryId: string | null = null
+): Promise<SpellSource[]> {
     if (!item) return [];
 
     const descriptionEl = createHTMLElement("div", { innerHTML: item.description });
@@ -796,7 +791,7 @@ async function getSpells(item: Maybe<ItemPF2e>, maxCharges: number): Promise<Spe
     const spellList = spellLists[spellLists.length - 1];
     if (!spellList) return [];
 
-    const spellsData = getSpellsDataFromDescriptionList(spellList, maxCharges);
+    const spellsData = getSpellsDataFromItemDescription(item, maxCharges);
     const spells = await Promise.all(
         spellsData.map(async ({ rank, uuid }) => {
             const spell = await fromUuid(uuid);
@@ -806,7 +801,7 @@ async function getSpells(item: Maybe<ItemPF2e>, maxCharges: number): Promise<Spe
                 spell._source,
                 {
                     _id: foundry.utils.randomID(),
-                    system: { location: { value: null, heightenedLevel: rank } },
+                    system: { location: { value: entryId, heightenedLevel: rank } },
                 },
                 { inplace: false }
             );
@@ -816,8 +811,56 @@ async function getSpells(item: Maybe<ItemPF2e>, maxCharges: number): Promise<Spe
     return R.filter(spells, R.isTruthy);
 }
 
+function getSpellsDataFromItemDescription(
+    item: ItemPF2e,
+    maxRank: number = Infinity
+): { rank: ZeroToTen; uuid: string }[] {
+    const descriptionEl = createHTMLElement("div", { innerHTML: item.description });
+    const spellLists = descriptionEl.querySelectorAll("ul");
+    const spellList = spellLists[spellLists.length - 1];
+    if (!spellList) return [];
+
+    return R.pipe(
+        htmlQueryAll(spellList, "li"),
+        R.flatMap((SpellRankEL) => {
+            const label = SpellRankEL.firstChild as HTMLElement;
+            const rank = Number(label.textContent?.match(LABEL_REGEX)?.[0] || "0") as ZeroToTen;
+            const text = SpellRankEL.textContent ?? "";
+            const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
+
+            return uuids.map((uuid) => ({ rank, uuid }));
+        }),
+        R.filter(({ rank }) => rank <= maxRank)
+    );
+}
+
 interface StaffSpellcasting {
     system: SpellcastingEntrySystemData;
 }
 
-export { StaffSpellcasting, staves };
+type ActorStaff<TActor extends CharacterPF2e | NPCPF2e = CharacterPF2e | NPCPF2e> =
+    | EquipmentPF2e<TActor>
+    | WeaponPF2e<TActor>;
+
+type FlexiblePreparedEntryGroup = {
+    id: string;
+    name: string;
+    slots: {
+        rank: ZeroToTen;
+        value: number;
+        max: number;
+    }[];
+};
+
+type PreparedEntryGroup = {
+    id: string;
+    name: string;
+    spells: {
+        name?: string;
+        rank: ZeroToTen;
+        index: number;
+    }[];
+};
+
+export { getSpells, getStaves, StaffSpellcasting, staves };
+export type { ActorStaff };

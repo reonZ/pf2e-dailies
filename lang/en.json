@@ -59,6 +59,10 @@
             "charges": {
                 "label": "Charges",
                 "tooltip": "Reset charges to maximum (max: {max})"
+            },
+            "generate": {
+                "tooltip": "Generate Spellcasting Entry",
+                "confirm": "Spellcasting entry for <strong>{name}</strong> has been created."
             }
         },
         "builtin": {
@@ -193,7 +197,7 @@
             "label": "Charges",
             "reset": {
                 "title": "Reset Staff Charges",
-                "content": "A re you sure you want to reset the staff charges to their maximum value (max: {max}) ?"
+                "content": "Are you sure you want to reset the staff charges to their maximum value (max: {max}) ?"
             },
             "error": {
                 "notEnough": "Cannot cast {spell} at {rank}: not enough charges."

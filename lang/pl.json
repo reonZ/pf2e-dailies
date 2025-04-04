@@ -59,6 +59,10 @@
             "charges": {
                 "label": "Ładunki",
                 "tooltip": "Zresetuj ładunki do wartości maksymalnej (maks.: {max})"
+            },
+            "generate": {
+                "tooltip": "Wygeneruj wpis dotyczący Rzucania Zaklęć ",
+                "confirm": "Wpis dotyczący Rzucania Zaklęć dla <strong>{name}</strong> został utworzony."
             }
         },
         "builtin": {
@@ -174,7 +178,7 @@
                 },
                 "staff": "Kostur",
                 "type": "Kategoria",
-                "bond": "Runelord Bond",
+                "bond": "Więź Władcy Runów",
                 "mergedshift": "Połączono z Prowizorycznym kosturem",
                 "merged": "Połączono ze Zwykłym kosturem",
                 "makeshift": "Prowizoryczny kostur",

@@ -1,3 +1,9 @@
+# 3.22.0
+
+-   add a way to generate staves for NPCs
+    -   the `Generate Attack` button is replaced by a `Generate Spellcasting Entry` for staves (added for codas) and will generate a new `Charges` spellcasting entry for the NPC
+    -   if the NPC already has spellcasting capabilities, the data will be copied from the already existing entry, otherwise, level-dc adjustment rules will be applied
+
 # 3.21.2
 
 -   `Thaumaturge Tome`:

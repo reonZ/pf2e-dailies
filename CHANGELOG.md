@@ -1,3 +1,14 @@
+# 4.0.0
+
+-   this is a foundry `13.344` and system `7.1.0` release
+-   everything should be compatible with the previous version
+-   convert `Highlight Added Items` into user setting (reset to default)
+-   `Prepare a Staff`:
+    -   no longer add extra charges to `Runelord` bond weapon when merged to a staff (as confirmed by paizo)
+        -   remove the `Category` select field, instead you can decide to not select any staff to only prepare your bond
+-   `Thaumaturge Tome`:
+    -   when using the daily, the system rule elements will be removed from the feat to avoid any conflict
+
 # 3.22.0
 
 -   add a way to generate staves for NPCs

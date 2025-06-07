@@ -1,6 +1,6 @@
+import { createDaily } from "daily";
 import { Language } from "module-helpers";
-import { createDaily } from "../daily";
-import { utils } from "../utils";
+import { utils } from "utils";
 
 function createLanguageDaily(key: string, uuid: string) {
     return createDaily({

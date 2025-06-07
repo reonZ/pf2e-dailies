@@ -1,0 +1,16 @@
+<form>
+    {{#if readonly}}
+    <fieldset class="readonly">
+        {{{@root.i18n 'readonly.flavor'}}}
+    </fieldset>
+    {{/if}}
+    <code-mirror language="javascript" {{disabled disabled}}>{{code}}</code-mirror>
+    <div class="buttons">
+        <button type="button" data-action="save-daily" {{disabled disabled}}>
+            <i class="fa-solid fa-floppy-disk"></i> {{@root.i18n 'list.save'}}
+        </button>
+        <button type="button" data-action="delete-daily" {{disabled disabled}}>
+            <i class="fa-solid fa-trash"></i> {{@root.i18n 'list.delete'}}
+        </button>
+    </div>
+</form>

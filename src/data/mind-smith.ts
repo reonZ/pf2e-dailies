@@ -1,20 +1,18 @@
+import { createDaily, DailyRowSelectOption } from "daily";
+import { utils } from "utils";
 import {
     CharacterPF2e,
     DamageDieSize,
+    localize,
     MODULE,
     PreciousMaterialType,
     R,
+    waitDialog,
     WeaponPropertyRuneType,
     WeaponSource,
     WeaponTrait,
     ZeroToFour,
-    localize,
-    subLocalize,
-    waitDialog,
 } from "module-helpers";
-import { createDaily } from "../daily";
-import { DailyRowSelectOption } from "../types";
-import { utils } from "../utils";
 
 const mindUUID = "Compendium.pf2e.feats-srd.Item.juikoiIA0Jy8PboY";
 const mentalUUID = "Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky";
@@ -55,101 +53,6 @@ const advancedRunes = [
     "holy",
     "unholy",
 ] as const;
-
-async function createMindWeapon(actor: CharacterPF2e) {
-    const weaponLocalize = subLocalize("dialog.mind-weapon");
-
-    const weaponRows = weaponBases.map(({ die, traits, usage }, i) => {
-        const checked = i === 1 ? "checked" : "";
-        const label = weaponLocalize("label", {
-            die,
-            hand: weaponLocalize(usage),
-            hasTrait: traits.length
-                ? weaponLocalize(traits.length === 1 ? "oneTrait" : "twoTraits", {
-                      trait1: utils.getWeaponTraitLabel(traits[0]),
-                      trait2: traits[1] ? utils.getWeaponTraitLabel(traits[1]) : "",
-                  })
-                : "",
-        });
-
-        return `<label>
-            <input type="radio" name="type" value="${i}" ${checked}>
-            ${label}
-        </label>`;
-    });
-
-    const flavor = `<div class="flavor">${weaponLocalize("flavor")}</div>`;
-
-    const potencyRunes = R.pipe(
-        R.range(0, 5) as ZeroToFour[],
-        R.map((i) => {
-            const label = i ? utils.getWeaponPotencyRuneLabel(i) : "";
-            return `<option value="${i}">${label}</option>`;
-        })
-    );
-
-    const runeSelect = `<div class="form-group">
-        <label class="runes">${game.i18n.localize("PF2E.PotencyRuneLabel")}</label>
-        <div class="form-fields">
-            <select name="rune">${potencyRunes.join("")}</select>
-        </div>
-    </div>`;
-
-    const selection = await waitDialog<{ type: StringNumber; rune: StringNumber }>(
-        {
-            title: weaponLocalize("title"),
-            content: flavor + weaponRows.join("") + runeSelect,
-            classes: ["pf2e-dailies-mind-weapon"],
-            yes: {
-                label: weaponLocalize("yes"),
-                icon: "fas fa-save",
-            },
-            no: {
-                label: weaponLocalize("no"),
-            },
-        },
-        { width: 600 }
-    );
-
-    if (!selection) return false;
-
-    const { die, traits, usage } = weaponBases[Number(selection.type)];
-
-    const source: PreCreate<WeaponSource> = {
-        type: "weapon",
-        name: localize("mindsmith.weapon.name"),
-        img: "systems/pf2e/icons/spells/disrupting-weapons.webp",
-        system: {
-            slug: weaponSlug,
-            level: { value: actor.level },
-            category: "martial",
-            damage: {
-                damageType: "slashing",
-                die: die,
-                dice: 1,
-            },
-            traits: {
-                value: traits,
-            },
-            usage: {
-                value: usage,
-            },
-            runes: {
-                potency: Number(selection.rune) as ZeroToFour,
-            },
-        },
-    };
-
-    await actor.createEmbeddedDocuments("Item", [source]);
-
-    return true;
-}
-
-function damageLabel(damage: keyof typeof weaponDamages) {
-    const damageLabel = utils.getWeaponDamageLabel(damage);
-    const groupLabel = utils.getWeaponGroupLabel(weaponDamages[damage]);
-    return `${groupLabel} (${damageLabel})`;
-}
 
 const mindSmith = createDaily({
     key: "mind-smith",
@@ -364,5 +267,100 @@ const mindSmith = createDaily({
         }
     },
 });
+
+async function createMindWeapon(actor: CharacterPF2e) {
+    const weaponRows = weaponBases.map(({ die, traits, usage }, i) => {
+        const checked = i === 1 ? "checked" : "";
+        const label = localize("dialog.mind-weapon.label", {
+            die,
+            hand: localize("dialog.mind-weapon", usage),
+            hasTrait: traits.length
+                ? localize("dialog.mind-weapon", traits.length === 1 ? "oneTrait" : "twoTraits", {
+                      trait1: utils.getWeaponTraitLabel(traits[0]),
+                      trait2: traits[1] ? utils.getWeaponTraitLabel(traits[1]) : "",
+                  })
+                : "",
+        });
+
+        return `<label>
+            <input type="radio" name="type" value="${i}" ${checked}>
+            ${label}
+        </label>`;
+    });
+
+    const flavor = `<div class="flavor">${localize("dialog.mind-weapon.flavor")}</div>`;
+
+    const potencyRunes = R.pipe(
+        R.range(0, 5) as ZeroToFour[],
+        R.map((i) => {
+            const label = i ? utils.getWeaponPotencyRuneLabel(i) : "";
+            return `<option value="${i}">${label}</option>`;
+        })
+    );
+
+    const runeSelect = `<div class="form-group">
+        <label class="runes">${game.i18n.localize("PF2E.PotencyRuneLabel")}</label>
+        <div class="form-fields">
+            <select name="rune">${potencyRunes.join("")}</select>
+        </div>
+    </div>`;
+
+    const selection = await waitDialog({
+        classes: ["pf2e-dailies-mind-weapon"],
+        content: flavor + weaponRows.join("") + runeSelect,
+        i18n: "dialog.mind-weapon",
+        position: {
+            width: 600,
+        },
+        yes: {
+            icon: "fa-solid fa-save",
+        },
+    });
+
+    if (!selection) return false;
+
+    const { die, traits, usage } = weaponBases[Number(selection.type)];
+
+    const source: PreCreate<WeaponSource> = {
+        type: "weapon",
+        name: localize("mindsmith.weapon.name"),
+        img: "systems/pf2e/icons/spells/disrupting-weapons.webp",
+        system: {
+            slug: weaponSlug,
+            level: { value: actor.level },
+            category: "martial",
+            damage: {
+                damageType: "slashing",
+                die: die,
+                dice: 1,
+            },
+            traits: {
+                value: traits,
+            },
+            usage: {
+                value: usage,
+            },
+            runes: {
+                potency: Number(selection.rune) as ZeroToFour,
+            },
+        },
+    };
+
+    await actor.createEmbeddedDocuments("Item", [source]);
+
+    return true;
+}
+
+function damageLabel(damage: keyof typeof weaponDamages) {
+    const damageLabel = utils.getWeaponDamageLabel(damage);
+    const groupLabel = utils.getWeaponGroupLabel(weaponDamages[damage]);
+    return `${groupLabel} (${damageLabel})`;
+}
+
+type WeaponUsage =
+    | "worngloves"
+    | "held-in-one-hand"
+    | "held-in-one-plus-hands"
+    | "held-in-two-hands";
 
 export { mindSmith };

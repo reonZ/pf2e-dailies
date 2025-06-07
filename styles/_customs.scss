@@ -1,87 +1,39 @@
-#pf2e-dailies-customs {
-    --readonly-color: #830000;
-    --box-shadow: inset 0 0 4px 0 black;
-    --border-radius: 3px;
-    --inner-padding: 6px 5px;
+#pf2e-dailies-customs-menu {
+    aside.sidebar {
+        nav {
+            padding-top: 0.5em;
+        }
 
-    height: 600px;
-    width: 800px;
-    max-width: 90%;
-    max-height: 90%;
-
-    .window-content {
-        form {
-            display: grid;
-            grid-template-columns: 260px 2fr;
-
-            hr {
-                grid-column: 1 / -1;
+        .buttons {
+            button {
                 width: 100%;
             }
+        }
+    }
 
-            > * {
-                padding: 8px 16px 8px 8px;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                gap: 1em;
+    form {
+        height: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+
+        .readonly {
+            border-radius: 4px;
+
+            a {
+                text-decoration: underline;
+                font-weight: bold;
             }
+        }
 
-            > .left {
-                .list {
-                    flex-grow: 1;
-                    display: flex;
-                    flex-direction: column;
-                    overflow-x: hidden;
-                    overflow-y: auto;
-                    box-shadow: var(--box-shadow);
-                    padding: var(--inner-padding);
-                    border-radius: var(--border-radius);
+        .buttons {
+            display: flex;
+            padding-inline: 2em;
+            gap: 2em;
 
-                    .row {
-                        padding: 4px 8px;
-                        display: grid;
-                        grid-template-columns: 1fr auto;
-
-                        &.selected {
-                            background-image: linear-gradient(to right, #00000014, #00000008);
-                        }
-
-                        .name {
-                            cursor: pointer;
-
-                            &.readonly {
-                                color: var(--readonly-color);
-                            }
-                        }
-                    }
-                }
-            }
-
-            > .right {
-                --border: 1px solid #9f9f9f;
-
-                .readonly {
-                    border: var(--border);
-                    border-radius: var(--border-radius);
-                    padding: var(--inner-padding);
-
-                    a {
-                        text-decoration: underline;
-                        font-weight: bold;
-                    }
-                }
-
-                .editor {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 5px;
-                    flex-grow: 1;
-                    resize: none;
-                    border: var(--border);
-                    border-radius: var(--border-radius);
-                    tab-size: 4;
-                }
+            button {
+                flex: 1;
             }
         }
     }

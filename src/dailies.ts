@@ -1,49 +1,46 @@
-import { CharacterPF2e, ItemPF2e, R, error, getSetting, isSupressedFeat } from "module-helpers";
-import { createDaily } from "./daily";
-import { ancestralLongevity } from "./data/ancestral-longevity";
-import { animist } from "./data/animist";
-import { bladeAlly } from "./data/blade-ally";
-import { ceremonialKnife } from "./data/ceremonial-knife";
-import { combatFlexibility } from "./data/combat-flexibility";
-import { experimentalSpellshaping } from "./data/experimental-spellshaping";
-import { familiar } from "./data/familiar";
-import { createLanguageDaily } from "./data/languages";
-import { mindSmith } from "./data/mind-smith";
-import { rations } from "./data/rations";
-import { createResistanceDaily } from "./data/resistances";
-import { rootMagic } from "./data/root-magic";
-import { scrollAdept } from "./data/scroll-adept";
-import { createScrollChainDaily } from "./data/scrolls";
-import { createComboSkillDaily, createLoreSkillDaily } from "./data/skills";
-import { staves } from "./data/staves";
-import { thaumaturgeTome } from "./data/thaumaturge-tome";
-import { tricksterAce } from "./data/trickster-ace";
-import type { CustomDaily, Daily, DailyItem, PreparedDailies, PreparedDaily } from "./types";
-import { utils } from "./utils";
-
-type PreConditionDaily = {
-    daily: Daily;
-    condition?: DailyItem["condition"];
-    index: number;
-};
+import { CustomDaily, parseCustomDaily } from "custom/custom";
+import { Daily, DailyCustom, DailyItem, DailyRow } from "daily";
+import {
+    ancestralLongevity,
+    animist,
+    bladeAlly,
+    ceremonialKnife,
+    combatFlexibility,
+    createComboSkillDaily,
+    createLanguageDaily,
+    createLoreSkillDaily,
+    createResistanceDaily,
+    createScrollChainDaily,
+    experimentalSpellshaping,
+    familiar,
+    mindSmith,
+    rations,
+    rootMagic,
+    scrollAdept,
+    staves,
+    thaumaturgeTome,
+    tricksterAce,
+} from "data";
+import { CharacterPF2e, error, getSetting, isSupressedFeat, ItemPF2e, R } from "module-helpers";
 
 const DAILY_SCHEMA = "3.0.0";
+const MODULE_DAILIES: Map<string, Daily> = new Map();
 
 const BUILTINS_DAILIES: Daily[] = [
-    rations, // Rations
-    familiar, // Familiar
-    staves, // Staves
-    experimentalSpellshaping, // Experimental Spellshaping
     ancestralLongevity, // Ancestral Longevity
-    combatFlexibility, // Combat Flexibility
-    scrollAdept, // Scroll Adept
-    rootMagic, // Root Magic
-    ceremonialKnife, // Ceremonial Knife
-    tricksterAce, // Trickster Ace
-    thaumaturgeTome, //Thaumaturge Tome
-    bladeAlly, // Blessed Armament
-    mindSmith, // Mind Smith
     animist, // Animist
+    bladeAlly, // Blessed Armament
+    ceremonialKnife, // Ceremonial Knife
+    combatFlexibility, // Combat Flexibility
+    experimentalSpellshaping, // Experimental Spellshaping
+    familiar, // Familiar
+    mindSmith, // Mind Smith
+    rations, // Rations
+    rootMagic, // Root Magic
+    scrollAdept, // Scroll Adept
+    staves, // Staves
+    thaumaturgeTome, //Thaumaturge Tome
+    tricksterAce, // Trickster Ace
     createLoreSkillDaily(
         "quick-study", // Quick Study
         "Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW"
@@ -100,17 +97,19 @@ const BUILTINS_DAILIES: Daily[] = [
     ]),
 ];
 
-let MODULE_DAILIES: Map<string, Daily> = new Map();
-
-type AlwaysDaily = Omit<PreparedDaily, "condition"> & Required<Pick<PreparedDaily, "condition">>;
-
-let BUILTINS_UUIDS: Map<string, PreConditionDaily> = new Map();
-let BUILTINS_ALWAYS: AlwaysDaily[] = [];
+const BUILTINS_UUIDS: Map<string, PreConditionDaily> = new Map();
+const BUILTINS_ALWAYS: AlwaysDaily[] = [];
 
 const UUIDS: Map<string, PreConditionDaily> = new Map();
-let ALWAYS: AlwaysDaily[] = [];
+const ALWAYS: AlwaysDaily[] = [];
 
-function prepareDailies(dailies: Daily[], prefix: DailyPrefix) {
+function prepareDailies(
+    dailies: Daily[],
+    prefix: DailyPrefix
+): {
+    uuids: Map<string, PreConditionDaily>;
+    always: AlwaysDaily[];
+} {
     const uuids = new Map<string, PreConditionDaily>();
     const always: AlwaysDaily[] = [];
 
@@ -142,50 +141,9 @@ function prepareDailies(dailies: Daily[], prefix: DailyPrefix) {
     return { uuids, always };
 }
 
-async function parseCustomDaily(custom: CustomDaily) {
-    try {
-        const fn = new foundry.utils.AsyncFunction<Daily>(
-            "utils",
-            "createDaily",
-            "createComboSkillDaily",
-            "createLoreSkillDaily",
-            "createLanguageDaily",
-            "createResistanceDaily",
-            "createScrollChainDaily",
-            custom.code
-        );
-        const daily = await fn(
-            utils,
-            createDaily,
-            createComboSkillDaily,
-            createLoreSkillDaily,
-            createLanguageDaily,
-            createResistanceDaily,
-            createScrollChainDaily
-        );
-
-        if (isValidDaily(daily)) {
-            return daily;
-        }
-    } catch (err) {
-        error("error.unexpected");
-        console.error(err);
-        console.error(`The error occured during creation of custom daily for ${custom.key}`);
-    }
-}
-
-function isValidDaily(daily: Daily) {
-    return (
-        typeof daily.key === "string" &&
-        daily.key.trim() &&
-        typeof daily.rows === "function" &&
-        typeof daily.process === "function" &&
-        (typeof daily.condition === "function" || Array.isArray(daily.items))
-    );
-}
-
 async function parseDailies() {
     UUIDS.clear();
+    ALWAYS.length = 0;
 
     const customDailies = [];
     const customs = getSetting<CustomDaily[]>("customDailies");
@@ -213,23 +171,25 @@ async function parseDailies() {
         UUIDS.set(uuid, daily);
     }
 
-    ALWAYS = [...BUILTINS_ALWAYS, ...preparedCustoms.always, ...preparedModules.always];
+    ALWAYS.push(...BUILTINS_ALWAYS, ...preparedCustoms.always, ...preparedModules.always);
 }
 
-async function initDailies() {
+async function initializeDailies() {
+    BUILTINS_UUIDS.clear();
+    BUILTINS_ALWAYS.length = 0;
+
     const { uuids, always } = prepareDailies(BUILTINS_DAILIES, "dailies");
 
-    BUILTINS_UUIDS = uuids;
-    BUILTINS_ALWAYS = always;
+    for (const [uuid, daily] of uuids) {
+        BUILTINS_UUIDS.set(uuid, daily);
+    }
+
+    BUILTINS_ALWAYS.push(...always);
 
     parseDailies();
 }
 
-function getDailyFromSourceId(sourceId: string) {
-    return UUIDS.get(sourceId)?.daily;
-}
-
-async function getDailies(actor: CharacterPF2e) {
+async function getDailies(actor: CharacterPF2e): Promise<PreparedDailies> {
     const dailies: PreparedDailies = {};
 
     const getDaily = async (
@@ -295,7 +255,7 @@ async function getDailies(actor: CharacterPF2e) {
     return dailies;
 }
 
-function filterDailies(dailies: PreparedDailies) {
+function filterDailies(dailies: PreparedDailies): PreparedDaily[] {
     return Object.values(dailies).filter(
         (daily): daily is PreparedDaily =>
             R.isNonNull(daily) &&
@@ -304,43 +264,29 @@ function filterDailies(dailies: PreparedDailies) {
     );
 }
 
-async function getAlwaysDailies(actor: CharacterPF2e): Promise<Omit<Daily, "item">[]> {
-    return Promise.all(ALWAYS.filter((daily) => daily.condition!(actor)));
-}
-
-function registerCustomDailies(dailies: Daily[]) {
-    const incompatible: Set<string> = new Set();
-    const duplicates: Set<string> = new Set();
-
-    for (const daily of dailies) {
-        if (!isValidDaily(daily)) {
-            incompatible.add(daily.key ?? "unknown");
-            continue;
-        }
-
-        if (MODULE_DAILIES.has(daily.key)) {
-            duplicates.add(daily.key);
-            continue;
-        }
-
-        MODULE_DAILIES.set(daily.key, daily);
-    }
-
-    parseDailies();
-}
-
 type DailyPrefix = "custom" | "dailies" | "module";
 
-export {
-    DAILY_SCHEMA,
-    filterDailies,
-    getAlwaysDailies,
-    getDailies,
-    getDailyFromSourceId,
-    initDailies,
-    parseCustomDaily,
-    parseDailies,
-    registerCustomDailies,
+type PreparedDaily = Daily & {
+    prepared: PreparedDailyData;
 };
 
-export type { DailyPrefix };
+type PreparedDailyData = {
+    items: DailyOptionsItems<string>;
+    custom: DailyCustom;
+    rows: Record<string, DailyRow>;
+};
+
+type DailyOptionsItems<TItemSlug extends string = string> = Record<TItemSlug, ItemPF2e | undefined>;
+
+type AlwaysDaily = Omit<PreparedDaily, "condition"> & Required<Pick<PreparedDaily, "condition">>;
+
+type PreConditionDaily = {
+    daily: Daily;
+    condition?: DailyItem["condition"];
+    index: number;
+};
+
+type PreparedDailies = Record<string, PreparedDaily | null>;
+
+export { DAILY_SCHEMA, filterDailies, getDailies, initializeDailies, MODULE_DAILIES, parseDailies };
+export type { PreparedDailies, PreparedDaily };

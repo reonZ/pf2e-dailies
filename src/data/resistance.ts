@@ -1,6 +1,6 @@
+import { createDaily } from "daily";
 import { ResistanceType, sortByLocaleCompare } from "module-helpers";
-import { createDaily } from "../daily";
-import { utils, type SimplifiableRuleValue } from "../utils";
+import { SimplifiableRuleValue, utils } from "utils";
 
 function createResistanceDaily(
     key: string,

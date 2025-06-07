@@ -1,6 +1,6 @@
+import { createDaily } from "daily";
 import { CharacterPF2e, MODULE, R, WeaponPF2e, WeaponPropertyRuneType } from "module-helpers";
-import { createDaily } from "../daily";
-import { utils } from "../utils";
+import { utils } from "utils";
 
 const bladeUUID = "Compendium.pf2e.classfeatures.Item.EtltLdiy9kNfHU0c";
 

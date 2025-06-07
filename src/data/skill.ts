@@ -1,6 +1,6 @@
+import { createDaily } from "daily";
 import { OneToFour, SkillSlug, ZeroToFour } from "module-helpers";
-import { createDaily } from "../daily";
-import { utils } from "../utils";
+import { utils } from "utils";
 
 function createComboSkillDaily(
     key: string,

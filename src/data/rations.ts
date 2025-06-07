@@ -1,6 +1,6 @@
+import { createDaily } from "daily";
 import { ConsumablePF2e, localize } from "module-helpers";
-import { createDaily } from "../daily";
-import { utils } from "../utils";
+import { utils } from "utils";
 
 const rationsUUID = "Compendium.pf2e.equipment-srd.Item.L9ZV076913otGtiB";
 

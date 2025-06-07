@@ -1,9 +1,9 @@
 import {
     ActorPF2e,
     CharacterPF2e,
+    ChargesSpellcastingSheetData,
     CreaturePF2e,
-    getRankLabel,
-    getSpellCollectionClass,
+    getSpellRankLabel,
     isInstanceOf,
     MODULE,
     SpellcastingEntryPF2eWithCharges,
@@ -11,11 +11,10 @@ import {
     SpellPF2e,
     SpellSlotGroupId,
     spellSlotGroupIdToNumber,
-    warn,
-    warnInvalidDrop,
+    warning,
     ZeroToTen,
 } from "module-helpers";
-import { ChargesSpellcastingSheetData } from "./types";
+import { warnInvalidDrop } from "module-helpers/src";
 
 function spellcastingEntryPrepareSiblingData(
     this: SpellcastingEntryPF2eWithCharges<CreaturePF2e>,
@@ -33,7 +32,8 @@ function spellcastingEntryPrepareSiblingData(
     }
 
     try {
-        const SpellCollectionCls = getSpellCollectionClass(actor) as unknown as {
+        const SpellCollectionCls = actor.spellcasting.get("rituals")!.spells!
+            .constructor as unknown as {
             prototype: SpellCollection<CreaturePF2e>;
             new (
                 entry: SpellcastingEntryPF2eWithCharges,
@@ -141,7 +141,10 @@ async function spellcastingEntryConsume(
         const charges = this.system.slots.slot1.value;
 
         if (charges < rank) {
-            warn("charges.error.notEnough", { spell: spell.name, rank: getRankLabel(rank) });
+            warning("charges.error.notEnough", {
+                spell: spell.name,
+                rank: getSpellRankLabel(rank),
+            });
             return false;
         }
 

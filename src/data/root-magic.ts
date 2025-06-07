@@ -1,5 +1,5 @@
-import { createDaily } from "../daily";
-import { utils } from "../utils";
+import { createDaily } from "daily";
+import { utils } from "utils";
 
 const featUUID = "Compendium.pf2e.feats-srd.Item.22P7IFyhrF7Fbw8B";
 const effectUUID = "Compendium.pf2e.feat-effects.Item.jO7wMhnjT7yoAtQg";

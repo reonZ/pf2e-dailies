@@ -1,0 +1,17 @@
+<aside class="sidebar flexcol">
+    <nav class="tabs vertical scrollable">
+        {{#each list as |daily|}}
+        <button type="button" data-action="select-daily" data-tab="{{daily.key}}"
+            class="plain{{#if daily.selected}} active{{/if}}">
+            <span {{#if daily.readonly}}class="readonly" {{/if}}>
+                {{daily.key}}
+            </span>
+        </button>
+        {{/each}}
+    </nav>
+    <div class="buttons">
+        <button type="button" data-action="create-daily">
+            <i class="fa-solid fa-mug-saucer"></i> {{@root.i18n 'list.create'}}
+        </button>
+    </div>
+</aside>

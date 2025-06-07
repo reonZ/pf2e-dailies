@@ -1,22 +1,23 @@
+import { createDaily, DailyConfigCheckbox } from "daily";
+import { HomebrewsMenu } from "homebrew";
 import {
+    CharacterPF2e,
     createHTMLElement,
     getActorMaxRank,
     getFlag,
-    getSource,
-    getUuidFromInlineMatch,
+    getFlagProperty,
+    getItemSource,
     htmlQuery,
+    isInstanceOf,
     ItemPF2e,
     localize,
     R,
+    setFlag,
     setFlagProperty,
     SpellSource,
     splitListString,
 } from "module-helpers";
-import { getAnimistConfigs } from "../api";
-import { HomebrewDailies } from "../apps/homebrew";
-import { createDaily } from "../daily";
-import { DailyConfigCheckbox } from "../types";
-import { utils } from "../utils";
+import { getUuidFromInlineMatch, utils } from "utils";
 
 const LORE_STRIP_REGEX = /^(.+?) Lore$/;
 
@@ -105,7 +106,7 @@ const animist = createDaily({
             R.sortBy(R.prop("label"))
         );
 
-        for (const { entry } of HomebrewDailies.getEntries("animist")) {
+        for (const { entry } of HomebrewsMenu.getEntries("animist")) {
             options.push({
                 value: entry.uuid,
                 label: entry.name,
@@ -163,10 +164,10 @@ const animist = createDaily({
 
                 nbApparitions++;
 
-                const itemSource = getSource(item);
+                const itemSource = getItemSource(item);
                 addFeat(itemSource, parent);
 
-                const descriptionEl = createHTMLElement("div", { innerHTML: item.description });
+                const descriptionEl = createHTMLElement("div", { content: item.description });
 
                 const loresEl = htmlQuery(descriptionEl, "hr + p");
                 const lores = splitListString(loresEl?.childNodes[1].textContent?.trim() ?? "");
@@ -330,4 +331,35 @@ const animist = createDaily({
     },
 });
 
-export { animist };
+function getAnimistConfigs(actor: CharacterPF2e) {
+    return foundry.utils.mergeObject(
+        { lore: true, lores: true, spells: true, signatures: true },
+        getFlag(actor, "config.dailies.animist") ?? {}
+    );
+}
+
+function getAnimistVesselsData(actor: CharacterPF2e) {
+    const primaryVessels = getFlag<string[]>(actor, "extra.dailies.animist.primaryVessels");
+    if (!primaryVessels) return;
+
+    const vesselsEntry = actor.spellcasting.find(
+        (entry) => getFlagProperty(entry, "identifier") === "animist-focus"
+    );
+    if (!isInstanceOf(vesselsEntry, "SpellcastingEntryPF2e")) return;
+
+    return { entry: vesselsEntry, primary: primaryVessels.slice() };
+}
+
+function toggleAnimistVesselPrimary(actor: CharacterPF2e, id: string) {
+    const primaryVessels =
+        getFlag<string[]>(actor, "extra.dailies.animist.primaryVessels")?.slice() ?? [];
+    const exist = primaryVessels.findSplice((x) => x === id);
+
+    if (!exist) {
+        primaryVessels.push(id);
+    }
+
+    return setFlag(actor, "extra.dailies.animist.primaryVessels", primaryVessels);
+}
+
+export { animist, getAnimistConfigs, getAnimistVesselsData, toggleAnimistVesselPrimary };

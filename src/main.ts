@@ -1,113 +1,51 @@
-import { MODULE, getSetting, registerWrapper, warn } from "module-helpers";
 import {
-    ACTOR_PREPARE_EMBEDDED_DOCUMENTS,
-    onActorPrepareEmbeddedDocuments,
-    onCharacterPrepareData,
-    onCharacterSheetGetData,
+    canPrepareDailies,
+    getDailiesSummary,
+    getDisabledDailies,
     onRenderCharacterSheetPF2e,
     onRenderFamiliarSheetPF2e,
     onRenderNPCSheetPF2e,
-} from "./actor";
+    openDailiesInterface,
+} from "actor";
+import { CustomDaily, registerCustomDailies } from "custom";
+import { DAILY_SCHEMA, initializeDailies } from "dailies";
 import {
     canCastRank,
-    canPrepareDailies,
+    createComboSkillDaily,
+    createLanguageDaily,
+    createLoreSkillDaily,
+    createResistanceDaily,
+    createScrollChainDaily,
     getAnimistConfigs,
     getAnimistVesselsData,
-    getDailiesSummary,
-    getDisabledDailies,
-    getStaffItem,
-    openDailiesInterface,
+    getStaffData,
     setStaffChargesValue,
-} from "./api";
-import { DAILY_SCHEMA, initDailies, registerCustomDailies } from "./dailies";
-import { createLanguageDaily } from "./data/languages";
-import { createResistanceDaily } from "./data/resistances";
-import { createScrollChainDaily } from "./data/scrolls";
-import { createComboSkillDaily, createLoreSkillDaily } from "./data/skills";
-import * as migrations from "./migrations";
-import { restForTheNight } from "./rest";
-import { registerSettings } from "./settings";
-import {
-    spellcastingEntryConsume,
-    spellcastingEntryGetSheetData,
-    spellcastingEntryPrepareSiblingData,
-} from "./spellcasting";
-import { CustomDaily } from "./types";
-import { utils } from "./utils";
+} from "data";
+import { CharacterPF2e, getSetting, MODULE, warning } from "module-helpers";
+import { registerSettings } from "settings";
+import { utils } from "utils";
+import { registerInitWrappers, registerReadyWrappers } from "wrappers";
 
-MODULE.register("pf2e-dailies", migrations);
+MODULE.register("pf2e-dailies");
 
-Hooks.once("init", () => {
+Hooks.on("init", () => {
     registerSettings();
-
-    registerWrapper(
-        "CONFIG.PF2E.Actor.documentClasses.character.prototype.prepareData",
-        onCharacterPrepareData,
-        "WRAPPER"
-    );
-
-    MODULE.current.api = {
-        canCastRank,
-        getStaffItem,
-        setStaffChargesValue,
-        openDailiesInterface,
-        registerCustomDailies,
-        getDailiesSummary,
-        canPrepareDailies,
-        getDisabledDailies,
-        getAnimistConfigs,
-        getAnimistVesselsData,
-        utils,
-        dailyHelpers: {
-            createComboSkillDaily,
-            createLoreSkillDaily,
-            createLanguageDaily,
-            createResistanceDaily,
-            createScrollChainDaily,
-        },
-    };
+    registerInitWrappers();
 
     // @ts-expect-error
     CONFIG.PF2E.preparationType.charges = "Charges";
-
-    registerWrapper(
-        "CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.prepareSiblingData",
-        spellcastingEntryPrepareSiblingData,
-        "MIXED"
-    );
-
-    registerWrapper(
-        "CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.consume",
-        spellcastingEntryConsume,
-        "MIXED"
-    );
-
-    registerWrapper(
-        "CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.getSheetData",
-        spellcastingEntryGetSheetData,
-        "WRAPPER"
-    );
 });
 
-Hooks.once("ready", () => {
-    initDailies();
-
-    registerWrapper("game.pf2e.actions.restForTheNight", restForTheNight, "WRAPPER");
-
-    registerWrapper(ACTOR_PREPARE_EMBEDDED_DOCUMENTS, onActorPrepareEmbeddedDocuments, "WRAPPER");
-
-    registerWrapper(
-        "CONFIG.Actor.sheetClasses.character['pf2e.CharacterSheetPF2e'].cls.prototype.getData",
-        onCharacterSheetGetData,
-        "WRAPPER"
-    );
+Hooks.on("ready", () => {
+    initializeDailies();
+    registerReadyWrappers();
 
     if (game.user.isGM) {
         const hasIncompatibleDailies = getSetting<CustomDaily[]>("customDailies").some((custom) =>
             foundry.utils.isNewerVersion(DAILY_SCHEMA, custom.schema ?? "")
         );
         if (hasIncompatibleDailies) {
-            warn("error.incompatible", true);
+            warning("error.incompatible", true);
         }
     }
 });
@@ -115,3 +53,27 @@ Hooks.once("ready", () => {
 Hooks.on("renderCharacterSheetPF2e", onRenderCharacterSheetPF2e);
 Hooks.on("renderFamiliarSheetPF2e", onRenderFamiliarSheetPF2e);
 Hooks.on("renderNPCSheetPF2e", onRenderNPCSheetPF2e);
+
+MODULE.apiExpose({
+    canCastRank,
+    getStaffItem: (actor: CharacterPF2e) => {
+        const flag = getStaffData(actor);
+        return (flag && actor.inventory.get(flag.staffId)) || null;
+    },
+    setStaffChargesValue,
+    openDailiesInterface,
+    registerCustomDailies,
+    getDailiesSummary,
+    canPrepareDailies,
+    getDisabledDailies,
+    getAnimistConfigs,
+    getAnimistVesselsData,
+    utils,
+    dailyHelpers: {
+        createComboSkillDaily,
+        createLoreSkillDaily,
+        createLanguageDaily,
+        createResistanceDaily,
+        createScrollChainDaily,
+    },
+});

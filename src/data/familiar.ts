@@ -1,19 +1,17 @@
+import { createDaily, DailyMessageOptions } from "daily";
+import { HomebrewsMenu } from "homebrew";
 import {
     AbilitySource,
     CharacterPF2e,
-    ItemPF2e,
-    R,
-    ValueAndMax,
     getFlag,
-    getSource,
+    getItemSource,
+    ItemPF2e,
     localize,
+    R,
     setFlagProperty,
     sortByLocaleCompare,
+    ValueAndMax,
 } from "module-helpers";
-import { isTemporary } from "../api";
-import { HomebrewDailies } from "../apps/homebrew";
-import { createDaily } from "../daily";
-import { DailyMessageOptions } from "../types";
 
 const SKIP_UNIQUES = [
     "jevzf9JbJJibpqaI", // skilled
@@ -46,7 +44,7 @@ const familiar = createDaily({
             skipUnique: SKIP_UNIQUES.includes(_id),
         }));
 
-        for (const { entry } of HomebrewDailies.getEntries("familiar")) {
+        for (const { entry } of HomebrewsMenu.getEntries("familiar")) {
             options.push({
                 value: entry.uuid,
                 label: entry.name,
@@ -78,7 +76,7 @@ const familiar = createDaily({
                 const item = await fromUuid<ItemPF2e>(value);
                 if (!item?.isOfType("action")) return;
 
-                const source = getSource(item);
+                const source = getItemSource(item);
                 setFlagProperty(source, "temporary", true);
 
                 abilities.push(source);
@@ -102,7 +100,7 @@ const familiar = createDaily({
         if (!familiar) return;
 
         const ids = familiar.itemTypes.action
-            .filter((item) => isTemporary(item))
+            .filter((item) => getFlag(item, "temporary"))
             .map((item) => item.id);
 
         if (ids.length) {

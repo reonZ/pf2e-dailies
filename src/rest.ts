@@ -1,15 +1,15 @@
+import { DailyActorFlags } from "actor";
+import { filterDailies, getDailies } from "dailies";
 import {
     ActionDefaultOptions,
     CharacterPF2e,
     ChatMessagePF2e,
+    getFlag,
     MODULE,
     R,
-    getFlag,
     updateFlag,
 } from "module-helpers";
-import { createUpdateCollection, isTemporary } from "./api";
-import { filterDailies, getDailies } from "./dailies";
-import { DailyActorFlags } from "./types";
+import { createUpdateCollection } from "utils";
 
 async function restForTheNight(
     wrapped: libWrapper.RegisterCallback,
@@ -54,7 +54,7 @@ async function cleanup(actor: CharacterPF2e) {
 
     await Promise.all(
         actor.items.map(async (item) => {
-            if (isTemporary(item)) {
+            if (getFlag(item, "temporary")) {
                 removedItems.push(item.id);
 
                 if (item.isOfType("feat")) {
@@ -63,7 +63,7 @@ async function cleanup(actor: CharacterPF2e) {
                         const slug = game.pf2e.system.sluggify(item.name, { camel: "dromedary" });
                         updateItem({
                             _id: parentId,
-                            [`flags.pf2e.itemGrants.-=${slug}`]: true,
+                            [`flags.pf2e.itemGrants.-=${slug}`]: null,
                         });
                     }
                 }
@@ -108,10 +108,10 @@ async function cleanup(actor: CharacterPF2e) {
 
     await updateFlag<DailyActorFlags>(actor, {
         rested: true,
-        "-=addedItems": true,
-        "-=extra": true,
-        "-=tooltip": true,
-        "-=temporaryDeleted": true,
+        "-=addedItems": null,
+        "-=extra": null,
+        "-=tooltip": null,
+        "-=temporaryDeleted": null,
     });
 }
 

@@ -1,6 +1,4 @@
 [id^="pf2e-dailies-settings-"] {
-    --daily-hover-color: #ffffff26;
-
     max-height: 80%;
     width: 300px;
 
@@ -22,15 +20,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-
-                &:hover {
-                    background: var(--daily-hover-color);
-                }
             }
         }
     }
-}
-
-.theme-light [id^="pf2e-dailies-settings-"] {
-    --daily-hover-color: #00000026;
 }

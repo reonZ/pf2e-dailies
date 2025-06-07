@@ -1,6 +1,6 @@
+import { createDaily } from "daily";
 import { OneToFour, SkillSlug } from "module-helpers";
-import { createDaily } from "../daily";
-import { utils } from "../utils";
+import { utils } from "utils";
 
 type CustomRow = {
     rank: OneToFour;
@@ -15,8 +15,8 @@ const thaumaturgeTome = createDaily({
     key: "thaumaturge-tome",
     items: [
         {
-            slug: "tome", // Tome
-            uuid: "Compendium.pf2e.classfeatures.Item.MyN1cQgE0HsLF20e",
+            slug: "tome", // Initiate Benefit (Tome)
+            uuid: "Compendium.pf2e.classfeatures.Item.oADE2kM43wpF7MT5",
             required: true,
         },
         {
@@ -104,8 +104,10 @@ const thaumaturgeTome = createDaily({
             },
         ];
     },
-    process: ({ items, rows, custom, messages, addItem, addRule }) => {
+    process: ({ items, rows, custom, messages, addItem, addRule, removeRule }) => {
         messages.addGroup("tome", undefined, 65);
+
+        removeRule(items.tome, (rule) => rule.key !== "FlatModifier");
 
         for (const slug of ["first", "second"] as const) {
             const rank = custom[slug].rank;

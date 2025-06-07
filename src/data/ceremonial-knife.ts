@@ -1,6 +1,6 @@
+import { createDaily } from "daily";
 import { OneToTen } from "module-helpers";
-import { createDaily } from "../daily";
-import { utils } from "../utils";
+import { utils } from "utils";
 
 const ICON = "systems/pf2e/icons/equipment/weapons/wish-knife.webp";
 const featUUID = "Compendium.pf2e.feats-srd.Item.78pkCdFaY8hI07Lj";

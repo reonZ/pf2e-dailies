@@ -1,28 +1,5 @@
 {
     "pf2e-dailies": {
-        "SHARED": {
-            "migration": {
-                "warning": {
-                    "title": "Module Migration",
-                    "start": "Start Migration",
-                    "cancel": "Cancel",
-                    "content": {
-                        "modules": "The following module(s) may need to migrate data:",
-                        "wait": "If the system is migrating its own data, please wait before starting"
-                    }
-                },
-                "summary": {
-                    "title": "Migration Summary",
-                    "content": "The following documents were migrated",
-                    "nothing": "No document needed to be migrated."
-                },
-                "error": {
-                    "actors": "An error occured while migrating data for world actors.",
-                    "token": "An error occured while migrating data for the token actor {uuid}.",
-                    "users": "An error occured while migrating data for users."
-                }
-            }
-        },
         "settings": {
             "addedHighlight": {
                 "name": "Highlight Added Items",
@@ -45,24 +22,9 @@
                 }
             }
         },
-        "error": {
-            "incompatible": "There are custom dailies that are incompatible with the current version of <strong>PF2e Dailies</strong>.",
-            "unexpected": "An unexpected error occured with the module <strong>PF2e Dailies</strong>. See the console (F12) for details."
-        },
-        "sheet": {
-            "title": "Daily Preparations",
-            "unrested": "Rest Required",
-            "primary": {
-                "assign": "Assign as primary vessel",
-                "unassign": "Unassign primary vessel"
-            },
-            "charges": {
-                "label": "Charges",
-                "tooltip": "Reset charges to maximum (max: {max})"
-            },
-            "generate": {
-                "tooltip": "Generate Spellcasting Entry",
-                "confirm": "Spellcasting entry for <strong>{name}</strong> has been created."
+        "animist": {
+            "spellcasting": {
+                "focus": "Vessel Spells"
             }
         },
         "builtin": {
@@ -70,6 +32,44 @@
                 "familiar": "Familiar Abilities",
                 "staves": "Prepare a Staff",
                 "thaumaturge-tome": "Thaumaturge Tome"
+            }
+        },
+        "charges": {
+            "label": "Charges",
+            "reset": {
+                "title": "Reset Staff Charges",
+                "content": "Are you sure you want to reset the staff charges to their maximum value (max: {max}) ?"
+            },
+            "error": {
+                "notEnough": "Cannot cast {spell} at {rank}: not enough charges."
+            }
+        },
+        "config": {
+            "filters": "Enabled Dailies",
+            "title": "{actor} - Daily Configs",
+            "animist": {
+                "lore": "Remove Lore Suffix",
+                "lores": "Show Lores Summary",
+                "spells": "Show Spells Summary",
+                "signatures": "Set Signature Spells"
+            }
+        },
+        "customs": {
+            "title": "Custom Dailies",
+            "list": {
+                "create": "Create Custom Daily",
+                "delete": "Delete Custom Daily",
+                "save": "Save Custom Daily"
+            },
+            "delete": {
+                "title": "Delete Custom Daily",
+                "content": "Are you sure you want to delete this daily ?"
+            },
+            "code": {
+                "saved": "Custom Daily was succesfully saved."
+            },
+            "readonly": {
+                "flavor": "This daily is flagged as <em>read only</em> because it was created in a previous version of the module and is incompatible. If you decide to <a>unlock</a> it, make sure to update it to the current version data format before saving."
             }
         },
         "dialog": {
@@ -85,43 +85,21 @@
                 "twoTraits": " and has the <strong>{trait1}</strong> and <strong>{trait2}</strong> traits"
             }
         },
-        "message": {
-            "changes": "Has made the following changes during their daily preparations.",
-            "noChanges": "Has made no changes during their daily preparations, you didn't even need to know about it really.",
-            "gained": "Gained the temporary {type}",
-            "groups": {
-                "resistances": "Gained the resistances",
-                "languages": "Learned to read and speak",
-                "skills": "Trained in the following skills",
-                "tome": "Studied their thaumaturgy tome",
-                "spells": "Is ready to use the spells",
-                "familiar": "Has selected the familiar abilities",
-                "apparition": "Has attuned with their apparitions",
-                "feats": "Learned the feats",
-                "scrolls": "Created the temporary scrolls",
-                "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell",
-                "blade": "Imbued their spirit into their weapon",
-                "mindsmith": "Has focused their mind into their weapon"
-            },
-            "rations": {
-                "used": "Consumed one of their {name} and has {nb} remaining.",
-                "last": "Consumed the last of their {name}.",
-                "almost": "Consumed one of their {name} and only has {nb} remaining."
-            }
+        "error": {
+            "incompatible": "There are custom dailies that are incompatible with the current version of <strong>PF2e Dailies</strong>.",
+            "unexpected": "An unexpected error occured with the module <strong>PF2e Dailies</strong>. See the console (F12) for details."
         },
-        "label": {
-            "ability": "Ability #{nb}",
-            "apparition": {
-                "first": "Primary Apparition",
-                "primary": "Primary #{nb} ",
-                "other": "Apparition #{nb}"
+        "homebrew": {
+            "title": "Homebrew Settings",
+            "index": {
+                "familiar": "Familiar Abilities",
+                "animist": "Animist Apparitions"
             },
-            "expend": "Expend #{nb}",
-            "rune": "Property Rune",
-            "select": "Select {that}",
-            "mind-smith": "Mind Smith",
-            "mind-mental": "Mental Forge",
-            "mind-runic": "Runic Smithing"
+            "pack": "Compendium Pack",
+            "add": "Add Entry",
+            "delete": "Delete Entry",
+            "invalid": "<strong>{entry}</strong> isn't the ID of a compendium pack nor the UUID of a <strong>{type}</strong>",
+            "empty": "You must provide a compendium pack ID or the UUID of a <strong>{type}</strong>"
         },
         "interface": {
             "title": "{actor} - Daily Preparation",
@@ -193,15 +171,67 @@
                 "missing": "Mind Weapon is missing"
             }
         },
-        "charges": {
-            "label": "Charges",
-            "reset": {
-                "title": "Reset Staff Charges",
-                "content": "Are you sure you want to reset the staff charges to their maximum value (max: {max}) ?"
+        "label": {
+            "ability": "Ability #{nb}",
+            "apparition": {
+                "first": "Primary Apparition",
+                "primary": "Primary #{nb} ",
+                "other": "Apparition #{nb}"
             },
-            "error": {
-                "notEnough": "Cannot cast {spell} at {rank}: not enough charges."
+            "expend": "Expend #{nb}",
+            "rune": "Property Rune",
+            "select": "Select {that}",
+            "mind-smith": "Mind Smith",
+            "mind-mental": "Mental Forge",
+            "mind-runic": "Runic Smithing"
+        },
+        "message": {
+            "changes": "Has made the following changes during their daily preparations.",
+            "noChanges": "Has made no changes during their daily preparations, you didn't even need to know about it really.",
+            "gained": "Gained the temporary {type}",
+            "groups": {
+                "resistances": "Gained the resistances",
+                "languages": "Learned to read and speak",
+                "skills": "Trained in the following skills",
+                "tome": "Studied their thaumaturgy tome",
+                "spells": "Is ready to use the spells",
+                "familiar": "Has selected the familiar abilities",
+                "apparition": "Has attuned with their apparitions",
+                "feats": "Learned the feats",
+                "scrolls": "Created the temporary scrolls",
+                "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell",
+                "blade": "Imbued their spirit into their weapon",
+                "mindsmith": "Has focused their mind into their weapon"
+            },
+            "rations": {
+                "used": "Consumed one of their {name} and has {nb} remaining.",
+                "last": "Consumed the last of their {name}.",
+                "almost": "Consumed one of their {name} and only has {nb} remaining."
             }
+        },
+        "mindsmith": {
+            "weapon": {
+                "name": "Mind Weapon"
+            }
+        },
+        "sheet": {
+            "title": "Daily Preparations",
+            "unrested": "Rest Required",
+            "primary": {
+                "assign": "Assign as primary vessel",
+                "unassign": "Unassign primary vessel"
+            },
+            "charges": {
+                "label": "Charges",
+                "tooltip": "Reset charges to maximum (max: {max})"
+            },
+            "generate": {
+                "tooltip": "Generate Spellcasting Entry",
+                "confirm": "Spellcasting entry for <strong>{name}</strong> has been created."
+            }
+        },
+        "spellEntry": {
+            "name": "Temporary Spells"
         },
         "staves": {
             "spontaneous": {
@@ -211,72 +241,19 @@
                 "would": "Would you like to consume a spontaneous spell slot of <strong>{rank}</strong>{higher} from {from}?",
                 "one": "<strong>{entry}</strong>",
                 "multi": "any of the following spellcasting entries",
-                "higher": " or higher "
+                "higher": " or higher ",
+                "yes": "Consume"
             },
             "error": {
                 "missing": "Couldn't retrieve the staff.",
                 "notEquipped": "You need to equip your {staff} to use it."
             },
             "action": {
-                "pick-up": "Pick Up",
-                "retrieve": "Retrieve",
+                "pick-up1H": "Pick Up",
+                "retrieve1H": "Retrieve",
                 "sheathe": "Sheathe",
-                "draw": "Draw"
+                "draw1H": "Draw"
             }
-        },
-        "animist": {
-            "spellcasting": {
-                "focus": "Vessel Spells"
-            }
-        },
-        "spellEntry": {
-            "name": "Temporary Spells"
-        },
-        "mindsmith": {
-            "weapon": {
-                "name": "Mind Weapon"
-            }
-        },
-        "customs": {
-            "title": "Custom Dailies",
-            "list": {
-                "create": "Create Custom Daily",
-                "delete": "Delete Custom Daily"
-            },
-            "delete": {
-                "title": "Delete Custom Daily",
-                "content": "Are you sure you want to delete this daily ?"
-            },
-            "code": {
-                "save": "Save Custom Daily",
-                "error": "The returned data isn't respecting the Daily structure.",
-                "saved": "Custom Daily was succesfully saved."
-            },
-            "readonly": {
-                "flavor": "This daily is flagged as <em>read only</em> because it was created in a previous version of the module and is incompatible. If you decide to <a>unlock</a> it, make sure to update it to the current version data format before saving."
-            }
-        },
-        "config": {
-            "filters": "Enabled Dailies",
-            "title": "{actor} - Daily Configs",
-            "animist": {
-                "lore": "Remove Lore Suffix",
-                "lores": "Show Lores Summary",
-                "spells": "Show Spells Summary",
-                "signatures": "Set Signature Spells"
-            }
-        },
-        "homebrew": {
-            "title": "Homebrew Settings",
-            "index": {
-                "familiar": "Familiar Abilities",
-                "animist": "Animist Apparitions"
-            },
-            "pack": "Compendium Pack",
-            "add": "Add Entry",
-            "delete": "Delete Entry",
-            "invalid": "<strong>{entry}</strong> isn't the ID of a compendium pack nor the UUID of a <strong>{type}</strong>",
-            "empty": "You must provide a compendium pack ID or the UUID of a <strong>{type}</strong>"
         }
     }
 }

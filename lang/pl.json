@@ -1,28 +1,5 @@
 {
     "pf2e-dailies": {
-        "SHARED": {
-            "migration": {
-                "warning": {
-                    "title": "Migracja modułu",
-                    "start": "Rozpoczęcie migracji",
-                    "cancel": "Anuluj",
-                    "content": {
-                        "modules": "Następujące moduły mogą wymagać migracji danych:",
-                        "wait": "Jeśli system przeprowadza migrację własnych danych, należy poczekać przed jej rozpoczęciem"
-                    }
-                },
-                "summary": {
-                    "title": "Podsumowanie migracji",
-                    "content": "Następujące dokumenty zostały zmigrowane",
-                    "nothing": "Żaden dokument nie wymagał migracji."
-                },
-                "error": {
-                    "actors": "Wystąpił błąd podczas migracji danych aktorów świata.",
-                    "token": "Wystąpił błąd podczas migracji danych dla aktora tokenu {uuid}.",
-                    "users": "Wystąpił błąd podczas migracji danych użytkowników."
-                }
-            }
-        },
         "settings": {
             "addedHighlight": {
                 "name": "Wyróżnij dodane przedmioty",
@@ -45,24 +22,9 @@
                 }
             }
         },
-        "error": {
-            "incompatible": "Istnieją niestandardowe dzienne czynności, które są niekompatybilne z obecną wersją <strong>PF2e Dailies</strong>.",
-            "unexpected": "Wystąpił nieoczekiwany błąd modułu <strong>PF2e Dailies</strong>. Szczegółowe informacje można znaleźć w konsoli (F12)."
-        },
-        "sheet": {
-            "title": "Codzienne przygotowania",
-            "unrested": "Wymagany odpoczynek",
-            "primary": {
-                "assign": "Przypisanie jako główne naczynie",
-                "unassign": "Anulowanie przypisania głównego naczynia"
-            },
-            "charges": {
-                "label": "Ładunki",
-                "tooltip": "Zresetuj ładunki do wartości maksymalnej (maks.: {max})"
-            },
-            "generate": {
-                "tooltip": "Wygeneruj wpis dotyczący Rzucania Zaklęć ",
-                "confirm": "Wpis dotyczący Rzucania Zaklęć dla <strong>{name}</strong> został utworzony."
+        "animist": {
+            "spellcasting": {
+                "focus": "Zaklęcia naczyń"
             }
         },
         "builtin": {
@@ -70,6 +32,44 @@
                 "familiar": "Zdolności chowańca",
                 "staves": "Przygotuj Kostur",
                 "thaumaturge-tome": "Tom Taumaturga"
+            }
+        },
+        "charges": {
+            "label": "Ładunki",
+            "reset": {
+                "title": "Zresetuj ładunki kostura",
+                "content": "Czy na pewno chcesz zresetować ładunki kostura do ich maksymalnej wartości (maks.: {max})?"
+            },
+            "error": {
+                "notEnough": "Nie można rzucić {spell} o randze {rank}: za mało ładunków."
+            }
+        },
+        "config": {
+            "filters": "Włączono Dzienne Aktywności",
+            "title": "{actor} - Dzienna konfiguracja",
+            "animist": {
+                "lore": "Usuń przyrostek Wiedzy",
+                "lores": "Pokaż podsumowanie Wiedzy",
+                "spells": "Pokaż podsumowanie Zaklęć",
+                "signatures": "Ustaw Zaklęcia Popisowe"
+            }
+        },
+        "customs": {
+            "title": "Niestandardowe dzienne czynności",
+            "list": {
+                "create": "Utwórz niestandardowe dzienne czynności",
+                "delete": "Usuń niestandardowe dzienne czynności",
+                "save": "Zapisz niestandardowe dzienne czynności"
+            },
+            "delete": {
+                "title": "Usuń niestandardowe dzienne czynności",
+                "content": "Czy na pewno chcesz usunąć ten dzienną czynność?"
+            },
+            "code": {
+                "saved": "Dzienne czynności zostały pomyślnie zapisane."
+            },
+            "readonly": {
+                "flavor": "Ta dzienna czynność jest oznaczona jako <em>tylko do odczytu</em> ponieważ została utworzona w poprzedniej wersji modułu i jest niekompatybilna. Jeśli zdecydujesz się <a>odblokować</a> to, przed zapisaniem upewnij się, że zaktualizowałeś go do formatu danych aktualnej wersji."
             }
         },
         "dialog": {
@@ -85,43 +85,21 @@
                 "twoTraits": " i ma cechy <strong>{trait1}</strong> i <strong>{trait2}</strong>"
             }
         },
-        "message": {
-            "changes": "Wprowadził następujące zmiany podczas codziennych przygotowań.",
-            "noChanges": "Nie wprowadził żadnych zmian podczas codziennych przygotowań, nie musiałeś nawet o tym wiedzieć.",
-            "gained": "Uzyskał tymczasowy {type}",
-            "groups": {
-                "resistances": "Uzyskał odporności",
-                "languages": "Nauczył się czytać i mówić",
-                "skills": "Wytrenował się w następujących umiejętnościach",
-                "tome": "Studiował swój tom Taumaturga",
-                "spells": "Jest gotowy do użycia zaklęć",
-                "familiar": "Wybrał zdolności chowańca",
-                "apparition": "Dostroił się do tych projekcji",
-                "feats": "Nauczył się atutów",
-                "scrolls": "Utworzył tymczasowe zwoje",
-                "ceremonial": "Przeprowadził rytuał, aby stworzyć nóż ceremonialny nasycony zaklęciem",
-                "blade": "Zaszczepił ducha w swojej broni",
-                "mindsmith": "Skupił swój umysł na broni"
-            },
-            "rations": {
-                "used": "Zużył jedną z {name} i pozostało mu {nb} sztuk.",
-                "last": "Zużył ostatnie z {name}.",
-                "almost": "Zużył jedną z {name} i pozostało mu tylko {nb} sztuk."
-            }
+        "error": {
+            "incompatible": "Istnieją niestandardowe dzienne czynności, które są niekompatybilne z obecną wersją <strong>PF2e Dailies</strong>.",
+            "unexpected": "Wystąpił nieoczekiwany błąd modułu <strong>PF2e Dailies</strong>. Szczegółowe informacje można znaleźć w konsoli (F12)."
         },
-        "label": {
-            "ability": "Zdolność #{nb}",
-            "apparition": {
-                "first": "Podstawowe projekcje",
-                "primary": "Główny #{nb} ",
-                "other": "Projekcja #{nb}"
+        "homebrew": {
+            "title": "Ustawienia Zasad Domowych",
+            "index": {
+                "familiar": "Zdolności chowańca",
+                "animist": "Animistyczne projekcje"
             },
-            "expend": "Wydano #{nb}",
-            "rune": "Runa Właściwości",
-            "select": "Wybierz {that}",
-            "mind-smith": "Kowal Myśli",
-            "mind-mental": "Mentalna Kuźnia",
-            "mind-runic": "Kowalstwo Runiczne"
+            "pack": "Pakiet kompendium",
+            "add": "Dodaj wpis",
+            "delete": "Usuń wpis",
+            "invalid": "<strong>{entry}</strong> nie jest identyfikatorem pakietu kompendium ani identyfikatorem UUID pliku <strong>{type}</strong>",
+            "empty": "Należy podać identyfikator pakietu kompendium lub identyfikator UUID pliku <strong>{type}</strong>"
         },
         "interface": {
             "title": "{actor} - Dzienne przygotowanie",
@@ -193,15 +171,67 @@
                 "missing": "Brakuje Broni Umysłu"
             }
         },
-        "charges": {
-            "label": "Ładunki",
-            "reset": {
-                "title": "Zresetuj ładunki kostura",
-                "content": "Czy na pewno chcesz zresetować ładunki kostura do ich maksymalnej wartości (maks.: {max})?"
+        "label": {
+            "ability": "Zdolność #{nb}",
+            "apparition": {
+                "first": "Podstawowe projekcje",
+                "primary": "Główny #{nb} ",
+                "other": "Projekcja #{nb}"
             },
-            "error": {
-                "notEnough": "Nie można rzucić {spell} o randze {rank}: za mało ładunków."
+            "expend": "Wydano #{nb}",
+            "rune": "Runa Właściwości",
+            "select": "Wybierz {that}",
+            "mind-smith": "Kowal Myśli",
+            "mind-mental": "Mentalna Kuźnia",
+            "mind-runic": "Kowalstwo Runiczne"
+        },
+        "message": {
+            "changes": "Wprowadził następujące zmiany podczas codziennych przygotowań.",
+            "noChanges": "Nie wprowadził żadnych zmian podczas codziennych przygotowań, nie musiałeś nawet o tym wiedzieć.",
+            "gained": "Uzyskał tymczasowy {type}",
+            "groups": {
+                "resistances": "Uzyskał odporności",
+                "languages": "Nauczył się czytać i mówić",
+                "skills": "Wytrenował się w następujących umiejętnościach",
+                "tome": "Studiował swój tom Taumaturga",
+                "spells": "Jest gotowy do użycia zaklęć",
+                "familiar": "Wybrał zdolności chowańca",
+                "apparition": "Dostroił się do tych projekcji",
+                "feats": "Nauczył się atutów",
+                "scrolls": "Utworzył tymczasowe zwoje",
+                "ceremonial": "Przeprowadził rytuał, aby stworzyć nóż ceremonialny nasycony zaklęciem",
+                "blade": "Zaszczepił ducha w swojej broni",
+                "mindsmith": "Skupił swój umysł na broni"
+            },
+            "rations": {
+                "used": "Zużył jedną z {name} i pozostało mu {nb} sztuk.",
+                "last": "Zużył ostatnie z {name}.",
+                "almost": "Zużył jedną z {name} i pozostało mu tylko {nb} sztuk."
             }
+        },
+        "mindsmith": {
+            "weapon": {
+                "name": "Broń umysłu"
+            }
+        },
+        "sheet": {
+            "title": "Codzienne przygotowania",
+            "unrested": "Wymagany odpoczynek",
+            "primary": {
+                "assign": "Przypisanie jako główne naczynie",
+                "unassign": "Anulowanie przypisania głównego naczynia"
+            },
+            "charges": {
+                "label": "Ładunki",
+                "tooltip": "Zresetuj ładunki do wartości maksymalnej (maks.: {max})"
+            },
+            "generate": {
+                "tooltip": "Wygeneruj wpis dotyczący Rzucania Zaklęć ",
+                "confirm": "Wpis dotyczący Rzucania Zaklęć dla <strong>{name}</strong> został utworzony."
+            }
+        },
+        "spellEntry": {
+            "name": "Zaklęcia tymczasowe"
         },
         "staves": {
             "spontaneous": {
@@ -218,65 +248,11 @@
                 "notEquipped": "Musisz wyposażyć się w {staff}, aby móc z niego korzystać."
             },
             "action": {
-                "pick-up": "Podnoszenie",
-                "retrieve": "Odzyskanie",
+                "pick-up1H": "Podnoszenie",
+                "retrieve1H": "Odzyskanie",
                 "sheathe": "Schowek",
-                "draw": "Losowanie"
+                "draw1H": "Losowanie"
             }
-        },
-        "animist": {
-            "spellcasting": {
-                "focus": "Zaklęcia naczyń"
-            }
-        },
-        "spellEntry": {
-            "name": "Zaklęcia tymczasowe"
-        },
-        "mindsmith": {
-            "weapon": {
-                "name": "Broń umysłu"
-            }
-        },
-        "customs": {
-            "title": "Niestandardowe dzienne czynności",
-            "list": {
-                "create": "Utwórz niestandardowe dzienne czynności",
-                "delete": "Usuń niestandardowe dzienne czynności"
-            },
-            "delete": {
-                "title": "Usuń niestandardowe dzienne czynności",
-                "content": "Czy na pewno chcesz usunąć ten dzienną czynność?"
-            },
-            "code": {
-                "save": "Zapisz niestandardowe dzienne czynności",
-                "error": "Zwracane dane nie są zgodne ze strukturą PF2e Daily.",
-                "saved": "Dzienne czynności zostały pomyślnie zapisane."
-            },
-            "readonly": {
-                "flavor": "Ta dzienna czynność jest oznaczona jako <em>tylko do odczytu</em> ponieważ została utworzona w poprzedniej wersji modułu i jest niekompatybilna. Jeśli zdecydujesz się <a>odblokować</a> to, przed zapisaniem upewnij się, że zaktualizowałeś go do formatu danych aktualnej wersji."
-            }
-        },
-        "config": {
-            "filters": "Włączono Dzienne Aktywności",
-            "title": "{actor} - Dzienna konfiguracja",
-            "animist": {
-                "lore": "Usuń przyrostek Wiedzy",
-                "lores": "Pokaż podsumowanie Wiedzy",
-                "spells": "Pokaż podsumowanie Zaklęć",
-                "signatures": "Ustaw Zaklęcia Popisowe"
-            }
-        },
-        "homebrew": {
-            "title": "Ustawienia Zasad Domowych",
-            "index": {
-                "familiar": "Zdolności chowańca",
-                "animist": "Animistyczne projekcje"
-            },
-            "pack": "Pakiet kompendium",
-            "add": "Dodaj wpis",
-            "delete": "Usuń wpis",
-            "invalid": "<strong>{entry}</strong> nie jest identyfikatorem pakietu kompendium ani identyfikatorem UUID pliku <strong>{type}</strong>",
-            "empty": "Należy podać identyfikator pakietu kompendium lub identyfikator UUID pliku <strong>{type}</strong>"
         }
     }
 }

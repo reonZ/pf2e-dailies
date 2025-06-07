@@ -1,6 +1,6 @@
+import { createDaily } from "daily";
 import { localize, SpellPF2e } from "module-helpers";
-import { createDaily } from "../daily";
-import { utils } from "../utils";
+import { utils } from "utils";
 
 const tricksterAce = createDaily({
     key: "trickster-ace",

@@ -1,5 +1,5 @@
-import { createDaily } from "../daily";
-import { utils } from "../utils";
+import { createDaily } from "daily";
+import { utils } from "utils";
 
 const experimentalSpellshaping = createDaily({
     key: "experimental-spellshaping",

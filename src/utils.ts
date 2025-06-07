@@ -1,9 +1,24 @@
 import {
+    ActorPF2e,
     CharacterPF2e,
+    ConsumableSource,
+    createChatLink,
+    createConsumableFromSpell,
     CreateSpellcastingSource,
+    createSpellcastingSource,
     DamageType,
     FeatOrFeatureCategory,
+    FeatSource,
     FeatTrait,
+    getActorMaxRank,
+    getChoiceSetSelection,
+    getItemSourceFromUuid,
+    getItemTypeLabel,
+    getSetting,
+    getSkillLabel,
+    getSpellcastingMaxRank,
+    getSpellRankLabel,
+    hasItemWithSourceId,
     ItemPF2e,
     Language,
     LoreSource,
@@ -13,50 +28,26 @@ import {
     PreciousMaterialType,
     R,
     ResistanceType,
+    rollDie,
+    setFlagProperty,
     SkillSlug,
     SpellConsumableItemType,
     SpellPF2e,
+    SpellSource,
     WeaponGroup,
     WeaponPF2e,
     WeaponPropertyRuneType,
     WeaponTrait,
     ZeroToFour,
     ZeroToTen,
-    createChatLink,
-    createConsumableFromSpell,
-    createSpellcastingSource,
-    getActorMaxRank,
-    getChoiceSetSelection,
-    getItemSource,
-    getItemTypeLabel,
-    getRankLabel,
-    getSetting,
-    getSkillLabel,
-    getSpellcastingMaxRank,
-    hasFreePropertySlot,
-    hasItemWithSourceId,
-    rollDie,
-    setFlagProperty,
 } from "module-helpers";
-
-type SimplifiableRuleValue = string | number | "half" | "level";
-
-type CreateSpellConsumableSourceOptions = {
-    uuid: string;
-    level?: number;
-    itemName?: string;
-    itemImg?: ImageFilePath;
-};
+import { CreatedSpellcastingEntrySource } from "module-helpers/src";
 
 const utils = {
     /**
      * getSkillLabel(skill: SkillSlug, localize?: boolean): string
      */
     getSkillLabel,
-    /**
-     * getItemSource(uuid: string, instance?: string): Promise<ItemSourcePF2e | null>
-     */
-    getItemSource,
     /**
      * getActorMaxRank(actor: CreaturePF2e): OneToTen
      */
@@ -66,67 +57,70 @@ const utils = {
      */
     getItemTypeLabel,
     /**
-     * hasItemWithSourceId(actor: ActorPF2e, uuid: string | string[], type?: ItemType | ItemType[]): boolean
+     * hasItemWithSourceId(actor: ActorPF2e, uuid: string, type?: ItemType): boolean
      */
     hasItemWithSourceId,
+    getItemSource: getItemSourceFromUuid,
     getChoiSetRuleSelection: (
         item: ItemPF2e,
         option?: string | { option?: string; flag?: string }
-    ) => {
+    ): string | undefined => {
         const options = typeof option === "string" ? { option } : option;
         return getChoiceSetSelection(item, options);
     },
-    hasFreePropertySlot: (item: WeaponPF2e) => {
-        return hasFreePropertySlot(item);
+    hasFreePropertySlot: (item: WeaponPF2e): boolean => {
+        const potency = item.system.runes.potency;
+        return potency > 0 && item.system.runes.property.length < potency;
     },
-    getResistanceLabel: (resistance: ResistanceType, localize = true) => {
+    getResistanceLabel: (resistance: ResistanceType, localize = true): string => {
         const label = CONFIG.PF2E.resistanceTypes[resistance];
         return localize ? game.i18n.localize(label).capitalize() : label;
     },
-    getResistances: () => {
+    getResistances: (): { value: ResistanceType; label: string }[] => {
         return R.pipe(
             CONFIG.PF2E.resistanceTypes,
             R.entries(),
             R.map(([value, label]) => ({ value, label: label.capitalize() }))
         );
     },
-    getLanguageLabel: (language: Language, localize = true) => {
+    getLanguageLabel: (language: Language, localize = true): string => {
         const label = CONFIG.PF2E.languages[language];
         return localize ? game.i18n.localize(label) : label;
     },
-    getLanguages: () => {
+    getLanguages: (): { value: Language; label: string }[] => {
         return R.pipe(
             CONFIG.PF2E.languages,
             R.entries(),
             R.map(([value, label]) => ({ value, label }))
         );
     },
-    getSkills: () => {
+    getSkills: (): { value: SkillSlug; label: string }[] => {
         return R.pipe(
             CONFIG.PF2E.skills,
             R.entries(),
             R.map(([value, { label }]) => ({ value, label }))
         );
     },
-    getSpellRankLabel: (rank: ZeroToTen) => {
-        return getRankLabel(rank);
+    getSpellRankLabel: (rank: ZeroToTen): string => {
+        return getSpellRankLabel(rank);
     },
     createExcludeFeatList: (
         actor: CharacterPF2e,
         categories: FeatOrFeatureCategory[],
         traits: FeatTrait[]
-    ) => {
+    ): ItemUUID[] => {
         return R.pipe(
             actor.itemTypes.feat,
             R.filter((feat) => categories.some((category) => feat.category === category)),
             R.filter((feat) => traits.every((trait) => feat.traits.has(trait))),
-            R.map((feat) => feat.sourceId)
+            R.map((feat) => feat.sourceId),
+            R.filter(R.isTruthy)
         );
     },
     getSpellcastingMaxRank: (
         actor: CharacterPF2e,
         { tradition, rankLimit }: { tradition?: MagicTradition; rankLimit?: OneToTen } = {}
-    ) => {
+    ): ZeroToTen => {
         const maxRank = R.pipe(
             actor.spellcasting.spellcastingFeatures,
             tradition ? R.filter((entry) => entry.tradition === tradition) : R.identity(),
@@ -135,36 +129,36 @@ const utils = {
         );
         return maxRank ?? 0;
     },
-    getActors: (actor?: CharacterPF2e) => {
+    getActors: (actor?: CharacterPF2e): ActorPF2e[] => {
         const list =
             actor && getSetting("partyMembers") && actor.parties.size
                 ? Array.from(actor.parties).flatMap((party) => party.members)
                 : game.actors.filter((a) => a.hasPlayerOwner);
-        return list.filter((a) => a !== actor);
+        return actor ? list.filter((a) => a !== actor) : list;
     },
-    getProficiencyLabel: (rank: OneToFour) => {
+    getProficiencyLabel: (rank: OneToFour): string => {
         return game.i18n.localize(CONFIG.PF2E.proficiencyLevels[rank]);
     },
-    getWeaponPropertyRuneLabel: (rune: WeaponPropertyRuneType) => {
+    getWeaponPropertyRuneLabel: (rune: WeaponPropertyRuneType): string => {
         return game.i18n.localize(`PF2E.WeaponPropertyRune.${rune}.Name`);
     },
-    getWeaponPotencyRuneLabel: (potency: ZeroToFour) => {
+    getWeaponPotencyRuneLabel: (potency: ZeroToFour): string => {
         return game.i18n.localize(`PF2E.WeaponPotencyRune${potency}`);
     },
-    getWeaponTraitLabel: (trait: WeaponTrait) => {
+    getWeaponTraitLabel: (trait: WeaponTrait): string => {
         return game.i18n.localize(CONFIG.PF2E.weaponTraits[trait]);
     },
-    getWeaponDamageLabel: (damage: DamageType) => {
+    getWeaponDamageLabel: (damage: DamageType): string => {
         return game.i18n.localize(CONFIG.PF2E.damageTypes[damage]);
     },
-    getWeaponGroupLabel: (group: WeaponGroup) => {
+    getWeaponGroupLabel: (group: WeaponGroup): string => {
         return game.i18n.localize(CONFIG.PF2E.weaponGroups[group]);
     },
-    getPreciousMaterialLabel(material: PreciousMaterialType) {
+    getPreciousMaterialLabel(material: PreciousMaterialType): string {
         return game.i18n.localize(CONFIG.PF2E.preciousMaterials[material]);
     },
-    createFeatSource: async (uuid: string) => {
-        const source = await getItemSource(uuid, "FeatPF2e");
+    createFeatSource: async (uuid: string): Promise<FeatSource> => {
+        const source = await getItemSourceFromUuid(uuid, "FeatPF2e");
 
         if (!source) {
             throw new Error(
@@ -174,10 +168,12 @@ const utils = {
 
         return source;
     },
-    createSpellScrollSource: (options: CreateSpellConsumableSourceOptions) => {
+    createSpellScrollSource: (
+        options: CreateSpellConsumableSourceOptions
+    ): Promise<ConsumableSource> => {
         return createSpellConsumableSource("scroll", options);
     },
-    createWandSource: (options: CreateSpellConsumableSourceOptions) => {
+    createWandSource: (options: CreateSpellConsumableSourceOptions): Promise<ConsumableSource> => {
         return createSpellConsumableSource("wand", options);
     },
     createSkillRuleElement: ({
@@ -201,15 +197,19 @@ const utils = {
 
         return rule;
     },
-    createLoreSource: ({ name, rank }: { name: string; rank: ZeroToFour }) => {
-        const data: PreCreate<LoreSource> = {
+    createLoreSource: ({
+        name,
+        rank,
+    }: {
+        name: string;
+        rank: ZeroToFour;
+    }): PreCreate<LoreSource> => {
+        return {
             type: "lore",
             img: "systems/pf2e/icons/default-icons/lore.svg",
             name,
             system: { proficient: { value: rank } },
-        } as const;
-
-        return data;
+        };
     },
     createResistanceRuleElement: ({
         type,
@@ -251,14 +251,14 @@ const utils = {
 
         return rule;
     },
-    createChatLink: (itemOrUuid: ItemPF2e | string, label?: string) => {
+    createChatLink: (itemOrUuid: ItemPF2e | string, label?: string): string => {
         const uuid =
             itemOrUuid instanceof Item ? itemOrUuid.sourceId ?? itemOrUuid.uuid : itemOrUuid;
         return createChatLink(uuid, { label });
     },
     selectRandomOption: (
         options: (string | { value: string })[] | HTMLSelectElement | HTMLOptionsCollection
-    ) => {
+    ): string => {
         options = options instanceof HTMLSelectElement ? options.options : options;
         options =
             options instanceof HTMLOptionsCollection
@@ -274,7 +274,7 @@ const utils = {
     },
     createSpellcastingEntrySource: (
         options: CreateSpellcastingSource & { identifier?: string }
-    ) => {
+    ): CreatedSpellcastingEntrySource => {
         const source = createSpellcastingSource(options);
 
         if (options.identifier) {
@@ -290,8 +290,8 @@ const utils = {
             signature,
             rank,
         }: { identifier?: string; signature?: boolean; rank?: ZeroToTen } = {}
-    ) => {
-        const source = await getItemSource(uuid, "SpellPF2e");
+    ): Promise<SpellSource> => {
+        const source = await getItemSourceFromUuid(uuid, "SpellPF2e");
 
         if (!source) {
             throw new Error(
@@ -313,16 +313,16 @@ const utils = {
 
         return source;
     },
-    getSpellWithRankLabel: (uuid: string, rank: OneToTen) => {
+    getSpellWithRankLabel: (uuid: string, rank: OneToTen): string => {
         const name = fromUuidSync(uuid)?.name ?? "";
-        return `${name} (${getRankLabel(rank)})`;
+        return `${name} (${getSpellRankLabel(rank)})`;
     },
 };
 
 async function createSpellConsumableSource(
     type: SpellConsumableItemType,
     { uuid, level, itemName, itemImg }: CreateSpellConsumableSourceOptions
-) {
+): Promise<ConsumableSource> {
     const spell = await fromUuid<SpellPF2e>(uuid);
 
     if (!spell?.isOfType("spell")) {
@@ -340,7 +340,7 @@ async function createSpellConsumableSource(
     });
 }
 
-function simplifyRuleValue(value: SimplifiableRuleValue) {
+function simplifyRuleValue(value: SimplifiableRuleValue): string | number {
     return value === "half"
         ? "max(1,floor(@actor.level/2))"
         : value === "level"
@@ -348,5 +348,35 @@ function simplifyRuleValue(value: SimplifiableRuleValue) {
         : value;
 }
 
-export { utils };
+function createUpdateCollection<T extends EmbeddedDocumentUpdateData>(): [
+    Collection<T>,
+    (data: T) => void
+] {
+    const collection = new Collection<T>();
+
+    return [
+        collection,
+        (data: T) => {
+            if (data._id) {
+                const update = collection.get(data._id) ?? {};
+                collection.set(data._id, foundry.utils.mergeObject(update, data));
+            }
+        },
+    ];
+}
+
+function getUuidFromInlineMatch(match: RegExpExecArray | RegExpMatchArray) {
+    return match[1] === "Compendium" ? `Compendium.${match[2]}` : match[2];
+}
+
+type CreateSpellConsumableSourceOptions = {
+    uuid: string;
+    level?: number;
+    itemName?: string;
+    itemImg?: ImageFilePath;
+};
+
+type SimplifiableRuleValue = "half" | "level" | (string & {}) | (number & {});
+
+export { createUpdateCollection, getUuidFromInlineMatch, utils };
 export type { SimplifiableRuleValue };

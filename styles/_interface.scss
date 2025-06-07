@@ -172,6 +172,7 @@
                         input {
                             width: calc(100% - 20px);
                             border-radius: 3px 0 0 3px;
+                            border-right: 1px solid var(--background);
                         }
 
                         select {
@@ -234,11 +235,12 @@
 
             .buttons {
                 margin-top: 0.7em;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                column-gap: var(--gap);
 
-                &:not(.no-accept) {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    column-gap: var(--gap);
+                &.no-accept {
+                    grid-template-columns: 1fr;
                 }
             }
         }

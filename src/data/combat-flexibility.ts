@@ -1,5 +1,5 @@
-import { createDaily } from "../daily";
-import { utils } from "../utils";
+import { createDaily } from "daily";
+import { utils } from "utils";
 
 const combatUUID = "Compendium.pf2e.classfeatures.Item.8g6HzARbhfcgilP8";
 const improvedUUID = "Compendium.pf2e.classfeatures.Item.W2rwudMNcAxs8VoX";

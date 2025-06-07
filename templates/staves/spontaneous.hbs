@@ -1,0 +1,17 @@
+<div class="flavor">{{{hint}}}</div>
+<div class="list">
+    {{#each entries as |entry i|}}
+    {{#if ../multiEntries}}
+    <h3>{{entry.name}}</h3>
+    {{/if}}
+    {{#each slots as |slot|}}
+    <label>
+        <input type="radio" name="entry" data-entry="{{entry.id}}" data-slot="{{slot.key}}"
+            {{checked (and (eq i 0) (eq @index 0))}}>
+        <span>{{slot.rank}}
+            ({{slot.value}} {{@root.i18n
+            'remaining'}})</span>
+    </label>
+    {{/each}}
+    {{/each}}
+</div>

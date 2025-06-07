@@ -1,46 +1,51 @@
+import { CustomsMenu } from "custom";
+import { parseDailies } from "dailies";
+import { HomebrewsMenu } from "homebrew";
 import { registerSetting, registerSettingMenu, renderCharacterSheets } from "module-helpers";
-import { CustomDailies } from "./apps/customs";
-import { HomebrewDailies } from "./apps/homebrew";
-import { parseDailies } from "./dailies";
 
 function registerSettings() {
-    registerSetting({
-        key: "customDailies",
+    registerSettingMenu("customs", {
+        type: CustomsMenu,
+        restricted: true,
+    });
+
+    registerSettingMenu("homebrew", {
+        type: HomebrewsMenu,
+        restricted: true,
+    });
+
+    registerSetting("customDailies", {
         type: Array,
         default: [],
+        scope: "world",
         config: false,
-        onChange: parseDailies,
+        onChange: () => {
+            parseDailies();
+        },
     });
 
-    registerSetting({
-        key: "homebrewEntries",
-        type: Object,
+    registerSetting("homebrewEntries", {
+        type: new foundry.data.fields.TypedObjectField(
+            new foundry.data.fields.ArrayField(new foundry.data.fields.StringField())
+        ),
         default: {},
+        scope: "world",
         config: false,
     });
 
-    registerSettingMenu({
-        key: "customs",
-        type: CustomDailies,
-    });
-
-    registerSettingMenu({
-        key: "homebrew",
-        type: HomebrewDailies,
-    });
-
-    registerSetting({
-        key: "partyMembers",
+    registerSetting("partyMembers", {
         type: Boolean,
         default: true,
+        scope: "world",
     });
 
-    registerSetting({
-        key: "addedHighlight",
+    registerSetting("addedHighlight", {
         type: Boolean,
         default: true,
-        scope: "client",
-        onChange: renderCharacterSheets,
+        scope: "user",
+        onChange: () => {
+            renderCharacterSheets();
+        },
     });
 }
 

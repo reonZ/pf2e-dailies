@@ -1,7 +1,6 @@
+import { createDaily, DailyRowDropSpell } from "daily";
 import { OneToSix, R } from "module-helpers";
-import { createDaily } from "../daily";
-import { DailyRowDropSpell } from "../types";
-import { utils } from "../utils";
+import { utils } from "utils";
 
 type OneToSeven = OneToSix | 7;
 

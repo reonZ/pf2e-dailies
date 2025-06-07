@@ -1,0 +1,10 @@
+<aside class="sidebar flexcol">
+    <nav class="tabs vertical scrollable">
+        {{#each index}}
+        <button type="button" data-tab="{{this.id}}"
+            class="plain{{#if this.selected}} active{{/if}}">
+            <span>{{this.label}}</span>
+        </button>
+        {{/each}}
+    </nav>
+</aside>

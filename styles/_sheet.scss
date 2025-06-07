@@ -19,87 +19,76 @@
         }
     }
 
-    form {
-        .pf2e-dailies-charges {
+    .pf2e-dailies-charges {
+        display: flex;
+        gap: 0.5em;
+        align-items: center;
+
+        label {
+            font-family: var(--body-serif);
+            font-weight: 600;
+        }
+
+        input[type="number"] {
+            text-align: center;
+            background: var(--alt);
+            border-radius: 3px;
+            border: 1px solid var(--sub);
+            color: var(--text-light);
+            font: var(--font-size-12) var(--sans-serif);
+            height: unset;
+            width: 4ch;
+        }
+
+        a {
             display: flex;
-            gap: 0.5em;
             align-items: center;
 
-            label {
-                font-family: var(--body-serif);
-                font-weight: 600;
-            }
-
-            input[type="number"] {
-                text-align: center;
-                background: var(--alt);
-                border-radius: 3px;
-                border: 1px solid var(--sub);
-                color: var(--text-light);
-                font: var(--font-size-12) var(--sans-serif);
-                height: unset;
-                width: 4ch;
-            }
-
-            a {
-                display: flex;
-                align-items: center;
-
-                &.disabled {
-                    pointer-events: none;
-                    color: grey;
-                }
+            &.disabled {
+                pointer-events: none;
+                color: grey;
             }
         }
     }
+}
 
-    &.character {
-        form {
-            aside .sidebar a.roll-icon.dailies {
-                padding: 4px 0 0 0;
+.actor.sheet.character {
+    aside .sidebar a.roll-icon.dailies {
+        padding: 3px 0 0 0;
+
+        i {
+            font-size: 1.1rem;
+        }
+
+        &.inactive {
+            cursor: default;
+            filter: brightness(0.75);
+            opacity: 0.75;
+            text-shadow: none;
+
+            &:hover {
+                transition: none;
 
                 i {
-                    font-size: 1.1rem;
-                }
-
-                &.disabled {
-                    &:hover {
-                        transition: none;
-
-                        i {
-                            transform: scale(1);
-                        }
-                    }
-                }
-            }
-
-            .pf2e-dailies-charges {
-                button.cast-spell.blue {
-                    font: 500 var(--font-size-10) / 1.8em var(--sans-serif);
-                    min-width: 2.5rem;
-                    padding: 0 0.25em;
-                    text-transform: uppercase;
-                    width: fit-content;
-                    margin-left: 0.5em;
-                    line-height: 1.6;
+                    transform: scale(1);
                 }
             }
         }
     }
 
-    &.npc {
-        form {
-            .pf2e-dailies-charges {
-                margin: auto;
-                width: fit-content;
-                padding-block: 2px;
-
-                [data-action="reset-charges"] {
-                    i {
-                        font-size: 0.9em;
-                    }
-                }
-            }
+    .pf2e-dailies-charges {
+        button.cast-spell.blue {
+            font: 500 var(--font-size-10) / 1.8em var(--sans-serif);
+            text-transform: uppercase;
+            width: fit-content;
         }
+    }
+}
+
+.actor.sheet.npc {
+    .pf2e-dailies-charges {
+        margin: auto;
+        width: fit-content;
+        padding-block: 2px;
     }
 }

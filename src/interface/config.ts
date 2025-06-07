@@ -1,21 +1,21 @@
+import { getDisabledDailies } from "actor";
+import { PreparedDaily } from "dailies";
+import { DailyConfigRow, DailyConfigRowValue } from "daily";
 import {
+    addListenerAll,
     ApplicationConfiguration,
     ApplicationRenderOptions,
     CharacterPF2e,
-    R,
-    addListenerAll,
-    createHTMLElement,
-    elementDataset,
     getFlag,
     getInputValue,
     localize,
+    R,
     render,
     setFlag,
     templateLocalize,
+    TemplateLocalize,
     unsetFlag,
 } from "module-helpers";
-import { getDisabledDailies } from "../api";
-import type { DailyConfigRow, DailyConfigRowValue, PreparedDaily } from "../types";
 
 const ApplicationV2 = foundry.applications.api.ApplicationV2;
 
@@ -38,8 +38,8 @@ class DailyConfig extends ApplicationV2 {
     static DEFAULT_OPTIONS: DeepPartial<ApplicationConfiguration> = {
         window: {
             positioned: true,
-            resizable: true,
-            minimizable: true,
+            resizable: false,
+            minimizable: false,
             frame: true,
         },
     };
@@ -100,8 +100,7 @@ class DailyConfig extends ApplicationV2 {
     }
 
     _replaceHTML(result: string, content: HTMLElement, options: ApplicationRenderOptions) {
-        const wrapper = createHTMLElement("div", { innerHTML: result });
-        content.replaceChildren(...wrapper.children);
+        content.innerHTML = result;
         this.#activateListeners(content);
     }
 
@@ -118,8 +117,8 @@ class DailyConfig extends ApplicationV2 {
     #activateListeners(html: HTMLElement) {
         const actor = this.actor;
 
-        addListenerAll(html, ".daily [name]", "change", async (event, el: HTMLInputElement) => {
-            const { dailyKey } = elementDataset(el);
+        addListenerAll(html, ".daily [name]", "change", async (el: HTMLInputElement) => {
+            const dailyKey = el.dataset.dailyKey as string;
 
             if (el.checked) {
                 await unsetFlag(this.actor, "disabled", dailyKey);
@@ -130,7 +129,7 @@ class DailyConfig extends ApplicationV2 {
             this.dispatchEvent(new Event("update", { bubbles: true, cancelable: true }));
         });
 
-        addListenerAll(html, ".config [name]", "change", async (event, el: HTMLInputElement) => {
+        addListenerAll(html, ".config [name]", "change", async (el: HTMLInputElement) => {
             const dailyKey = el.dataset.dailyKey as string;
             const value = getInputValue(el);
             const saveValue =
@@ -156,7 +155,7 @@ type ConfigContextDaily = {
 
 type ConfigContext = {
     dailies: ConfigContextDaily[];
-    i18n: ReturnType<typeof templateLocalize>;
+    i18n: TemplateLocalize;
 };
 
 export { DailyConfig };

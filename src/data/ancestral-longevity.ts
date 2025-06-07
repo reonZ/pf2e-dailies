@@ -1,7 +1,6 @@
+import { createDaily, DailyRowComboData } from "daily";
 import { SkillSlug } from "module-helpers";
-import { createDaily } from "../daily";
-import { DailyRowComboData } from "../types";
-import { utils } from "../utils";
+import { utils } from "utils";
 
 const ancestralUUID = "Compendium.pf2e.feats-srd.Item.WoLh16gyDp8y9WOZ";
 const expertUUID = "Compendium.pf2e.feats-srd.Item.vfuHVSuExvtyajkW";

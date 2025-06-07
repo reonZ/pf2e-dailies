@@ -1,0 +1,25 @@
+<form>
+    <div class="scrollable">
+        <section class="tab">
+            {{#each entries as |entry|}}
+            <div class="entry" data-id="{{entry.id}}">
+                {{#if entry.img}}
+                <img src="{{entry.img}}">
+                {{else}}
+                <i class="fa-solid fa-folder pack" {{{@root.i18n.tooltip 'pack' }}}></i>
+                {{/if}}
+                <a class="name" data-action="open-entry">{{entry.name}}</a>
+                <a data-action="delete-entry" {{{@root.i18n.tooltip 'delete' }}}>
+                    <i class="fas fa-trash"></i>
+                </a>
+            </div>
+            {{/each}}
+        </section>
+    </div>
+    <footer>
+        <input type="text" name="entry" {{disabled disabled}}>
+        <button type="button" data-action="add-homebrew" {{disabled disabled}}>
+            {{@root.i18n 'add'}}
+        </button>
+    </footer>
+</form>

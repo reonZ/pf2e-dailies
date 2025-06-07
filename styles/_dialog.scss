@@ -1,52 +1,36 @@
 .application.dialog {
-    .pf2e-dailies-spontaneous {
-        margin-bottom: 0.7em;
+    &.pf2e-dailies-mind-weapon,
+    &.pf2e-dailies-spontaneous {
+        .dialog-content {
+            gap: 0.5em;
 
-        strong {
-            white-space: nowrap;
+            .flavor {
+                text-align: center;
+                font-size: 1.1em;
+                margin-bottom: 0.5em;
+            }
+
+            label {
+                display: flex;
+                align-items: center;
+                gap: 0.5em;
+            }
         }
+    }
 
-        .hint {
-            text-align: center;
+    &.pf2e-dailies-mind-weapon {
+        label {
+            &.runes {
+                display: flex;
+                justify-content: flex-end;
+            }
         }
+    }
 
+    &.pf2e-dailies-spontaneous {
         h3 {
             font-size: 1.5em;
             padding-left: 0.3em;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 0.2em;
-            margin: 0 0 0 0.3em;
-        }
-
-        input {
-            margin-right: 0.3em;
-        }
-    }
-
-    .pf2e-dailies-migration {
-        h3 {
-            font-size: 1.5em;
-            margin: 0;
-        }
-    }
-
-    .pf2e-dailies-mind-weapon {
-        .flavor {
-            text-align: center;
-        }
-
-        input {
-            margin-right: 0.5em;
-        }
-
-        .runes {
-            margin-left: 1em;
         }
     }
 }

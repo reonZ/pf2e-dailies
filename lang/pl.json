@@ -241,7 +241,8 @@
                 "would": "Czy chcesz wykorzystać spontaniczny slot na zaklęcie rangi <strong>{rank}</strong>{higher} z {from}?",
                 "one": "<strong>{entry}</strong>",
                 "multi": "dowolny z następujących wpisów dotyczących rzucania czarów",
-                "higher": " lub wyższy"
+                "higher": " lub wyższy",
+                "yes": "Zużyj"
             },
             "error": {
                 "missing": "Nie udało się odzyskać kosturu.",
@@ -251,7 +252,7 @@
                 "pick-up1H": "Podnoszenie",
                 "retrieve1H": "Odzyskanie",
                 "sheathe": "Schowek",
-                "draw1H": "Losowanie"
+                "draw1H": "Wyciągnięcie"
             }
         }
     }

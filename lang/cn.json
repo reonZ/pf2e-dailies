@@ -1,0 +1,259 @@
+{
+    "pf2e-dailies": {
+        "charges": {
+            "label": "充能",
+            "reset": {
+                "title": "重置法杖充能",
+                "content": "你确定要将法杖充能重置为最大值吗（max: {max}）？"
+            },
+            "error": {
+                "notEnough": "无法施放{rank}环{spell}：充能不足。"
+            }
+        },
+        "settings": {
+            "addedHighlight": {
+                "hint": "由本模组添加的临时“物品”会在角色卡与魔宠卡高亮现实。",
+                "name": "高亮新增物品"
+            },
+            "partyMembers": {
+                "name": "仅限队伍成员",
+                "hint": "当在模组中检索玩家角色的集合时，模组应将其限制为仅包含队伍成员（如果该角色属于队伍中的一员）或是所有玩家拥有的角色？"
+            },
+            "menus": {
+                "customs": {
+                    "name": "自定义每日准备",
+                    "hint": "在模组中注册你的房规每日准备项。",
+                    "label": "注册"
+                },
+                "homebrew": {
+                    "label": "房规设置",
+                    "name": "管理房规设置",
+                    "hint": "添加你的自定义法杖，以便使用该模组的每日准备功能。"
+                }
+            }
+        },
+        "builtin": {
+            "dailies": {
+                "familiar": "魔宠能力",
+                "thaumaturge-tome": "奇术师典奇具",
+                "staves": "准备法杖"
+            }
+        },
+        "config": {
+            "filters": "启用每日准备",
+            "animist": {
+                "lores": "显示学识技能汇总",
+                "signatures": "设置标志性法术",
+                "lore": "移除学识后缀",
+                "spells": "显示法术汇总"
+            },
+            "title": "{actor} -每日准备配置"
+        },
+        "customs": {
+            "list": {
+                "save": "保存自定义每日准备项",
+                "create": "创建自定义每日准备项",
+                "delete": "删除自定义每日准备项"
+            },
+            "delete": {
+                "title": "删除自定义每日准备项",
+                "content": "你确定要删除该每日准备项？"
+            },
+            "title": "自定义每日准备项",
+            "code": {
+                "saved": "自定义每日准备项已被成功保存。"
+            },
+            "readonly": {
+                "flavor": "该每日准备项背标记为<em>r只读</em>。因为它是在模组的早期版本中创建的，与当前版本不兼容。如果您决定<a>解锁</a>它，请在保存前确保将其更新为当前版本的数据格式。"
+            }
+        },
+        "dialog": {
+            "mind-weapon": {
+                "no": "取消",
+                "held-in-one-hand": "单手",
+                "title": "创建心灵武器",
+                "yes": "创建",
+                "flavor": "该角色的库存中没有心灵武器。<br>请选择下列选项之一创建一把心灵武器。",
+                "oneTrait": " 且拥有 <strong>{trait1}</strong> 特征",
+                "twoTraits": " 且拥有 <strong>{trait1}</strong> 和 <strong>{trait2}</strong> 特征",
+                "label": "一件{hand}造成 <strong>1{die}</strong> 点伤害的武器，{hasTrait}",
+                "held-in-two-hands": "双手"
+            }
+        },
+        "animist": {
+            "spellcasting": {
+                "focus": "附身法术"
+            }
+        },
+        "homebrew": {
+            "title": "管理房规设置",
+            "index": {
+                "familiar": "魔宠能力",
+                "animist": "灵媒精魄"
+            },
+            "pack": "合集包",
+            "add": "添加条目",
+            "delete": "删除条目",
+            "empty": "你必须提供合集包的ID或 <strong>{type}</strong>的UUID",
+            "invalid": "<strong>{entry}</strong>既不属于合集包的ID，也不是 <strong>{type}</strong>的UUID"
+        },
+        "interface": {
+            "title": "{actor} - 每日准备",
+            "noDailies": "该角色不具备任何每日准备项",
+            "cancel": "取消",
+            "accept": "确认准备",
+            "tooltip": {
+                "clear": "清除选中目标",
+                "random": "该选项将随机选择",
+                "search": "开启合集包浏览器",
+                "noSelect": "无选项可用",
+                "notify": "纯信息条目",
+                "exists": "该角色已具备此专长",
+                "alert": "点击此处解除"
+            },
+            "drop": {
+                "error": {
+                    "type": {
+                        "level": "等级",
+                        "type": "种类",
+                        "rarity": "稀有度",
+                        "skills": "技能",
+                        "rank": "环级",
+                        "traditions": "根源",
+                        "source": "来源",
+                        "categories": "子类",
+                        "category": "类别"
+                    },
+                    "require": "需要：<strong>{need}</strong>, 已有： <strong>{has}</strong>",
+                    "wrongSource": "仅有合集包或世界物品可以使用。",
+                    "invalid": "无效：<strong>{has}</strong>",
+                    "wrongData": "被丢弃的物品不具有<strong>{type}</strong>的权限（{require}）。",
+                    "wrongTraits": "被丢弃的物品特征与筛选设置不匹配。",
+                    "exclude": "<strong>{item}</strong>被排除在选项之外。",
+                    "none": "无",
+                    "missing": "未找到： <strong>{need}</strong>",
+                    "wrongDataType": "丢弃的数据类型无效。"
+                },
+                "notes": {
+                    "ace": "从奥术、神术、异能或原能法术列表中选择一个四环或更低的法术。<br>该法术不能有开销，施放时间也不能超过10分钟。该法术必须能够以单一生物为目标，且你必须是该法术的有效目标。"
+                }
+            },
+            "config": "配置",
+            "error": {
+                "empty": "某些必填选框为空。"
+            },
+            "staves": {
+                "staff": "法杖",
+                "bond": "符文领主联结",
+                "regular": "常规法杖",
+                "makeshift": "临时法杖",
+                "empty": "空法术位",
+                "group": {
+                    "bond": "今日的连结武器已准备",
+                    "merged": "已将{type}与今日的连结武器融合",
+                    "prepared": "今日已准备{type}"
+                },
+                "type": "类别",
+                "merged": "与常规法杖融合",
+                "flexible": "灵活法术位",
+                "mergedshift": "与临时法杖融合"
+            },
+            "rations": {
+                "yes": "消耗（剩余{nb}）",
+                "no": "没有任何消耗",
+                "last": "消耗最后一次"
+            },
+            "mindsmith": {
+                "missing": "未找到心灵武器"
+            }
+        },
+        "error": {
+            "unexpected": "模组<strong>PF2e Dailies</strong>出现意外错误，详情查看控制台（F12）。",
+            "incompatible": "存在一些自定义的每日准备项不兼容当前版本的<strong>PF2e Dailies</strong>。"
+        },
+        "label": {
+            "mind-mental": "心灵锻造",
+            "apparition": {
+                "first": "主精魄",
+                "other": "精魄 #{nb}",
+                "primary": "主 #{nb} "
+            },
+            "ability": "属性 #{nb}",
+            "rune": "性能符文",
+            "select": "选择{that}",
+            "mind-smith": "铸念师",
+            "expend": "扩展 #{nb}",
+            "mind-runic": "符文锻造"
+        },
+        "message": {
+            "groups": {
+                "resistances": "已获得抗力",
+                "languages": "已习得如何读写该语言",
+                "skills": "已在下列技能受训",
+                "familiar": "已选择魔宠能力",
+                "tome": "已从典器具习得",
+                "spells": "以下可使用法术已准备",
+                "apparition": "已附灵精魄",
+                "scrolls": "创建临时卷轴",
+                "feats": "已习得专长",
+                "ceremonial": "举行仪式以创造一把容纳法术的仪典短刃",
+                "blade": "将精魂注入他们的武器中",
+                "mindsmith": "已将心灵集中在武器上"
+            },
+            "gained": "已获得临时{type}",
+            "noChanges": "每日准备没有任何变化，甚至你无需知道。",
+            "rations": {
+                "used": "消耗一个{name}，剩下{nb}个。",
+                "last": "消耗最后的{name}。",
+                "almost": "消耗一个{name}，只剩下{nb}个。"
+            },
+            "changes": "每日准备中出现如下变化。"
+        },
+        "mindsmith": {
+            "weapon": {
+                "name": "心灵武器"
+            }
+        },
+        "sheet": {
+            "title": "每日准备",
+            "unrested": "需要休息",
+            "charges": {
+                "label": "充能",
+                "tooltip": "重置充能至最大值（max:{max}）"
+            },
+            "generate": {
+                "confirm": "已创建<strong>{name}</strong>的施法条目。",
+                "tooltip": "生成施法条目"
+            },
+            "primary": {
+                "assign": "指定为主附灵精魄",
+                "unassign": "取消指定为主附灵精魄"
+            }
+        },
+        "spellEntry": {
+            "name": "临时法术"
+        },
+        "staves": {
+            "spontaneous": {
+                "title": "使用自发法术位",
+                "one": "<strong>{entry}</strong>",
+                "yes": "消耗",
+                "remaining": "剩余",
+                "higher": " 或更高环 ",
+                "must": "你必须从{from}消耗一个<strong>{rank}</strong>{higher}的自发法术位吗？",
+                "would": "你想要从{from}中消耗一个<strong>{rank}</strong>{higher}的自发法术位吗？",
+                "multi": "下列任意施法条目"
+            },
+            "error": {
+                "notEquipped": "你需要装备{staff}以使用它。",
+                "missing": "无法取出法杖。"
+            },
+            "action": {
+                "pick-up1H": "捡起",
+                "sheathe": "收起",
+                "draw1H": "拔出",
+                "retrieve1H": "取出"
+            }
+        }
+    }
+}

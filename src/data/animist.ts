@@ -1,6 +1,7 @@
 import { createDaily, DailyConfigCheckbox } from "daily";
 import { HomebrewsMenu } from "homebrew";
 import {
+    ActorPF2e,
     CharacterPF2e,
     createHTMLElement,
     getActorMaxRank,
@@ -338,7 +339,9 @@ function getAnimistConfigs(actor: CharacterPF2e) {
     );
 }
 
-function getAnimistVesselsData(actor: CharacterPF2e) {
+function getAnimistVesselsData(actor: Maybe<ActorPF2e>) {
+    if (!(actor instanceof Actor) || !actor.isOfType("character")) return;
+
     const primaryVessels = getFlag<string[]>(actor, "extra.dailies.animist.primaryVessels");
     if (!primaryVessels) return;
 

@@ -9,8 +9,8 @@
 <a {{#if (eq charges.value charges.max)}}class="disabled" {{/if}} data-action="reset-charges"><i
         class="fas fa-redo" data-tooltip="{{@root.i18n 'tooltip' max=charges.max}}"></i></a>
 {{/if}}
-{{#if action}}
-<button type="button" class="cast-spell blue" data-item-id="{{action.id}}">
-    {{localize action.label}} <span class="action-glyph">{{action.cost}}</span>
+{{#if annotation}}
+<button type="button" class="cast-spell blue">
+    {{annotation.label}} <span class="action-glyph">{{annotation.cost}}</span>
 </button>
 {{/if}}

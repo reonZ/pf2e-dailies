@@ -247,12 +247,6 @@
             "error": {
                 "notEquipped": "你需要装备{staff}以使用它。",
                 "missing": "无法取出法杖。"
-            },
-            "action": {
-                "pick-up1H": "捡起",
-                "sheathe": "收起",
-                "draw1H": "拔出",
-                "retrieve1H": "取出"
             }
         }
     }

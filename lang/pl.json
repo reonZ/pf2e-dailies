@@ -247,12 +247,6 @@
             "error": {
                 "missing": "Nie udało się odzyskać kosturu.",
                 "notEquipped": "Musisz wyposażyć się w {staff}, aby móc z niego korzystać."
-            },
-            "action": {
-                "pick-up1H": "Podnoszenie",
-                "retrieve1H": "Odzyskanie",
-                "sheathe": "Schowek",
-                "draw1H": "Wyciągnięcie"
             }
         }
     }

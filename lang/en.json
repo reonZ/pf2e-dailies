@@ -247,12 +247,6 @@
             "error": {
                 "missing": "Couldn't retrieve the staff.",
                 "notEquipped": "You need to equip your {staff} to use it."
-            },
-            "action": {
-                "pick-up1H": "Pick Up",
-                "retrieve1H": "Retrieve",
-                "sheathe": "Sheathe",
-                "draw1H": "Draw"
             }
         }
     }

@@ -11,6 +11,7 @@ import {
     CharacterSheetData,
     CharacterSheetPF2e,
     createHTMLElement,
+    getEquipAnnotation,
     getSetting,
     htmlQuery,
     localize,
@@ -120,23 +121,9 @@ async function updateStavesEntries(
     const charges = staffData.charges;
     const isEquipped = staff.isEquipped;
 
-    const annotation: AuxiliaryAnnotation = isEquipped
-        ? "sheathe"
-        : staff.carryType === "dropped"
-        ? "pick-up1H"
-        : staff.isStowed
-        ? "retrieve1H"
-        : "draw1H";
-
-    const action = isEquipped
-        ? undefined
-        : {
-              cost: annotation === "retrieve1H" ? 2 : 1,
-              id: staff.id,
-              label: localize("staves.action", annotation),
-          };
-
-    const chargesElement = await createChargesElement(actor, charges, false, action);
+    const annotationData = getEquipAnnotation(staff);
+    const chargesElement = await createChargesElement(actor, charges, false, annotationData);
+    const annotation = annotationData?.annotation;
 
     addListener(
         chargesElement,
@@ -234,7 +221,5 @@ function addDailiesIcon(actor: CharacterPF2e, html: HTMLElement) {
         });
     }
 }
-
-type AuxiliaryAnnotation = "draw1H" | "pick-up1H" | "retrieve1H" | "sheathe";
 
 export { onCharacterSheetGetData, onRenderCharacterSheetPF2e };

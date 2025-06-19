@@ -3,6 +3,7 @@ import {
     addListener,
     CharacterPF2e,
     createHTMLElement,
+    EquipAnnotationData,
     htmlQuery,
     NPCPF2e,
     render,
@@ -72,14 +73,18 @@ async function createChargesElement(
     actor: ActorPF2e,
     charges: { value: number; max: number },
     withMax: boolean,
-    action?: { label: string; cost: number; id: string }
+    annotation?: EquipAnnotationData
 ) {
+    if (annotation) {
+        annotation.label = game.i18n.localize(annotation.label).replace(/\(.+?\)/, "");
+    }
+
     const isOwner = actor.isOwner;
     const chargesTemplate = await render("charges", {
         isOwner,
         charges,
         withMax,
-        action,
+        annotation,
         i18n: "sheet.charges",
     });
 

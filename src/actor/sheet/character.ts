@@ -11,6 +11,7 @@ import {
     CharacterSheetData,
     CharacterSheetPF2e,
     createHTMLElement,
+    EquipItemToUse,
     getEquipAnnotation,
     getSetting,
     htmlQuery,
@@ -119,11 +120,9 @@ async function updateStavesEntries(
     }
 
     const charges = staffData.charges;
-    const isEquipped = staff.isEquipped;
 
     const annotationData = getEquipAnnotation(staff);
     const chargesElement = await createChargesElement(actor, charges, false, annotationData);
-    const annotation = annotationData?.annotation;
 
     addListener(
         chargesElement,
@@ -139,11 +138,9 @@ async function updateStavesEntries(
         setStaffChargesValue(actor, charges.max);
     });
 
-    if (!isEquipped) {
+    if (annotationData) {
         addListener(chargesElement, "button", () => {
-            const action = actor.system.actions.find((action) => action.item === staff);
-            const aux = action?.auxiliaryActions.find((aux) => aux.fullAnnotation === annotation);
-            aux?.execute();
+            EquipItemToUse(actor, staff, annotationData);
         });
     }
 

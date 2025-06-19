@@ -442,7 +442,7 @@ async function processDailies(this: DailyInterface) {
         rested: false,
         addedItems: addedItemIds,
         temporaryDeleted,
-        tooltip: await TextEditor.enrichHTML(chatContent),
+        tooltip: await foundry.applications.ux.TextEditor.implementation.enrichHTML(chatContent),
     });
 
     await actor.update(actorUpdates);

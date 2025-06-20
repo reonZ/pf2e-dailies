@@ -44,7 +44,7 @@ async function renderChargesEntries(
             "[data-action='change-max-charges']",
             "change",
             (el: HTMLInputElement) => {
-                const value = Math.clamp(el.valueAsNumber, 0, 50);
+                const value = Math.max(el.valueAsNumber, 0);
                 entry.update({
                     "system.slots.slot1.max": value,
                     "system.slots.slot1.value": Math.min(value, charges.value),

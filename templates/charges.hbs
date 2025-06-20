@@ -2,8 +2,8 @@
 <input type="number" data-action="change-charges" min="0" value="{{charges.value}}"
     max="{{charges.max}}" step="1" {{disabled (not isOwner)}}>
 {{#if withMax}}
-<input type="number" data-action="change-max-charges" min="0" value="{{charges.max}}" max="50"
-    step="1" {{disabled (not isOwner)}}>
+<input type="number" data-action="change-max-charges" min="0" value="{{charges.max}}" step="1"
+    {{disabled (not isOwner)}}>
 {{/if}}
 {{#if isOwner}}
 <a {{#if (eq charges.value charges.max)}}class="disabled" {{/if}} data-action="reset-charges"><i

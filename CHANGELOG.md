@@ -1,3 +1,13 @@
+# 4.1.0
+
+-   `Charges Spellcasting`:
+    -   remove the max charges cap (previously `50`)
+        -   increase the width of charges input fields to accomodate bigger values
+-   `Prepare a Staff`:
+    -   fix not being able to "draw" a codas from the spellcasting entry
+-   add chinese localization
+-   fix `TextEditor` warnings
+
 # 4.0.0
 
 -   this is a foundry `13.344` and system `7.1.0` release

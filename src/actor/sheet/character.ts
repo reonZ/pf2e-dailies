@@ -11,7 +11,7 @@ import {
     CharacterSheetData,
     CharacterSheetPF2e,
     createHTMLElement,
-    EquipItemToUse,
+    equipItemToUse,
     getEquipAnnotation,
     getSetting,
     htmlQuery,
@@ -140,7 +140,7 @@ async function updateStavesEntries(
 
     if (annotationData) {
         addListener(chargesElement, "button", () => {
-            EquipItemToUse(actor, staff, annotationData);
+            equipItemToUse(actor, staff, annotationData);
         });
     }
 

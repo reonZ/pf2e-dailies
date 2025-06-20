@@ -88,8 +88,14 @@ async function createChargesElement(
         i18n: "sheet.charges",
     });
 
+    const classes = ["pf2e-dailies-charges"];
+
+    if (withMax) {
+        classes.push("double");
+    }
+
     return createHTMLElement("div", {
-        classes: ["pf2e-dailies-charges"],
+        classes,
         content: chargesTemplate,
     });
 }

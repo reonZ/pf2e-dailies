@@ -49,6 +49,12 @@
                 color: grey;
             }
         }
+
+        &.double {
+            input[type="number"] {
+                width: 6ch;
+            }
+        }
     }
 }
 

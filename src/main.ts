@@ -28,7 +28,7 @@ import { registerInitWrappers, registerReadyWrappers } from "wrappers";
 
 MODULE.register("pf2e-dailies");
 
-Hooks.on("init", () => {
+Hooks.once("init", () => {
     registerSettings();
     registerInitWrappers();
 
@@ -36,7 +36,7 @@ Hooks.on("init", () => {
     CONFIG.PF2E.preparationType.charges = "Charges";
 });
 
-Hooks.on("ready", () => {
+Hooks.once("ready", () => {
     initializeDailies();
     registerReadyWrappers();
 

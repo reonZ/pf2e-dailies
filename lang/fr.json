@@ -1,0 +1,253 @@
+{
+  "pf2e-dailies": {
+    "settings": {
+      "addedHighlight": {
+        "name": "Surligne les objets ajoutés",
+        "hint": "Les \"objets\" temporaires ajoutés par le module seront surlignés sur les feuilles des personnage et de familier."
+      },
+      "partyMembers": {
+        "name": "Membres du groupe uniquement",
+        "hint": "Lorsqu'une collection d'acteurs joueurs est récupérée dans le module, le module doit-il la limiter aux membres du groupe (si le personnage est membre d'un groupe) ou à tous les acteurs appartenant au joueur ?"
+      },
+      "menus": {
+        "customs": {
+          "name": "Personnalisation des objets quotidiens",
+          "hint": "Référencez vos propres objets quotidiens avec le module.",
+          "label": "Référencer"
+        },
+        "homebrew": {
+          "name": "Réglages maison",
+          "hint": "Ajoute votre matériel personnalisé pour que le module en ajoute à ses objets quotidiens.",
+          "label": "Maison"
+        }
+      }
+    },
+    "animist": {
+      "spellcasting": {
+        "focus": "Sorts de réceptacle"
+      }
+    },
+    "builtin": {
+      "dailies": {
+        "familiar": "Pouvoirs des familiers",
+        "staves": "Préparer un bâton",
+        "thaumaturge-tome": "Tome du thaumaturge"
+      }
+    },
+    "charges": {
+      "label": "Charges",
+      "reset": {
+        "title": "Réinitialiser les charges du bâton",
+        "content": "Êtes-vous certain de vouloir remettre les charges du bâton à leur valeur (max : {max}) ?"
+      },
+      "error": {
+        "notEnough": "Ne peut lancer {spell} au rang {rank} : pas assez de charges."
+      }
+    },
+    "config": {
+      "filters": "Objets quotidiens activés",
+      "title": "{actor} - Configuration objets quotidiens",
+      "animist": {
+        "lore": "Retirer le préfixe Connaissance",
+        "lores": "Montrer le sommaire des Connaissances",
+        "spells": "Montrer le sommaire des sorts",
+        "signatures": "Déterminer les sorts emblématiques"
+      }
+    },
+    "customs": {
+      "title": "Objets quotidiens personnalisés",
+      "list": {
+        "create": "Créer un objet quotidien personnalisé",
+        "delete": "Effacer un objet quotidien personnalisé",
+        "save": "Enregistrer un objet quotidien personnalisé"
+      },
+      "delete": {
+        "title": "Effacer un objet quotidien personnalisé",
+        "content": "Êtes-vous certain de vouloir effacer cet objet quotidien ?"
+      },
+      "code": {
+        "saved": "Cet objet quotidien personnalisé a été enregistré"
+      },
+      "readonly": {
+        "flavor": "Cet objet quotidien est signalé comme en <em>lecture seule</em> car il a été créé avec une version précédente du module est est incompatible. Si vous décidez de le <a>déverouiller</a>, assurez vous de le mettre à jour dans la version de donnée actuelle avant de sauvegarder."
+      }
+    },
+    "dialog": {
+      "mind-weapon": {
+        "title": "Créer une arme mentale",
+        "flavor": "Ce personnage ne dispose pas d'une arme mentale dans son inventaire.<br>Sélectionnez une des options suivantes pour en créer une.",
+        "yes": "Créer",
+        "no": "Effacer",
+        "held-in-one-hand": "à une main",
+        "held-in-two-hands": "à deux mains",
+        "label": "Une arme {hand} qui inflige<strong>1{die}</strong> dégâts {hasTrait}",
+        "oneTrait": " et possède le trait <strong>{trait1}</strong>",
+        "twoTraits": " et possède les traits <strong>{trait1}</strong> et <strong>{trait2}</strong>"
+      }
+    },
+    "error": {
+      "incompatible": "Il y a des objets quotidiens qui sont incompatibles avec la version actuelle de <strong>PF2e Dailies</strong>.",
+      "unexpected": "Une erreur inattendue est survenue avec le module <strong>PF2e Dailies</strong>. Voir la console (F12) pour le détail."
+    },
+    "homebrew": {
+      "title": "Réglages maison",
+      "index": {
+        "familiar": "Pouvoirs de familier",
+        "animist": "Apparitions de l'animiste"
+      },
+      "pack": "Pack de compendium",
+      "add": "Ajouter une entrée",
+      "delete": "Effacer une entrée",
+      "invalid": "<strong>{entry}</strong>n'est pas l'ID d'un pack de compendium ni l'UUID de type <strong>{type}</strong>",
+      "empty": "Vous devez fournir un ID de pack de compendium ou une UUID de type <strong>{type}</strong>"
+    },
+    "interface": {
+      "title": "{actor} - Préparatifs quotidiens",
+      "config": "Config.",
+      "noDailies": "Ce personnage n'a pas d'objet quotidien",
+      "accept": "Accepter",
+      "cancel": "Effacer",
+      "tooltip": {
+        "random": "Cela sera sélectionné aléatoirement",
+        "alert": "Clique ici pour résoudre",
+        "notify": "Entrée purement informative",
+        "search": "Ouvrir le navigateur de compendium",
+        "clear": "Effacer la sélection",
+        "noSelect": "Aucune option disponible",
+        "exists": "Ce don est déjà présent sur le personnage"
+      },
+      "error": {
+        "empty": "Certains champs requis sont vides."
+      },
+      "drop": {
+        "notes": {
+          "ace": "Choisissez un sort unique de la liste arcanique, divine, occulte ou primale de rang 4 ou inférieur.<br>Le sort ne peut avoir un coût et son temps d'incantation ne peut être supérieur à 10 minutes. Le sort doit être capable de cibler une unique créature et vous devez être une cible valide à son égard."
+        },
+        "error": {
+          "wrongDataType": "type de donnée glissée invalide.",
+          "wrongSource": "Seuls les objets du monde ou du compendium peuvent être utilisés.",
+          "wrongData": "L'objet déposé n'a pas le bon type <strong>{type}</strong> ({require}).",
+          "require": "nécessite : <strong>{need}</strong>, possède : <strong>{has}</strong>",
+          "missing": "manquant : <strong>{need}</strong>",
+          "invalid": "invalide : <strong>{has}</strong>",
+          "wrongTraits": "Les traits de l'objet déposé ne correspondent pas à ceux du filtre.",
+          "exclude": "<strong>{item}</strong> a été exclu de la sélection.",
+          "type": {
+            "type": "type",
+            "level": "niveau",
+            "category": "catégorie",
+            "categories": "catégories",
+            "skills": "compétences",
+            "source": "source",
+            "rarity": "rareté",
+            "rank": "rang",
+            "traditions": "traditions"
+          },
+          "none": "aucune"
+        }
+      },
+      "staves": {
+        "empty": "Emplacement vide",
+        "flexible": "Emplacement flexible",
+        "group": {
+          "prepared": "A préparé un {type} pour la journée",
+          "merged": "A fusionné un {type} à l'arme liée pour la journée",
+          "bond": "A préparé son arme liée pour la journée"
+        },
+        "staff": "Bâton",
+        "type": "Catégorie",
+        "bond": "Lien de Seigneur des runes",
+        "mergedshift": "Fusionné avec un bâton de fortune",
+        "merged": "Fusionné avec un bâton ordinaire",
+        "makeshift": "Bâton de fortune",
+        "regular": "Bâton ordinaire"
+      },
+      "rations": {
+        "yes": "Consommer ({nb} restant)",
+        "no": "Ne pas en consommer",
+        "last": "Consomme le dernier disponible"
+      },
+      "mindsmith": {
+        "missing": "L'arme mentale est manquante"
+      }
+    },
+    "label": {
+      "ability": "Capacité #{nb}",
+      "apparition": {
+        "first": "Apparition primaire",
+        "primary": "Primaire #{nb} ",
+        "other": "Apparition #{nb}"
+      },
+      "expend": "Dépenser #{nb}",
+      "rune": "Rune de propriété",
+      "select": "Sélectionner {that}",
+      "mind-smith": "Façonneur spirituel",
+      "mind-mental": "Forge mentale",
+      "mind-runic": "Façonnage de rune"
+    },
+    "message": {
+      "changes": "A fait les changements suivants au cours de ses préparatifs quotidiens.",
+      "noChanges": "N'a fait aucun changement au cours de ses préparatifs quotidiens. Vous n'aviez même pas réellement besoin de le savoir.",
+      "gained": "A obtenu le {type} temporaire",
+      "groups": {
+        "resistances": "A obtenu les résistances",
+        "languages": "A appris à parler et écrire",
+        "skills": "Qualifié dans les compétences suivantes",
+        "tome": "A étudié son tome de thaumaturgie",
+        "spells": "Est prêt à utiliser les sorts",
+        "familiar": "A choisi les pouvoirs de familier",
+        "apparition": "S'est harmonisé avec ses apparitions",
+        "feats": "A appris les dons",
+        "scrolls": "A créé les parchemins temporaires",
+        "ceremonial": "A accompli un rituel pour créer un couteau cérémoniel imprégné avec le sort",
+        "blade": "A imprégné son esprit dans son arme",
+        "mindsmith": "A concentré son esprit dans son arme"
+      },
+      "rations": {
+        "used": "A consommé une de ses {name} et en possède {nb} restantes.",
+        "last": "A consommé le dernier de ses {name}.",
+        "almost": "A consommé une de ses {name} et en a seulement {nb} restante."
+      }
+    },
+    "mindsmith": {
+      "weapon": {
+        "name": "Arme mentale"
+      }
+    },
+    "sheet": {
+      "title": "Préparatifs quotidiens",
+      "unrested": "Repos nécessaire",
+      "primary": {
+        "assign": "Assigner en tant que réceptacle primaire",
+        "unassign": "Ne plus assigner comme réceptacle primaire"
+      },
+      "charges": {
+        "label": "Charges",
+        "tooltip": "Rénitialiser les charges au maximum (max : {max})"
+      },
+      "generate": {
+        "tooltip": "Générer une entrée d'incantation",
+        "confirm": "Une entrée d'incantation pour <strong>{name}</strong> a été créée."
+      }
+    },
+    "spellEntry": {
+      "name": "Sorts temporaires"
+    },
+    "staves": {
+      "spontaneous": {
+        "title": "Utiliser un emplacement spontané",
+        "remaining": "restante(s)",
+        "must": "Vous devez consommer un emplacement spontané de  <strong>{rank}</strong>{higher} à {from}?",
+        "would": "Souhaitez-vous consommer un emplacement de sort spontané de rang <strong>{rank}</strong>{higher} à {from} ?",
+        "one": "<strong>{entry}</strong>",
+        "multi": "n'importe laquelle des entrées d'incantation suivantes",
+        "higher": " ou supérieur ",
+        "yes": "Consommer"
+      },
+      "error": {
+        "missing": "Impossible de récupérer le bâton.",
+        "notEquipped": "Vous devez équiper votre {staff} pour l'utiliser."
+      }
+    }
+  }
+}

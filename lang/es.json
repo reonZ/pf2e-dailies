@@ -6,38 +6,52 @@
         "hint": "Los \"elementos\" temporales agregados por el módulo se resaltarán en las hojas de personajes y familiares."
       },
       "partyMembers": {
+        "name": "Sólo para miembros del grupo",
+        "hint": "Cuando se recupera una colección de actores de jugadores en el módulo, ¿debería el módulo limitarla a los miembros del grupo (si el personaje es miembro de algún grupo) o a todos los actores propiedad de jugadores?"
       },
       "menus": {
         "customs": {
           "name": "Diarios personalizados",
-          "hint": "Registra tus propias diarias con el módulo."
+          "hint": "Registra tus propias diarias con el módulo.",
+          "label": "Registrar"
         },
         "homebrew": {
-          "hint": "Añade material personalizado para que el módulo lo use en algunas de sus tareas diarias."
+          "name": "Configuración del contenido casero",
+          "hint": "Añade material personalizado para que el módulo lo use en algunas de sus tareas diarias.",
+          "label": "Contenido casero"
         }
       }
     },
     "animist": {
       "spellcasting": {
+        "focus": "Vasijas de conjuros"
       }
     },
     "builtin": {
       "dailies": {
+        "familiar": "Habilidades de familiares",
+        "staves": "Preparar un bastón",
         "thaumaturge-tome": "Tomo del taumaturgo"
       }
     },
     "charges": {
       "label": "Cargos",
       "reset": {
+        "title": "Restablecer cargas del bastón",
+        "content": "¿Estás seguro de que deseas restablecer las cargas de los bastones a su valor máximo (máximo: {max})?"
       },
       "error": {
+        "notEnough": "No se puede lanzar {spell} a {rank}: no hay suficientes cargas."
       }
     },
     "config": {
       "filters": "Diarios habilitados",
       "title": "{actor} - Configuraciones diarias",
       "animist": {
-        "lore": "Eliminar el sufijo Lore"
+        "lore": "Eliminar el sufijo Lore",
+        "lores": "Mostrar el resumen de Lore",
+        "spells": "Mostrar resumen de Conjuros",
+        "signatures": "Configurar Conjuros de Signatura"
       }
     },
     "customs": {
@@ -55,24 +69,37 @@
         "saved": "El diario personalizado se guardó correctamente."
       },
       "readonly": {
+        "flavor": "Este diario está marcado como <em>solo lectura</em> porque se creó en una versión anterior del módulo y es incompatible. Si decide <a>desbloquearlo</a>, asegúrese de actualizarlo al formato de datos de la versión actual antes de guardarlo."
       }
     },
     "dialog": {
       "mind-weapon": {
+        "title": "Crear Arma Mental",
+        "flavor": "Este personaje no tiene un arma mental en su inventario.<br>Selecciona una de las siguientes opciones para crear una.",
         "yes": "Crear",
         "no": "Cancelar",
+        "held-in-one-hand": "una mano",
+        "held-in-two-hands": "dos manos",
+        "label": "Un arma de {hand} que inflige <strong>1{die}</strong> de daño{hasTrait}",
         "oneTrait": "y tiene el rasgo <strong>{trait1}</strong>",
         "twoTraits": "y tiene los rasgos <strong>{trait1}</strong> y <strong>{trait2}</strong>"
       }
     },
     "error": {
+      "incompatible": "Hay diarios personalizadas que son incompatibles con la versión actual de <strong>PF2e Dailies</strong>.",
+      "unexpected": "Se produjo un error inesperado con el módulo <strong>PF2e Dailies</strong>. Consulte la consola (F12) para obtener más información."
     },
     "homebrew": {
+      "title": "Configuración de contenido casero",
       "index": {
+        "familiar": "Habilidades de familiares",
         "animist": "Apariciones animistas"
       },
+      "pack": "Compendios",
       "add": "Añadir entrada",
-      "delete": "Eliminar entrada"
+      "delete": "Eliminar entrada",
+      "invalid": "<strong>{entry}</strong> no es el ID de un compendio ni el UUID de un <strong>{type}</strong>",
+      "empty": "Debe proporcionar un ID de compendio o el UUID de un <strong>{type}</strong>"
     },
     "interface": {
       "title": "{actor} - Preparación diaria",
@@ -84,15 +111,26 @@
         "random": "Esto se seleccionará al azar.",
         "alert": "Haga clic aquí para resolverlo",
         "notify": "Entrada puramente informativa",
-        "noSelect": "No hay opciones disponibles"
+        "search": "Abrir el navegador de compendios",
+        "clear": "Limpiar selección",
+        "noSelect": "No hay opciones disponibles",
+        "exists": "Esta dote ya está presente en el personaje."
       },
       "error": {
+        "empty": "Algunos campos requeridos están vacíos."
       },
       "drop": {
         "notes": {
+          "ace": "Elige un conjuro de la lista arcana, divina, oculta o primigenia de nivel 4 o inferior.<br>El hechizo no puede tener coste, ni su tiempo de lanzamiento puede superar los 10 minutos. Debe tener como objetivo a una sola criatura y tú debes ser un objetivo válido."
         },
         "error": {
+          "wrongDataType": "Tipo de dato no válido.",
+          "wrongSource": "Sólo se pueden utilizar compendios o elementos del mundo.",
+          "wrongData": "El elemento no tiene el <strong>{type}</strong> correcto ({require}).",
+          "require": "requiere: <strong>{need}</strong>, tiene: <strong>{has}</strong>",
+          "missing": "faltante: <strong>{need}</strong>",
           "invalid": "inválido: <strong>{has}</strong>",
+          "wrongTraits": "Los rasgos de los elementos no coinciden con los del filtro.",
           "exclude": "<strong>{item}</strong> fue excluido de la selección.",
           "type": {
             "type": "tipo",
@@ -113,10 +151,16 @@
         "flexible": "Ranura flexible",
         "group": {
           "prepared": "Ha preparado un {type} para el día",
-          "merged": "Ha fusionado un {tipo} a su arma vinculada para el día."
+          "merged": "Ha fusionado un {tipo} a su arma vinculada para el día.",
+          "bond": "Ha preparado su arma vinculada para el día."
         },
+        "staff": "Bastón",
         "type": "Categoría",
-        "bond": "Vínculo del Señor de las Runas"
+        "bond": "Vínculo del Señor de las Runas",
+        "mergedshift": "Fusionado con el bastón improvisado",
+        "merged": "Se fusionó con el bastón estándar",
+        "makeshift": "Bastón improvisado",
+        "regular": "Bastón estándar"
       },
       "rations": {
         "yes": "Consumir ({nb} restante)",
@@ -136,6 +180,9 @@
       },
       "expend": "Gastar #{nb}",
       "rune": "Runa de propiedad",
+      "select": "Seleccione {that}",
+      "mind-smith": "Forjar Mente",
+      "mind-mental": "Forja mental",
       "mind-runic": "Herrería rúnica"
     },
     "message": {
@@ -145,13 +192,21 @@
       "groups": {
         "resistances": "Ganó las resistencias",
         "languages": "Aprendí a leer y hablar.",
+        "skills": "Entrenado en las siguientes habilidades",
         "tome": "Estudió su tomo de taumaturgia",
+        "spells": "Está listo para usar los hechizos",
+        "familiar": "Ha seleccionado las habilidades de familiar",
         "apparition": "Se ha sintonizado con sus apariciones",
+        "feats": "Aprendió las dotes",
         "scrolls": "Creó los pergaminos temporales",
         "ceremonial": "Realizó un ritual para crear un cuchillo ceremonial imbuido con el hechizo.",
+        "blade": "Imbuyó su espíritu en su arma",
         "mindsmith": "Ha centrado su mente en su arma."
       },
       "rations": {
+        "used": "Consumió uno de sus {name} y le queda {nb}.",
+        "last": "Consumió lo último de su {name}.",
+        "almost": "Consumió uno de sus {name} y solo le queda {nb}."
       }
     },
     "mindsmith": {
@@ -163,23 +218,35 @@
       "title": "Preparaciones diarias",
       "unrested": "Descanso requerido",
       "primary": {
+        "assign": "Asignar como vasija principal",
+        "unassign": "Desasignar vasija principal"
       },
       "charges": {
+        "label": "Cargas",
+        "tooltip": "Restablecer las cargas al máximo (máximo: {max})"
       },
       "generate": {
+        "tooltip": "Generar entrada de lanzamiento de conjuros",
+        "confirm": "Se ha creado una entrada de lanzamiento de conjuros para <strong>{name}</strong>."
       }
     },
     "spellEntry": {
+      "name": "Conjuros temporales"
     },
     "staves": {
       "spontaneous": {
+        "title": "Utilizar la ranura espontánea",
         "remaining": "restante",
         "must": "¿Debes consumir una ranura espontánea de <strong>{rank}</strong>{higher} de {from}?",
+        "would": "¿Te gustaría consumir un espacio de conjuro espontáneo de <strong>{rank}</strong>{higher} de {from}?",
+        "one": "<strong>{entry}</strong>",
+        "multi": "cualquiera de las siguientes entradas de lanzamiento de conjuros",
         "higher": "o superior",
         "yes": "Consumir"
       },
       "error": {
-        "missing": "No se pudo recuperar el bastón."
+        "missing": "No se pudo recuperar el bastón.",
+        "notEquipped": "Necesitas equipar tu {staff} para poder usarlo."
       }
     }
   }

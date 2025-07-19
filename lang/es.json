@@ -1,0 +1,186 @@
+{
+  "pf2e-dailies": {
+    "settings": {
+      "addedHighlight": {
+        "name": "Resaltar elementos añadidos",
+        "hint": "Los \"elementos\" temporales agregados por el módulo se resaltarán en las hojas de personajes y familiares."
+      },
+      "partyMembers": {
+      },
+      "menus": {
+        "customs": {
+          "name": "Diarios personalizados",
+          "hint": "Registra tus propias diarias con el módulo."
+        },
+        "homebrew": {
+          "hint": "Añade material personalizado para que el módulo lo use en algunas de sus tareas diarias."
+        }
+      }
+    },
+    "animist": {
+      "spellcasting": {
+      }
+    },
+    "builtin": {
+      "dailies": {
+        "thaumaturge-tome": "Tomo del taumaturgo"
+      }
+    },
+    "charges": {
+      "label": "Cargos",
+      "reset": {
+      },
+      "error": {
+      }
+    },
+    "config": {
+      "filters": "Diarios habilitados",
+      "title": "{actor} - Configuraciones diarias",
+      "animist": {
+        "lore": "Eliminar el sufijo Lore"
+      }
+    },
+    "customs": {
+      "title": "Diarios personalizados",
+      "list": {
+        "create": "Crear diario personalizado",
+        "delete": "Eliminar diario personalizado",
+        "save": "Guardar personalizado diario"
+      },
+      "delete": {
+        "title": "Eliminar diario personalizado",
+        "content": "¿Estás seguro que deseas eliminar este diario?"
+      },
+      "code": {
+        "saved": "El diario personalizado se guardó correctamente."
+      },
+      "readonly": {
+      }
+    },
+    "dialog": {
+      "mind-weapon": {
+        "yes": "Crear",
+        "no": "Cancelar",
+        "oneTrait": "y tiene el rasgo <strong>{trait1}</strong>",
+        "twoTraits": "y tiene los rasgos <strong>{trait1}</strong> y <strong>{trait2}</strong>"
+      }
+    },
+    "error": {
+    },
+    "homebrew": {
+      "index": {
+        "animist": "Apariciones animistas"
+      },
+      "add": "Añadir entrada",
+      "delete": "Eliminar entrada"
+    },
+    "interface": {
+      "title": "{actor} - Preparación diaria",
+      "config": "Configuración",
+      "noDailies": "Este personaje no tiene ningún diario",
+      "accept": "Aceptar",
+      "cancel": "Cancelar",
+      "tooltip": {
+        "random": "Esto se seleccionará al azar.",
+        "alert": "Haga clic aquí para resolverlo",
+        "notify": "Entrada puramente informativa",
+        "noSelect": "No hay opciones disponibles"
+      },
+      "error": {
+      },
+      "drop": {
+        "notes": {
+        },
+        "error": {
+          "invalid": "inválido: <strong>{has}</strong>",
+          "exclude": "<strong>{item}</strong> fue excluido de la selección.",
+          "type": {
+            "type": "tipo",
+            "level": "nivel",
+            "category": "categoría",
+            "categories": "categorías",
+            "skills": "habilidades",
+            "source": "fuente",
+            "rarity": "rareza",
+            "rank": "rango",
+            "traditions": "tradiciones"
+          },
+          "none": "ninguno"
+        }
+      },
+      "staves": {
+        "empty": "Ranura vacía",
+        "flexible": "Ranura flexible",
+        "group": {
+          "prepared": "Ha preparado un {type} para el día",
+          "merged": "Ha fusionado un {tipo} a su arma vinculada para el día."
+        },
+        "type": "Categoría",
+        "bond": "Vínculo del Señor de las Runas"
+      },
+      "rations": {
+        "yes": "Consumir ({nb} restante)",
+        "no": "No consumir ningún",
+        "last": "Consumir el último disponible"
+      },
+      "mindsmith": {
+        "missing": "Falta el arma mental"
+      }
+    },
+    "label": {
+      "ability": "Habilidad #{nb}",
+      "apparition": {
+        "first": "Aparición primaria",
+        "primary": "Primaria #{nb}",
+        "other": "Aparición #{nb}"
+      },
+      "expend": "Gastar #{nb}",
+      "rune": "Runa de propiedad",
+      "mind-runic": "Herrería rúnica"
+    },
+    "message": {
+      "changes": "Ha realizado los siguientes cambios durante sus preparativos diarios.",
+      "noChanges": "No ha realizado ningún cambio durante sus preparativos diarios, en realidad ni siquiera necesitabas saberlo.",
+      "gained": "Obtuvo el {type} temporal",
+      "groups": {
+        "resistances": "Ganó las resistencias",
+        "languages": "Aprendí a leer y hablar.",
+        "tome": "Estudió su tomo de taumaturgia",
+        "apparition": "Se ha sintonizado con sus apariciones",
+        "scrolls": "Creó los pergaminos temporales",
+        "ceremonial": "Realizó un ritual para crear un cuchillo ceremonial imbuido con el hechizo.",
+        "mindsmith": "Ha centrado su mente en su arma."
+      },
+      "rations": {
+      }
+    },
+    "mindsmith": {
+      "weapon": {
+        "name": "Arma mental"
+      }
+    },
+    "sheet": {
+      "title": "Preparaciones diarias",
+      "unrested": "Descanso requerido",
+      "primary": {
+      },
+      "charges": {
+      },
+      "generate": {
+      }
+    },
+    "spellEntry": {
+    },
+    "staves": {
+      "spontaneous": {
+        "remaining": "restante",
+        "must": "¿Debes consumir una ranura espontánea de <strong>{rank}</strong>{higher} de {from}?",
+        "higher": "o superior",
+        "yes": "Consumir"
+      },
+      "error": {
+        "missing": "No se pudo recuperar el bastón."
+      }
+    }
+  }
+}

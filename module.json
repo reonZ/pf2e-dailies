@@ -8,9 +8,7 @@
             "discord": "idleatre"
         }
     ],
-    "esmodules": [
-        "scripts/main.js"
-    ],
+    "esmodules": ["scripts/main.js"],
     "compatibility": {
         "minimum": "13.344",
         "verified": "13.344",
@@ -23,9 +21,7 @@
     "download": "https://github.com/reonZ/pf2e-dailies/releases/download/4.1.0/module.zip",
     "changelog": "https://github.com/reonZ/pf2e-dailies/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/pf2e-dailies/issues",
-    "styles": [
-        "styles/pf2e-dailies.css"
-    ],
+    "styles": ["styles/pf2e-dailies.css"],
     "relationships": {
         "systems": [
             {
@@ -50,6 +46,11 @@
             "lang": "en",
             "name": "English",
             "path": "lang/en.json"
+        },
+        {
+            "lang": "es",
+            "name": "Español",
+            "path": "lang/es.json"
         },
         {
             "lang": "fr",

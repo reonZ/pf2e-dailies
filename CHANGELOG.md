@@ -1,8 +1,12 @@
+# 4.1.1
+
+-   add french & spanish localizations
+
 # 4.1.0
 
 -   `Charges Spellcasting`:
     -   remove the max charges cap (previously `50`)
-        -   increase the width of charges input fields to accomodate bigger values
+        -   increase the width of charges input fields to accommodate bigger values
 -   `Prepare a Staff`:
     -   fix not being able to "draw" a codas from the spellcasting entry
 -   add chinese localization

@@ -33,4 +33,16 @@
             padding-left: 0.3em;
         }
     }
+
+    &.pf2e-dailies-retrain {
+        width: min-content;
+
+        label {
+            white-space: nowrap;
+        }
+
+        .form-fields {
+            flex: 1;
+        }
+    }
 }

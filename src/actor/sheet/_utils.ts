@@ -151,6 +151,7 @@ async function retrain(actor: ActorPF2e, path: string, selectedId: string, type:
     );
 
     const result = await waitDialog<{ id: string }>({
+        classes: ["pf2e-dailies-retrain"],
         content: "retrain",
         data: {
             name: actor.name,
@@ -159,9 +160,7 @@ async function retrain(actor: ActorPF2e, path: string, selectedId: string, type:
             type,
         },
         i18n: "retrain",
-        position: {
-            width: 500,
-        },
+        minWidth: "500px",
         yes: {
             icon: "fa-solid fa-retweet",
         },

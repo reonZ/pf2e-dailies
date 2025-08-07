@@ -60,7 +60,7 @@ const familiar = createDaily({
             label: localize("label.ability", { nb: i }),
             unique: uniqueId,
             order: 100,
-            options: options,
+            options,
         }));
     },
     process: async ({ actor, rows, messages }) => {

@@ -1,5 +1,13 @@
 @use "shared";
 
-.chat-message .pf2e-dailies-summary {
-    @include shared.summary;
+.chat-message {
+    .pf2e-dailies-summary {
+        @include shared.summary;
+    }
+
+    .pf2e-dailies-retrain {
+        .previous {
+            text-decoration: line-through;
+        }
+    }
 }

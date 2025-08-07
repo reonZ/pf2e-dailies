@@ -190,18 +190,19 @@
             "noChanges": "Has made no changes during their daily preparations, you didn't even need to know about it really.",
             "gained": "Gained the temporary {type}",
             "groups": {
-                "resistances": "Gained the resistances",
-                "languages": "Learned to read and speak",
-                "skills": "Trained in the following skills",
-                "tome": "Studied their thaumaturgy tome",
-                "spells": "Is ready to use the spells",
-                "familiar": "Has selected the familiar abilities",
                 "apparition": "Has attuned with their apparitions",
-                "feats": "Learned the feats",
-                "scrolls": "Created the temporary scrolls",
-                "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell",
                 "blade": "Imbued their spirit into their weapon",
-                "mindsmith": "Has focused their mind into their weapon"
+                "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell",
+                "familiar": "Has selected the familiar abilities",
+                "feats": "Learned the feats",
+                "languages": "Learned to read and speak",
+                "mindsmith": "Has focused their mind into their weapon",
+                "resistances": "Gained the resistances",
+                "scrolls": "Created the temporary scrolls",
+                "skills": "Trained in the following skills",
+                "spells": "Is ready to use the spells",
+                "tactics": "Is prepared to apply the combat tactics",
+                "tome": "Studied their thaumaturgy tome"
             },
             "rations": {
                 "used": "Consumed one of their {name} and has {nb} remaining.",
@@ -214,13 +215,15 @@
                 "name": "Mind Weapon"
             }
         },
+        "retrain": {
+            "content": "Has exchanged the following {type}",
+            "hint": "Select which {type} you want to be replaced by <strong>{selected}</strong>",
+            "label": "Original {type}",
+            "title": "Exchange {type} - {name}",
+            "yes": "Exchange"
+        },
         "sheet": {
             "title": "Daily Preparations",
-            "unrested": "Rest Required",
-            "primary": {
-                "assign": "Assign as primary vessel",
-                "unassign": "Unassign primary vessel"
-            },
             "charges": {
                 "label": "Charges",
                 "tooltip": "Reset charges to maximum (max: {max})"
@@ -228,7 +231,11 @@
             "generate": {
                 "tooltip": "Generate Spellcasting Entry",
                 "confirm": "Spellcasting entry for <strong>{name}</strong> has been created."
-            }
+            },
+            "retrain": "Exchange {type}",
+            "tactic": "Tactic",
+            "unrested": "Rest Required",
+            "vessel": "Primary Vessel"
         },
         "spellEntry": {
             "name": "Temporary Spells"

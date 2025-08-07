@@ -1,0 +1,98 @@
+import { canPrepareDailies, getActorFlag, getDailiesSummary, openDailiesInterface } from "actor";
+import { getStaffData } from "data";
+import {
+    CharacterPF2e,
+    CharacterSheetData,
+    CharacterSheetPF2e,
+    createHTMLElement,
+    getSetting,
+    htmlQuery,
+    localize,
+    MODULE,
+} from "module-helpers";
+import { updateActionsTab, updateSpellsTab } from ".";
+
+async function onCharacterSheetGetData(
+    this: CharacterSheetPF2e<CharacterPF2e>,
+    wrapped: libWrapper.RegisterCallback,
+    options?: ActorSheetOptions
+) {
+    const data = (await wrapped(options)) as CharacterSheetData;
+
+    try {
+        const actor = this.actor;
+        const staffId = getStaffData(actor)?.staffId;
+        if (!staffId) return data;
+
+        const staff = actor.inventory.get(staffId);
+        if (!staff) return data;
+
+        const collectionId = `${staff.id}-casting`;
+        const knownCollections = data.spellCollectionGroups["known-spells"];
+
+        const collectionIndex = knownCollections.findIndex((group) => group.id === collectionId);
+        if (collectionIndex === -1) return data;
+
+        const collectionGroup = knownCollections.splice(collectionIndex, 1)[0];
+        data.spellCollectionGroups.activations.unshift(collectionGroup);
+    } catch (error) {
+        MODULE.error("CharacterSheetPF2e#getData", error);
+    }
+
+    return data;
+}
+
+function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e<CharacterPF2e>, $html: JQuery) {
+    const actor = sheet.actor;
+    const html = $html[0];
+    const highlightItems = getSetting("addedHighlight");
+
+    addDailiesIcon(actor, html);
+    updateActionsTab(actor, html);
+    updateSpellsTab(actor, html, highlightItems);
+
+    if (highlightItems) {
+        const addedItems = getActorFlag(actor, "addedItems") ?? [];
+
+        for (const id of addedItems) {
+            const itemElements = html.querySelectorAll(`.sheet-content [data-item-id="${id}"]`);
+
+            for (const itemElement of itemElements) {
+                itemElement.classList.add("temporary");
+            }
+        }
+    }
+}
+
+function addDailiesIcon(actor: CharacterPF2e, html: HTMLElement) {
+    if (!actor.isOwner) return;
+
+    const parent = htmlQuery(html, "aside .hitpoints .hp-small");
+    if (!parent) return;
+
+    const canPrep = canPrepareDailies(actor);
+    const classes = ["roll-icon", "dailies"];
+
+    if (!canPrep) {
+        classes.push("inactive");
+    }
+
+    const icon = createHTMLElement("a", {
+        content: "<i class='fa-solid fa-mug-saucer'></i>",
+        classes,
+        dataset: {
+            tooltip: canPrep ? localize("sheet.title") : getDailiesSummary(actor),
+            tooltipClass: canPrep ? "pf2e" : "pf2e pf2e-dailies-summary",
+        },
+    });
+
+    parent.appendChild(icon);
+
+    if (canPrep) {
+        icon.addEventListener("click", () => {
+            openDailiesInterface(actor);
+        });
+    }
+}
+
+export { onCharacterSheetGetData, onRenderCharacterSheetPF2e };

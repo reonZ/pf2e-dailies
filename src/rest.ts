@@ -106,7 +106,7 @@ async function cleanup(actor: CharacterPF2e) {
         await actor.deleteEmbeddedDocuments("Item", removedItems);
     }
 
-    await updateFlag<DailyActorFlags>(actor, {
+    await updateFlag(actor, {
         rested: true,
         "-=addedItems": null,
         "-=extra": null,

@@ -56,18 +56,18 @@ Hooks.on("renderNPCSheetPF2e", onRenderNPCSheetPF2e);
 
 MODULE.apiExpose({
     canCastRank,
+    canPrepareDailies,
+    getAnimistConfigs,
+    getAnimistVesselsData,
+    getDailiesSummary,
+    getDisabledDailies,
     getStaffItem: (actor: CharacterPF2e) => {
         const flag = getStaffData(actor);
         return (flag && actor.inventory.get(flag.staffId)) || null;
     },
-    setStaffChargesValue,
     openDailiesInterface,
     registerCustomDailies,
-    getDailiesSummary,
-    canPrepareDailies,
-    getDisabledDailies,
-    getAnimistConfigs,
-    getAnimistVesselsData,
+    setStaffChargesValue,
     utils,
     dailyHelpers: {
         createComboSkillDaily,

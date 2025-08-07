@@ -1,0 +1,9 @@
+<div class="form-group">
+    <label>{{@root.i18n 'label' type=type}}</label>
+    <div class="form-fields">
+        <select name="id">
+            {{selectOptions options}}
+        </select>
+    </div>
+    <p class="hint">{{{@root.i18n 'hint' selected=selected type=type}}}</p>
+</div>

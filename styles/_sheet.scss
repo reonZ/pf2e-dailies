@@ -82,6 +82,29 @@
         }
     }
 
+    [data-action="dailies-retrain"] {
+        margin-right: 0.3em;
+    }
+
+    .sheet-content .tab[data-tab="spellcasting"] {
+        .spell button.inactive {
+            visibility: hidden;
+            opacity: 0;
+        }
+    }
+
+    .sheet-content .tab[data-tab="actions"] {
+        .item.action.inactive {
+            .item-image {
+                filter: grayscale(1);
+            }
+
+            .name {
+                text-decoration: line-through;
+            }
+        }
+    }
+
     .pf2e-dailies-charges {
         button.cast-spell.blue {
             font: 500 var(--font-size-10) / 1.8em var(--sans-serif);

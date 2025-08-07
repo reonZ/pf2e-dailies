@@ -13,7 +13,6 @@ import {
     ItemPF2e,
     localize,
     R,
-    setFlag,
     setFlagProperty,
     SpellSource,
     splitListString,
@@ -353,16 +352,4 @@ function getAnimistVesselsData(actor: Maybe<ActorPF2e>) {
     return { entry: vesselsEntry, primary: primaryVessels.slice() };
 }
 
-function toggleAnimistVesselPrimary(actor: CharacterPF2e, id: string) {
-    const primaryVessels =
-        getFlag<string[]>(actor, "extra.dailies.animist.primaryVessels")?.slice() ?? [];
-    const exist = primaryVessels.findSplice((x) => x === id);
-
-    if (!exist) {
-        primaryVessels.push(id);
-    }
-
-    return setFlag(actor, "extra.dailies.animist.primaryVessels", primaryVessels);
-}
-
-export { animist, getAnimistConfigs, getAnimistVesselsData, toggleAnimistVesselPrimary };
+export { animist, getAnimistConfigs, getAnimistVesselsData };

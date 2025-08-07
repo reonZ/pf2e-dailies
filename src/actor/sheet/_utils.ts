@@ -4,10 +4,15 @@ import {
     CharacterPF2e,
     createHTMLElement,
     EquipAnnotationData,
+    getFlag,
     htmlQuery,
+    localize,
     NPCPF2e,
+    R,
     render,
+    setFlag,
     SpellcastingEntryPF2eWithCharges,
+    waitDialog,
 } from "module-helpers";
 
 async function renderChargesEntries(
@@ -100,4 +105,88 @@ async function createChargesElement(
     });
 }
 
-export { createChargesElement, renderChargesEntries };
+function addRetrainBtn(
+    actor: ActorPF2e,
+    controls: Maybe<HTMLElement>,
+    path: string,
+    isOwner: boolean,
+    selectedId: string,
+    type: string
+) {
+    const btn = createHTMLElement(isOwner ? "a" : "span", {
+        content: `<i class="fa-solid fa-retweet"></i>`,
+        dataset: {
+            action: "dailies-retrain",
+            tooltip: localize("sheet.retrain", { type }),
+        },
+    });
+
+    controls?.prepend(btn);
+
+    if (isOwner) {
+        btn.addEventListener("click", async (event) => {
+            await retrain(actor, path, selectedId, type);
+        });
+    }
+}
+
+async function retrain(actor: ActorPF2e, path: string, selectedId: string, type: string) {
+    const selected = actor.items.get(selectedId);
+    const ids = getFlag<string[]>(actor, path) ?? [];
+    if (!selected || !ids.length || ids.includes(selectedId)) return;
+
+    const options = R.pipe(
+        ids,
+        R.map((id) => {
+            const item = actor.items.get(id);
+            if (!item) return;
+
+            return {
+                label: item.name,
+                value: id,
+            };
+        }),
+        R.filter(R.isTruthy),
+        R.sortBy(R.prop("label"))
+    );
+
+    const result = await waitDialog<{ id: string }>({
+        content: "retrain",
+        data: {
+            name: actor.name,
+            selected: selected.name,
+            options,
+            type,
+        },
+        i18n: "retrain",
+        position: {
+            width: 500,
+        },
+        yes: {
+            icon: "fa-solid fa-retweet",
+        },
+    });
+
+    if (!result || !ids.includes(result.id)) return;
+
+    const newIds = ids.map((x) => (x === result.id ? selectedId : x));
+    await setFlag(actor, path, newIds);
+
+    const previous = actor.items.get(result.id);
+    const ChatMessagePF2e = getDocumentClass("ChatMessage");
+
+    let content = `<div class="pf2e-dailies-retrain">${localize("retrain.content", { type })}`;
+
+    if (previous) {
+        content += `<div class="previous">${previous.link}</div>`;
+    }
+
+    content += `<div class="new">${selected.link}</div></div>`;
+
+    return ChatMessagePF2e.create({
+        content,
+        speaker: ChatMessagePF2e.getSpeaker({ actor }),
+    });
+}
+
+export { addRetrainBtn, createChargesElement, renderChargesEntries };

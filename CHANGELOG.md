@@ -2,7 +2,7 @@
 
 -   `Animist`:
     -   remove the "star" toggle for primary vessels
-    -   add "exchange" button to replace one currenly selected primary vessel with another
+    -   add "exchange" button to replace one currently selected primary vessel with another
 -   add support for `Commander Tactics`:
     -   any tactic not selected during your daily will be "marked" on your sheet allowing you to recognize at first glance
     -   an extra control button is added to "retrain" your prepared tactics

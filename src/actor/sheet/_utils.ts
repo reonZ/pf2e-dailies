@@ -1,3 +1,4 @@
+import { ANIMIST_VESSELS_PATH, COMMANDER_TACTIC_PATH } from "data";
 import {
     ActorPF2e,
     addListener,
@@ -14,6 +15,11 @@ import {
     SpellcastingEntryPF2eWithCharges,
     waitDialog,
 } from "module-helpers";
+
+const RETRAIN_PATH = {
+    vessel: ANIMIST_VESSELS_PATH,
+    tactic: COMMANDER_TACTIC_PATH,
+};
 
 async function renderChargesEntries(
     actor: CharacterPF2e | NPCPF2e,
@@ -105,33 +111,28 @@ async function createChargesElement(
     });
 }
 
-function addRetrainBtn(
-    actor: ActorPF2e,
-    controls: Maybe<HTMLElement>,
-    path: string,
-    isOwner: boolean,
-    selectedId: string,
-    type: string
-) {
+function createRetrainBtn(actor: ActorPF2e, selectedId: string, type: RetrainType): HTMLElement {
+    const isOwner = actor.isOwner;
     const btn = createHTMLElement(isOwner ? "a" : "span", {
         content: `<i class="fa-solid fa-retweet"></i>`,
         dataset: {
             action: "dailies-retrain",
-            tooltip: localize("sheet.retrain", { type }),
+            tooltip: localize("sheet.retrain", { type: localize("sheet", type) }),
         },
     });
 
-    controls?.prepend(btn);
-
     if (isOwner) {
         btn.addEventListener("click", async (event) => {
-            await retrain(actor, path, selectedId, type);
+            await retrain(actor, selectedId, type);
         });
     }
+
+    return btn;
 }
 
-async function retrain(actor: ActorPF2e, path: string, selectedId: string, type: string) {
+async function retrain(actor: ActorPF2e, selectedId: string, type: RetrainType) {
     const selected = actor.items.get(selectedId);
+    const path = RETRAIN_PATH[type];
     const ids = getFlag<string[]>(actor, path) ?? [];
     if (!selected || !ids.length || ids.includes(selectedId)) return;
 
@@ -188,4 +189,6 @@ async function retrain(actor: ActorPF2e, path: string, selectedId: string, type:
     });
 }
 
-export { addRetrainBtn, createChargesElement, renderChargesEntries };
+type RetrainType = keyof typeof RETRAIN_PATH;
+
+export { createChargesElement, createRetrainBtn, renderChargesEntries };

@@ -19,6 +19,8 @@ import {
 } from "module-helpers";
 import { getUuidFromInlineMatch, utils } from "utils";
 
+const ANIMIST_VESSELS_PATH = "extra.dailies.animist.primaryVessels";
+
 const LORE_STRIP_REGEX = /^(.+?) Lore$/;
 
 const UUID_REGEX = /@(uuid|compendium)\[([a-z0-9\._-]+)\]/gi;
@@ -341,7 +343,7 @@ function getAnimistConfigs(actor: CharacterPF2e) {
 function getAnimistVesselsData(actor: Maybe<ActorPF2e>) {
     if (!(actor instanceof Actor) || !actor.isOfType("character")) return;
 
-    const primaryVessels = getFlag<string[]>(actor, "extra.dailies.animist.primaryVessels");
+    const primaryVessels = getFlag<string[]>(actor, ANIMIST_VESSELS_PATH);
     if (!primaryVessels) return;
 
     const vesselsEntry = actor.spellcasting.find(
@@ -352,4 +354,4 @@ function getAnimistVesselsData(actor: Maybe<ActorPF2e>) {
     return { entry: vesselsEntry, primary: primaryVessels.slice() };
 }
 
-export { animist, getAnimistConfigs, getAnimistVesselsData };
+export { animist, ANIMIST_VESSELS_PATH, getAnimistConfigs, getAnimistVesselsData };

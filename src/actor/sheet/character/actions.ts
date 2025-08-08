@@ -1,6 +1,6 @@
-import { isTacticAbility } from "data";
-import { CharacterPF2e, getFlag, htmlQuery, localize } from "module-helpers";
-import { addRetrainBtn } from "..";
+import { COMMANDER_TACTIC_PATH, isTacticAbility } from "data";
+import { CharacterPF2e, getFlag, htmlQuery } from "module-helpers";
+import { createRetrainBtn } from "..";
 
 function updateActionsTab(actor: CharacterPF2e, html: HTMLElement) {
     const actionsTab = htmlQuery(html, `.sheet-content .tab[data-tab="actions"]`);
@@ -10,13 +10,12 @@ function updateActionsTab(actor: CharacterPF2e, html: HTMLElement) {
 }
 
 function updateTacticsEntries(actor: CharacterPF2e, actionsTab: HTMLElement) {
-    const tactics = getFlag<string[]>(actor, "extra.dailies.commander-tactics.tactics") ?? [];
+    const tactics = getFlag<string[]>(actor, COMMANDER_TACTIC_PATH) ?? [];
     if (!tactics.length) return;
 
     const encounterTab = htmlQuery(actionsTab, `.actions-panels [data-tab="encounter"]`);
     if (!encounterTab) return;
 
-    const isOwner = actor.isOwner;
     const actionsElements = encounterTab.querySelectorAll<HTMLLIElement>(".action[data-item-id]");
 
     for (const el of actionsElements) {
@@ -25,14 +24,8 @@ function updateTacticsEntries(actor: CharacterPF2e, actionsTab: HTMLElement) {
 
         el.classList.add("inactive");
 
-        addRetrainBtn(
-            actor,
-            htmlQuery(el, ".item-controls"),
-            "extra.dailies.commander-tactics.tactics",
-            isOwner,
-            itemId,
-            localize("sheet.tactic")
-        );
+        const btn = createRetrainBtn(actor, itemId, "tactic");
+        htmlQuery(el, ".item-controls")?.prepend(btn);
     }
 }
 

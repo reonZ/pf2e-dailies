@@ -1,6 +1,8 @@
 import { createDaily, DailyMessageOptions, DailyRowSelectOption } from "daily";
 import { includesAny, ItemPF2e, localize, R } from "module-helpers";
 
+const COMMANDER_TACTIC_PATH = "extra.dailies.commander-tactics.tactics";
+
 const TACTIC_TRAITS = [
     "commander-expert-tactic",
     "commander-legendary-tactic",
@@ -90,4 +92,4 @@ function isTacticAbility(item: Maybe<ItemPF2e>): item is ItemPF2e {
     return item instanceof Item && includesAny(item.system.traits.otherTags, TACTIC_TRAITS);
 }
 
-export { commanderTactics, isTacticAbility };
+export { COMMANDER_TACTIC_PATH, commanderTactics, isTacticAbility };

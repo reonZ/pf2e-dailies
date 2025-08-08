@@ -1,6 +1,6 @@
-import { addRetrainBtn } from "actor/sheet/_utils";
+import { createRetrainBtn } from "actor";
 import { getAnimistVesselsData } from "data";
-import { CharacterPF2e, htmlQuery, localize } from "module-helpers";
+import { CharacterPF2e, htmlQuery } from "module-helpers";
 
 function updateAnimistEntries(actor: CharacterPF2e, spellsTab: HTMLElement, isOwner: boolean) {
     const vesselsData = getAnimistVesselsData(actor);
@@ -14,15 +14,9 @@ function updateAnimistEntries(actor: CharacterPF2e, spellsTab: HTMLElement, isOw
         const itemId = spellEl.dataset.itemId ?? "";
         if (primary.includes(itemId)) continue;
 
-        addRetrainBtn(
-            actor,
-            htmlQuery(spellEl, ".item-controls"),
-            "extra.dailies.animist.primaryVessels",
-            isOwner,
-            itemId,
-            localize("sheet.vessel")
-        );
+        const btn = createRetrainBtn(actor, itemId, "vessel");
 
+        htmlQuery(spellEl, ".item-controls")?.prepend(btn);
         htmlQuery(spellEl, "button.cast-spell")?.classList.add("inactive");
 
         const nameEl = htmlQuery(spellEl, ".name");

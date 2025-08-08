@@ -190,18 +190,19 @@
       "noChanges": "N'a fait aucun changement au cours de ses préparatifs quotidiens. Vous n'aviez même pas réellement besoin de le savoir.",
       "gained": "A obtenu le {type} temporaire",
       "groups": {
-        "resistances": "A obtenu les résistances",
-        "languages": "A appris à parler et écrire",
-        "skills": "Qualifié dans les compétences suivantes",
-        "tome": "A étudié son tome de thaumaturgie",
-        "spells": "Est prêt à utiliser les sorts",
-        "familiar": "A choisi les pouvoirs de familier",
         "apparition": "S'est harmonisé avec ses apparitions",
-        "feats": "A appris les dons",
-        "scrolls": "A créé les parchemins temporaires",
-        "ceremonial": "A accompli un rituel pour créer un couteau cérémoniel imprégné avec le sort",
         "blade": "A imprégné son esprit dans son arme",
-        "mindsmith": "A concentré son esprit dans son arme"
+        "ceremonial": "A accompli un rituel pour créer un couteau cérémoniel imprégné avec le sort",
+        "familiar": "A choisi les pouvoirs de familier",
+        "feats": "A appris les dons",
+        "languages": "A appris à parler et écrire",
+        "mindsmith": "A concentré son esprit dans son arme",
+        "resistances": "A obtenu les résistances",
+        "scrolls": "A créé les parchemins temporaires",
+        "skills": "Qualifié dans les compétences suivantes",
+        "spells": "Est prêt à utiliser les sorts",
+        "tactics": "Est prêt à appliquer les tactiques de combat",
+        "tome": "A étudié son tome de thaumaturgie"
       },
       "rations": {
         "used": "A consommé une de ses {name} et en possède {nb} restantes.",
@@ -214,13 +215,15 @@
         "name": "Arme mentale"
       }
     },
+    "retrain": {
+      "content": "A échangé : {type}",
+      "hint": "Sélectionnez quel {type} vous souhaitez remplacer par <strong>{selected}</strong>",
+      "label": "{type} original(e)",
+      "title": "Échange {type} - {name}",
+      "yes": "Échanger"
+    },
     "sheet": {
       "title": "Préparatifs quotidiens",
-      "unrested": "Repos nécessaire",
-      "primary": {
-        "assign": "Assigner en tant que réceptacle primaire",
-        "unassign": "Ne plus assigner comme réceptacle primaire"
-      },
       "charges": {
         "label": "Charges",
         "tooltip": "Rénitialiser les charges au maximum (max : {max})"
@@ -228,7 +231,11 @@
       "generate": {
         "tooltip": "Générer une entrée d'incantation",
         "confirm": "Une entrée d'incantation pour <strong>{name}</strong> a été créée."
-      }
+      },
+      "retrain": "Échange {type}",
+      "tactic": "Tactique",
+      "unrested": "Repos nécessaire",
+      "vessel": "Réceptacle primaire"
     },
     "spellEntry": {
       "name": "Sorts temporaires"

@@ -21,6 +21,10 @@ const commanderTactics = createDaily({
             required: true,
         },
         {
+            slug: "commander", // Commander,
+            uuid: "Compendium.pf2e.classes.Item.Oyee5Ds9uwYLEkD0",
+        },
+        {
             slug: "expert", // Expert Tactician
             uuid: "Compendium.pf2e.classfeatures.Item.ZvsiPWL9mVZk5Tz1",
         },
@@ -42,7 +46,7 @@ const commanderTactics = createDaily({
         },
     ],
     label: (actor, items) => items.tactics.name,
-    rows: (actor, items) => {
+    rows: (actor, { commander, efficient, expert, legendary, master, tactical }) => {
         const uniqueId = foundry.utils.randomID();
 
         const options: DailyRowSelectOption[] = R.pipe(
@@ -53,8 +57,8 @@ const commanderTactics = createDaily({
             })
         );
 
-        const baseNbTactics = items.legendary ? 6 : items.master ? 5 : items.expert ? 4 : 3;
-        const extraNbTactics = [items.efficient ? 1 : 0, items.tactical ? 1 : 0];
+        const baseNbTactics = !commander ? 1 : legendary ? 6 : master ? 5 : expert ? 4 : 3;
+        const extraNbTactics = [efficient ? 1 : 0, tactical ? 1 : 0];
         const nbTactics = Math.min(baseNbTactics + R.sum(extraNbTactics), options.length);
 
         return R.range(1, nbTactics + 1).map((i) => ({

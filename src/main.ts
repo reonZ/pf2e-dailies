@@ -1,5 +1,6 @@
 import {
     canPrepareDailies,
+    createRetrainBtn,
     getDailiesSummary,
     getDisabledDailies,
     onRenderCharacterSheetPF2e,
@@ -57,6 +58,7 @@ Hooks.on("renderNPCSheetPF2e", onRenderNPCSheetPF2e);
 MODULE.apiExpose({
     canCastRank,
     canPrepareDailies,
+    createRetrainBtn,
     getAnimistConfigs,
     getAnimistVesselsData,
     getDailiesSummary,

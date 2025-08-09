@@ -31,7 +31,7 @@ function getFamiliarAbilityCount(actor: CharacterPF2e) {
 
 const familiar = createDaily({
     key: "familiar",
-    condition: (actor) => !!actor.familiar,
+    condition: (actor) => !!actor.familiar?.isOwner,
     rows: async (actor) => {
         const nbAbilities = getFamiliarAbilityCount(actor);
         const pack = game.packs.get("pf2e.familiar-abilities");
@@ -65,7 +65,6 @@ const familiar = createDaily({
     },
     process: async ({ actor, rows, messages }) => {
         const familiar = actor.familiar;
-
         if (!familiar) return;
 
         const abilities: AbilitySource[] = [];
@@ -96,8 +95,7 @@ const familiar = createDaily({
     },
     rest: async ({ actor }) => {
         const familiar = actor.familiar;
-
-        if (!familiar) return;
+        if (!familiar?.isOwner) return;
 
         const ids = familiar.itemTypes.action
             .filter((item) => getFlag(item, "temporary"))
@@ -108,7 +106,7 @@ const familiar = createDaily({
         }
     },
     config: (actor) => {
-        if (!actor.familiar) return;
+        if (!actor.familiar?.isOwner) return;
 
         return [
             {

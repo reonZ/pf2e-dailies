@@ -117,6 +117,7 @@ function createRetrainBtn(actor: ActorPF2e, selectedId: string, type: RetrainTyp
         content: `<i class="fa-solid fa-retweet"></i>`,
         dataset: {
             action: "dailies-retrain",
+            retrainType: type,
             tooltip: localize("sheet.retrain", { type: localize("sheet", type) }),
         },
     });
@@ -130,11 +131,13 @@ function createRetrainBtn(actor: ActorPF2e, selectedId: string, type: RetrainTyp
     return btn;
 }
 
-async function retrain(actor: ActorPF2e, selectedId: string, type: RetrainType) {
+async function retrain(actor: ActorPF2e, selectedId: string, type: string) {
     const selected = actor.items.get(selectedId);
-    const path = RETRAIN_PATH[type];
+    if (!selected || !(type in RETRAIN_PATH)) return;
+
+    const path = RETRAIN_PATH[type as RetrainType];
     const ids = getFlag<string[]>(actor, path) ?? [];
-    if (!selected || !ids.length || ids.includes(selectedId)) return;
+    if (!ids.length || ids.includes(selectedId)) return;
 
     const options = R.pipe(
         ids,
@@ -191,4 +194,4 @@ async function retrain(actor: ActorPF2e, selectedId: string, type: RetrainType) 
 
 type RetrainType = keyof typeof RETRAIN_PATH;
 
-export { createChargesElement, createRetrainBtn, renderChargesEntries, retrain };
+export { createChargesElement, createRetrainBtn, renderChargesEntries, retrain, RETRAIN_PATH };

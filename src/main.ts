@@ -20,10 +20,12 @@ import {
     createScrollChainDaily,
     getAnimistConfigs,
     getAnimistVesselsData,
+    getCommanderTactics,
     getStaffData,
+    isTacticAbility,
     setStaffChargesValue,
 } from "data";
-import { ActorPF2e, CharacterPF2e, getSetting, MODULE, warning } from "module-helpers";
+import { ActorPF2e, CharacterPF2e, getSetting, htmlClosest, MODULE, warning } from "module-helpers";
 import { registerSettings } from "settings";
 import { utils } from "utils";
 import { registerInitWrappers, registerReadyWrappers } from "wrappers";
@@ -62,19 +64,21 @@ MODULE.apiExpose({
     createRetrainBtn,
     getAnimistConfigs,
     getAnimistVesselsData,
+    getCommanderTactics,
     getDailiesSummary,
     getDisabledDailies,
     getStaffItem: (actor: CharacterPF2e) => {
         const flag = getStaffData(actor);
         return (flag && actor.inventory.get(flag.staffId)) || null;
     },
+    isTacticAbility,
     openDailiesInterface,
     registerCustomDailies,
-    retrainTactic: (actor: ActorPF2e, selectedId: string) => {
-        retrain(actor, selectedId, "tactic");
-    },
-    retrainVessel: (actor: ActorPF2e, selectedId: string) => {
-        retrain(actor, selectedId, "vessel");
+    retrain,
+    retrainFromElement: async (actor: ActorPF2e, target: HTMLElement) => {
+        const itemId = htmlClosest(target, "[data-item-id]")?.dataset.itemId;
+        const retrainType = target.dataset.retrainType;
+        return (!!itemId && !!retrainType && retrain(actor, itemId, retrainType)) || undefined;
     },
     setStaffChargesValue,
     utils,

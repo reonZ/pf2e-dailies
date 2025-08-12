@@ -1,5 +1,5 @@
-import { COMMANDER_TACTIC_PATH, isTacticAbility } from "data";
-import { CharacterPF2e, getFlag, htmlQuery } from "module-helpers";
+import { getCommanderTactics, isTacticAbility } from "data";
+import { CharacterPF2e, htmlQuery } from "module-helpers";
 import { createRetrainBtn } from "..";
 
 function updateActionsTab(actor: CharacterPF2e, html: HTMLElement) {
@@ -10,7 +10,7 @@ function updateActionsTab(actor: CharacterPF2e, html: HTMLElement) {
 }
 
 function updateTacticsEntries(actor: CharacterPF2e, actionsTab: HTMLElement) {
-    const tactics = getFlag<string[]>(actor, COMMANDER_TACTIC_PATH) ?? [];
+    const tactics = getCommanderTactics(actor);
     if (!tactics.length) return;
 
     const encounterTab = htmlQuery(actionsTab, `.actions-panels [data-tab="encounter"]`);

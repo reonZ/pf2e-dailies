@@ -7,6 +7,7 @@ import {
     onRenderFamiliarSheetPF2e,
     onRenderNPCSheetPF2e,
     openDailiesInterface,
+    retrain,
 } from "actor";
 import { CustomDaily, registerCustomDailies } from "custom";
 import { DAILY_SCHEMA, initializeDailies } from "dailies";
@@ -22,7 +23,7 @@ import {
     getStaffData,
     setStaffChargesValue,
 } from "data";
-import { CharacterPF2e, getSetting, MODULE, warning } from "module-helpers";
+import { ActorPF2e, CharacterPF2e, getSetting, MODULE, warning } from "module-helpers";
 import { registerSettings } from "settings";
 import { utils } from "utils";
 import { registerInitWrappers, registerReadyWrappers } from "wrappers";
@@ -69,6 +70,12 @@ MODULE.apiExpose({
     },
     openDailiesInterface,
     registerCustomDailies,
+    retrainTactic: (actor: ActorPF2e, selectedId: string) => {
+        retrain(actor, selectedId, "tactic");
+    },
+    retrainVessel: (actor: ActorPF2e, selectedId: string) => {
+        retrain(actor, selectedId, "vessel");
+    },
     setStaffChargesValue,
     utils,
     dailyHelpers: {

@@ -191,4 +191,4 @@ async function retrain(actor: ActorPF2e, selectedId: string, type: RetrainType) 
 
 type RetrainType = keyof typeof RETRAIN_PATH;
 
-export { createChargesElement, createRetrainBtn, renderChargesEntries };
+export { createChargesElement, createRetrainBtn, renderChargesEntries, retrain };

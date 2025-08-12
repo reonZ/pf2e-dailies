@@ -1,3 +1,12 @@
+# 4.3.0
+
+-   expose some more functions to the API so i can use them in the HUD
+-   `Commander Tactics`:
+    -   add support for `Commander Dedication`
+        -   you will have to wait for the next system update for it to work though as the dedication doesn't currently add the `Tactics` class feature to your sheet
+-   `Familiar`
+    -   make sure the user is also the owner of the familiar to avoid breaking error in case the GM forgot to set it
+
 # 4.2.0
 
 -   `Animist`:

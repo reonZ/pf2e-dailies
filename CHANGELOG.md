@@ -1,3 +1,8 @@
+# 4.3.1
+
+-   expose `getPhysicalItemSpells` function to the API
+-   fix not using fallback to test if a localization key exist, preventing some localization for languages without a localization file
+
 # 4.3.0
 
 -   expose some more functions to the API so i can use them in the HUD

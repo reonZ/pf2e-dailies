@@ -21,6 +21,7 @@ import {
     getAnimistConfigs,
     getAnimistVesselsData,
     getCommanderTactics,
+    getSpells,
     getStaffData,
     isTacticAbility,
     setStaffChargesValue,
@@ -67,6 +68,7 @@ MODULE.apiExpose({
     getCommanderTactics,
     getDailiesSummary,
     getDisabledDailies,
+    getPhysicalItemSpells: getSpells,
     getStaffItem: (actor: CharacterPF2e) => {
         const flag = getStaffData(actor);
         return (flag && actor.inventory.get(flag.staffId)) || null;

@@ -2,7 +2,8 @@
   "pf2e-dailies": {
     "settings": {
       "addedHighlight": {
-        "name": "Resaltar objetos añadidos"
+        "name": "Resaltar objetos añadidos",
+        "hint": "Los \"objetos\" temporales agregados por el módulo se resaltarán en las hojas de personajes y de familiares."
       },
       "partyMembers": {
         "name": "Sólo para miembros del grupo",
@@ -34,6 +35,7 @@
       }
     },
     "charges": {
+      "label": "Cargas",
       "reset": {
         "title": "Restablecer cargas del bastón",
         "content": "¿Estás seguro de que deseas restablecer las cargas de los bastones a su valor máximo (máximo: {max})?"
@@ -43,6 +45,7 @@
       }
     },
     "config": {
+      "filters": "Diarias habilitadas",
       "title": "{actor} - Configuraciones diarias",
       "animist": {
         "lore": "Eliminar el sufijo Lore",
@@ -52,18 +55,27 @@
       }
     },
     "customs": {
+      "title": "Diarias personalizadas",
       "list": {
+        "create": "Crear una diaria personalizada",
+        "delete": "Eliminar diaria personalizada",
+        "save": "Guardar diaria personalizada"
       },
       "delete": {
+        "title": "Eliminar diaria personalizada",
+        "content": "¿Estás seguro que deseas eliminar esta diaria?"
       },
       "code": {
+        "saved": "La diaria personalizada se guardó correctamente."
       },
       "readonly": {
+        "flavor": "Esta diaria está marcada como <em>solo lectura</em> porque se creó en una versión anterior del módulo y es incompatible. Si decide <a>desbloquearla</a>, asegúrese de actualizarla al formato de datos de la versión actual antes de guardarlo."
       }
     },
     "dialog": {
       "mind-weapon": {
         "title": "Crear Arma Mental",
+        "flavor": "Este personaje no tiene un arma mental en su inventario.<br>Por favor, selecciona una de las siguientes opciones para crear una.",
         "yes": "Crear",
         "no": "Cancelar",
         "held-in-one-hand": "una mano",
@@ -74,6 +86,7 @@
       }
     },
     "error": {
+      "incompatible": "Hay diarias personalizadas que son incompatibles con la versión actual de <strong>PF2e Dailies</strong>.",
       "unexpected": "Se produjo un error inesperado con el módulo <strong>PF2e Dailies</strong>. Consulte la consola (F12) para obtener más información."
     },
     "homebrew": {
@@ -91,6 +104,7 @@
     "interface": {
       "title": "{actor} - Preparación diaria",
       "config": "Configuración",
+      "noDailies": "Este personaje no tiene ninguna diaria",
       "accept": "Aceptar",
       "cancel": "Cancelar",
       "tooltip": {

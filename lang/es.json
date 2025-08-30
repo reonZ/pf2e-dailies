@@ -2,8 +2,8 @@
   "pf2e-dailies": {
     "settings": {
       "addedHighlight": {
-        "name": "Resaltar elementos añadidos",
-        "hint": "Los \"elementos\" temporales agregados por el módulo se resaltarán en las hojas de personajes y familiares."
+        "name": "Resaltar objetos añadidos",
+        "hint": "Los \"objetos\" temporales agregados por el módulo se resaltarán en las hojas de personajes y de familiares."
       },
       "partyMembers": {
         "name": "Sólo para miembros del grupo",
@@ -35,7 +35,7 @@
       }
     },
     "charges": {
-      "label": "Cargos",
+      "label": "Cargas",
       "reset": {
         "title": "Restablecer cargas del bastón",
         "content": "¿Estás seguro de que deseas restablecer las cargas de los bastones a su valor máximo (máximo: {max})?"
@@ -45,7 +45,7 @@
       }
     },
     "config": {
-      "filters": "Diarios habilitados",
+      "filters": "Diarias habilitadas",
       "title": "{actor} - Configuraciones diarias",
       "animist": {
         "lore": "Eliminar el sufijo Lore",
@@ -55,27 +55,27 @@
       }
     },
     "customs": {
-      "title": "Diarios personalizados",
+      "title": "Diarias personalizadas",
       "list": {
-        "create": "Crear diario personalizado",
-        "delete": "Eliminar diario personalizado",
-        "save": "Guardar personalizado diario"
+        "create": "Crear una diaria personalizada",
+        "delete": "Eliminar diaria personalizada",
+        "save": "Guardar diaria personalizada"
       },
       "delete": {
-        "title": "Eliminar diario personalizado",
-        "content": "¿Estás seguro que deseas eliminar este diario?"
+        "title": "Eliminar diaria personalizada",
+        "content": "¿Estás seguro que deseas eliminar esta diaria?"
       },
       "code": {
-        "saved": "El diario personalizado se guardó correctamente."
+        "saved": "La diaria personalizada se guardó correctamente."
       },
       "readonly": {
-        "flavor": "Este diario está marcado como <em>solo lectura</em> porque se creó en una versión anterior del módulo y es incompatible. Si decide <a>desbloquearlo</a>, asegúrese de actualizarlo al formato de datos de la versión actual antes de guardarlo."
+        "flavor": "Esta diaria está marcada como <em>solo lectura</em> porque se creó en una versión anterior del módulo y es incompatible. Si decide <a>desbloquearla</a>, asegúrese de actualizarla al formato de datos de la versión actual antes de guardarlo."
       }
     },
     "dialog": {
       "mind-weapon": {
         "title": "Crear Arma Mental",
-        "flavor": "Este personaje no tiene un arma mental en su inventario.<br>Selecciona una de las siguientes opciones para crear una.",
+        "flavor": "Este personaje no tiene un arma mental en su inventario.<br>Por favor, selecciona una de las siguientes opciones para crear una.",
         "yes": "Crear",
         "no": "Cancelar",
         "held-in-one-hand": "una mano",
@@ -86,7 +86,7 @@
       }
     },
     "error": {
-      "incompatible": "Hay diarios personalizadas que son incompatibles con la versión actual de <strong>PF2e Dailies</strong>.",
+      "incompatible": "Hay diarias personalizadas que son incompatibles con la versión actual de <strong>PF2e Dailies</strong>.",
       "unexpected": "Se produjo un error inesperado con el módulo <strong>PF2e Dailies</strong>. Consulte la consola (F12) para obtener más información."
     },
     "homebrew": {
@@ -104,7 +104,7 @@
     "interface": {
       "title": "{actor} - Preparación diaria",
       "config": "Configuración",
-      "noDailies": "Este personaje no tiene ningún diario",
+      "noDailies": "Este personaje no tiene ninguna diaria",
       "accept": "Aceptar",
       "cancel": "Cancelar",
       "tooltip": {
@@ -151,7 +151,7 @@
         "flexible": "Ranura flexible",
         "group": {
           "prepared": "Ha preparado un {type} para el día",
-          "merged": "Ha fusionado un {tipo} a su arma vinculada para el día.",
+          "merged": "Ha fusionado un {type} a su arma vinculada para el día.",
           "bond": "Ha preparado su arma vinculada para el día."
         },
         "staff": "Bastón",
@@ -164,7 +164,7 @@
       },
       "rations": {
         "yes": "Consumir ({nb} restante)",
-        "no": "No consumir ningún",
+        "no": "No consumir ninguno",
         "last": "Consumir el último disponible"
       },
       "mindsmith": {
@@ -190,18 +190,19 @@
       "noChanges": "No ha realizado ningún cambio durante sus preparativos diarios, en realidad ni siquiera necesitabas saberlo.",
       "gained": "Obtuvo el {type} temporal",
       "groups": {
-        "resistances": "Ganó las resistencias",
-        "languages": "Aprendí a leer y hablar.",
-        "skills": "Entrenado en las siguientes habilidades",
-        "tome": "Estudió su tomo de taumaturgia",
-        "spells": "Está listo para usar los hechizos",
-        "familiar": "Ha seleccionado las habilidades de familiar",
         "apparition": "Se ha sintonizado con sus apariciones",
-        "feats": "Aprendió las dotes",
-        "scrolls": "Creó los pergaminos temporales",
-        "ceremonial": "Realizó un ritual para crear un cuchillo ceremonial imbuido con el hechizo.",
         "blade": "Imbuyó su espíritu en su arma",
-        "mindsmith": "Ha centrado su mente en su arma."
+        "ceremonial": "Realizó un ritual para crear un cuchillo ceremonial imbuido con el hechizo.",
+        "familiar": "Ha seleccionado las habilidades de familiar",
+        "feats": "Aprendió las dotes",
+        "languages": "Aprendió a leer y hablar.",
+        "mindsmith": "Ha centrado su mente en su arma.",
+        "resistances": "Ganó las resistencias",
+        "scrolls": "Creó los pergaminos temporales",
+        "skills": "Entrenado en las siguientes habilidades",
+        "spells": "Está listo para usar los hechizos",
+        "tactics": "Está preparado para aplicar las tácticas de combate.",
+        "tome": "Estudió su tomo de taumaturgia"
       },
       "rations": {
         "used": "Consumió uno de sus {name} y le queda {nb}.",
@@ -214,13 +215,15 @@
         "name": "Arma mental"
       }
     },
+    "retrain": {
+      "content": "Ha intercambiado el siguiente {type}",
+      "hint": "Seleccione el {type} que desea reemplazar por <strong>{selected}</strong>",
+      "label": "Original {type}",
+      "title": "Intercambio {type} - {name}",
+      "yes": "Intercambio"
+    },
     "sheet": {
       "title": "Preparaciones diarias",
-      "unrested": "Descanso requerido",
-      "primary": {
-        "assign": "Asignar como vasija principal",
-        "unassign": "Desasignar vasija principal"
-      },
       "charges": {
         "label": "Cargas",
         "tooltip": "Restablecer las cargas al máximo (máximo: {max})"
@@ -228,7 +231,11 @@
       "generate": {
         "tooltip": "Generar entrada de lanzamiento de conjuros",
         "confirm": "Se ha creado una entrada de lanzamiento de conjuros para <strong>{name}</strong>."
-      }
+      },
+      "retrain": "Intercambio {type}",
+      "tactic": "Táctica",
+      "unrested": "Descanso requerido",
+      "vessel": "Recipiente primario"
     },
     "spellEntry": {
       "name": "Conjuros temporales"

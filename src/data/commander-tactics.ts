@@ -1,6 +1,8 @@
 import { createDaily, DailyMessageOptions, DailyRowSelectOption } from "daily";
 import { ActorPF2e, getFlag, includesAny, ItemPF2e, localize, R } from "module-helpers";
 
+const TACTICAL_EXCELLENCE_UUID = "Compendium.pf2e.feats-srd.Item.a7sCZ2ehfsLQutvO";
+
 const COMMANDER_TACTIC_PATH = "extra.dailies.commander-tactics.tactics";
 
 const TACTIC_TRAITS = [
@@ -42,7 +44,7 @@ const commanderTactics = createDaily({
         },
         {
             slug: "tactical", // Tactical Excellence
-            uuid: "Compendium.pf2e.feats-srd.Item.a7sCZ2ehfsLQutvO",
+            uuid: TACTICAL_EXCELLENCE_UUID,
         },
     ],
     label: (actor, items) => items.tactics.name,
@@ -57,9 +59,18 @@ const commanderTactics = createDaily({
             })
         );
 
+        let extraNbTactics = efficient ? 1 : 0;
         const baseNbTactics = !commander ? 1 : legendary ? 6 : master ? 5 : expert ? 4 : 3;
-        const extraNbTactics = [efficient ? 1 : 0, tactical ? 1 : 0];
-        const nbTactics = Math.min(baseNbTactics + R.sum(extraNbTactics), options.length);
+
+        if (tactical) {
+            const tactics = actor.itemTypes.feat.filter(
+                (item) => item.sourceId === TACTICAL_EXCELLENCE_UUID
+            );
+
+            extraNbTactics += tactics.length;
+        }
+
+        const nbTactics = Math.min(baseNbTactics + extraNbTactics, options.length);
 
         return R.range(1, nbTactics + 1).map((i) => ({
             type: "select",

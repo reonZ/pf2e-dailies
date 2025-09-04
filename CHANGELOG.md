@@ -1,3 +1,9 @@
+# 4.4.0
+
+-   bump the system minimum compatibility version to `7.4.3` and foundry's to `13.348`
+-   `Commander Tactics`:
+    -   now supports multiple instances of the `Tactical Excellence` feat to calculate the number of tactics to prepare
+
 # 4.3.1
 
 -   expose `getPhysicalItemSpells` function to the API

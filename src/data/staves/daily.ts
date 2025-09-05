@@ -365,11 +365,7 @@ const staves = createDaily({
 
         setExtraFlags(staffData);
 
-        const staffType = localize(
-            "interface.staves",
-            isMakeshift ? "makeshift" : "staff"
-        ).toLocaleLowerCase();
-
+        const staffType = localize("interface.staves", isMakeshift ? "makeshift" : "staff");
         const groupLabel = isMerged ? "merged" : !!bond ? "bond" : "prepared";
 
         messages.addGroup(

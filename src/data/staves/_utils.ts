@@ -70,9 +70,13 @@ function setStaffChargesValue(actor: CharacterPF2e, value?: number) {
 }
 
 function isStaff(item: ItemPF2e) {
-    const trait = item.isOfType("weapon") ? "magical" : "coda";
     const traits = item.system.traits?.value;
-    return traits?.includes("staff") && traits.includes(trait);
+
+    return (
+        traits?.includes("staff") &&
+        (item.isOfType("weapon") || (item.isOfType("equipment") && traits.includes("coda"))) &&
+        item.isMagical
+    );
 }
 
 function getStaves<TActor extends CharacterPF2e | NPCPF2e>(actor: TActor): ActorStaff<TActor>[] {

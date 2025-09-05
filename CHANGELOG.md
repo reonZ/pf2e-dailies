@@ -1,3 +1,9 @@
+# 4.4.2
+
+-   `Prepare Staff`:
+    -   no longer lowercase the staff type label in the summary message
+-   fix some typos in the english localization
+
 # 4.4.1
 
 -   add german localization (thanks to [MSAbaddon](https://github.com/MSAbaddon))

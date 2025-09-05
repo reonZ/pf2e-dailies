@@ -66,7 +66,7 @@
                 "content": "Are you sure you want to delete this daily ?"
             },
             "code": {
-                "saved": "Custom Daily was succesfully saved."
+                "saved": "Custom Daily was successfully saved."
             },
             "readonly": {
                 "flavor": "This daily is flagged as <em>read only</em> because it was created in a previous version of the module and is incompatible. If you decide to <a>unlock</a> it, make sure to update it to the current version data format before saving."
@@ -87,7 +87,7 @@
         },
         "error": {
             "incompatible": "There are custom dailies that are incompatible with the current version of <strong>PF2e Dailies</strong>.",
-            "unexpected": "An unexpected error occured with the module <strong>PF2e Dailies</strong>. See the console (F12) for details."
+            "unexpected": "An unexpected error occurred with the module <strong>PF2e Dailies</strong>. See the console (F12) for details."
         },
         "homebrew": {
             "title": "Homebrew Settings",
@@ -130,7 +130,7 @@
                     "require": "require: <strong>{need}</strong>, has: <strong>{has}</strong>",
                     "missing": "missing: <strong>{need}</strong>",
                     "invalid": "invalid: <strong>{has}</strong>",
-                    "wrongTraits": "The dropped item traits missmatch with the filter's.",
+                    "wrongTraits": "The dropped item traits mismatch with the filter's.",
                     "exclude": "<strong>{item}</strong> was excluded from the selection.",
                     "type": {
                         "type": "type",

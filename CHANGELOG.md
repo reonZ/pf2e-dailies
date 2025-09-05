@@ -1,3 +1,8 @@
+# 4.4.3
+
+-   `Prepare Staff`:
+    -   fix staves without the actual `magical` trait not being considered magical even if they have another trait implying it
+
 # 4.4.2
 
 -   `Prepare Staff`:

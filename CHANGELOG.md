@@ -1,3 +1,7 @@
+# 4.4.1
+
+-   add german localization (thanks to [MSAbaddon](https://github.com/MSAbaddon))
+
 # 4.4.0
 
 -   bump the system minimum compatibility version to `7.4.3` and foundry's to `13.348`

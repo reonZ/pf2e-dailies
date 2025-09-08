@@ -66,7 +66,7 @@
         "content": "Êtes-vous certain de vouloir effacer cet objet quotidien ?"
       },
       "code": {
-        "saved": "Cet objet quotidien personnalisé a été enregistré"
+        "saved": "le Quotidien personnalisé a été enregistré avec succès."
       },
       "readonly": {
         "flavor": "Cet objet quotidien est signalé comme en <em>lecture seule</em> car il a été créé avec une version précédente du module est est incompatible. Si vous décidez de le <a>déverouiller</a>, assurez vous de le mettre à jour dans la version de donnée actuelle avant de sauvegarder."
@@ -87,7 +87,7 @@
     },
     "error": {
       "incompatible": "Il y a des objets quotidiens qui sont incompatibles avec la version actuelle de <strong>PF2e Dailies</strong>.",
-      "unexpected": "Une erreur inattendue est survenue avec le module <strong>PF2e Dailies</strong>. Voir la console (F12) pour le détail."
+      "unexpected": "Une erreur inattendue s'est produite avec le module <strong>PF2e Dailies</strong>. Consultez la console (F12) pour connaitre les détails."
     },
     "homebrew": {
       "title": "Réglages maison",
@@ -130,7 +130,7 @@
           "require": "nécessite : <strong>{need}</strong>, possède : <strong>{has}</strong>",
           "missing": "manquant : <strong>{need}</strong>",
           "invalid": "invalide : <strong>{has}</strong>",
-          "wrongTraits": "Les traits de l'objet déposé ne correspondent pas à ceux du filtre.",
+          "wrongTraits": "Les traits de l'objet lâché ne correspondent pas à celles du filtre.",
           "exclude": "<strong>{item}</strong> a été exclu de la sélection.",
           "type": {
             "type": "type",

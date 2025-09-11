@@ -6,43 +6,70 @@
         "hint": "\"Itens\" temporários adicionados pelo módulo serão destacados nas fichas de personagem e familiares."
       },
       "partyMembers": {
-        "name": "Somente para membros do grupo"
+        "name": "Somente para membros do grupo",
+        "hint": "Quando uma coleção de atores de jogadores é lida pelo módulo, ela deve ser limitada aos atores membros do grupo (se o personagem for de um grupo) ou a todos os atores controlados por jogadores?"
       },
       "menus": {
         "customs": {
+          "name": "Diárias Personalizadas",
+          "hint": "Registre suas próprias diárias com o módulo.",
           "label": "Registrar"
         },
         "homebrew": {
+          "name": "Configurações de Material Caseiro",
+          "hint": "Adicione seu material caseiro para o módulo usar em algumas de suas tarefas diárias.",
+          "label": "Material Caseiro"
         }
       }
     },
     "animist": {
       "spellcasting": {
+        "focus": "Magias de Receptáculo"
       }
     },
     "builtin": {
       "dailies": {
+        "familiar": "Habilidades de Familiar",
+        "staves": "Preparar um Cajado",
         "thaumaturge-tome": "Tomo do Taumaturgo"
       }
     },
     "charges": {
+      "label": "Cargas",
       "reset": {
+        "title": "Redefinir cargas de cajado",
+        "content": "Tem certeza de que deseja redefinir as cargas de cajado para o valor máximo (máx.: {max})?"
       },
       "error": {
+        "notEnough": "Não é possível conjurar {spell} em {rank}: não há cargas suficientes."
       }
     },
     "config": {
+      "filters": "Diárias habilitadas",
+      "title": "{actor} - Configurações de Diárias",
       "animist": {
+        "lore": "Remover sufixo de Saber",
+        "lores": "Mostrar Resumo dos Saberes",
+        "spells": "Mostrar Resumo de Magias",
+        "signatures": "Definir Magias Emblemáticas"
       }
     },
     "customs": {
+      "title": "Diárias Personalizadas",
       "list": {
+        "create": "Criar diária personalizada",
+        "delete": "Excluir diária personalizada",
+        "save": "Salvar diária personalizada"
       },
       "delete": {
+        "title": "Excluir diária personalizada",
+        "content": "Tem certeza de que deseja excluir esta diária?"
       },
       "code": {
+        "saved": "Diária personalziada foi salva com sucesso."
       },
       "readonly": {
+        "flavor": "Esta diária está marcado como <em>somente leitura</em> porque foi criado em uma versão anterior do módulo e é incompatível. Se você decidir <a>desbloqueá-la</a>, certifique-se de atualizá-la para o formato de dados da versão atual antes de salvar."
       }
     },
     "dialog": {
@@ -51,15 +78,24 @@
         "flavor": "Este personagem não tem uma arma mental em seu inventário.<br>Selecione uma das seguintes opções para criar uma.",
         "yes": "Criar",
         "no": "Cancelar",
+        "held-in-one-hand": "uma mão",
+        "held-in-two-hands": "duas mãos",
+        "label": "Uma arma de {hand} que causa <strong>1{die}</strong> de dano{hasTrait}",
         "oneTrait": "e tem o traço <strong>{trait1}</strong>",
         "twoTraits": "e tem os traços <strong>{trait1}</strong> e <strong>{trait2}</strong>"
       }
     },
     "error": {
+      "incompatible": "Há diárias personalizadas que são incompatíveis com a versão atual do <strong>PF2e Dailies</strong>.",
+      "unexpected": "Ocorreu um erro inesperado com o módulo <strong>PF2e Dailies</strong>. Consulte o console (F12) para obter detalhes."
     },
     "homebrew": {
+      "title": "Configurações de Material Caseiro",
       "index": {
+        "familiar": "Habilidades de Familiar",
+        "animist": "Aparições de Animista"
       },
+      "pack": "Pacote de Compêndio",
       "add": "Adicionar entrada",
       "delete": "Excluir entrada",
       "invalid": "<strong>{entry}</strong> não é o ID de um pacote de compêndio nem o UUID de um <strong>{type}</strong>",
@@ -75,17 +111,22 @@
         "random": "Isto será selecionado aleatoriamente",
         "alert": "Clique aqui para resolver",
         "notify": "Entrada puramente informativa",
+        "search": "Abrir o navegador do compêndio",
         "clear": "Limpar seleção",
-        "noSelect": "Nenhuma opção disponível"
+        "noSelect": "Nenhuma opção disponível",
+        "exists": "Esse talento já está presente no personagem"
       },
       "error": {
         "empty": "Alguns campos obrigatórios estão vazios."
       },
       "drop": {
         "notes": {
+          "ace": "Escolha uma única magia da lista arcana, divina, oculta ou primal de 4º círculo ou inferior.<br>A magia não pode ter custo, nem seu tempo de conjuração pode ser superior a 10 minutos. A magia deve ter como alvo uma única criatura, e você deve ser um alvo válido para ela."
         },
         "error": {
+          "wrongDataType": "Tipo de dado inválido arrastado.",
           "wrongSource": "Somente itens de compêndio ou do mundo podem ser usados.",
+          "wrongData": "O item arrastado não tem o <strong>{type}</strong> correto ({require}).",
           "require": "requer: <strong>{need}</strong>, tem: <strong>{has}</strong>",
           "missing": "faltando: <strong>{need}</strong>",
           "invalid": "inválido: <strong>{tem}</strong>",
@@ -106,12 +147,20 @@
         }
       },
       "staves": {
+        "empty": "Espaço vazio",
+        "flexible": "Espaço flexível",
         "group": {
           "prepared": "Preparou um {tipo} para o dia",
           "merged": "Fundiu um {tipo} à sua arma vinculada do dia",
           "bond": "Preparou sua arma vinculada para o dia"
         },
-        "type": "Categoria"
+        "staff": "Cajado",
+        "type": "Categoria",
+        "bond": "Vínculo do Lorde Rúnico",
+        "mergedshift": "Fundido com Cajado Improvisado",
+        "merged": "Fundido com Cajado normal",
+        "makeshift": "Cajado Improvisado",
+        "regular": "Cajado normal"
       },
       "rations": {
         "yes": "Consumir ({nb} restante)",
@@ -126,20 +175,31 @@
       "ability": "Habilidade #{nb}",
       "apparition": {
         "first": "Aparição Primária",
+        "primary": "Primária #{nb}",
         "other": "Aparição #{nb}"
       },
       "expend": "Gastar #{nb}",
       "rune": "Runa de Propriedade",
+      "select": "Selecione {that}",
       "mind-mental": "Forja Mental",
       "mind-runic": "Metalurgia Rúnica"
     },
     "message": {
       "changes": "Fez as seguintes mudanças durante seus preparativos diários.",
       "noChanges": "Não fez nenhuma alteração durante seus preparativos diários, você nem precisava saber disso.",
+      "gained": "Ganhou o {tipo} temporário",
       "groups": {
         "apparition": "Sintonizou-se com suas aparições",
+        "blade": "Imbuiu seu espírito em sua arma",
+        "ceremonial": "Realizou um ritual para criar uma faca cerimonial imbuída com a magia",
+        "familiar": "Selecionou as habilidades de familiar",
+        "feats": "Aprendeu os talentos",
+        "languages": "Aprendeu a ler e falar",
         "mindsmith": "Concentrou sua mente em sua arma",
         "resistances": "Ganhou as resistências",
+        "scrolls": "Criou os pergaminhos temporários",
+        "skills": "Treinado nas seguintes perícias",
+        "spells": "Está pronto para usar as magias",
         "tactics": "Está preparado para aplicar as táticas de combate",
         "tome": "Estudou seu tomo de taumaturgia"
       },
@@ -155,29 +215,43 @@
       }
     },
     "retrain": {
-      "hint": "Selecione qual {type} você deseja que seja substituído por <strong>{selected}</strong>"
+      "content": "Trocou o seguinte {type}",
+      "hint": "Selecione qual {type} você deseja que seja substituído por <strong>{selected}</strong>",
+      "label": "{type} original",
+      "title": "Trocar {type} - {name}",
+      "yes": "Trocar"
     },
     "sheet": {
+      "title": "Preparações Diárias",
       "charges": {
+        "label": "Cargas",
+        "tooltip": "Redefinir as cargas para o máximo (máx.: {max})"
       },
       "generate": {
         "tooltip": "Gerar entrada de conjuração",
         "confirm": "A entrada de conjuração para <strong>{name}</strong> foi criada."
       },
+      "retrain": "Trocar {type}",
       "tactic": "Tática",
-      "unrested": "Descanso necessário"
+      "unrested": "Descanso necessário",
+      "vessel": "Receptáculo Primário"
     },
     "spellEntry": {
+      "name": "Magias Temporárias"
     },
     "staves": {
       "spontaneous": {
+        "title": "Usar espaço espontâneo",
         "remaining": "restante",
+        "must": "Você deve consumir um espaço espontâneo de <strong>{rank}</strong>{higher} de {from}?",
+        "would": "Você quer consumir um espaço de magia espontânea de <strong>{rank}</strong>{higher} de {from}?",
         "multi": "qualquer uma das seguintes entradas de conjuração",
         "higher": "ou superior",
         "yes": "Consumir"
       },
       "error": {
-        "missing": "Não foi possível recuperar o cajado."
+        "missing": "Não foi possível recuperar o cajado.",
+        "notEquipped": "Você precisa equipar seu {cajado} para usá-lo."
       }
     }
   }

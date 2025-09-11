@@ -1,0 +1,184 @@
+{
+  "pf2e-dailies": {
+    "settings": {
+      "addedHighlight": {
+        "name": "Destacar itens adicionados",
+        "hint": "\"Itens\" temporários adicionados pelo módulo serão destacados nas fichas de personagem e familiares."
+      },
+      "partyMembers": {
+        "name": "Somente para membros do grupo"
+      },
+      "menus": {
+        "customs": {
+          "label": "Registrar"
+        },
+        "homebrew": {
+        }
+      }
+    },
+    "animist": {
+      "spellcasting": {
+      }
+    },
+    "builtin": {
+      "dailies": {
+        "thaumaturge-tome": "Tomo do Taumaturgo"
+      }
+    },
+    "charges": {
+      "reset": {
+      },
+      "error": {
+      }
+    },
+    "config": {
+      "animist": {
+      }
+    },
+    "customs": {
+      "list": {
+      },
+      "delete": {
+      },
+      "code": {
+      },
+      "readonly": {
+      }
+    },
+    "dialog": {
+      "mind-weapon": {
+        "title": "Criar Arma Mental",
+        "flavor": "Este personagem não tem uma arma mental em seu inventário.<br>Selecione uma das seguintes opções para criar uma.",
+        "yes": "Criar",
+        "no": "Cancelar",
+        "oneTrait": "e tem o traço <strong>{trait1}</strong>",
+        "twoTraits": "e tem os traços <strong>{trait1}</strong> e <strong>{trait2}</strong>"
+      }
+    },
+    "error": {
+    },
+    "homebrew": {
+      "index": {
+      },
+      "add": "Adicionar entrada",
+      "delete": "Excluir entrada",
+      "invalid": "<strong>{entry}</strong> não é o ID de um pacote de compêndio nem o UUID de um <strong>{type}</strong>",
+      "empty": "Você deve fornecer um ID de pacote de compêndio ou o UUID de um <strong>{type}</strong>"
+    },
+    "interface": {
+      "title": "{actor} - Preparação Diária",
+      "config": "Configuração",
+      "noDailies": "Este personagem não tem nenhuma diária",
+      "accept": "Aceitar",
+      "cancel": "Cancelar",
+      "tooltip": {
+        "random": "Isto será selecionado aleatoriamente",
+        "alert": "Clique aqui para resolver",
+        "notify": "Entrada puramente informativa",
+        "clear": "Limpar seleção",
+        "noSelect": "Nenhuma opção disponível"
+      },
+      "error": {
+        "empty": "Alguns campos obrigatórios estão vazios."
+      },
+      "drop": {
+        "notes": {
+        },
+        "error": {
+          "wrongSource": "Somente itens de compêndio ou do mundo podem ser usados.",
+          "require": "requer: <strong>{need}</strong>, tem: <strong>{has}</strong>",
+          "missing": "faltando: <strong>{need}</strong>",
+          "invalid": "inválido: <strong>{tem}</strong>",
+          "wrongTraits": "As características dos itens descartados não correspondem às do filtro.",
+          "exclude": "<strong>{item}</strong> foi excluído da seleção.",
+          "type": {
+            "type": "tipo",
+            "level": "nível",
+            "category": "categoria",
+            "categories": "categorias",
+            "skills": "habilidades",
+            "source": "fonte",
+            "rarity": "raridade",
+            "rank": "classificação",
+            "traditions": "tradições"
+          },
+          "none": "nenhum"
+        }
+      },
+      "staves": {
+        "group": {
+          "prepared": "Preparou um {tipo} para o dia",
+          "merged": "Fundiu um {tipo} à sua arma vinculada do dia",
+          "bond": "Preparou sua arma vinculada para o dia"
+        },
+        "type": "Categoria"
+      },
+      "rations": {
+        "yes": "Consumir ({nb} restante)",
+        "no": "Não consumir nenhum",
+        "last": "Consumir o último disponível"
+      },
+      "mindsmith": {
+        "missing": "A arma mental está faltando"
+      }
+    },
+    "label": {
+      "ability": "Habilidade #{nb}",
+      "apparition": {
+        "first": "Aparição Primária",
+        "other": "Aparição #{nb}"
+      },
+      "expend": "Gastar #{nb}",
+      "rune": "Runa de Propriedade",
+      "mind-mental": "Forja Mental",
+      "mind-runic": "Metalurgia Rúnica"
+    },
+    "message": {
+      "changes": "Fez as seguintes mudanças durante seus preparativos diários.",
+      "noChanges": "Não fez nenhuma alteração durante seus preparativos diários, você nem precisava saber disso.",
+      "groups": {
+        "apparition": "Sintonizou-se com suas aparições",
+        "mindsmith": "Concentrou sua mente em sua arma",
+        "resistances": "Ganhou as resistências",
+        "tactics": "Está preparado para aplicar as táticas de combate",
+        "tome": "Estudou seu tomo de taumaturgia"
+      },
+      "rations": {
+        "used": "Consumiu um dos seus {name} e tem {nb} restantes.",
+        "last": "Consumiu o último dos seus {nome}.",
+        "almost": "Consumiu um dos seus {name} e só tem {nb} restante."
+      }
+    },
+    "mindsmith": {
+      "weapon": {
+        "name": "Arma Mental"
+      }
+    },
+    "retrain": {
+      "hint": "Selecione qual {type} você deseja que seja substituído por <strong>{selected}</strong>"
+    },
+    "sheet": {
+      "charges": {
+      },
+      "generate": {
+        "tooltip": "Gerar entrada de conjuração",
+        "confirm": "A entrada de conjuração para <strong>{name}</strong> foi criada."
+      },
+      "tactic": "Tática",
+      "unrested": "Descanso necessário"
+    },
+    "spellEntry": {
+    },
+    "staves": {
+      "spontaneous": {
+        "remaining": "restante",
+        "multi": "qualquer uma das seguintes entradas de conjuração",
+        "higher": "ou superior",
+        "yes": "Consumir"
+      },
+      "error": {
+        "missing": "Não foi possível recuperar o cajado."
+      }
+    }
+  }
+}

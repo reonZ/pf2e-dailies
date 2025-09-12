@@ -4,6 +4,7 @@ export * from "./blade-ally";
 export * from "./ceremonial-knife";
 export * from "./combat-flexibility";
 export * from "./commander-tactics";
+export * from "./core-memories";
 export * from "./experimental-spellshaping";
 export * from "./familiar";
 export * from "./language";

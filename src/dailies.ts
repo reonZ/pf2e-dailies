@@ -7,6 +7,7 @@ import {
     ceremonialKnife,
     combatFlexibility,
     commanderTactics,
+    coreMemories,
     createComboSkillDaily,
     createLanguageDaily,
     createLoreSkillDaily,
@@ -34,6 +35,7 @@ const BUILTINS_DAILIES: Daily[] = [
     ceremonialKnife, // Ceremonial Knife
     combatFlexibility, // Combat Flexibility
     commanderTactics, // Commander Tactics
+    coreMemories, // Core Memories
     experimentalSpellshaping, // Experimental Spellshaping
     familiar, // Familiar
     mindSmith, // Mind Smith

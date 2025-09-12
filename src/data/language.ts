@@ -31,7 +31,10 @@ function createLanguageDaily(key: string, uuid: string) {
             const source = utils.createLanguageRuleElement({ language });
 
             addRule(items.item, source);
-            messages.add("languages", { uuid, selected: utils.getLanguageLabel(language) });
+            messages.add("languages", {
+                uuid: items.item,
+                selected: utils.getLanguageLabel(language),
+            });
         },
     });
 }

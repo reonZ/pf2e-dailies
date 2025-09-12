@@ -57,7 +57,7 @@ function createComboSkillDaily(
                 addRule(items.item, source);
             }
 
-            messages.add("skills", { uuid, selected });
+            messages.add("skills", { uuid: items.item, selected });
         },
     });
 }
@@ -85,10 +85,10 @@ function createLoreSkillDaily(
                 },
             ];
         },
-        process: ({ rows, messages, addItem }) => {
+        process: ({ items, rows, messages, addItem }) => {
             const source = utils.createLoreSource({ name: rows.lore, rank });
             addItem(source);
-            messages.add("skills", { uuid, selected: rows.lore });
+            messages.add("skills", { uuid: items.item, selected: rows.lore });
         },
     });
 }

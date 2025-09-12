@@ -194,7 +194,7 @@ const mindSmith = createDaily({
         });
 
         messages.add("mindsmith", {
-            uuid: mindUUID,
+            uuid: items.mind,
             label: localize("label.mind-smith"),
             selected: damageLabel(damage),
         });
@@ -224,7 +224,7 @@ const mindSmith = createDaily({
 
         if (traits.length) {
             messages.add("mindsmith", {
-                uuid: mentalUUID,
+                uuid: items.mental,
                 label: localize("label.mind-mental"),
                 selected: traits.map(utils.getWeaponTraitLabel).join(" & "),
             });
@@ -243,7 +243,7 @@ const mindSmith = createDaily({
             });
 
             messages.add("mindsmith", {
-                uuid: metallicUUID,
+                uuid: items.metallic ?? metallicUUID,
                 selected: utils.getPreciousMaterialLabel(material),
             });
         }
@@ -260,7 +260,7 @@ const mindSmith = createDaily({
             });
 
             messages.add("mindsmith", {
-                uuid: items.advanced ? advancedUUID : runicUUID,
+                uuid: items.advanced ?? items.runic,
                 label: localize("label.mind-runic"),
                 selected: utils.getWeaponPropertyRuneLabel(rune),
             });

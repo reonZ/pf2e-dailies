@@ -44,7 +44,7 @@ function createResistanceDaily(
 
             addRule(items.item, source);
             messages.add("resistances", {
-                uuid,
+                uuid: items.item,
                 selected: utils.getResistanceLabel(type),
                 random: isRandom,
             });

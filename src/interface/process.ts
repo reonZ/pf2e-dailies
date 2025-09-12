@@ -390,7 +390,10 @@ async function processDailies(this: DailyInterface) {
 
             const label = messageOptions.label?.trim();
 
-            if ("uuid" in messageOptions && messageOptions.uuid) {
+            if ("sourceId" in messageOptions && messageOptions.sourceId) {
+                const item = actualAddedItems.find((x) => x.sourceId === messageOptions.sourceId);
+                message += createChatLink(item?.uuid ?? messageOptions.sourceId, { label });
+            } else if ("uuid" in messageOptions && messageOptions.uuid) {
                 message += createChatLink(messageOptions.uuid, { label });
             } else if (label) {
                 message += ` ${label}`;

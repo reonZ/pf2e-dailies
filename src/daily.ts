@@ -159,6 +159,7 @@ type DailyMessageGroupType =
 
 type DailyMessageOptions =
     | { uuid: string | ItemPF2e; label?: string; selected?: string; random?: boolean }
+    | { sourceId: string; label?: string; selected?: string; random?: boolean }
     | { label: string; selected?: string; random?: boolean };
 
 type DailyRuleElement = RuleElementSource & { [k: string]: any };

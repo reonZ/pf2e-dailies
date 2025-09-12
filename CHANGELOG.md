@@ -1,3 +1,10 @@
+# 4.5.0
+
+-   add Brazilian Portuguese localization (thanks to [mclemente](https://github.com/mclemente))
+-   dailies can now generate links from newly created items to use in the summary chat message
+-   review all the dailies to try to have their message links point to actor items instead of their compendium source
+-   add support for the starfinder `Core Memories` class feature
+
 # 4.4.3
 
 -   `Prepare Staff`:

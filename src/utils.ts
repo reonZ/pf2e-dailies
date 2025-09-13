@@ -158,7 +158,7 @@ const utils = {
         return game.i18n.localize(CONFIG.PF2E.preciousMaterials[material]);
     },
     createFeatSource: async (uuid: string): Promise<FeatSource> => {
-        const source = await getItemSourceFromUuid(uuid, "FeatPF2e");
+        const source = await getItemSourceFromUuid(uuid, "feat");
 
         if (!source) {
             throw new Error(
@@ -291,7 +291,7 @@ const utils = {
             rank,
         }: { identifier?: string; signature?: boolean; rank?: ZeroToTen } = {}
     ): Promise<SpellSource> => {
-        const source = await getItemSourceFromUuid(uuid, "SpellPF2e");
+        const source = await getItemSourceFromUuid(uuid, "spell");
 
         if (!source) {
             throw new Error(

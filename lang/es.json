@@ -66,7 +66,7 @@
         "content": "¿Estás seguro que deseas eliminar esta diaria?"
       },
       "code": {
-        "saved": "La diaria personalizada se guardó correctamente."
+        "saved": "El diario personalizado se guardó correctamente."
       },
       "readonly": {
         "flavor": "Esta diaria está marcada como <em>solo lectura</em> porque se creó en una versión anterior del módulo y es incompatible. Si decide <a>desbloquearla</a>, asegúrese de actualizarla al formato de datos de la versión actual antes de guardarlo."
@@ -130,7 +130,7 @@
           "require": "requiere: <strong>{need}</strong>, tiene: <strong>{has}</strong>",
           "missing": "faltante: <strong>{need}</strong>",
           "invalid": "inválido: <strong>{has}</strong>",
-          "wrongTraits": "Los rasgos de los elementos no coinciden con los del filtro.",
+          "wrongTraits": "Los rasgos de los objetos descartados no coinciden con los del filtro.",
           "exclude": "<strong>{item}</strong> fue excluido de la selección.",
           "type": {
             "type": "tipo",
@@ -197,6 +197,7 @@
         "feats": "Aprendió las dotes",
         "languages": "Aprendió a leer y hablar.",
         "mindsmith": "Ha centrado su mente en su arma.",
+        "memories": "Recordó algunos recuerdos preciosos",
         "resistances": "Ganó las resistencias",
         "scrolls": "Creó los pergaminos temporales",
         "skills": "Entrenado en las siguientes habilidades",

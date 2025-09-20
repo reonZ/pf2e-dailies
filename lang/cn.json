@@ -12,7 +12,7 @@
         },
         "settings": {
             "addedHighlight": {
-                "hint": "由本模组添加的临时“物品”会在角色卡与魔宠卡高亮现实。",
+                "hint": "由本模组添加的临时“物品”会在角色卡与魔宠卡高亮显示。",
                 "name": "高亮新增物品"
             },
             "partyMembers": {
@@ -168,7 +168,7 @@
             }
         },
         "error": {
-            "unexpected": "模组<strong>PF2e Dailies</strong>出现意外错误，详情查看控制台（F12）。",
+            "unexpected": "模组<strong>PF2e Dailies</strong>出现意外错误，详情请查看控制台（F12）。",
             "incompatible": "存在一些自定义的每日准备项不兼容当前版本的<strong>PF2e Dailies</strong>。"
         },
         "label": {
@@ -198,7 +198,9 @@
                 "feats": "已习得专长",
                 "ceremonial": "举行仪式以创造一把容纳法术的仪典短刃",
                 "blade": "将精魂注入他们的武器中",
-                "mindsmith": "已将心灵集中在武器上"
+                "mindsmith": "已将心灵集中在武器上",
+                "tactics": "是否应用所准备的战术",
+                "memories": "回忆起某些珍贵的记忆"
             },
             "gained": "已获得临时{type}",
             "noChanges": "每日准备没有任何变化，甚至你无需知道。",
@@ -228,7 +230,10 @@
             "primary": {
                 "assign": "指定为主附灵精魄",
                 "unassign": "取消指定为主附灵精魄"
-            }
+            },
+            "retrain": "更换{type}",
+            "tactic": "战术",
+            "vessel": "主附灵精魄"
         },
         "spellEntry": {
             "name": "临时法术"
@@ -254,6 +259,13 @@
                 "draw1H": "拔出",
                 "retrieve1H": "取出"
             }
+        },
+        "retrain": {
+            "content": "以下{type}已更换",
+            "hint": "选择你要用于替换{type}的<strong>{selected}</strong>",
+            "label": "原先 {type}",
+            "title": "更换为{type} - {name}",
+            "yes": "更换"
         }
     }
 }

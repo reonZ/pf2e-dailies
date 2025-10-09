@@ -1,253 +1,261 @@
 {
-    "pf2e-dailies": {
-        "settings": {
-            "addedHighlight": {
-                "name": "Wyróżnij dodane przedmioty",
-                "hint": "Tymczasowe \"przedmioty\" dodane przez moduł zostaną wyróżnione w kartach postaci i chowańców."
-            },
-            "partyMembers": {
-                "name": "Tylko członkowie drużyny",
-                "hint": "Kiedy kolekcja postaci graczy jest pobierana w module, czy moduł powinien ograniczyć ją do członków drużyny (jeśli postać jest członkiem jakiejkolwiek drużyny), czy do wszystkich postaci należących do gracza?"
-            },
-            "menus": {
-                "customs": {
-                    "name": "Niestandardowe dzienne czynności",
-                    "hint": "Zarejestruj własne dzienne czynności w module.",
-                    "label": "Rejestracja"
-                },
-                "homebrew": {
-                    "name": "Ustawienia Zasad Domowych",
-                    "hint": "Dodaj własne elementy, które moduł będzie mógł wykorzystać w niektórych dziennych aktywnościach.",
-                    "label": "Zasady Domowe"
-                }
-            }
-        },
-        "animist": {
-            "spellcasting": {
-                "focus": "Zaklęcia naczyń"
-            }
-        },
-        "builtin": {
-            "dailies": {
-                "familiar": "Zdolności chowańca",
-                "staves": "Przygotuj Kostur",
-                "thaumaturge-tome": "Tom Taumaturga"
-            }
-        },
-        "charges": {
-            "label": "Ładunki",
-            "reset": {
-                "title": "Zresetuj ładunki kostura",
-                "content": "Czy na pewno chcesz zresetować ładunki kostura do ich maksymalnej wartości (maks.: {max})?"
-            },
-            "error": {
-                "notEnough": "Nie można rzucić {spell} o randze {rank}: za mało ładunków."
-            }
-        },
-        "config": {
-            "filters": "Włączono Dzienne Aktywności",
-            "title": "{actor} - Dzienna konfiguracja",
-            "animist": {
-                "lore": "Usuń przyrostek Wiedzy",
-                "lores": "Pokaż podsumowanie Wiedzy",
-                "spells": "Pokaż podsumowanie Zaklęć",
-                "signatures": "Ustaw Zaklęcia Popisowe"
-            }
-        },
+  "pf2e-dailies": {
+    "settings": {
+      "addedHighlight": {
+        "name": "Wyróżnij dodane przedmioty",
+        "hint": "Tymczasowe \"przedmioty\" dodane przez moduł zostaną wyróżnione w kartach postaci i chowańców."
+      },
+      "partyMembers": {
+        "name": "Tylko członkowie drużyny",
+        "hint": "Kiedy kolekcja postaci graczy jest pobierana w module, czy moduł powinien ograniczyć ją do członków drużyny (jeśli postać jest członkiem jakiejkolwiek drużyny), czy do wszystkich postaci należących do gracza?"
+      },
+      "menus": {
         "customs": {
-            "title": "Niestandardowe dzienne czynności",
-            "list": {
-                "create": "Utwórz niestandardowe dzienne czynności",
-                "delete": "Usuń niestandardowe dzienne czynności",
-                "save": "Zapisz niestandardowe dzienne czynności"
-            },
-            "delete": {
-                "title": "Usuń niestandardowe dzienne czynności",
-                "content": "Czy na pewno chcesz usunąć ten dzienną czynność?"
-            },
-            "code": {
-                "saved": "Dzienne czynności zostały pomyślnie zapisane."
-            },
-            "readonly": {
-                "flavor": "Ta dzienna czynność jest oznaczona jako <em>tylko do odczytu</em> ponieważ została utworzona w poprzedniej wersji modułu i jest niekompatybilna. Jeśli zdecydujesz się <a>odblokować</a> to, przed zapisaniem upewnij się, że zaktualizowałeś go do formatu danych aktualnej wersji."
-            }
-        },
-        "dialog": {
-            "mind-weapon": {
-                "title": "Tworzenie broni umysłu",
-                "flavor": "Ta postać nie ma broni umysłu w ekwipunku.<br>Wybierz jedną z poniższych opcji, aby ją utworzyć.",
-                "yes": "Utwórz",
-                "no": "Anuluj",
-                "held-in-one-hand": "jednoręczna",
-                "held-in-two-hands": "dwuręczna",
-                "label": "Broń {hand}, która zadaje <strong>1{die}</strong> obrażeń{hasTrait}",
-                "oneTrait": " i ma cechę <strong>{trait1}</strong>",
-                "twoTraits": " i ma cechy <strong>{trait1}</strong> i <strong>{trait2}</strong>"
-            }
-        },
-        "error": {
-            "incompatible": "Istnieją niestandardowe dzienne czynności, które są niekompatybilne z obecną wersją <strong>PF2e Dailies</strong>.",
-            "unexpected": "Wystąpił nieoczekiwany błąd modułu <strong>PF2e Dailies</strong>. Szczegółowe informacje można znaleźć w konsoli (F12)."
+          "name": "Niestandardowe dzienne czynności",
+          "hint": "Zarejestruj własne dzienne czynności w module.",
+          "label": "Rejestracja"
         },
         "homebrew": {
-            "title": "Ustawienia Zasad Domowych",
-            "index": {
-                "familiar": "Zdolności chowańca",
-                "animist": "Animistyczne projekcje"
-            },
-            "pack": "Pakiet kompendium",
-            "add": "Dodaj wpis",
-            "delete": "Usuń wpis",
-            "invalid": "<strong>{entry}</strong> nie jest identyfikatorem pakietu kompendium ani identyfikatorem UUID pliku <strong>{type}</strong>",
-            "empty": "Należy podać identyfikator pakietu kompendium lub identyfikator UUID pliku <strong>{type}</strong>"
-        },
-        "interface": {
-            "title": "{actor} - Dzienne przygotowanie",
-            "config": "Konfiguracja",
-            "noDailies": "Ta postać nie ma żadnych dziennych przygotowań",
-            "accept": "Akceptuj",
-            "cancel": "Anuluj",
-            "tooltip": {
-                "random": "Zostanie on wybrany losowo",
-                "alert": "Kliknij tutaj, aby rozwiązać",
-                "notify": "Wpis czysto informacyjny",
-                "search": "Otwórz przeglądarkę kompendium",
-                "clear": "Wyczyść zaznaczenie",
-                "noSelect": "Brak dostępnych opcji",
-                "exists": "Ten atut jest już obecny na postaci"
-            },
-            "error": {
-                "empty": "Niektóre wymagane pola są puste."
-            },
-            "drop": {
-                "notes": {
-                    "ace": "Wybierz jedno zaklęcie z listy zaklęć tajemnych, boskich, okultystycznych lub pierwotnych 4. poziomu lub niższego.<br>Zaklęcie nie może mieć kosztu, a czas jego rzucenia nie może przekroczyć 10 minut. Zaklęcie musi być w stanie wycelować w pojedynczą istotę, a ty musisz być jego ważnym celem."
-                },
-                "error": {
-                    "wrongDataType": "Upuszczono nieprawidłowy typ danych.",
-                    "wrongSource": "Można używać tylko przedmiotów z kompendium lub świata.",
-                    "wrongData": "Upuszczony przedmiot nie ma uprawnień <strong>{type}</strong> ({require}).",
-                    "require": "wymaga: <strong>{need}</strong>, posiada: <strong>{has}</strong>",
-                    "missing": "brakuje: <strong>{need}</strong>",
-                    "invalid": "nieprawidłowy: <strong>{has}</strong>",
-                    "wrongTraits": "Cechy upuszczonego przedmiotu nie pasują do cech filtra.",
-                    "exclude": "<strong>{item}</strong> został wykluczony z selekcji.",
-                    "type": {
-                        "type": "typ",
-                        "level": "poziom",
-                        "category": "kategoria",
-                        "categories": "kategorie",
-                        "skills": "umiejętności",
-                        "source": "źródło",
-                        "rarity": "rzadkość",
-                        "rank": "ranga",
-                        "traditions": "tradycje"
-                    },
-                    "none": "brak"
-                }
-            },
-            "staves": {
-                "empty": "Puste miejsce",
-                "flexible": "Elastyczne miejsce",
-                "group": {
-                    "prepared": "Przygotował {type} na ten dzień",
-                    "merged": "Połączył {type} ze swoją bronią związaną na dany dzień",
-                    "bond": "Przygotował swoją broń na ten dzień"
-                },
-                "staff": "Kostur",
-                "type": "Kategoria",
-                "bond": "Więź Władcy Runów",
-                "mergedshift": "Połączono z Prowizorycznym kosturem",
-                "merged": "Połączono ze Zwykłym kosturem",
-                "makeshift": "Prowizoryczny kostur",
-                "regular": "Zwykły kostur"
-            },
-            "rations": {
-                "yes": "Zużyj ({nb} pozostało)",
-                "no": "Nie używaj żadnych",
-                "last": "Zużyj ostatni dostępny"
-            },
-            "mindsmith": {
-                "missing": "Brakuje Broni Umysłu"
-            }
-        },
-        "label": {
-            "ability": "Zdolność #{nb}",
-            "apparition": {
-                "first": "Podstawowe projekcje",
-                "primary": "Główny #{nb} ",
-                "other": "Projekcja #{nb}"
-            },
-            "expend": "Wydano #{nb}",
-            "rune": "Runa Właściwości",
-            "select": "Wybierz {that}",
-            "mind-smith": "Kowal Myśli",
-            "mind-mental": "Mentalna Kuźnia",
-            "mind-runic": "Kowalstwo Runiczne"
-        },
-        "message": {
-            "changes": "Wprowadził następujące zmiany podczas codziennych przygotowań.",
-            "noChanges": "Nie wprowadził żadnych zmian podczas codziennych przygotowań, nie musiałeś nawet o tym wiedzieć.",
-            "gained": "Uzyskał tymczasowy {type}",
-            "groups": {
-                "resistances": "Uzyskał odporności",
-                "languages": "Nauczył się czytać i mówić",
-                "skills": "Wytrenował się w następujących umiejętnościach",
-                "tome": "Studiował swój tom Taumaturga",
-                "spells": "Jest gotowy do użycia zaklęć",
-                "familiar": "Wybrał zdolności chowańca",
-                "apparition": "Dostroił się do tych projekcji",
-                "feats": "Nauczył się atutów",
-                "scrolls": "Utworzył tymczasowe zwoje",
-                "ceremonial": "Przeprowadził rytuał, aby stworzyć nóż ceremonialny nasycony zaklęciem",
-                "blade": "Zaszczepił ducha w swojej broni",
-                "mindsmith": "Skupił swój umysł na broni"
-            },
-            "rations": {
-                "used": "Zużył jedną z {name} i pozostało mu {nb} sztuk.",
-                "last": "Zużył ostatnie z {name}.",
-                "almost": "Zużył jedną z {name} i pozostało mu tylko {nb} sztuk."
-            }
-        },
-        "mindsmith": {
-            "weapon": {
-                "name": "Broń umysłu"
-            }
-        },
-        "sheet": {
-            "title": "Codzienne przygotowania",
-            "unrested": "Wymagany odpoczynek",
-            "primary": {
-                "assign": "Przypisanie jako główne naczynie",
-                "unassign": "Anulowanie przypisania głównego naczynia"
-            },
-            "charges": {
-                "label": "Ładunki",
-                "tooltip": "Zresetuj ładunki do wartości maksymalnej (maks.: {max})"
-            },
-            "generate": {
-                "tooltip": "Wygeneruj wpis dotyczący Rzucania Zaklęć ",
-                "confirm": "Wpis dotyczący Rzucania Zaklęć dla <strong>{name}</strong> został utworzony."
-            }
-        },
-        "spellEntry": {
-            "name": "Zaklęcia tymczasowe"
-        },
-        "staves": {
-            "spontaneous": {
-                "title": "Użyj spontanicznego slotu",
-                "remaining": "pozostało",
-                "must": "Musisz zużyć spontaniczny slot rangi <strong>{rank}</strong> {higher} z {from}",
-                "would": "Czy chcesz wykorzystać spontaniczny slot na zaklęcie rangi <strong>{rank}</strong>{higher} z {from}?",
-                "one": "<strong>{entry}</strong>",
-                "multi": "dowolny z następujących wpisów dotyczących rzucania czarów",
-                "higher": " lub wyższy",
-                "yes": "Zużyj"
-            },
-            "error": {
-                "missing": "Nie udało się odzyskać kosturu.",
-                "notEquipped": "Musisz wyposażyć się w {staff}, aby móc z niego korzystać."
-            }
+          "name": "Ustawienia Zasad Domowych",
+          "hint": "Dodaj własne elementy, które moduł będzie mógł wykorzystać w niektórych dziennych aktywnościach.",
+          "label": "Zasady Domowe"
         }
+      }
+    },
+    "animist": {
+      "spellcasting": {
+        "focus": "Zaklęcia naczyń"
+      }
+    },
+    "builtin": {
+      "dailies": {
+        "familiar": "Zdolności chowańca",
+        "staves": "Przygotuj Kostur",
+        "thaumaturge-tome": "Tom Taumaturga"
+      }
+    },
+    "charges": {
+      "label": "Ładunki",
+      "reset": {
+        "title": "Zresetuj ładunki kostura",
+        "content": "Czy na pewno chcesz zresetować ładunki kostura do ich maksymalnej wartości (maks.: {max})?"
+      },
+      "error": {
+        "notEnough": "Nie można rzucić {spell} o randze {rank}: za mało ładunków."
+      }
+    },
+    "config": {
+      "filters": "Włączono Dzienne Aktywności",
+      "title": "{actor} - Dzienna konfiguracja",
+      "animist": {
+        "lore": "Usuń przyrostek Wiedzy",
+        "lores": "Pokaż podsumowanie Wiedzy",
+        "spells": "Pokaż podsumowanie Zaklęć",
+        "signatures": "Ustaw Zaklęcia Popisowe"
+      }
+    },
+    "customs": {
+      "title": "Niestandardowe dzienne czynności",
+      "list": {
+        "create": "Utwórz niestandardowe dzienne czynności",
+        "delete": "Usuń niestandardowe dzienne czynności",
+        "save": "Zapisz niestandardowe dzienne czynności"
+      },
+      "delete": {
+        "title": "Usuń niestandardowe dzienne czynności",
+        "content": "Czy na pewno chcesz usunąć ten dzienną czynność?"
+      },
+      "code": {
+        "saved": "Dzienne czynności zostały pomyślnie zapisane."
+      },
+      "readonly": {
+        "flavor": "Ta dzienna czynność jest oznaczona jako <em>tylko do odczytu</em> ponieważ została utworzona w poprzedniej wersji modułu i jest niekompatybilna. Jeśli zdecydujesz się <a>odblokować</a> to, przed zapisaniem upewnij się, że zaktualizowałeś go do formatu danych aktualnej wersji."
+      }
+    },
+    "dialog": {
+      "mind-weapon": {
+        "title": "Tworzenie broni umysłu",
+        "flavor": "Ta postać nie ma broni umysłu w ekwipunku.<br>Wybierz jedną z poniższych opcji, aby ją utworzyć.",
+        "yes": "Utwórz",
+        "no": "Anuluj",
+        "held-in-one-hand": "jednoręczna",
+        "held-in-two-hands": "dwuręczna",
+        "label": "Broń {hand}, która zadaje <strong>1{die}</strong> obrażeń{hasTrait}",
+        "oneTrait": " i ma cechę <strong>{trait1}</strong>",
+        "twoTraits": " i ma cechy <strong>{trait1}</strong> i <strong>{trait2}</strong>"
+      }
+    },
+    "error": {
+      "incompatible": "Istnieją niestandardowe dzienne czynności, które są niekompatybilne z obecną wersją <strong>PF2e Dailies</strong>.",
+      "unexpected": "Wystąpił nieoczekiwany błąd modułu <strong>PF2e Dailies</strong>. Szczegółowe informacje można znaleźć w konsoli (F12)."
+    },
+    "homebrew": {
+      "title": "Ustawienia Zasad Domowych",
+      "index": {
+        "familiar": "Zdolności chowańca",
+        "animist": "Animistyczne projekcje"
+      },
+      "pack": "Pakiet kompendium",
+      "add": "Dodaj wpis",
+      "delete": "Usuń wpis",
+      "invalid": "<strong>{entry}</strong> nie jest identyfikatorem pakietu kompendium ani identyfikatorem UUID pliku <strong>{type}</strong>",
+      "empty": "Należy podać identyfikator pakietu kompendium lub identyfikator UUID pliku <strong>{type}</strong>"
+    },
+    "interface": {
+      "title": "{actor} - Dzienne przygotowanie",
+      "config": "Konfiguracja",
+      "noDailies": "Ta postać nie ma żadnych dziennych przygotowań",
+      "accept": "Akceptuj",
+      "cancel": "Anuluj",
+      "tooltip": {
+        "random": "Zostanie on wybrany losowo",
+        "alert": "Kliknij tutaj, aby rozwiązać",
+        "notify": "Wpis czysto informacyjny",
+        "search": "Otwórz przeglądarkę kompendium",
+        "clear": "Wyczyść zaznaczenie",
+        "noSelect": "Brak dostępnych opcji",
+        "exists": "Ten atut jest już obecny na postaci"
+      },
+      "error": {
+        "empty": "Niektóre wymagane pola są puste."
+      },
+      "drop": {
+        "notes": {
+          "ace": "Wybierz jedno zaklęcie z listy zaklęć tajemnych, boskich, okultystycznych lub pierwotnych 4. poziomu lub niższego.<br>Zaklęcie nie może mieć kosztu, a czas jego rzucenia nie może przekroczyć 10 minut. Zaklęcie musi być w stanie wycelować w pojedynczą istotę, a ty musisz być jego ważnym celem."
+        },
+        "error": {
+          "wrongDataType": "Upuszczono nieprawidłowy typ danych.",
+          "wrongSource": "Można używać tylko przedmiotów z kompendium lub świata.",
+          "wrongData": "Upuszczony przedmiot nie ma uprawnień <strong>{type}</strong> ({require}).",
+          "require": "wymaga: <strong>{need}</strong>, posiada: <strong>{has}</strong>",
+          "missing": "brakuje: <strong>{need}</strong>",
+          "invalid": "nieprawidłowy: <strong>{has}</strong>",
+          "wrongTraits": "Cechy upuszczonego przedmiotu nie pasują do cech filtra.",
+          "exclude": "<strong>{item}</strong> został wykluczony z selekcji.",
+          "type": {
+            "type": "typ",
+            "level": "poziom",
+            "category": "kategoria",
+            "categories": "kategorie",
+            "skills": "umiejętności",
+            "source": "źródło",
+            "rarity": "rzadkość",
+            "rank": "ranga",
+            "traditions": "tradycje"
+          },
+          "none": "brak"
+        }
+      },
+      "staves": {
+        "empty": "Puste miejsce",
+        "flexible": "Elastyczne miejsce",
+        "group": {
+          "prepared": "Przygotował {type} na ten dzień",
+          "merged": "Połączył {type} ze swoją bronią związaną na dany dzień",
+          "bond": "Przygotował swoją broń na ten dzień"
+        },
+        "staff": "Kostur",
+        "type": "Kategoria",
+        "bond": "Więź Władcy Runów",
+        "mergedshift": "Połączono z Prowizorycznym kosturem",
+        "merged": "Połączono ze Zwykłym kosturem",
+        "makeshift": "Prowizoryczny kostur",
+        "regular": "Zwykły kostur"
+      },
+      "rations": {
+        "yes": "Zużyj ({nb} pozostało)",
+        "no": "Nie używaj żadnych",
+        "last": "Zużyj ostatni dostępny"
+      },
+      "mindsmith": {
+        "missing": "Brakuje Broni Umysłu"
+      }
+    },
+    "label": {
+      "ability": "Zdolność #{nb}",
+      "apparition": {
+        "first": "Podstawowe projekcje",
+        "primary": "Główny #{nb} ",
+        "other": "Projekcja #{nb}"
+      },
+      "expend": "Wydano #{nb}",
+      "rune": "Runa Właściwości",
+      "select": "Wybierz {that}",
+      "mind-smith": "Kowal Myśli",
+      "mind-mental": "Mentalna Kuźnia",
+      "mind-runic": "Kowalstwo Runiczne"
+    },
+    "message": {
+      "changes": "Wprowadził następujące zmiany podczas codziennych przygotowań.",
+      "noChanges": "Nie wprowadził żadnych zmian podczas codziennych przygotowań, nie musiałeś nawet o tym wiedzieć.",
+      "gained": "Uzyskał tymczasowy {type}",
+      "groups": {
+        "apparition": "Dostroił się do tych projekcji",
+        "blade": "Zaszczepił ducha w swojej broni",
+        "ceremonial": "Przeprowadził rytuał, aby stworzyć nóż ceremonialny nasycony zaklęciem",
+        "familiar": "Wybrał zdolności chowańca",
+        "feats": "Nauczył się atutów",
+        "languages": "Nauczył się czytać i mówić",
+        "mindsmith": "Skupił swój umysł na broni",
+        "memories": "Przypomniałem sobie kilka cennych wspomnień",
+        "resistances": "Uzyskał odporności",
+        "scrolls": "Utworzył tymczasowe zwoje",
+        "skills": "Wytrenował się w następujących umiejętnościach",
+        "spells": "Jest gotowy do użycia zaklęć",
+        "tactics": "Jest przygotowany do stosowania taktyki walki",
+        "tome": "Studiował swój tom Taumaturga"
+      },
+      "rations": {
+        "used": "Zużył jedną z {name} i pozostało mu {nb} sztuk.",
+        "last": "Zużył ostatnie z {name}.",
+        "almost": "Zużył jedną z {name} i pozostało mu tylko {nb} sztuk."
+      }
+    },
+    "mindsmith": {
+      "weapon": {
+        "name": "Broń umysłu"
+      }
+    },
+    "retrain": {
+      "content": "Wymienił następujące {type}",
+      "hint": "Wybierz {type}, który chcesz zastąpić przez <strong>{selected}</strong>",
+      "label": "Oryginalny {type}",
+      "title": "Wymiana {type} - {name}",
+      "yes": "Wymiana"
+    },
+    "sheet": {
+      "title": "Codzienne przygotowania",
+      "charges": {
+        "label": "Ładunki",
+        "tooltip": "Zresetuj ładunki do wartości maksymalnej (maks.: {max})"
+      },
+      "generate": {
+        "tooltip": "Wygeneruj wpis dotyczący Rzucania Zaklęć ",
+        "confirm": "Wpis dotyczący Rzucania Zaklęć dla <strong>{name}</strong> został utworzony."
+      },
+      "retrain": "Wymiana {type}",
+      "tactic": "Taktyka",
+      "unrested": "Wymagany odpoczynek",
+      "vessel": "Naczynie Główne"
+    },
+    "spellEntry": {
+      "name": "Zaklęcia tymczasowe"
+    },
+    "staves": {
+      "spontaneous": {
+        "title": "Użyj spontanicznego slotu",
+        "remaining": "pozostało",
+        "must": "Musisz zużyć spontaniczny slot rangi <strong>{rank}</strong> {higher} z {from}",
+        "would": "Czy chcesz wykorzystać spontaniczny slot na zaklęcie rangi <strong>{rank}</strong>{higher} z {from}?",
+        "one": "<strong>{entry}</strong>",
+        "multi": "dowolny z następujących wpisów dotyczących rzucania czarów",
+        "higher": " lub wyższy",
+        "yes": "Zużyj"
+      },
+      "error": {
+        "missing": "Nie udało się odzyskać kosturu.",
+        "notEquipped": "Musisz wyposażyć się w {staff}, aby móc z niego korzystać."
+      }
     }
+  }
 }

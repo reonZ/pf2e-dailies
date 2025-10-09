@@ -30,6 +30,7 @@ import {
 } from "module-helpers";
 import { createUpdateCollection, utils } from "utils";
 import { DailyInterface } from ".";
+import fu = foundry.utils;
 
 async function processDailies(this: DailyInterface) {
     const rowElements = this.element.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
@@ -126,7 +127,7 @@ async function processDailies(this: DailyInterface) {
             return existing;
         }
 
-        const rules = foundry.utils.deepClone(item._source.system.rules);
+        const rules = fu.deepClone(item._source.system.rules);
 
         for (let i = rules.length - 1; i >= 0; i--) {
             if (MODULE.id in rules[i]) {
@@ -192,7 +193,7 @@ async function processDailies(this: DailyInterface) {
                 }
             },
             setExtraFlags: (data: Record<string, any>) => {
-                foundry.utils.mergeObject((extraFlags[daily.key] ??= {}), data);
+                fu.mergeObject((extraFlags[daily.key] ??= {}), data);
             },
         };
     };
@@ -214,7 +215,7 @@ async function processDailies(this: DailyInterface) {
             ) => {
                 if (parent?.isOfType("feat")) {
                     const parentId = parent.id;
-                    foundry.utils.setProperty(source, "flags.pf2e.grantedBy", {
+                    fu.setProperty(source, "flags.pf2e.grantedBy", {
                         id: parentId,
                         onDelete: "cascade",
                     });
@@ -236,6 +237,9 @@ async function processDailies(this: DailyInterface) {
                         original: FeatPF2e,
                         source: PreCreate<FeatSource> | FeatSource
                     ) => {
+                        fu.setProperty(source, "system.location", original.system.location);
+                        fu.setProperty(source, "system.level.taken", original.system.level.taken);
+
                         addFeat(source, original.grantedBy, false);
                         globalOptions.deleteItem(original);
                     },
@@ -251,12 +255,12 @@ async function processDailies(this: DailyInterface) {
     );
 
     let hasOrphanSpells = false;
-    const entryIdentifier = foundry.utils.randomID();
+    const entryIdentifier = fu.randomID();
 
     for (const source of addedItems) {
         if (
             source.type === "spell" &&
-            !foundry.utils.getProperty(source, "system.location.value") &&
+            !fu.getProperty(source, "system.location.value") &&
             !getFlagProperty(source, "identifier")
         ) {
             hasOrphanSpells = true;

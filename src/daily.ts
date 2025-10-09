@@ -258,6 +258,10 @@ interface DailyRowDropBase<
         type: TType;
         search: TSearch;
     };
+    value?: {
+        name: string;
+        uuid: string;
+    };
 }
 
 type DailyRowDropFeat<TRowSlug extends string = string> = DailyRowDropBase<

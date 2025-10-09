@@ -264,7 +264,9 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                             rowTemplate.selected = getSavedFlag<string>() ?? "";
                         }
                     } else if (rowIsOfType(row, "drop")) {
-                        const { name, uuid } = getSavedFlag<DailyRowDropData>() ?? {};
+                        const { name, uuid } = R.isPlainObject(row.value)
+                            ? row.value
+                            : getSavedFlag<DailyRowDropData>() ?? {};
 
                         if (row.filter.type === "feat") {
                             this.#featUuids ??= R.pipe(

@@ -22,6 +22,7 @@ import {
     staves,
     thaumaturgeTome,
     tricksterAce,
+    wandering,
 } from "data";
 import { CharacterPF2e, error, getSetting, isSupressedFeat, ItemPF2e, R } from "module-helpers";
 
@@ -45,6 +46,7 @@ const BUILTINS_DAILIES: Daily[] = [
     staves, // Staves
     thaumaturgeTome, //Thaumaturge Tome
     tricksterAce, // Trickster Ace
+    wandering, // Animist Wandering Feats
     createLoreSkillDaily(
         "quick-study", // Quick Study
         "Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW"

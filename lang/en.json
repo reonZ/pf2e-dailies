@@ -31,7 +31,8 @@
             "dailies": {
                 "familiar": "Familiar Abilities",
                 "staves": "Prepare a Staff",
-                "thaumaturge-tome": "Thaumaturge Tome"
+                "thaumaturge-tome": "Thaumaturge Tome",
+                "wandering": "Wandering Feats"
             }
         },
         "charges": {
@@ -203,7 +204,8 @@
                 "skills": "Trained in the following skills",
                 "spells": "Is ready to use the spells",
                 "tactics": "Is prepared to apply the combat tactics",
-                "tome": "Studied their thaumaturgy tome"
+                "tome": "Studied their thaumaturgy tome",
+                "wandering": "Retrained their wandering feats"
             },
             "rations": {
                 "used": "Consumed one of their {name} and has {nb} remaining.",

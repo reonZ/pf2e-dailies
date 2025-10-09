@@ -1,3 +1,11 @@
+# 4.6.0
+
+-   remove german localization (https://github.com/reonZ/pf2e-dailies/pull/129#event-19711729454)
+-   add retrain support for animist `Wandering` feats
+-   `Custom Daily`:
+    -   the `replaceFeat` process helper now copies the `system.location` and `system.level.taken` from original
+    -   `utils.getItemSource` now accepts an `ItemType` instead of item class name as second argument
+
 # 4.5.0
 
 -   add Brazilian Portuguese localization (thanks to [mclemente](https://github.com/mclemente))

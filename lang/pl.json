@@ -31,7 +31,8 @@
       "dailies": {
         "familiar": "Zdolności chowańca",
         "staves": "Przygotuj Kostur",
-        "thaumaturge-tome": "Tom Taumaturga"
+        "thaumaturge-tome": "Tom Taumaturga",
+        "wandering": "Atuty Wędrówki"
       }
     },
     "charges": {
@@ -203,7 +204,8 @@
         "skills": "Wytrenował się w następujących umiejętnościach",
         "spells": "Jest gotowy do użycia zaklęć",
         "tactics": "Jest przygotowany do stosowania taktyki walki",
-        "tome": "Studiował swój tom Taumaturga"
+        "tome": "Studiował swój tom Taumaturga",
+        "wandering": "Ponownie przeszkolenie swoich atutów wędrówki"
       },
       "rations": {
         "used": "Zużył jedną z {name} i pozostało mu {nb} sztuk.",

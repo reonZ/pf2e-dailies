@@ -13,6 +13,7 @@ import {
     getActorMaxRank,
     getChoiceSetSelection,
     getItemSourceFromUuid,
+    getItemSourceId,
     getItemTypeLabel,
     getSetting,
     getSkillLabel,
@@ -60,6 +61,13 @@ const utils = {
      * hasItemWithSourceId(actor: ActorPF2e, uuid: string, type?: ItemType): boolean
      */
     hasItemWithSourceId,
+    /**
+     * getSourceId: (item: ItemPF2e) => ItemUUID
+     */
+    getSourceId: getItemSourceId,
+    /**
+     * getItemSource(uuid: string, type?: ItemType): Promise<ItemSourcePF2e | null>
+     */
     getItemSource: getItemSourceFromUuid,
     getChoiSetRuleSelection: (
         item: ItemPF2e,

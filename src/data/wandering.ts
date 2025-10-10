@@ -51,7 +51,7 @@ const wandering = createDaily({
 
         for (const [level, feat] of feats) {
             const row = rows[`feat-${level}`];
-            const uuid = getItemSourceId(feat);
+            const uuid = utils.getSourceId(feat);
 
             if (row && row.uuid !== uuid) {
                 const source = await utils.getItemSource(row.uuid, "feat");

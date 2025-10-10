@@ -1,3 +1,11 @@
+# 4.7.0
+
+-   refactor internal handling of dailies to avoid a design flow
+    -   the issue could happen if more than one daily would use the same item source
+    -   this isn't an issue with the built-in dailies as items are never used by more than one so far, but it could happen in the future and is of course a potential problem with custom dailies
+-   `Custom Daily`:
+    -   add `utils.getSourceId` which returns the source uuid of the item or its own uuid if `null`
+
 # 4.6.1
 
 -   `Wandering Feats`:

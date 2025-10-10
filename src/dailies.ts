@@ -103,20 +103,28 @@ const BUILTINS_DAILIES: Daily[] = [
     ]),
 ];
 
-const BUILTINS_UUIDS: Map<string, PreConditionDaily> = new Map();
+class MappedDailies extends Map<ItemUUID, PreConditionDaily[]> {
+    add(key: ItemUUID, ...dailies: PreConditionDaily[]) {
+        const _dailies = this.get(key) ?? [];
+        _dailies.push(...dailies);
+        this.set(key, _dailies);
+    }
+}
+
+const BUILTINS_UUIDS: MappedDailies = new MappedDailies();
 const BUILTINS_ALWAYS: AlwaysDaily[] = [];
 
-const UUIDS: Map<string, PreConditionDaily> = new Map();
+const UUIDS: MappedDailies = new MappedDailies();
 const ALWAYS: AlwaysDaily[] = [];
 
 function prepareDailies(
     dailies: Daily[],
     prefix: DailyPrefix
 ): {
-    uuids: Map<string, PreConditionDaily>;
+    uuids: Map<ItemUUID, PreConditionDaily>;
     always: AlwaysDaily[];
 } {
-    const uuids = new Map<string, PreConditionDaily>();
+    const uuids = new Map<ItemUUID, PreConditionDaily>();
     const always: AlwaysDaily[] = [];
 
     for (const original of dailies) {
@@ -147,6 +155,21 @@ function prepareDailies(
     return { uuids, always };
 }
 
+async function initializeDailies() {
+    BUILTINS_UUIDS.clear();
+    BUILTINS_ALWAYS.length = 0;
+
+    const { uuids, always } = prepareDailies(BUILTINS_DAILIES, "dailies");
+
+    for (const [uuid, daily] of uuids) {
+        BUILTINS_UUIDS.add(uuid, daily);
+    }
+
+    BUILTINS_ALWAYS.push(...always);
+
+    parseDailies();
+}
+
 async function parseDailies() {
     UUIDS.clear();
     ALWAYS.length = 0;
@@ -166,33 +189,18 @@ async function parseDailies() {
         }
     }
 
-    for (const [uuid, daily] of BUILTINS_UUIDS) {
-        UUIDS.set(uuid, daily);
+    for (const [uuid, dailies] of BUILTINS_UUIDS) {
+        UUIDS.add(uuid, ...dailies);
     }
 
     const preparedCustoms = prepareDailies(customDailies, "custom");
     const preparedModules = prepareDailies(Array.from(MODULE_DAILIES.values()), "module");
 
     for (const [uuid, daily] of [...preparedCustoms.uuids, ...preparedModules.uuids]) {
-        UUIDS.set(uuid, daily);
+        UUIDS.add(uuid, daily);
     }
 
     ALWAYS.push(...BUILTINS_ALWAYS, ...preparedCustoms.always, ...preparedModules.always);
-}
-
-async function initializeDailies() {
-    BUILTINS_UUIDS.clear();
-    BUILTINS_ALWAYS.length = 0;
-
-    const { uuids, always } = prepareDailies(BUILTINS_DAILIES, "dailies");
-
-    for (const [uuid, daily] of uuids) {
-        BUILTINS_UUIDS.set(uuid, daily);
-    }
-
-    BUILTINS_ALWAYS.push(...always);
-
-    parseDailies();
 }
 
 async function getDailies(actor: CharacterPF2e): Promise<PreparedDailies> {
@@ -239,7 +247,7 @@ async function getDailies(actor: CharacterPF2e): Promise<PreparedDailies> {
     await Promise.all(ALWAYS.map((daily) => getDaily(daily)));
 
     await Promise.all(
-        actor.items.map((item) => {
+        actor.items.map(async (item) => {
             if (isSupressedFeat(item)) {
                 return;
             }
@@ -250,11 +258,12 @@ async function getDailies(actor: CharacterPF2e): Promise<PreparedDailies> {
                 return;
             }
 
-            const entry = UUIDS.get(sourceId);
-            if (!entry) return;
+            const dailies = UUIDS.get(sourceId);
+            if (!dailies?.length) return;
 
-            const { daily, index, condition } = entry;
-            return getDaily(daily, { condition, index, item });
+            return dailies.map(({ daily, index, condition }) => {
+                return getDaily(daily, { condition, index, item });
+            });
         })
     );
 
@@ -262,12 +271,13 @@ async function getDailies(actor: CharacterPF2e): Promise<PreparedDailies> {
 }
 
 function filterDailies(dailies: PreparedDailies): PreparedDaily[] {
-    return Object.values(dailies).filter(
-        (daily): daily is PreparedDaily =>
+    return Object.values(dailies).filter((daily): daily is PreparedDaily => {
+        return (
             R.isNonNull(daily) &&
             Array.isArray(daily.items) &&
             !daily.items.some((item) => item.required === true && !daily.prepared.items[item.slug])
-    );
+        );
+    });
 }
 
 type DailyPrefix = "custom" | "dailies" | "module";

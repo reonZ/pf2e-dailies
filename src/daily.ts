@@ -182,7 +182,7 @@ type DailyCustom = Record<string, unknown>;
 
 type DailyItem<TItemSlug extends string = string> = {
     slug: TItemSlug;
-    uuid: string;
+    uuid: ItemUUID;
     required?: boolean;
     condition?: (actor: CharacterPF2e, item: ItemPF2e) => Promisable<boolean>;
 };

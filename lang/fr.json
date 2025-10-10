@@ -31,7 +31,8 @@
       "dailies": {
         "familiar": "Pouvoirs des familiers",
         "staves": "Préparer un bâton",
-        "thaumaturge-tome": "Tome du thaumaturge"
+        "thaumaturge-tome": "Tome du thaumaturge",
+        "wandering": "Dons errants"
       }
     },
     "charges": {
@@ -203,7 +204,8 @@
         "skills": "Qualifié dans les compétences suivantes",
         "spells": "Est prêt à utiliser les sorts",
         "tactics": "Est prêt à appliquer les tactiques de combat",
-        "tome": "A étudié son tome de thaumaturgie"
+        "tome": "A étudié son tome de thaumaturgie",
+        "wandering": "A réappris ses dons errants"
       },
       "rations": {
         "used": "A consommé une de ses {name} et en possède {nb} restantes.",

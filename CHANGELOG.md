@@ -1,3 +1,8 @@
+# 4.6.1
+
+-   `Wandering Feats`:
+    -   fix some mixup with message rendering code
+
 # 4.6.0
 
 -   remove german localization (https://github.com/reonZ/pf2e-dailies/pull/129#event-19711729454)

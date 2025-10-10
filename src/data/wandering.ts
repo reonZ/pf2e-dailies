@@ -1,5 +1,6 @@
 import { createDaily, DailyRowDropFeat } from "daily";
-import { getItemSourceFromUuid, getItemSourceId, R } from "module-helpers";
+import { getItemSourceId, R } from "module-helpers";
+import { utils } from "utils";
 
 const ANIMIST_CLASS = "Compendium.pf2e.classes.Item.9KiqZVG9r5g8mC4V";
 
@@ -53,7 +54,7 @@ const wandering = createDaily({
             const uuid = getItemSourceId(feat);
 
             if (row && row.uuid !== uuid) {
-                const source = await getItemSourceFromUuid(row.uuid, "feat");
+                const source = await utils.getItemSource(row.uuid, "feat");
                 if (!source) continue;
 
                 replaceFeat(feat, source);

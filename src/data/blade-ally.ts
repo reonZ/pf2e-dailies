@@ -87,15 +87,10 @@ const bladeAlly = createDaily({
         flagItem(weapon);
 
         const rune = rows.rune as WeaponPropertyRuneType;
-        const itemPredicate = [
-            {
-                or: ["item:category:{item|_id}", "item:id:{item|_id}"],
-            },
-        ];
 
         addRule(weapon, {
             key: "AdjustStrike",
-            definition: itemPredicate,
+            definition: ["item:id:{item|_id}"],
             mode: "add",
             property: "property-runes",
             value: rune,
@@ -103,7 +98,7 @@ const bladeAlly = createDaily({
 
         addRule(weapon, {
             key: "CriticalSpecialization",
-            predicate: itemPredicate,
+            predicate: ["item:id:{item|_id}"],
         });
 
         const label =

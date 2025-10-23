@@ -47,8 +47,6 @@ const wandering = createDaily({
         );
     },
     process: async ({ actor, custom: { feats }, messages, rows, replaceFeat }) => {
-        const changed: string[] = [];
-
         for (const [level, feat] of feats) {
             const row = rows[`feat-${level}`];
             const uuid = utils.getSourceId(feat);
@@ -58,14 +56,6 @@ const wandering = createDaily({
                 if (!source) continue;
 
                 replaceFeat(feat, source);
-                changed.push(row.uuid);
-            }
-        }
-
-        if (changed.length) {
-            messages.addGroup("wandering");
-
-            for (const uuid of changed) {
                 messages.add("wandering", { uuid });
             }
         }

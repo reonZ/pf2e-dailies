@@ -8,7 +8,7 @@ const bladeAlly = createDaily({
     key: "blade-ally",
     items: [
         {
-            slug: "blade", // Blade Ally
+            slug: "blade", // Blessed Armament
             uuid: bladeUUID,
             required: true,
         },
@@ -80,9 +80,11 @@ const bladeAlly = createDaily({
             },
         ];
     },
-    process: ({ actor, rows, messages, addRule }) => {
+    process: ({ actor, rows, messages, addRule, flagItem }) => {
         const weapon = actor.items.get<WeaponPF2e<CharacterPF2e>>(rows.weapon);
         if (!weapon) return;
+
+        flagItem(weapon);
 
         const rune = rows.rune as WeaponPropertyRuneType;
         const itemPredicate = [

@@ -152,8 +152,7 @@
         "flexible": "Emplacement flexible",
         "group": {
           "prepared": "A préparé un {type} pour la journée",
-          "merged": "A fusionné un {type} à l'arme liée pour la journée",
-          "bond": "A préparé son arme liée pour la journée"
+          "merged": "A fusionné un {type} à l'arme liée pour la journée"
         },
         "staff": "Bâton",
         "type": "Catégorie",
@@ -244,6 +243,7 @@
       "name": "Sorts temporaires"
     },
     "staves": {
+      "bond": "A préparé son arme liée pour la journée",
       "spontaneous": {
         "title": "Utiliser un emplacement spontané",
         "remaining": "restante(s)",

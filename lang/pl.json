@@ -152,8 +152,7 @@
         "flexible": "Elastyczne miejsce",
         "group": {
           "prepared": "Przygotował {type} na ten dzień",
-          "merged": "Połączył {type} ze swoją bronią związaną na dany dzień",
-          "bond": "Przygotował swoją broń na ten dzień"
+          "merged": "Połączył {type} ze swoją bronią związaną na dany dzień"
         },
         "staff": "Kostur",
         "type": "Kategoria",
@@ -244,6 +243,7 @@
       "name": "Zaklęcia tymczasowe"
     },
     "staves": {
+      "bond": "Przygotował swoją broń na ten dzień",
       "spontaneous": {
         "title": "Użyj spontanicznego slotu",
         "remaining": "pozostało",

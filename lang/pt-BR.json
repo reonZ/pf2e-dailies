@@ -151,8 +151,7 @@
         "flexible": "Espaço flexível",
         "group": {
           "prepared": "Preparou um {tipo} para o dia",
-          "merged": "Fundiu um {tipo} à sua arma vinculada do dia",
-          "bond": "Preparou sua arma vinculada para o dia"
+          "merged": "Fundiu um {tipo} à sua arma vinculada do dia"
         },
         "staff": "Cajado",
         "type": "Categoria",
@@ -240,6 +239,7 @@
       "name": "Magias Temporárias"
     },
     "staves": {
+      "bond": "Preparou sua arma vinculada para o dia",
       "spontaneous": {
         "title": "Usar espaço espontâneo",
         "remaining": "restante",

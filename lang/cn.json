@@ -144,7 +144,6 @@
             },
             "staves": {
                 "staff": "法杖",
-                "bond": "符文领主联结",
                 "regular": "常规法杖",
                 "makeshift": "临时法杖",
                 "empty": "空法术位",
@@ -258,7 +257,8 @@
                 "sheathe": "收起",
                 "draw1H": "拔出",
                 "retrieve1H": "取出"
-            }
+            },
+            "bond": "符文领主联结"
         },
         "retrain": {
             "content": "以下{type}已更换",

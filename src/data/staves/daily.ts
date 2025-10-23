@@ -145,7 +145,7 @@ const staves = createDaily({
             rows.push({
                 type: "select",
                 slug: "bond",
-                label: localize("interface.staves.bond"),
+                label: localize("staves.bond"),
                 options: weapons,
             });
         }
@@ -244,7 +244,7 @@ const staves = createDaily({
 
         return rows;
     },
-    process: async ({ actor, rows, custom, messages, updateItem, setExtraFlags }) => {
+    process: async ({ actor, rows, custom, messages, flagItem, updateItem, setExtraFlags }) => {
         const sin = custom.runelordSin;
         const bond = sin && rows.bond ? actor.inventory.get(rows.bond) : null;
         const staff = rows.staff ? actor.inventory.get(rows.staff) : null;
@@ -375,6 +375,7 @@ const staves = createDaily({
         );
 
         if (bond) {
+            flagItem(bond, localize("staves.bond"));
             messages.add("staff", { uuid: bond.uuid });
         }
 

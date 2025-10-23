@@ -151,8 +151,7 @@
         "flexible": "Ranura flexible",
         "group": {
           "prepared": "Ha preparado un {type} para el día",
-          "merged": "Ha fusionado un {type} a su arma vinculada para el día.",
-          "bond": "Ha preparado su arma vinculada para el día."
+          "merged": "Ha fusionado un {type} a su arma vinculada para el día."
         },
         "staff": "Bastón",
         "type": "Categoría",
@@ -242,6 +241,7 @@
       "name": "Conjuros temporales"
     },
     "staves": {
+      "bond": "Ha preparado su arma vinculada para el día.",
       "spontaneous": {
         "title": "Utilizar la ranura espontánea",
         "remaining": "restante",

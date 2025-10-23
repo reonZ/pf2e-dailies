@@ -158,7 +158,6 @@
                 },
                 "staff": "Staff",
                 "type": "Category",
-                "bond": "Runelord Bond",
                 "mergedshift": "Merged with Makeshift Staff",
                 "merged": "Merged with Regular Staff",
                 "makeshift": "Makeshift Staff",
@@ -246,6 +245,7 @@
             "name": "Temporary Spells"
         },
         "staves": {
+            "bond": "Runelord Bond",
             "spontaneous": {
                 "title": "Use Spontaneous slot",
                 "remaining": "remaining",

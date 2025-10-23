@@ -81,12 +81,10 @@ const bladeAlly = createDaily({
         ];
     },
     process: ({ actor, rows, messages, addRule }) => {
-        const weaponId = rows.weapon;
-        const rune = rows.rune as WeaponPropertyRuneType;
-
-        const weapon = actor.items.get<WeaponPF2e<CharacterPF2e>>(weaponId);
+        const weapon = actor.items.get<WeaponPF2e<CharacterPF2e>>(rows.weapon);
         if (!weapon) return;
 
+        const rune = rows.rune as WeaponPropertyRuneType;
         const itemPredicate = [
             {
                 or: ["item:category:{item|_id}", "item:id:{item|_id}"],

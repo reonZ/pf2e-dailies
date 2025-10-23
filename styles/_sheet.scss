@@ -1,7 +1,7 @@
 .actor.sheet {
     --temporary-color: rgb(0 0 255 / 7%);
 
-    [data-item-id].temporary {
+    [data-item-id].dailies-temporary {
         position: relative;
 
         &::before {
@@ -13,7 +13,7 @@
         }
     }
 
-    [data-item-id].temporary [data-item-id].temporary {
+    [data-item-id].dailies-temporary [data-item-id].dailies-temporary {
         &::before {
             background: none;
         }

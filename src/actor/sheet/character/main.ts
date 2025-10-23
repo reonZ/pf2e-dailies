@@ -9,6 +9,7 @@ import {
     htmlQuery,
     localize,
     MODULE,
+    R,
 } from "module-helpers";
 import { updateActionsTab, updateSpellsTab } from ".";
 
@@ -45,21 +46,40 @@ async function onCharacterSheetGetData(
 function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e<CharacterPF2e>, $html: JQuery) {
     const actor = sheet.actor;
     const html = $html[0];
-    const highlightItems = getSetting("addedHighlight");
+    const highlight = getSetting("addedHighlight");
+    const added = (highlight && getActorFlag(actor, "addedItems")) || [];
+    const flagged = getActorFlag(actor, "flaggedItems") ?? {};
 
     addDailiesIcon(actor, html);
     updateActionsTab(actor, html);
-    updateSpellsTab(actor, html, highlightItems);
+    updateSpellsTab(actor, html, highlight);
 
-    if (highlightItems) {
-        const addedItems = getActorFlag(actor, "addedItems") ?? [];
+    const getItemElements = (id: string) => {
+        return html.querySelectorAll(`.sheet-content [data-item-id="${id}"]`);
+    };
 
-        for (const id of addedItems) {
-            const itemElements = html.querySelectorAll(`.sheet-content [data-item-id="${id}"]`);
+    for (const id of added) {
+        for (const itemElement of getItemElements(id)) {
+            itemElement.classList.add("dailies-temporary");
+        }
+    }
 
-            for (const itemElement of itemElements) {
-                itemElement.classList.add("temporary");
-            }
+    for (const [id, dailies] of R.entries(flagged)) {
+        if (!dailies.length) continue;
+
+        const flagged = localize("sheet.flagged") + "<br>";
+
+        for (const itemElement of getItemElements(id)) {
+            const tooltip = dailies.length === 1 ? dailies[0] : dailies.join("<br>- ");
+            const nameElement = htmlQuery(itemElement, ".name");
+            const asterix = createHTMLElement("span", {
+                content: `<i class="fa-solid fa-flag-pennant"></i>`,
+                dataset: {
+                    tooltip: flagged + tooltip,
+                },
+            });
+
+            nameElement?.insertAdjacentElement("afterbegin", asterix);
         }
     }
 }

@@ -5,6 +5,7 @@ import {
     FeatSource,
     ItemPF2e,
     ItemSourcePF2e,
+    localizeIfExist,
     MagicTradition,
     Rarity,
     RuleElementSource,
@@ -20,6 +21,22 @@ function createDaily<
     TRows extends DailyRow<TRowSlug>[] = DailyRow<TRowSlug>[]
 >(config: Daily<TItemSlug, TCustom, TRowSlug, TItems, TRows>): Daily {
     return config as unknown as Daily;
+}
+
+function rowIsOfType<T extends DailyRowType>(row: DailyRow, ...types: T[]): row is DailyRows[T] {
+    return types.some((type) => row.type === type);
+}
+
+async function getDailyLabel(
+    daily: Daily,
+    actor: CharacterPF2e,
+    items: Record<string, ItemPF2e | undefined>
+): Promise<string> {
+    return typeof daily.label === "function"
+        ? daily.label(actor, items)
+        : typeof daily.label === "string"
+        ? game.i18n.localize(daily.label)
+        : localizeIfExist("builtin", daily.key) ?? daily.key;
 }
 
 type Daily<
@@ -135,13 +152,10 @@ type DailyProcessOptions<
     replaceFeat: (original: FeatPF2e, source: PreCreate<FeatSource> | FeatSource) => void;
     updateItem: (data: EmbeddedDocumentUpdateData) => void;
     removeRule: (item: ItemPF2e, signature: (rule: DailyRuleElement) => boolean) => void;
+    flagItem: (item: ItemPF2e, label?: string) => void;
     deleteItem: (item: ItemPF2e, temporary?: boolean) => void;
     setExtraFlags: (data: Record<string, any>) => void;
 };
-
-function rowIsOfType<T extends DailyRowType>(row: DailyRow, ...types: T[]): row is DailyRows[T] {
-    return types.some((type) => row.type === type);
-}
 
 type DailyRestOptions = {
     actor: CharacterPF2e;
@@ -333,7 +347,7 @@ type DailyConfigRowRange = DailyConfigRowBase<"range", number> & {
 
 type DailyRowData = DailyRowComboData | DailyRowDropData | string | true;
 
-export { createDaily, rowIsOfType };
+export { createDaily, getDailyLabel, rowIsOfType };
 export type {
     Daily,
     DailyConfigCheckbox,

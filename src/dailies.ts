@@ -23,11 +23,26 @@ import {
     thaumaturgeTome,
     tricksterAce,
     wandering,
+    warshard,
 } from "data";
-import { CharacterPF2e, error, getSetting, isSupressedFeat, ItemPF2e, R } from "module-helpers";
+import {
+    CharacterPF2e,
+    error,
+    getSetting,
+    isSupressedFeat,
+    ItemPF2e,
+    MODULE,
+    R,
+} from "module-helpers";
 
 const DAILY_SCHEMA = "3.0.0";
 const MODULE_DAILIES: Map<string, Daily> = new Map();
+
+const PREFIXES = {
+    dailies: "dailies",
+    custom: "custom",
+    module: "module",
+} as const;
 
 const BUILTINS_DAILIES: Daily[] = [
     ancestralLongevity, // Ancestral Longevity
@@ -47,6 +62,7 @@ const BUILTINS_DAILIES: Daily[] = [
     thaumaturgeTome, //Thaumaturge Tome
     tricksterAce, // Trickster Ace
     wandering, // Animist Wandering Feats
+    warshard, // Warshard Warrior Dedication
     createLoreSkillDaily(
         "quick-study", // Quick Study
         "Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW"
@@ -111,6 +127,8 @@ class MappedDailies extends Map<ItemUUID, PreConditionDaily[]> {
     }
 }
 
+const ALL_DAILIES: Map<string, Daily> = new Map();
+
 const BUILTINS_UUIDS: MappedDailies = new MappedDailies();
 const BUILTINS_ALWAYS: AlwaysDaily[] = [];
 
@@ -159,7 +177,7 @@ async function initializeDailies() {
     BUILTINS_UUIDS.clear();
     BUILTINS_ALWAYS.length = 0;
 
-    const { uuids, always } = prepareDailies(BUILTINS_DAILIES, "dailies");
+    const { uuids, always } = prepareDailies(BUILTINS_DAILIES, PREFIXES.dailies);
 
     for (const [uuid, daily] of uuids) {
         BUILTINS_UUIDS.add(uuid, daily);
@@ -171,10 +189,11 @@ async function initializeDailies() {
 }
 
 async function parseDailies() {
+    ALL_DAILIES.clear();
     UUIDS.clear();
     ALWAYS.length = 0;
 
-    const customDailies = [];
+    const customDailies: Daily[] = [];
     const customs = getSetting<CustomDaily[]>("customDailies");
 
     for (const custom of customs) {
@@ -193,14 +212,28 @@ async function parseDailies() {
         UUIDS.add(uuid, ...dailies);
     }
 
-    const preparedCustoms = prepareDailies(customDailies, "custom");
-    const preparedModules = prepareDailies(Array.from(MODULE_DAILIES.values()), "module");
+    const modulesDailies = Array.from(MODULE_DAILIES.values());
+    const preparedCustoms = prepareDailies(customDailies, PREFIXES.custom);
+    const preparedModules = prepareDailies(modulesDailies, PREFIXES.module);
 
     for (const [uuid, daily] of [...preparedCustoms.uuids, ...preparedModules.uuids]) {
         UUIDS.add(uuid, daily);
     }
 
     ALWAYS.push(...BUILTINS_ALWAYS, ...preparedCustoms.always, ...preparedModules.always);
+
+    for (const [dailies, prefix] of [
+        [BUILTINS_DAILIES, PREFIXES.dailies],
+        [customDailies, PREFIXES.custom],
+        [modulesDailies, PREFIXES.module],
+    ] as const) {
+        for (const daily of dailies) {
+            const key = `${prefix}.${daily.key}`;
+            ALL_DAILIES.set(key, daily);
+        }
+    }
+
+    MODULE.debug("Dailies", ALL_DAILIES);
 }
 
 async function getDailies(actor: CharacterPF2e): Promise<PreparedDailies> {
@@ -280,7 +313,11 @@ function filterDailies(dailies: PreparedDailies): PreparedDaily[] {
     });
 }
 
-type DailyPrefix = "custom" | "dailies" | "module";
+function getRawDaily(key: string): Daily | undefined {
+    return ALL_DAILIES.get(key) ?? ALL_DAILIES.get(`${PREFIXES.dailies}.${key}`);
+}
+
+type DailyPrefix = keyof typeof PREFIXES;
 
 type PreparedDaily = Daily & {
     prepared: PreparedDailyData;
@@ -304,5 +341,13 @@ type PreConditionDaily = {
 
 type PreparedDailies = Record<string, PreparedDaily | null>;
 
-export { DAILY_SCHEMA, filterDailies, getDailies, initializeDailies, MODULE_DAILIES, parseDailies };
+export {
+    DAILY_SCHEMA,
+    filterDailies,
+    getDailies,
+    getRawDaily,
+    initializeDailies,
+    MODULE_DAILIES,
+    parseDailies,
+};
 export type { PreparedDailies, PreparedDaily };

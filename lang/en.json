@@ -32,7 +32,8 @@
                 "familiar": "Familiar Abilities",
                 "staves": "Prepare a Staff",
                 "thaumaturge-tome": "Thaumaturge Tome",
-                "wandering": "Wandering Feats"
+                "wandering": "Wandering Feats",
+                "warshard": "Warshard Warrior"
             }
         },
         "charges": {
@@ -231,6 +232,7 @@
                 "label": "Charges",
                 "tooltip": "Reset charges to maximum (max: {max})"
             },
+            "flagged": "Flagged as:",
             "generate": {
                 "tooltip": "Generate Spellcasting Entry",
                 "confirm": "Spellcasting entry for <strong>{name}</strong> has been created."
@@ -258,6 +260,9 @@
                 "missing": "Couldn't retrieve the staff.",
                 "notEquipped": "You need to equip your {staff} to use it."
             }
+        },
+        "warshard": {
+            "weapon": "Warshard Weapon"
         }
     }
 }

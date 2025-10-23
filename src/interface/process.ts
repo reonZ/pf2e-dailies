@@ -93,6 +93,7 @@ async function processDailies(this: DailyInterface) {
     const actor = this.actor;
     const deletedItems: string[] = [];
     const addedItems: (PreCreate<ItemSourcePF2e> | ItemSourcePF2e)[] = [];
+    const flaggedItems: Record<string, string[]> = {};
     const itemsRules = new Map<string, DailyRuleElement[]>();
     const [updatedItems, updateItem] = createUpdateCollection();
     const rawMessages: { message: string; order: number }[] = [];
@@ -174,6 +175,10 @@ async function processDailies(this: DailyInterface) {
                 },
             },
             updateItem,
+            flagItem: (item, label) => {
+                const flags = (flaggedItems[item.id] ??= []);
+                flags.push(label?.trim() || (daily.label as string));
+            },
             deleteItem: (item, temporary = false) => {
                 if (temporary) {
                     temporaryDeleted[item.id] = item.toObject();
@@ -362,8 +367,8 @@ async function processDailies(this: DailyInterface) {
         );
     }
 
-    for (const [id, rules] of itemsRules) {
-        updateItem({ _id: id, "system.rules": rules });
+    for (const [_id, rules] of itemsRules) {
+        updateItem({ _id, "system.rules": rules });
     }
 
     if (updatedItems.size) {
@@ -443,14 +448,15 @@ async function processDailies(this: DailyInterface) {
         }
     }
 
-    setFlagProperty<DailyActorFlags>(actorUpdates, {
+    setFlagProperty(actorUpdates, {
         ...flags,
         extra: extraFlags,
         rested: false,
         addedItems: addedItemIds,
+        flaggedItems,
         temporaryDeleted,
         tooltip: await foundry.applications.ux.TextEditor.implementation.enrichHTML(chatContent),
-    });
+    } satisfies DailyActorFlags);
 
     await actor.update(actorUpdates);
 }

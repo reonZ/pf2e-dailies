@@ -39,6 +39,7 @@ async function openDailiesInterface(actor: Maybe<ActorPF2e>) {
 type DailyActorFlags = {
     rested?: boolean;
     addedItems?: string[];
+    flaggedItems?: Record<string, string[]>;
     config?: Record<string, DailyConfigRowValue>;
     extra?: Record<string, any>;
     disabled?: Record<string, Record<string, DailyRowData>>;

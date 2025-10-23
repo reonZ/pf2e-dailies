@@ -13,6 +13,7 @@ import {
     DailyRowSelectOption,
     DailyRowSelectOptionValue,
     DailyRowType,
+    getDailyLabel,
     rowIsOfType,
 } from "daily";
 import {
@@ -31,7 +32,6 @@ import {
     htmlQuery,
     htmlQueryAll,
     localize,
-    localizeIfExist,
     R,
     render,
     SpellFilters,
@@ -160,12 +160,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             dailies.map(async (daily) => {
                 const items = daily.prepared.items;
 
-                daily.label =
-                    typeof daily.label === "function"
-                        ? await daily.label(actor, items)
-                        : typeof daily.label === "string"
-                        ? game.i18n.localize(daily.label)
-                        : localizeIfExist("builtin", daily.key) ?? daily.key;
+                daily.label = await getDailyLabel(daily, actor, items);
 
                 if (disabled[daily.key]) return;
 

@@ -109,6 +109,7 @@ async function cleanup(actor: CharacterPF2e) {
     await updateFlag(actor, {
         rested: true,
         "-=addedItems": null,
+        "-=flaggedItems": null,
         "-=extra": null,
         "-=tooltip": null,
         "-=temporaryDeleted": null,

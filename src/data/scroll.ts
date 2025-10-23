@@ -4,7 +4,7 @@ import { utils } from "utils";
 
 type OneToSeven = OneToSix | 7;
 
-function createScrollChainDaily(key: string, uuids: [string, string, string]) {
+function createScrollChainDaily(key: string, uuids: [ItemUUID, ItemUUID, ItemUUID]) {
     return createDaily({
         key,
         items: [

@@ -4,7 +4,7 @@ import { utils } from "utils";
 
 function createComboSkillDaily(
     key: string,
-    uuid: string,
+    uuid: ItemUUID,
     {
         rank = 1,
         removeRules = true,
@@ -64,7 +64,7 @@ function createComboSkillDaily(
 
 function createLoreSkillDaily(
     key: string,
-    uuid: string,
+    uuid: ItemUUID,
     { label, rank = 1 }: { label?: string; rank?: ZeroToFour } = {}
 ) {
     return createDaily({

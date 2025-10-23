@@ -2,7 +2,7 @@ import { createDaily } from "daily";
 import { Language } from "module-helpers";
 import { utils } from "utils";
 
-function createLanguageDaily(key: string, uuid: string) {
+function createLanguageDaily(key: string, uuid: ItemUUID) {
     return createDaily({
         key,
         items: [

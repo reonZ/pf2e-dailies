@@ -19,3 +19,4 @@ export * from "./staves";
 export * from "./thaumaturge-tome";
 export * from "./trickster-ace";
 export * from "./wandering";
+export * from "./warshard";

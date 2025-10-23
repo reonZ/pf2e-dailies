@@ -1,5 +1,6 @@
 import {
     ActorPF2e,
+    ArmorPF2e,
     CharacterPF2e,
     ConsumableSource,
     createChatLink,
@@ -31,6 +32,7 @@ import {
     ResistanceType,
     rollDie,
     setFlagProperty,
+    ShieldPF2e,
     SkillSlug,
     SpellConsumableItemType,
     SpellPF2e,
@@ -324,6 +326,9 @@ const utils = {
     getSpellWithRankLabel: (uuid: string, rank: OneToTen): string => {
         const name = fromUuidSync(uuid)?.name ?? "";
         return `${name} (${getSpellRankLabel(rank)})`;
+    },
+    getRunedItemName: (item: WeaponPF2e | ArmorPF2e | ShieldPF2e): string => {
+        return item.name !== item._source.name ? `... ${item._source.name}` : item.name;
     },
 };
 

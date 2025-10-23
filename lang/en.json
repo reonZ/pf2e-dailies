@@ -205,7 +205,8 @@
                 "spells": "Is ready to use the spells",
                 "tactics": "Is prepared to apply the combat tactics",
                 "tome": "Studied their thaumaturgy tome",
-                "wandering": "Retrained their wandering feats"
+                "wandering": "Retrained their wandering feats",
+                "warshard": "Infused their weapon with a shard of the god of war"
             },
             "rations": {
                 "used": "Consumed one of their {name} and has {nb} remaining.",

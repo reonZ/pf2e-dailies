@@ -101,12 +101,9 @@ const bladeAlly = createDaily({
             predicate: ["item:id:{item|_id}"],
         });
 
-        const label =
-            weapon.name !== weapon._source.name ? `... ${weapon._source.name}` : weapon.name;
-
         messages.add("blade", {
             uuid: weapon.uuid,
-            label,
+            label: utils.getRunedItemName(weapon),
             selected: utils.getWeaponPropertyRuneLabel(rune),
         });
     },

@@ -176,6 +176,8 @@ async function processDailies(this: DailyInterface) {
             },
             updateItem,
             flagItem: (item, label) => {
+                if (item.actor !== actor) return;
+
                 const flags = (flaggedItems[item.id] ??= []);
                 flags.push(label?.trim() || (daily.label as string));
             },

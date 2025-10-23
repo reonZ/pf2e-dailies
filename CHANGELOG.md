@@ -1,3 +1,19 @@
+# 4.8.0
+
+-   add support to flag items on the actor
+    -   the items will display a flag icon next to their name in the sheet
+    -   the flag tooltip will indicate the source(s)
+-   add support for `Warshard Warrior Dedication`:
+    -   will flag the selected weapon
+    -   support the `Warshard Rune` feat
+-   `Blade Armament`:
+    -   now flag the selected weapon
+-   `Prepare a Staff`:
+    -   now flag the `Runelord Bond` weapon
+-   `Custom Daily`:
+    -   add `flagItem` process helper
+    -   add `utils.getRunedItemName` which returns the truncated end of weapons/armors name if they have runes
+
 # 4.7.0
 
 -   refactor internal handling of dailies to avoid a design flaw

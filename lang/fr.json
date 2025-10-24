@@ -32,7 +32,8 @@
         "familiar": "Pouvoirs des familiers",
         "staves": "Préparer un bâton",
         "thaumaturge-tome": "Tome du thaumaturge",
-        "wandering": "Dons errants"
+        "wandering": "Dons errants",
+        "warshard": "Combattant du fragment de guerre"
       }
     },
     "charges": {
@@ -152,11 +153,11 @@
         "flexible": "Emplacement flexible",
         "group": {
           "prepared": "A préparé un {type} pour la journée",
-          "merged": "A fusionné un {type} à l'arme liée pour la journée"
+          "merged": "A fusionné un {type} à l'arme liée pour la journée",
+          "bond": "A préparé l'arme auquel il est lié pour la journée"
         },
         "staff": "Bâton",
         "type": "Catégorie",
-        "bond": "Lien de Seigneur des runes",
         "mergedshift": "Fusionné avec un bâton de fortune",
         "merged": "Fusionné avec un bâton ordinaire",
         "makeshift": "Bâton de fortune",
@@ -204,7 +205,8 @@
         "spells": "Est prêt à utiliser les sorts",
         "tactics": "Est prêt à appliquer les tactiques de combat",
         "tome": "A étudié son tome de thaumaturgie",
-        "wandering": "A réappris ses dons errants"
+        "wandering": "A réappris ses dons errants",
+        "warshard": "A imprégné son arme avec un fragment du dieu de la guerre"
       },
       "rations": {
         "used": "A consommé une de ses {name} et en possède {nb} restantes.",
@@ -230,6 +232,7 @@
         "label": "Charges",
         "tooltip": "Rénitialiser les charges au maximum (max : {max})"
       },
+      "flagged": "Marqué comme :",
       "generate": {
         "tooltip": "Générer une entrée d'incantation",
         "confirm": "Une entrée d'incantation pour <strong>{name}</strong> a été créée."
@@ -258,6 +261,9 @@
         "missing": "Impossible de récupérer le bâton.",
         "notEquipped": "Vous devez équiper votre {staff} pour l'utiliser."
       }
+    },
+    "warshard": {
+      "weapon": "Arme au fragment de guerre"
     }
   }
 }

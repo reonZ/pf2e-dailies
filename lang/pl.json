@@ -32,7 +32,8 @@
         "familiar": "Zdolności chowańca",
         "staves": "Przygotuj Kostur",
         "thaumaturge-tome": "Tom Taumaturga",
-        "wandering": "Atuty Wędrówki"
+        "wandering": "Atuty Wędrówki",
+        "warshard": "Wojownik Wojennego Odłamka"
       }
     },
     "charges": {
@@ -152,11 +153,11 @@
         "flexible": "Elastyczne miejsce",
         "group": {
           "prepared": "Przygotował {type} na ten dzień",
-          "merged": "Połączył {type} ze swoją bronią związaną na dany dzień"
+          "merged": "Połączył {type} ze swoją bronią związaną na dany dzień",
+          "bond": "Przygotowano swoją broń na ten dzień"
         },
         "staff": "Kostur",
         "type": "Kategoria",
-        "bond": "Więź Władcy Runów",
         "mergedshift": "Połączono z Prowizorycznym kosturem",
         "merged": "Połączono ze Zwykłym kosturem",
         "makeshift": "Prowizoryczny kostur",
@@ -204,7 +205,8 @@
         "spells": "Jest gotowy do użycia zaklęć",
         "tactics": "Jest przygotowany do stosowania taktyki walki",
         "tome": "Studiował swój tom Taumaturga",
-        "wandering": "Ponownie przeszkolenie swoich atutów wędrówki"
+        "wandering": "Ponownie przeszkolenie swoich atutów wędrówki",
+        "warshard": "Nasycono swoją broń odłamkiem boga wojny"
       },
       "rations": {
         "used": "Zużył jedną z {name} i pozostało mu {nb} sztuk.",
@@ -230,6 +232,7 @@
         "label": "Ładunki",
         "tooltip": "Zresetuj ładunki do wartości maksymalnej (maks.: {max})"
       },
+      "flagged": "Oznaczone jako:",
       "generate": {
         "tooltip": "Wygeneruj wpis dotyczący Rzucania Zaklęć ",
         "confirm": "Wpis dotyczący Rzucania Zaklęć dla <strong>{name}</strong> został utworzony."
@@ -258,6 +261,9 @@
         "missing": "Nie udało się odzyskać kosturu.",
         "notEquipped": "Musisz wyposażyć się w {staff}, aby móc z niego korzystać."
       }
+    },
+    "warshard": {
+      "weapon": "Broń Wojennego Odłamka"
     }
   }
 }

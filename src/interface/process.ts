@@ -22,6 +22,7 @@ import {
     ItemSourcePF2e,
     localize,
     localizeIfExist,
+    MapOfArrays,
     MODULE,
     OneToTen,
     R,
@@ -93,7 +94,7 @@ async function processDailies(this: DailyInterface) {
     const actor = this.actor;
     const deletedItems: string[] = [];
     const addedItems: (PreCreate<ItemSourcePF2e> | ItemSourcePF2e)[] = [];
-    const flaggedItems: Record<string, string[]> = {};
+    const flaggedItems = new MapOfArrays<string>();
     const itemsRules = new Map<string, DailyRuleElement[]>();
     const [updatedItems, updateItem] = createUpdateCollection();
     const rawMessages: { message: string; order: number }[] = [];
@@ -177,9 +178,7 @@ async function processDailies(this: DailyInterface) {
             updateItem,
             flagItem: (item, label) => {
                 if (item.actor !== actor) return;
-
-                const flags = (flaggedItems[item.id] ??= []);
-                flags.push(label?.trim() || (daily.label as string));
+                flaggedItems.add(item.id, label?.trim() || (daily.label as string));
             },
             deleteItem: (item, temporary = false) => {
                 if (temporary) {
@@ -455,7 +454,7 @@ async function processDailies(this: DailyInterface) {
         extra: extraFlags,
         rested: false,
         addedItems: addedItemIds,
-        flaggedItems,
+        flaggedItems: flaggedItems.toObject(),
         temporaryDeleted,
         tooltip: await foundry.applications.ux.TextEditor.implementation.enrichHTML(chatContent),
     } satisfies DailyActorFlags);

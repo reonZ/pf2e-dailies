@@ -31,6 +31,7 @@ import {
     getSetting,
     isSupressedFeat,
     ItemPF2e,
+    MapOfArrays,
     MODULE,
     R,
 } from "module-helpers";
@@ -119,20 +120,12 @@ const BUILTINS_DAILIES: Daily[] = [
     ]),
 ];
 
-class MappedDailies extends Map<ItemUUID, PreConditionDaily[]> {
-    add(key: ItemUUID, ...dailies: PreConditionDaily[]) {
-        const _dailies = this.get(key) ?? [];
-        _dailies.push(...dailies);
-        this.set(key, _dailies);
-    }
-}
-
 const ALL_DAILIES: Map<string, Daily> = new Map();
 
-const BUILTINS_UUIDS: MappedDailies = new MappedDailies();
+const BUILTINS_UUIDS = new MapOfArrays<PreConditionDaily, ItemUUID>();
 const BUILTINS_ALWAYS: AlwaysDaily[] = [];
 
-const UUIDS: MappedDailies = new MappedDailies();
+const UUIDS = new MapOfArrays<PreConditionDaily, ItemUUID>();
 const ALWAYS: AlwaysDaily[] = [];
 
 function prepareDailies(
@@ -209,7 +202,7 @@ async function parseDailies() {
     }
 
     for (const [uuid, dailies] of BUILTINS_UUIDS) {
-        UUIDS.add(uuid, ...dailies);
+        UUIDS.add(uuid, dailies);
     }
 
     const modulesDailies = Array.from(MODULE_DAILIES.values());
@@ -234,6 +227,8 @@ async function parseDailies() {
     }
 
     MODULE.debug("Dailies", ALL_DAILIES);
+    MODULE.debug("Dailies UUIDS", UUIDS);
+    MODULE.debug("Dailies ALWAYS", ALWAYS);
 }
 
 async function getDailies(actor: CharacterPF2e): Promise<PreparedDailies> {

@@ -36,7 +36,9 @@
             "dailies": {
                 "familiar": "魔宠能力",
                 "thaumaturge-tome": "奇术师典奇具",
-                "staves": "准备法杖"
+                "staves": "准备法杖",
+                "wandering": "游移专长",
+                "warshard": "神雨遗锋"
             }
         },
         "config": {
@@ -144,6 +146,7 @@
             },
             "staves": {
                 "staff": "法杖",
+                "bond": "符文领主联结",
                 "regular": "常规法杖",
                 "makeshift": "临时法杖",
                 "empty": "空法术位",
@@ -193,20 +196,22 @@
                 "tome": "已从典器具习得",
                 "spells": "以下可使用法术已准备",
                 "apparition": "已附灵精魄",
-                "scrolls": "创建临时卷轴",
+                "scrolls": "已创建临时卷轴",
                 "feats": "已习得专长",
-                "ceremonial": "举行仪式以创造一把容纳法术的仪典短刃",
-                "blade": "将精魂注入他们的武器中",
+                "ceremonial": "已举行仪式以创造一把容纳法术的仪典短刃",
+                "blade": "已将精魂注入武器中",
                 "mindsmith": "已将心灵集中在武器上",
                 "tactics": "是否应用所准备的战术",
-                "memories": "回忆起某些珍贵的记忆"
+                "memories": "回忆起某些珍贵的记忆",
+                "wandering": "已重训其游移专长",
+                "warshard": "已将战神碎片之力注入武器中"
             },
             "gained": "已获得临时{type}",
             "noChanges": "每日准备没有任何变化，甚至你无需知道。",
             "rations": {
-                "used": "消耗一个{name}，剩下{nb}个。",
-                "last": "消耗最后的{name}。",
-                "almost": "消耗一个{name}，只剩下{nb}个。"
+                "used": "已消耗一个{name}，剩下{nb}个。",
+                "last": "已消耗最后的{name}。",
+                "almost": "已消耗一个{name}，只剩下{nb}个。"
             },
             "changes": "每日准备中出现如下变化。"
         },
@@ -232,7 +237,8 @@
             },
             "retrain": "更换{type}",
             "tactic": "战术",
-            "vessel": "主附灵精魄"
+            "vessel": "主附灵精魄",
+            "flagged": "标记为："
         },
         "spellEntry": {
             "name": "临时法术"
@@ -258,7 +264,7 @@
                 "draw1H": "拔出",
                 "retrieve1H": "取出"
             },
-            "bond": "符文领主联结"
+            "bond": "符文领主连结"
         },
         "retrain": {
             "content": "以下{type}已更换",
@@ -266,6 +272,9 @@
             "label": "原先 {type}",
             "title": "更换为{type} - {name}",
             "yes": "更换"
+        },
+        "warshard": {
+            "weapon": "神雨武装"
         }
     }
 }

@@ -1,3 +1,9 @@
+# 4.10.0
+
+-   `Animist`:
+    -   add support for the `Wind Seeker` feat
+    -   add support for the `Monstrous Inclinations` feat
+
 # 4.9.0
 
 -   this is a system `7.7.0` release

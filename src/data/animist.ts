@@ -29,6 +29,8 @@ const AVATAR_UUID = "Compendium.pf2e.spells-srd.Item.ckUOoqOM7Kg7VqxB";
 const HEAL_UUID = "Compendium.pf2e.spells-srd.Item.rfZpqmj0AIIdkVIs";
 const HARM_UUID = "Compendium.pf2e.spells-srd.Item.wdA52JJnsuQWeyqz";
 const ANIMAL_FORM_UUID = "Compendium.pf2e.spells-srd.Item.wp09USMB3GIW1qbp";
+const AERIAL_FORM_UUID = "Compendium.pf2e.spells-srd.Item.NzXpEzcZAjuDTZjK";
+const MONSTROUS_FORM_UUID = "Compendium.pf2e.spells-srd.Item.8AMvNVOUEtxBCDvJ";
 
 // level 1 to 20 / rank 1 to 9
 const SPELLS_SLOTS = [
@@ -89,6 +91,14 @@ const animist = createDaily({
         {
             slug: "spirit", // Circle of Spirits
             uuid: "Compendium.pf2e.feats-srd.Item.M8jbV0il124Ve5oV",
+        },
+        {
+            slug: "wind", // Wind Seeker
+            uuid: "Compendium.pf2e.feats-srd.Item.LoK6iI2f8ziSxFaU",
+        },
+        {
+            slug: "monstrous", // Monstrous Inclinations
+            uuid: "Compendium.pf2e.feats-srd.Item.VO2uOVrjIr7ZAjkX",
         },
     ],
     label: (actor, items) => items.attunement.name,
@@ -223,11 +233,17 @@ const animist = createDaily({
             })
         );
 
-        const extraSpells: string[] = [];
-
-        if (items.supreme) extraSpells.push(AVATAR_UUID);
-        if (items.balance) extraSpells.push(HEAL_UUID, HARM_UUID);
-        if (items.walk) extraSpells.push(ANIMAL_FORM_UUID);
+        const extraSpells: string[] = R.pipe(
+            [
+                items.supreme && AVATAR_UUID,
+                items.balance && [HEAL_UUID, HARM_UUID],
+                items.walk && ANIMAL_FORM_UUID,
+                items.wind && AERIAL_FORM_UUID,
+                items.monstrous && MONSTROUS_FORM_UUID,
+            ],
+            R.flat(),
+            R.filter(R.isTruthy)
+        );
 
         // add extraSpells
         await Promise.all(extraSpells.map((uuid) => addSpell(uuid, uuid !== AVATAR_UUID)));

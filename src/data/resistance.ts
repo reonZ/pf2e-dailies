@@ -4,7 +4,7 @@ import { SimplifiableRuleValue, utils } from "utils";
 
 function createResistanceDaily(
     key: string,
-    uuid: string,
+    uuid: ItemUUID,
     resistances: ResistanceType[],
     resistance: SimplifiableRuleValue,
     isRandom = false

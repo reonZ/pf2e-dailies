@@ -148,6 +148,14 @@
                     "none": "none"
                 }
             },
+            "mindsmith": {
+                "missing": "Mind Weapon is missing"
+            },
+            "rations": {
+                "yes": "Consume ({nb} remaining)",
+                "no": "Do not consume any",
+                "last": "Consume last available"
+            },
             "staves": {
                 "empty": "Empty Slot",
                 "flexible": "Flexible Slot",
@@ -162,14 +170,6 @@
                 "merged": "Merged with Regular Staff",
                 "makeshift": "Makeshift Staff",
                 "regular": "Regular Staff"
-            },
-            "rations": {
-                "yes": "Consume ({nb} remaining)",
-                "no": "Do not consume any",
-                "last": "Consume last available"
-            },
-            "mindsmith": {
-                "missing": "Mind Weapon is missing"
             }
         },
         "label": {

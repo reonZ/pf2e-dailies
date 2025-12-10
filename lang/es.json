@@ -31,7 +31,9 @@
       "dailies": {
         "familiar": "Habilidades de familiares",
         "staves": "Preparar un bastón",
-        "thaumaturge-tome": "Tomo del taumaturgo"
+        "thaumaturge-tome": "Tomo del taumaturgo",
+        "wandering": "Dotes errantes",
+        "warshard": "Guerrero fragmento de guerra"
       }
     },
     "charges": {
@@ -151,11 +153,11 @@
         "flexible": "Ranura flexible",
         "group": {
           "prepared": "Ha preparado un {type} para el día",
-          "merged": "Ha fusionado un {type} a su arma vinculada para el día."
+          "merged": "Ha fusionado un {type} a su arma vinculada para el día.",
+          "bond": "Ha preparado su arma vinculada para el día."
         },
         "staff": "Bastón",
         "type": "Categoría",
-        "bond": "Vínculo del Señor de las Runas",
         "mergedshift": "Fusionado con el bastón improvisado",
         "merged": "Se fusionó con el bastón estándar",
         "makeshift": "Bastón improvisado",
@@ -202,7 +204,9 @@
         "skills": "Entrenado en las siguientes habilidades",
         "spells": "Está listo para usar los hechizos",
         "tactics": "Está preparado para aplicar las tácticas de combate.",
-        "tome": "Estudió su tomo de taumaturgia"
+        "tome": "Estudió su tomo de taumaturgia",
+        "wandering": "Reentrenaron sus dotes errantes",
+        "warshard": "Infundieron su arma con un fragmento del dios de la guerra."
       },
       "rations": {
         "used": "Consumió uno de sus {name} y le queda {nb}.",
@@ -228,6 +232,7 @@
         "label": "Cargas",
         "tooltip": "Restablecer las cargas al máximo (máximo: {max})"
       },
+      "flagged": "Marcado como:",
       "generate": {
         "tooltip": "Generar entrada de lanzamiento de conjuros",
         "confirm": "Se ha creado una entrada de lanzamiento de conjuros para <strong>{name}</strong>."
@@ -256,6 +261,9 @@
         "missing": "No se pudo recuperar el bastón.",
         "notEquipped": "Necesitas equipar tu {staff} para poder usarlo."
       }
+    },
+    "warshard": {
+      "weapon": "Arma de fragmento de guerra"
     }
   }
 }

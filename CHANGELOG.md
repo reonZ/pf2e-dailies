@@ -1,3 +1,8 @@
+# 4.11.0
+
+-   `Warshard Warrior Dedication`:
+    -   add support for the `Transmute Weapon` feat
+
 # 4.10.0
 
 -   `Animist`:

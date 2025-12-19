@@ -377,41 +377,48 @@ const warshard = createDaily({
 
         const actorLevel = actor.level;
 
+        const weaponOptions = weapons.map(({ id, name }) => ({ value: id, label: name }));
+
+        const runeOptions = R.pipe(
+            COMMON_WEAPON_RUNES,
+            R.filter(({ level }) => level <= actorLevel),
+            R.map(({ name, slug }) => ({ value: slug, label: name })),
+            R.sortBy(R.prop("label"))
+        );
+
+        const materialOptions = R.pipe(
+            WEAPON_MATERIALS,
+            R.entries(),
+            R.filter(([_, { low = Infinity, standard = Infinity, high = Infinity }]) => {
+                const lowest = Math.min(low, standard, high);
+                return lowest <= actorLevel;
+            }),
+            R.map(([slug]) => ({
+                value: slug,
+                label: CONFIG.PF2E.preciousMaterials[slug],
+            }))
+        );
+
         return [
             {
                 type: "select",
                 slug: "weapon",
                 label: "TYPES.Item.weapon",
-                options: weapons.map(({ id, name }) => ({ value: id, label: name })),
+                options: weaponOptions,
             },
             {
                 type: "select",
                 slug: "rune",
                 label: items.rune?.name,
-                options: R.pipe(
-                    COMMON_WEAPON_RUNES,
-                    R.filter(({ level }) => level <= actorLevel),
-                    R.map(({ name, slug }) => ({ value: slug, label: name })),
-                    R.sortBy(R.prop("label"))
-                ),
+                options: runeOptions,
                 condition: !!items.rune,
             },
             {
                 type: "select",
                 slug: "material",
                 label: items.transmute?.name,
-                options: R.pipe(
-                    WEAPON_MATERIALS,
-                    R.entries(),
-                    R.filter(([_, { low = Infinity, standard = Infinity, high = Infinity }]) => {
-                        const lowest = Math.min(low, standard, high);
-                        return lowest <= actorLevel;
-                    }),
-                    R.map(([slug]) => ({
-                        value: slug,
-                        label: CONFIG.PF2E.preciousMaterials[slug],
-                    }))
-                ),
+                options: [{ value: "", label: "" }, ...materialOptions],
+                empty: true,
                 condition: !!items.transmute,
             },
         ];

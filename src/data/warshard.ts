@@ -1,9 +1,15 @@
 import { createDaily } from "daily";
 import {
     CharacterPF2e,
+    getFlag,
+    hasItemWithSourceId,
     localize,
     MartialProficiency,
     R,
+    setFlagProperty,
+    unsetFlagProperty,
+    WeaponMaterialSource,
+    WeaponMaterialType,
     WeaponPF2e,
     WeaponPropertyRuneType,
     ZeroToFour,
@@ -257,6 +263,91 @@ const COMMON_WEAPON_RUNES = [
     },
 ];
 
+/**
+ * generated from
+ * https://github.com/foundryvtt/pf2e/blob/1465f7190b2b8454094c50fa6d06e9902e0a3c41/src/module/item/physical/materials.ts#L39
+ */
+const WEAPON_MATERIALS: PartialRecord<
+    WeaponMaterialType,
+    { low?: number; standard?: number; high?: number }
+> = {
+    abysium: {
+        standard: 12,
+        high: 18,
+    },
+    adamantine: {
+        standard: 11,
+        high: 17,
+    },
+    "cold-iron": {
+        low: 2,
+        standard: 10,
+        high: 16,
+    },
+    dawnsilver: {
+        standard: 11,
+        high: 17,
+    },
+    djezet: {
+        standard: 12,
+        high: 18,
+    },
+    duskwood: {
+        standard: 11,
+        high: 17,
+    },
+    inubrix: {
+        standard: 11,
+        high: 17,
+    },
+    "keep-stone": {
+        high: 18,
+    },
+    noqual: {
+        standard: 12,
+        high: 18,
+    },
+    peachwood: {
+        standard: 12,
+        high: 18,
+    },
+    orichalcum: {
+        high: 18,
+    },
+    siccatite: {
+        standard: 11,
+        high: 17,
+    },
+    silver: {
+        low: 2,
+        standard: 10,
+        high: 16,
+    },
+    "sisterstone-dusk": {
+        low: 3,
+        standard: 11,
+        high: 19,
+    },
+    "sisterstone-scarlet": {
+        low: 3,
+        standard: 11,
+        high: 19,
+    },
+    sloughstone: {
+        standard: 8,
+        high: 16,
+    },
+    "sovereign-steel": {
+        standard: 12,
+        high: 19,
+    },
+    warpglass: {
+        high: 17,
+    },
+};
+
+const TRANSMUTE_WEAPON_UUID = "Compendium.pf2e.feats-srd.Item.n7a7ltuY9C4qcAiT";
+
 const warshard = createDaily({
     key: "warshard",
     items: [
@@ -268,6 +359,10 @@ const warshard = createDaily({
         {
             slug: "rune", // Warshard Rune
             uuid: "Compendium.pf2e.feats-srd.Item.MsNPLqPsWgOO0dqh",
+        },
+        {
+            slug: "transmute", // Transmute Weapon
+            uuid: TRANSMUTE_WEAPON_UUID,
         },
     ],
     rows: (actor, items) => {
@@ -301,15 +396,34 @@ const warshard = createDaily({
                 ),
                 condition: !!items.rune,
             },
+            {
+                type: "select",
+                slug: "material",
+                label: items.transmute?.name,
+                options: R.pipe(
+                    WEAPON_MATERIALS,
+                    R.entries(),
+                    R.filter(([_, { low = Infinity, standard = Infinity, high = Infinity }]) => {
+                        const lowest = Math.min(low, standard, high);
+                        return lowest <= actorLevel;
+                    }),
+                    R.map(([slug]) => ({
+                        value: slug,
+                        label: CONFIG.PF2E.preciousMaterials[slug],
+                    }))
+                ),
+                condition: !!items.transmute,
+            },
         ];
     },
-    process: ({ actor, items, rows, messages, addRule, flagItem }) => {
+    process: ({ actor, items, rows, messages, addRule, flagItem, updateItem }) => {
         const weapon = actor.items.get<WeaponPF2e<CharacterPF2e>>(rows.weapon);
         if (!weapon) return;
 
         flagItem(weapon, localize("warshard.weapon"));
 
-        const rune = rows.rune as WeaponPropertyRuneType;
+        const rune = rows.rune as WeaponPropertyRuneType | undefined;
+        const material = rows.material as WeaponMaterialType | undefined;
 
         messages.add("warshard", {
             uuid: weapon.uuid,
@@ -330,6 +444,47 @@ const warshard = createDaily({
                 label: items.rune?.name ?? localize("label.rune"),
                 selected: utils.getWeaponPropertyRuneLabel(rune),
             });
+        }
+
+        if (material) {
+            const actorLevel = actor.level;
+            const weaponLevel = weapon.level;
+            const { low, standard, high } = WEAPON_MATERIALS[material] ?? {};
+
+            const grade =
+                high && high <= actorLevel && weaponLevel >= 15
+                    ? "high"
+                    : standard && standard <= actorLevel && weaponLevel >= 9
+                    ? "standard"
+                    : low && low <= actorLevel
+                    ? "low"
+                    : undefined;
+
+            if (grade) {
+                const updates = {
+                    _id: weapon.id,
+                    "system.material": { type: material, grade } satisfies WeaponMaterialSource,
+                };
+
+                setFlagProperty(updates, "material", weapon._source.system.material);
+                updateItem(updates);
+            }
+        }
+    },
+    rest: ({ actor, updateItem }) => {
+        if (!hasItemWithSourceId(actor, TRANSMUTE_WEAPON_UUID, "feat")) return;
+
+        for (const item of actor.itemTypes.weapon) {
+            const data = getFlag<WeaponMaterialSource>(item, "material");
+            if (!data) continue;
+
+            const updates = {
+                _id: item.id,
+                "system.material": data,
+            };
+
+            unsetFlagProperty(updates, "material");
+            updateItem(updates);
         }
     },
 });

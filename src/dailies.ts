@@ -28,6 +28,7 @@ import {
 import {
     CharacterPF2e,
     error,
+    getItemSourceId,
     getSetting,
     isSupressedFeat,
     ItemPF2e,
@@ -280,8 +281,7 @@ async function getDailies(actor: CharacterPF2e): Promise<PreparedDailies> {
                 return;
             }
 
-            const sourceId = item._stats.compendiumSource ?? item.sourceId;
-
+            const sourceId = getItemSourceId(item);
             if (!sourceId || (item.isOfType("physical") && item.isInvested === false)) {
                 return;
             }

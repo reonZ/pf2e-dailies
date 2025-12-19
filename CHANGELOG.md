@@ -1,3 +1,8 @@
+# 4.11.1
+
+-   `Warshard Warrior Dedication`:
+    -   add an empty option for `Transmute Weapon` in case the user doesn't want to override the current material
+
 # 4.11.0
 
 -   `Warshard Warrior Dedication`:

@@ -1,3 +1,7 @@
+# 4.12.0
+
+-   physical items created by the module will now scale with the character's size
+
 # 4.11.1
 
 -   `Warshard Warrior Dedication`:

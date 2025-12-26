@@ -14,6 +14,7 @@ import {
     error,
     FeatPF2e,
     FeatSource,
+    getActorSize,
     getFlag,
     getFlagProperty,
     htmlClosest,
@@ -25,8 +26,10 @@ import {
     MapOfArrays,
     MODULE,
     OneToTen,
+    PHYSICAL_ITEM_TYPES,
     R,
     setFlagProperty,
+    setHasElement,
     SpellPF2e,
 } from "module-helpers";
 import { createUpdateCollection, utils } from "utils";
@@ -108,17 +111,6 @@ async function processDailies(this: DailyInterface) {
         feats: { order: 50, messages: [] },
         spells: { order: 40, messages: [] },
         scrolls: { order: 30, messages: [] },
-    };
-
-    const addItemToActor = (
-        source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e,
-        temporary = true
-    ) => {
-        if (temporary) {
-            setFlagProperty(source, "temporary", true);
-        }
-
-        addedItems.push(source);
     };
 
     const getRules = (item: ItemPF2e) => {
@@ -210,8 +202,14 @@ async function processDailies(this: DailyInterface) {
                 source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e,
                 temporary?: boolean
             ) => {
+                if (temporary) {
+                    setFlagProperty(source, "temporary", true);
+                }
+                if (setHasElement(PHYSICAL_ITEM_TYPES, source.type)) {
+                    foundry.utils.setProperty(source, "system.size", getActorSize(actor).value);
+                }
                 setFlagProperty(source, "daily", daily.key);
-                addItemToActor(source, temporary);
+                addedItems.push(source);
             };
 
             const addFeat = (

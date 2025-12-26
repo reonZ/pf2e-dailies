@@ -3,6 +3,7 @@ import { utils } from "utils";
 import {
     CharacterPF2e,
     DamageDieSize,
+    getActorSize,
     localize,
     MODULE,
     PreciousMaterialType,
@@ -334,6 +335,7 @@ async function createMindWeapon(actor: CharacterPF2e) {
                 die: die,
                 dice: 1,
             },
+            size: getActorSize(actor).value,
             traits: {
                 value: traits,
             },

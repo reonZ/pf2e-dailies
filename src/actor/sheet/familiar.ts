@@ -4,7 +4,7 @@ function onRenderFamiliarSheetPF2e(sheet: FamiliarSheetPF2e<FamiliarPF2e>, $html
     const actor = sheet.actor;
     const html = $html[0];
     const itemElements = html.querySelectorAll<HTMLElement>(
-        ".section-container:not(.familiar-section) .actions-list [data-item-id]"
+        ".section-container:not(.familiar-section) .actions-list [data-item-id]",
     );
 
     for (const itemElement of itemElements) {
@@ -12,7 +12,7 @@ function onRenderFamiliarSheetPF2e(sheet: FamiliarSheetPF2e<FamiliarPF2e>, $html
         const item = actor.items.get(itemId);
 
         if (item && getFlag(item, "temporary")) {
-            itemElement.classList.add("temporary");
+            itemElement.classList.add("dailies-temporary");
         }
     }
 }

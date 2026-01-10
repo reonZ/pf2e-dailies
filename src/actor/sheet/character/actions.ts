@@ -16,6 +16,7 @@ function updateTacticsEntries(actor: CharacterPF2e, actionsTab: HTMLElement) {
     const encounterTab = htmlQuery(actionsTab, `.actions-panels [data-tab="encounter"]`);
     if (!encounterTab) return;
 
+    const isOwner = actor.isOwner;
     const actionsElements = encounterTab.querySelectorAll<HTMLLIElement>(".action[data-item-id]");
 
     for (const el of actionsElements) {
@@ -24,8 +25,10 @@ function updateTacticsEntries(actor: CharacterPF2e, actionsTab: HTMLElement) {
 
         el.classList.add("inactive");
 
-        const btn = createRetrainBtn(actor, itemId, "tactic");
-        htmlQuery(el, ".item-controls")?.prepend(btn);
+        if (isOwner) {
+            const btn = createRetrainBtn(actor, itemId, "tactic");
+            htmlQuery(el, ".item-controls")?.prepend(btn);
+        }
     }
 }
 

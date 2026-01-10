@@ -16,7 +16,7 @@ import { updateActionsTab, updateSpellsTab } from ".";
 async function onCharacterSheetGetData(
     this: CharacterSheetPF2e<CharacterPF2e>,
     wrapped: libWrapper.RegisterCallback,
-    options?: ActorSheetOptions
+    options?: ActorSheetOptions,
 ) {
     const data = (await wrapped(options)) as CharacterSheetData;
 
@@ -72,14 +72,14 @@ function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e<CharacterPF2e>, $h
         for (const itemElement of getItemElements(id)) {
             const tooltip = dailies.length === 1 ? dailies[0] : dailies.join("<br>- ");
             const nameElement = htmlQuery(itemElement, ".name");
-            const asterix = createHTMLElement("span", {
+            const flagEl = createHTMLElement("span", {
                 content: `<i class="fa-solid fa-flag-pennant"></i>`,
                 dataset: {
                     tooltip: flagged + tooltip,
                 },
             });
 
-            nameElement?.insertAdjacentElement("afterbegin", asterix);
+            nameElement?.insertAdjacentElement("afterbegin", flagEl);
         }
     }
 }

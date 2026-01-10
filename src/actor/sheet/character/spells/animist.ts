@@ -14,10 +14,12 @@ function updateAnimistEntries(actor: CharacterPF2e, spellsTab: HTMLElement, isOw
         const itemId = spellEl.dataset.itemId ?? "";
         if (primary.includes(itemId)) continue;
 
-        const btn = createRetrainBtn(actor, itemId, "vessel");
+        if (isOwner) {
+            const btn = createRetrainBtn(actor, itemId, "vessel");
 
-        htmlQuery(spellEl, ".item-controls")?.prepend(btn);
-        htmlQuery(spellEl, "button.cast-spell")?.classList.add("inactive");
+            htmlQuery(spellEl, ".item-controls")?.prepend(btn);
+            htmlQuery(spellEl, "button.cast-spell")?.classList.add("inactive");
+        }
 
         const nameEl = htmlQuery(spellEl, ".name");
         if (nameEl) {

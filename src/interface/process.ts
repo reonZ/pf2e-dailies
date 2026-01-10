@@ -1,12 +1,6 @@
 import { DailyActorFlags } from "actor";
 import { PreparedDaily } from "dailies";
-import {
-    DailyMessageOptions,
-    DailyProcessOptions,
-    DailyRowData,
-    DailyRowType,
-    DailyRuleElement,
-} from "daily";
+import { DailyMessageOptions, DailyProcessOptions, DailyRowData, DailyRowType, DailyRuleElement } from "daily";
 import {
     CharacterPF2e,
     createChatLink,
@@ -37,9 +31,7 @@ import { DailyInterface } from ".";
 import fu = foundry.utils;
 
 async function processDailies(this: DailyInterface) {
-    const rowElements = this.element.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
-        "[data-daily]"
-    );
+    const rowElements = this.element.querySelectorAll<HTMLInputElement | HTMLSelectElement>("[data-daily]");
 
     const flags: Record<string, Record<string, DailyRowData>> = {};
     const extraFlags: Record<string, any> = {};
@@ -63,7 +55,7 @@ async function processDailies(this: DailyInterface) {
             const isInput = rowElement.dataset.input === "true";
             const selected = isInput
                 ? rowElement.value.trim()
-                : htmlQuery(htmlClosest(rowElement, ".combo"), "select")?.value ?? "";
+                : (htmlQuery(htmlClosest(rowElement, ".combo"), "select")?.value ?? "");
 
             row = {
                 selected,
@@ -135,7 +127,7 @@ async function processDailies(this: DailyInterface) {
 
     const processOptions = (
         daily: PreparedDaily,
-        rows: Record<string, DailyRowData>
+        rows: Record<string, DailyRowData>,
     ): Omit<DailyProcessOptions, "addItem" | "addFeat" | "addRule"> => {
         const items = daily.prepared.items;
         const custom = daily.prepared.custom;
@@ -198,10 +190,7 @@ async function processDailies(this: DailyInterface) {
 
     await Promise.all(
         Object.values(dailies).map(({ daily, rows }) => {
-            const addItem = (
-                source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e,
-                temporary?: boolean
-            ) => {
+            const addItem = (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e, temporary: boolean = true) => {
                 if (temporary) {
                     setFlagProperty(source, "temporary", true);
                 }
@@ -215,7 +204,7 @@ async function processDailies(this: DailyInterface) {
             const addFeat = (
                 source: PreCreate<FeatSource> | FeatSource,
                 parent?: ItemPF2e | null,
-                temporary = true
+                temporary = true,
             ) => {
                 if (parent?.isOfType("feat")) {
                     const parentId = parent.id;
@@ -237,10 +226,7 @@ async function processDailies(this: DailyInterface) {
                         source[MODULE.id] = daily.key;
                         getRules(item).push(source);
                     },
-                    replaceFeat: (
-                        original: FeatPF2e,
-                        source: PreCreate<FeatSource> | FeatSource
-                    ) => {
+                    replaceFeat: (original: FeatPF2e, source: PreCreate<FeatSource> | FeatSource) => {
                         fu.setProperty(source, "system.location", original.system.location);
                         fu.setProperty(source, "system.level.taken", original.system.level.taken);
 
@@ -255,7 +241,7 @@ async function processDailies(this: DailyInterface) {
                 console.error(err);
                 console.error(`The error occured during processing of ${daily.key}`);
             }
-        })
+        }),
     );
 
     let hasOrphanSpells = false;
@@ -289,9 +275,7 @@ async function processDailies(this: DailyInterface) {
 
     let hasFocusSpells = currentMaxFocus;
 
-    const actualAddedItems = addedItems.length
-        ? await actor.createEmbeddedDocuments("Item", addedItems)
-        : [];
+    const actualAddedItems = addedItems.length ? await actor.createEmbeddedDocuments("Item", addedItems) : [];
 
     if (actualAddedItems.length) {
         for (const item of actualAddedItems) {
@@ -319,7 +303,7 @@ async function processDailies(this: DailyInterface) {
 
                 const spells = actualAddedItems.filter(
                     (spell): spell is SpellPF2e<CharacterPF2e> =>
-                        spell.isOfType("spell") && getFlag(spell, "identifier") === identifier
+                        spell.isOfType("spell") && getFlag(spell, "identifier") === identifier,
                 );
 
                 for (const spell of spells) {
@@ -351,9 +335,7 @@ async function processDailies(this: DailyInterface) {
 
                 try {
                     const options = R.merge(processOptions(daily, rows), {
-                        addedItems: actualAddedItems.filter(
-                            (item) => getFlag(item, "daily") === daily.key
-                        ),
+                        addedItems: actualAddedItems.filter((item) => getFlag(item, "daily") === daily.key),
                     });
 
                     return daily.afterItemAdded(options);
@@ -362,7 +344,7 @@ async function processDailies(this: DailyInterface) {
                     console.error(err);
                     console.error(`The error occured during processing of ${daily.key}`);
                 }
-            })
+            }),
         );
     }
 
@@ -389,7 +371,7 @@ async function processDailies(this: DailyInterface) {
 
         const groupLabel = group.label
             ? game.i18n.localize(group.label)
-            : localizeIfExist("message.groups", type) ?? localize("message.gained", { type });
+            : (localizeIfExist("message.groups", type) ?? localize("message.gained", { type }));
 
         let message = `<p><strong>${groupLabel}</strong></p>`;
 

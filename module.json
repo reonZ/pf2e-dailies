@@ -8,9 +8,7 @@
             "discord": "idleatre"
         }
     ],
-    "esmodules": [
-        "scripts/main.js"
-    ],
+    "esmodules": ["scripts/main.js"],
     "compatibility": {
         "minimum": "13.348",
         "verified": "13.351",
@@ -23,17 +21,23 @@
     "download": "https://github.com/reonZ/pf2e-dailies/releases/download/4.13.0/module.zip",
     "changelog": "https://github.com/reonZ/pf2e-dailies/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/pf2e-dailies/issues",
-    "styles": [
-        "styles/pf2e-dailies.css"
-    ],
+    "styles": ["styles/pf2e-dailies.css"],
     "relationships": {
         "systems": [
             {
                 "id": "pf2e",
                 "type": "system",
-                "manifest": "https://raw.githubusercontent.com/foundryvtt/pf2e/master/system.json",
+                "manifest": "https://raw.githubusercontent.com/foundryvtt/pf2e/master/system.pf2e.json",
                 "compatibility": {
                     "minimum": "7.7.0"
+                }
+            },
+            {
+                "id": "sf2e",
+                "type": "system",
+                "manifest": "https://raw.githubusercontent.com/foundryvtt/pf2e/master/system.sf2e.json",
+                "compatibility": {
+                    "minimum": "0.0.1"
                 }
             }
         ],

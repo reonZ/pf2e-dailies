@@ -17,10 +17,10 @@
     },
     "devDependencies": {
         "esbuild": "^0.20.1",
+        "sass": "^1.97.2",
         "typescript": "5.3.3"
     },
     "dependencies": {
-        "module-helpers": "github:reonZ/module-helpers",
-        "sass": "^1.97.2"
+        "module-helpers": "github:reonZ/module-helpers"
     }
 }

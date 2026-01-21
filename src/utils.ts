@@ -37,6 +37,7 @@ import {
     SpellConsumableItemType,
     SpellPF2e,
     SpellSource,
+    SYSTEM,
     WeaponGroup,
     WeaponPF2e,
     WeaponPropertyRuneType,
@@ -73,7 +74,7 @@ const utils = {
     getItemSource: getItemSourceFromUuid,
     getChoiSetRuleSelection: (
         item: ItemPF2e,
-        option?: string | { option?: string; flag?: string }
+        option?: string | { option?: string; flag?: string },
     ): string | undefined => {
         const options = typeof option === "string" ? { option } : option;
         return getChoiceSetSelection(item, options);
@@ -90,7 +91,7 @@ const utils = {
         return R.pipe(
             CONFIG.PF2E.resistanceTypes,
             R.entries(),
-            R.map(([value, label]) => ({ value, label: label.capitalize() }))
+            R.map(([value, label]) => ({ value, label: label.capitalize() })),
         );
     },
     getLanguageLabel: (language: Language, localize = true): string => {
@@ -101,14 +102,14 @@ const utils = {
         return R.pipe(
             CONFIG.PF2E.languages,
             R.entries(),
-            R.map(([value, label]) => ({ value, label }))
+            R.map(([value, label]) => ({ value, label })),
         );
     },
     getSkills: (): { value: SkillSlug; label: string }[] => {
         return R.pipe(
             CONFIG.PF2E.skills,
             R.entries(),
-            R.map(([value, { label }]) => ({ value, label }))
+            R.map(([value, { label }]) => ({ value, label })),
         );
     },
     getSpellRankLabel: (rank: ZeroToTen): string => {
@@ -117,25 +118,25 @@ const utils = {
     createExcludeFeatList: (
         actor: CharacterPF2e,
         categories: FeatOrFeatureCategory[],
-        traits: FeatTrait[]
+        traits: FeatTrait[],
     ): ItemUUID[] => {
         return R.pipe(
             actor.itemTypes.feat,
             R.filter((feat) => categories.some((category) => feat.category === category)),
             R.filter((feat) => traits.every((trait) => feat.traits.has(trait))),
             R.map((feat) => feat.sourceId),
-            R.filter(R.isTruthy)
+            R.filter(R.isTruthy),
         );
     },
     getSpellcastingMaxRank: (
         actor: CharacterPF2e,
-        { tradition, rankLimit }: { tradition?: MagicTradition; rankLimit?: OneToTen } = {}
+        { tradition, rankLimit }: { tradition?: MagicTradition; rankLimit?: OneToTen } = {},
     ): ZeroToTen => {
         const maxRank = R.pipe(
             actor.spellcasting.spellcastingFeatures,
             tradition ? R.filter((entry) => entry.tradition === tradition) : R.identity(),
             R.map((entry) => getSpellcastingMaxRank(entry, rankLimit)),
-            R.firstBy([R.identity(), "desc"])
+            R.firstBy([R.identity(), "desc"]),
         );
         return maxRank ?? 0;
     },
@@ -171,16 +172,12 @@ const utils = {
         const source = await getItemSourceFromUuid(uuid, "feat");
 
         if (!source) {
-            throw new Error(
-                `An error occured while trying to create a feat source with uuid: ${uuid}`
-            );
+            throw new Error(`An error occured while trying to create a feat source with uuid: ${uuid}`);
         }
 
         return source;
     },
-    createSpellScrollSource: (
-        options: CreateSpellConsumableSourceOptions
-    ): Promise<ConsumableSource> => {
+    createSpellScrollSource: (options: CreateSpellConsumableSourceOptions): Promise<ConsumableSource> => {
         return createSpellConsumableSource("scroll", options);
     },
     createWandSource: (options: CreateSpellConsumableSourceOptions): Promise<ConsumableSource> => {
@@ -207,16 +204,10 @@ const utils = {
 
         return rule;
     },
-    createLoreSource: ({
-        name,
-        rank,
-    }: {
-        name: string;
-        rank: ZeroToFour;
-    }): PreCreate<LoreSource> => {
+    createLoreSource: ({ name, rank }: { name: string; rank: ZeroToFour }): PreCreate<LoreSource> => {
         return {
             type: "lore",
-            img: "systems/pf2e/icons/default-icons/lore.svg",
+            img: `systems/${SYSTEM.id}/icons/default-icons/lore.svg`,
             name,
             system: { proficient: { value: rank } },
         };
@@ -262,18 +253,15 @@ const utils = {
         return rule;
     },
     createChatLink: (itemOrUuid: ItemPF2e | string, label?: string): string => {
-        const uuid =
-            itemOrUuid instanceof Item ? itemOrUuid.sourceId ?? itemOrUuid.uuid : itemOrUuid;
+        const uuid = itemOrUuid instanceof Item ? (itemOrUuid.sourceId ?? itemOrUuid.uuid) : itemOrUuid;
         return createChatLink(uuid, { label });
     },
     selectRandomOption: (
-        options: (string | { value: string })[] | HTMLSelectElement | HTMLOptionsCollection
+        options: (string | { value: string })[] | HTMLSelectElement | HTMLOptionsCollection,
     ): string => {
         options = options instanceof HTMLSelectElement ? options.options : options;
         options =
-            options instanceof HTMLOptionsCollection
-                ? Array.from(options).map((option) => option.value)
-                : options;
+            options instanceof HTMLOptionsCollection ? Array.from(options).map((option) => option.value) : options;
 
         if (options.length === 0) return "";
 
@@ -283,7 +271,7 @@ const utils = {
         return typeof result === "object" ? result.value : result;
     },
     createSpellcastingEntrySource: (
-        options: CreateSpellcastingSource & { identifier?: string }
+        options: CreateSpellcastingSource & { identifier?: string },
     ): CreatedSpellcastingEntrySource => {
         const source = createSpellcastingSource(options);
 
@@ -295,18 +283,12 @@ const utils = {
     },
     createSpellSource: async (
         uuid: string,
-        {
-            identifier,
-            signature,
-            rank,
-        }: { identifier?: string; signature?: boolean; rank?: ZeroToTen } = {}
+        { identifier, signature, rank }: { identifier?: string; signature?: boolean; rank?: ZeroToTen } = {},
     ): Promise<SpellSource> => {
         const source = await getItemSourceFromUuid(uuid, "spell");
 
         if (!source) {
-            throw new Error(
-                `An error occured while trying to create a spell source with uuid: ${uuid}`
-            );
+            throw new Error(`An error occured while trying to create a spell source with uuid: ${uuid}`);
         }
 
         if (identifier) {
@@ -334,14 +316,12 @@ const utils = {
 
 async function createSpellConsumableSource(
     type: SpellConsumableItemType,
-    { uuid, level, itemName, itemImg }: CreateSpellConsumableSourceOptions
+    { uuid, level, itemName, itemImg }: CreateSpellConsumableSourceOptions,
 ): Promise<ConsumableSource> {
     const spell = await fromUuid<SpellPF2e>(uuid);
 
     if (!spell?.isOfType("spell")) {
-        throw new Error(
-            `An error occured while trying to create a spell scroll source with uuid: ${uuid}`
-        );
+        throw new Error(`An error occured while trying to create a spell scroll source with uuid: ${uuid}`);
     }
 
     return createConsumableFromSpell(spell, {
@@ -354,17 +334,10 @@ async function createSpellConsumableSource(
 }
 
 function simplifyRuleValue(value: SimplifiableRuleValue): string | number {
-    return value === "half"
-        ? "max(1,floor(@actor.level/2))"
-        : value === "level"
-        ? "max(1,@actor.level)"
-        : value;
+    return value === "half" ? "max(1,floor(@actor.level/2))" : value === "level" ? "max(1,@actor.level)" : value;
 }
 
-function createUpdateCollection<T extends EmbeddedDocumentUpdateData>(): [
-    Collection<T>,
-    (data: T) => void
-] {
+function createUpdateCollection<T extends EmbeddedDocumentUpdateData>(): [Collection<T>, (data: T) => void] {
     const collection = new Collection<T>();
 
     return [

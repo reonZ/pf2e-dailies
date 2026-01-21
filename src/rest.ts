@@ -7,13 +7,14 @@ import {
     getFlag,
     MODULE,
     R,
+    SYSTEM,
     updateFlag,
 } from "module-helpers";
 import { createUpdateCollection } from "utils";
 
 async function restForTheNight(
     wrapped: libWrapper.RegisterCallback,
-    options: ActionDefaultOptions
+    options: ActionDefaultOptions,
 ): Promise<ChatMessagePF2e[]> {
     const result = await wrapped(options);
 
@@ -24,7 +25,7 @@ async function restForTheNight(
 
         const characters = R.pipe(
             Array.isArray(options.actors) ? options.actors : [options.actors],
-            R.filter((actor): actor is CharacterPF2e => !!actor?.isOfType("character"))
+            R.filter((actor): actor is CharacterPF2e => !!actor?.isOfType("character")),
         );
 
         await Promise.all(characters.map(cleanup));
@@ -49,7 +50,7 @@ async function cleanup(actor: CharacterPF2e) {
                     removedItems.push(id);
                 },
             });
-        })
+        }),
     );
 
     await Promise.all(
@@ -63,7 +64,7 @@ async function cleanup(actor: CharacterPF2e) {
                         const slug = game.pf2e.system.sluggify(item.name, { camel: "dromedary" });
                         updateItem({
                             _id: parentId,
-                            [`flags.pf2e.itemGrants.-=${slug}`]: null,
+                            [`flags.${SYSTEM.id}.itemGrants.-=${slug}`]: null,
                         });
                     }
                 }
@@ -87,11 +88,11 @@ async function cleanup(actor: CharacterPF2e) {
                     "system.rules": rules,
                 });
             }
-        })
+        }),
     );
 
     const temporaryDeleted = Object.values(
-        getFlag<DailyActorFlags["temporaryDeleted"]>(actor, "temporaryDeleted") ?? {}
+        getFlag<DailyActorFlags["temporaryDeleted"]>(actor, "temporaryDeleted") ?? {},
     );
 
     if (temporaryDeleted.length) {

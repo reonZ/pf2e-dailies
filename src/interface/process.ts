@@ -25,6 +25,7 @@ import {
     setFlagProperty,
     setHasElement,
     SpellPF2e,
+    SYSTEM,
 } from "module-helpers";
 import { createUpdateCollection, utils } from "utils";
 import { DailyInterface } from ".";
@@ -208,7 +209,7 @@ async function processDailies(this: DailyInterface) {
             ) => {
                 if (parent?.isOfType("feat")) {
                     const parentId = parent.id;
-                    fu.setProperty(source, "flags.pf2e.grantedBy", {
+                    fu.setProperty(source, `flags.${SYSTEM.id}.grantedBy`, {
                         id: parentId,
                         onDelete: "cascade",
                     });
@@ -290,7 +291,7 @@ async function processDailies(this: DailyInterface) {
 
                 if (parentId) {
                     const slug = game.pf2e.system.sluggify(item.name, { camel: "dromedary" });
-                    const path = `flags.pf2e.itemGrants.${slug}`;
+                    const path = `flags.${SYSTEM.id}.itemGrants.${slug}`;
 
                     updateItem({
                         _id: parentId,

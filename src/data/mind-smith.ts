@@ -8,6 +8,7 @@ import {
     MODULE,
     PreciousMaterialType,
     R,
+    SYSTEM,
     waitDialog,
     WeaponPropertyRuneType,
     WeaponSource,
@@ -104,7 +105,7 @@ const mindSmith = createDaily({
         const arrayToOptions = <T extends string>(
             truthy: boolean,
             arr: ReadonlyArray<T>,
-            labelizer: (value: T) => string
+            labelizer: (value: T) => string,
         ): DailyRowSelectOption[] => {
             return truthy
                 ? R.pipe(
@@ -113,20 +114,15 @@ const mindSmith = createDaily({
                           value,
                           label: labelizer(value),
                       })),
-                      R.sortBy([R.prop("label"), "asc"])
+                      R.sortBy([R.prop("label"), "asc"]),
                   )
                 : [];
         };
 
         const mentalUniqueId = foundry.utils.randomID();
-        const mentalOptions = arrayToOptions(
-            !!items.mental,
-            mentalForgeTraits,
-            utils.getWeaponTraitLabel
-        );
+        const mentalOptions = arrayToOptions(!!items.mental, mentalForgeTraits, utils.getWeaponTraitLabel);
 
-        const canHaveRune =
-            (!!items.runic || !!items.advanced) && utils.hasFreePropertySlot(weapon);
+        const canHaveRune = (!!items.runic || !!items.advanced) && utils.hasFreePropertySlot(weapon);
 
         return [
             {
@@ -139,7 +135,7 @@ const mindSmith = createDaily({
                         value: damage,
                         label: damageLabel(damage),
                     })),
-                    R.sortBy([R.prop("label"), "asc"])
+                    R.sortBy([R.prop("label"), "asc"]),
                 ),
             },
             {
@@ -162,11 +158,7 @@ const mindSmith = createDaily({
                 type: "select",
                 slug: "material",
                 label: "PF2E.PreciousMaterialLabel",
-                options: arrayToOptions(
-                    !!items.metallic,
-                    metallicMaterials,
-                    utils.getPreciousMaterialLabel
-                ),
+                options: arrayToOptions(!!items.metallic, metallicMaterials, utils.getPreciousMaterialLabel),
                 condition: !!items.metallic,
             },
             {
@@ -176,7 +168,7 @@ const mindSmith = createDaily({
                 options: arrayToOptions(
                     canHaveRune,
                     items.advanced ? advancedRunes : runicRunes,
-                    utils.getWeaponPropertyRuneLabel
+                    utils.getWeaponPropertyRuneLabel,
                 ),
                 condition: canHaveRune,
             },
@@ -209,7 +201,7 @@ const mindSmith = createDaily({
         const traits = R.pipe(
             [1, 2] as const,
             R.map((i) => rows[`trait${i}`] as WeaponTrait),
-            R.filter(R.isTruthy)
+            R.filter(R.isTruthy),
         );
 
         for (const trait of traits) {
@@ -296,7 +288,7 @@ async function createMindWeapon(actor: CharacterPF2e) {
         R.map((i) => {
             const label = i ? utils.getWeaponPotencyRuneLabel(i) : "";
             return `<option value="${i}">${label}</option>`;
-        })
+        }),
     );
 
     const runeSelect = `<div class="form-group">
@@ -325,7 +317,7 @@ async function createMindWeapon(actor: CharacterPF2e) {
     const source: PreCreate<WeaponSource> = {
         type: "weapon",
         name: localize("mindsmith.weapon.name"),
-        img: "systems/pf2e/icons/spells/disrupting-weapons.webp",
+        img: `systems/${SYSTEM.id}/icons/spells/disrupting-weapons.webp`,
         system: {
             slug: weaponSlug,
             level: { value: actor.level },
@@ -359,10 +351,6 @@ function damageLabel(damage: keyof typeof weaponDamages) {
     return `${groupLabel} (${damageLabel})`;
 }
 
-type WeaponUsage =
-    | "worngloves"
-    | "held-in-one-hand"
-    | "held-in-one-plus-hands"
-    | "held-in-two-hands";
+type WeaponUsage = "worngloves" | "held-in-one-hand" | "held-in-one-plus-hands" | "held-in-two-hands";
 
 export { mindSmith };

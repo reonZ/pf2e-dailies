@@ -7,6 +7,7 @@ import {
     SpellCollection,
     SpellSource,
     SpellToMessageOptions,
+    SYSTEM,
 } from "module-helpers";
 import { getHighestSpellcastingStatistic } from "module-helpers/src";
 
@@ -42,40 +43,29 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
                 id: collectionId,
                 name: staff.name,
                 actor: this,
-                castPredicate: [
-                    `item:id:${staff.id}`,
-                    { or: staffFlags.spells.map((s) => `spell:id:${s._id}`) },
-                ],
+                castPredicate: [`item:id:${staff.id}`, { or: staffFlags.spells.map((s) => `spell:id:${s._id}`) }],
             },
-            staff
+            staff,
         ) as unknown as SpellcastingEntry<CharacterPF2e>;
 
         class StaffSpell extends CONFIG.PF2E.Item.documentClasses.spell<CharacterPF2e> {
             override async toMessage(
                 event?: Maybe<MouseEvent | JQuery.TriggeredEvent>,
-                { create = true, data, rollMode }: SpellToMessageOptions = {}
+                { create = true, data, rollMode }: SpellToMessageOptions = {},
             ): Promise<ChatMessagePF2e | undefined> {
                 const message = await super.toMessage(event, { rollMode, data, create: false });
                 if (!message) return undefined;
 
-                const messageSource = message.toObject();
-                const flags = messageSource.flags.pf2e;
+                const messageSource = message.toObject() as ChatMessageCreateData<ChatMessagePF2e>;
 
-                flags.casting!.embeddedSpell = this.toObject();
+                foundry.utils.setProperty(messageSource, `flags.${SYSTEM.id}.casting.embeddedSpell`, this.toObject());
 
                 if (!create) {
                     message.updateSource(messageSource);
                     return message;
                 }
 
-                messageSource.whisper;
-
-                return getDocumentClass("ChatMessage").create(
-                    messageSource as ChatMessageCreateData<ChatMessagePF2e>,
-                    {
-                        renderSheet: false,
-                    }
-                );
+                return getDocumentClass("ChatMessage").create(messageSource, { renderSheet: false });
             }
         }
 
@@ -87,7 +77,7 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
             const source: SpellSource = foundry.utils.mergeObject(
                 spellSource,
                 { "system.location.value": collectionId },
-                { inplace: false }
+                { inplace: false },
             );
 
             const spell = new StaffSpell(source, { parent: this });

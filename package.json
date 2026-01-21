@@ -1,6 +1,7 @@
 {
     "name": "pf2e-dailies",
     "scripts": {
+        "scss": "sass --style=compressed --quiet --no-charset styles/%npm_package_name%.scss:styles/%npm_package_name%.css",
         "build": "esbuild src/main.ts --bundle --keep-names --minify --sourcemap --outdir=scripts",
         "dev": "esbuild src/main.ts --bundle --keep-names --watch --sourcemap --outdir=scripts"
     },
@@ -19,6 +20,7 @@
         "typescript": "5.3.3"
     },
     "dependencies": {
-        "module-helpers": "file:../../../../dev/module-helpers"
+        "module-helpers": "github:reonZ/module-helpers",
+        "sass": "^1.97.2"
     }
 }

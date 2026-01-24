@@ -1,7 +1,9 @@
 import { DailyActorFlags } from "actor";
 import { filterDailies, getDailies } from "dailies";
+import { processUpdatedItemsData } from "interface";
 import {
     ActionDefaultOptions,
+    actorItems,
     CharacterPF2e,
     ChatMessagePF2e,
     getFlag,
@@ -54,7 +56,7 @@ async function cleanup(actor: CharacterPF2e) {
     );
 
     await Promise.all(
-        actor.items.map(async (item) => {
+        [...actorItems(actor)].map(async (item) => {
             if (getFlag(item, "temporary")) {
                 removedItems.push(item.id);
 
@@ -100,6 +102,7 @@ async function cleanup(actor: CharacterPF2e) {
     }
 
     if (updatedItems.size) {
+        processUpdatedItemsData(actor, updatedItems);
         await actor.updateEmbeddedDocuments("Item", updatedItems.contents);
     }
 

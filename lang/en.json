@@ -180,6 +180,7 @@
                 "other": "Apparition #{nb}"
             },
             "expend": "Expend #{nb}",
+            "material": "Material",
             "rune": "Property Rune",
             "select": "Select {that}",
             "mind-smith": "Mind Smith",

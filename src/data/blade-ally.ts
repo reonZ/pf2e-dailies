@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { CharacterPF2e, MODULE, R, WeaponPF2e, WeaponPropertyRuneType } from "module-helpers";
+import { getActorWeapons, getItemFromUuid, MODULE, R, WeaponPropertyRuneType } from "module-helpers";
 import { utils } from "utils";
 
 const bladeUUID = "Compendium.pf2e.classfeatures.Item.EtltLdiy9kNfHU0c";
@@ -21,9 +21,9 @@ const bladeAlly = createDaily({
             uuid: "Compendium.pf2e.feats-srd.Item.jYEMVfrXJLpXS6aC",
         },
     ],
-    label: (actor, items) => items.blade.name,
+    label: (_actor, items) => items.blade.name,
     rows: (actor, items) => {
-        const weapons = actor.itemTypes.weapon.filter((weapon) => !weapon.isAlchemical);
+        const weapons = getActorWeapons(actor).filter((weapon) => !weapon.isAlchemical);
         if (!weapons.length) return [];
 
         const runes: WeaponPropertyRuneType[] = [
@@ -50,7 +50,7 @@ const bladeAlly = createDaily({
                 "greaterFearsome",
                 "grievous",
                 "keen",
-                "greaterDisrupting" // greaterDisrupting = greaterVitalizing
+                "greaterDisrupting", // greaterDisrupting = greaterVitalizing
             );
 
             if (items.radiant) {
@@ -63,7 +63,7 @@ const bladeAlly = createDaily({
                 type: "select",
                 slug: "weapon",
                 label: "TYPES.Item.weapon",
-                options: weapons.map((weapon) => ({ value: weapon.id, label: weapon.name })),
+                options: weapons.map((weapon) => ({ value: weapon.uuid, label: weapon.name })),
             },
             {
                 type: "select",
@@ -75,13 +75,13 @@ const bladeAlly = createDaily({
                         value: rune,
                         label: utils.getWeaponPropertyRuneLabel(rune),
                     })),
-                    R.sortBy([R.prop("label"), "asc"])
+                    R.sortBy([R.prop("label"), "asc"]),
                 ),
             },
         ];
     },
-    process: ({ actor, rows, messages, addRule, flagItem }) => {
-        const weapon = actor.items.get<WeaponPF2e<CharacterPF2e>>(rows.weapon);
+    process: async ({ rows, messages, addRule, flagItem }) => {
+        const weapon = await getItemFromUuid(rows.weapon, "weapon");
         if (!weapon) return;
 
         flagItem(weapon);

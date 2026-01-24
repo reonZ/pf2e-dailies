@@ -81,7 +81,7 @@ const mindSmith = createDaily({
             uuid: advancedUUID,
         },
     ],
-    label: (actor, items) => items.mind.name,
+    label: (_actor, items) => items.mind.name,
     rows: (actor, items) => {
         const weapon = actor.itemTypes.weapon.find((weapon) => weapon.slug === weaponSlug);
 

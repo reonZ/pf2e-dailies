@@ -21,6 +21,7 @@ import {
     MODULE,
     OneToTen,
     PHYSICAL_ITEM_TYPES,
+    PhysicalItemSource,
     R,
     setFlagProperty,
     setHasElement,
@@ -354,6 +355,7 @@ async function processDailies(this: DailyInterface) {
     }
 
     if (updatedItems.size) {
+        processUpdatedItemsData(actor, updatedItems);
         await actor.updateEmbeddedDocuments("Item", updatedItems.contents);
     }
 
@@ -443,6 +445,33 @@ async function processDailies(this: DailyInterface) {
     await actor.update(actorUpdates);
 }
 
+function processUpdatedItemsData(actor: CharacterPF2e, updatedItems: Collection<EmbeddedDocumentUpdateData>) {
+    for (const data of updatedItems) {
+        const rootItem = actor.items.get(data._id);
+        if (rootItem) continue;
+
+        // we remove the subitem update, it will be processed by its parent below
+        updatedItems.delete(data._id);
+
+        const parent = actor.inventory.find((parent) => parent.subitems.some((item) => item._id === data._id));
+        if (!parent) continue;
+
+        // if the parent doesn't already have updates planned, we create a new one
+        const parentUpdates = updatedItems.get(parent.id) ?? { _id: parent.id };
+        // we recover the current state of subitems updates
+        const subitemsUpdates =
+            (parentUpdates.system as PhysicalItemSource["system"] | undefined)?.subitems ??
+            parent._source.system.subitems;
+
+        const newSubitemsUpdates = subitemsUpdates?.map((item) =>
+            item._id === data._id ? fu.mergeObject(item, data, { inplace: false }) : item,
+        );
+
+        foundry.utils.setProperty(parentUpdates, "system.subitems", newSubitemsUpdates);
+        updatedItems.set(parent.id, parentUpdates);
+    }
+}
+
 function rowElementIsOFType<T extends DailyRowType>(
     el: HTMLSelectElement | HTMLInputElement,
     ...types: T[]
@@ -472,4 +501,4 @@ type RowElementTypes = {
     drop: HTMLInputElement & { dataset: RowElementDatasetBase & { uuid: string } };
 };
 
-export { processDailies };
+export { processDailies, processUpdatedItemsData };

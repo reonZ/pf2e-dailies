@@ -1,7 +1,9 @@
 import { createDaily } from "daily";
 import {
     CharacterPF2e,
+    getActorWeapons,
     getFlag,
+    getItemFromUuid,
     hasItemWithSourceId,
     localize,
     MartialProficiency,
@@ -267,10 +269,7 @@ const COMMON_WEAPON_RUNES = [
  * generated from
  * https://github.com/foundryvtt/pf2e/blob/1465f7190b2b8454094c50fa6d06e9902e0a3c41/src/module/item/physical/materials.ts#L39
  */
-const WEAPON_MATERIALS: PartialRecord<
-    WeaponMaterialType,
-    { low?: number; standard?: number; high?: number }
-> = {
+const WEAPON_MATERIALS: PartialRecord<WeaponMaterialType, { low?: number; standard?: number; high?: number }> = {
     abysium: {
         standard: 12,
         high: 18,
@@ -366,7 +365,7 @@ const warshard = createDaily({
         },
     ],
     rows: (actor, items) => {
-        const weapons = actor.itemTypes.weapon.filter((weapon) => {
+        const weapons = getActorWeapons(actor).filter((weapon) => {
             const options = new Set(weapon.getRollOptions("item"));
             const rank = getWeaponProficiencyRank(actor, weapon, options);
 
@@ -377,13 +376,13 @@ const warshard = createDaily({
 
         const actorLevel = actor.level;
 
-        const weaponOptions = weapons.map(({ id, name }) => ({ value: id, label: name }));
+        const weaponOptions = weapons.map((weapon) => ({ value: weapon.uuid, label: weapon.name }));
 
         const runeOptions = R.pipe(
             COMMON_WEAPON_RUNES,
             R.filter(({ level }) => level <= actorLevel),
             R.map(({ name, slug }) => ({ value: slug, label: name })),
-            R.sortBy(R.prop("label"))
+            R.sortBy(R.prop("label")),
         );
 
         const materialOptions = R.pipe(
@@ -396,7 +395,7 @@ const warshard = createDaily({
             R.map(([slug]) => ({
                 value: slug,
                 label: CONFIG.PF2E.preciousMaterials[slug],
-            }))
+            })),
         );
 
         return [
@@ -423,8 +422,8 @@ const warshard = createDaily({
             },
         ];
     },
-    process: ({ actor, items, rows, messages, addRule, flagItem, updateItem }) => {
-        const weapon = actor.items.get<WeaponPF2e<CharacterPF2e>>(rows.weapon);
+    process: async ({ actor, items, rows, messages, addRule, flagItem, updateItem }) => {
+        const weapon = await getItemFromUuid(rows.weapon, "weapon");
         if (!weapon) return;
 
         flagItem(weapon, localize("warshard.weapon"));
@@ -462,10 +461,10 @@ const warshard = createDaily({
                 high && high <= actorLevel && weaponLevel >= 15
                     ? "high"
                     : standard && standard <= actorLevel && weaponLevel >= 9
-                    ? "standard"
-                    : low && low <= actorLevel
-                    ? "low"
-                    : undefined;
+                      ? "standard"
+                      : low && low <= actorLevel
+                        ? "low"
+                        : undefined;
 
             if (grade) {
                 const updates = {
@@ -475,13 +474,18 @@ const warshard = createDaily({
 
                 setFlagProperty(updates, "material", weapon._source.system.material);
                 updateItem(updates);
+
+                messages.add("warshard", {
+                    label: items.transmute?.name ?? localize("label.material"),
+                    selected: game.i18n.localize(CONFIG.PF2E.preciousMaterials[material]),
+                });
             }
         }
     },
     rest: ({ actor, updateItem }) => {
         if (!hasItemWithSourceId(actor, TRANSMUTE_WEAPON_UUID, "feat")) return;
 
-        for (const item of actor.itemTypes.weapon) {
+        for (const item of getActorWeapons(actor)) {
             const data = getFlag<WeaponMaterialSource>(item, "material");
             if (!data) continue;
 
@@ -499,11 +503,7 @@ const warshard = createDaily({
 /**
  * https://github.com/foundryvtt/pf2e/blob/5d94764870656060475c57ad9ccb3803d3b528f1/src/module/actor/character/helpers.ts#L137-L153
  */
-function getWeaponProficiencyRank(
-    actor: CharacterPF2e,
-    weapon: WeaponPF2e,
-    itemOptions: Set<string>
-): ZeroToFour {
+function getWeaponProficiencyRank(actor: CharacterPF2e, weapon: WeaponPF2e, itemOptions: Set<string>): ZeroToFour {
     // If the character has an ancestral weapon familiarity or similar feature, it will make weapons that meet
     // certain criteria also count as weapon of different category
     const proficiencies = actor.system.proficiencies;

@@ -54,8 +54,10 @@ function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e<CharacterPF2e>, $h
     updateActionsTab(actor, html);
     updateSpellsTab(actor, html, highlight);
 
+    const content = htmlQuery(html, ".sheet-content");
+
     const getItemElements = (id: string) => {
-        return html.querySelectorAll(`.sheet-content [data-item-id="${id}"]`);
+        return content?.querySelectorAll(`[data-item-id="${id}"], [data-subitem-id="${id}"]`) ?? [];
     };
 
     for (const id of added) {

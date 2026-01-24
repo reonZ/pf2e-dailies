@@ -1,11 +1,5 @@
+import { createDaily, DailyRowSelect, DailyRowSelectOption, DailyRowSelectOptionValue } from "daily";
 import {
-    createDaily,
-    DailyRowSelect,
-    DailyRowSelectOption,
-    DailyRowSelectOptionValue,
-} from "daily";
-import {
-    actorItems,
     CharacterPF2e,
     FeatPF2e,
     hasItemWithSourceId,
@@ -47,8 +41,7 @@ const staves = createDaily({
         let maxCharges = 0;
         const actorCharges = utils.getActorMaxRank(actor);
         const activationType =
-            actor.getStatistic("kineticist") &&
-            hasItemWithSourceId(actor, KINETIC_ACTIVATION, "feat")
+            actor.getStatistic("kineticist") && hasItemWithSourceId(actor, KINETIC_ACTIVATION, "feat")
                 ? "kineticist"
                 : undefined;
 
@@ -109,9 +102,7 @@ const staves = createDaily({
                 }
             }
 
-            (preparedEntries[entryId] as PreparedEntryGroup | undefined)?.spells?.sort(
-                (a, b) => a.rank - b.rank
-            );
+            (preparedEntries[entryId] as PreparedEntryGroup | undefined)?.spells?.sort((a, b) => a.rank - b.rank);
         }
 
         const runelordSin = getRunelordSin(actor);
@@ -239,7 +230,7 @@ const staves = createDaily({
                     unique: uniqueId,
                     options,
                 } as const;
-            })
+            }),
         );
 
         return rows;
@@ -263,12 +254,7 @@ const staves = createDaily({
         const expendedSpells: { name: string; rank: ZeroToTen; uuid?: string }[] = [];
         const slotsUpdates: Record<string, Record<string, number>> = {};
 
-        const expendedRows = R.pipe(
-            rows,
-            R.omit(["staff", "type", "bond"]),
-            R.values(),
-            R.filter(R.isTruthy)
-        );
+        const expendedRows = R.pipe(rows, R.omit(["staff", "type", "bond"]), R.values(), R.filter(R.isTruthy));
 
         const preparedUpdates: Record<
             string,
@@ -355,8 +341,7 @@ const staves = createDaily({
         if (custom.activationType) {
             const statistic =
                 // we only handle kineticist activation for now
-                actor.synthetics.statistics.get("impulse") ??
-                actor.synthetics.statistics.get("kinetic-activation");
+                actor.synthetics.statistics.get("impulse") ?? actor.synthetics.statistics.get("kinetic-activation");
 
             if (statistic) {
                 staffData.statistic = { slug: statistic.slug, tradition: "primal" };
@@ -368,11 +353,7 @@ const staves = createDaily({
         const staffType = localize("interface.staves", isMakeshift ? "makeshift" : "staff");
         const groupLabel = isMerged ? "merged" : !!bond ? "bond" : "prepared";
 
-        messages.addGroup(
-            "staff",
-            localize("interface.staves.group", groupLabel, { type: staffType }),
-            45
-        );
+        messages.addGroup("staff", localize("interface.staves.group", groupLabel, { type: staffType }), 45);
 
         if (bond) {
             flagItem(bond, localize("staves.bond"));
@@ -401,7 +382,7 @@ const staves = createDaily({
 });
 
 function getRunelordSin(actor: CharacterPF2e): FeatPF2e<CharacterPF2e> | undefined {
-    for (const item of actorItems(actor, "feat")) {
+    for (const item of actor.itemTypes.feat) {
         if (item.suppressed) continue;
 
         const sourceId = item.sourceId;

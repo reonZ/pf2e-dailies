@@ -207,7 +207,7 @@ const utils = {
     createLoreSource: ({ name, rank }: { name: string; rank: ZeroToFour }): PreCreate<LoreSource> => {
         return {
             type: "lore",
-            img: `systems/${SYSTEM.id}/icons/default-icons/lore.svg`,
+            img: SYSTEM.getPath("icons/default-icons/lore.svg"),
             name,
             system: { proficient: { value: rank } },
         };

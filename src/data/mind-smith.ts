@@ -317,7 +317,7 @@ async function createMindWeapon(actor: CharacterPF2e) {
     const source: PreCreate<WeaponSource> = {
         type: "weapon",
         name: localize("mindsmith.weapon.name"),
-        img: `systems/${SYSTEM.id}/icons/spells/disrupting-weapons.webp`,
+        img: SYSTEM.getPath("icons/spells/disrupting-weapons.webp"),
         system: {
             slug: weaponSlug,
             level: { value: actor.level },

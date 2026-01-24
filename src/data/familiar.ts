@@ -10,6 +10,7 @@ import {
     R,
     setFlagProperty,
     sortByLocaleCompare,
+    SYSTEM,
     ValueAndMax,
 } from "module-helpers";
 
@@ -34,7 +35,7 @@ const familiar = createDaily({
     condition: (actor) => !!actor.familiar?.isOwner,
     rows: async (actor) => {
         const nbAbilities = getFamiliarAbilityCount(actor);
-        const pack = game.packs.get("pf2e.familiar-abilities");
+        const pack = SYSTEM.getPack("familiar-abilities");
         if (!nbAbilities || !pack) return [];
 
         const uniqueId = foundry.utils.randomID();
@@ -80,7 +81,7 @@ const familiar = createDaily({
 
                 abilities.push(source);
                 messageList.push({ uuid: item });
-            })
+            }),
         );
 
         if (abilities.length) {
@@ -97,9 +98,7 @@ const familiar = createDaily({
         const familiar = actor.familiar;
         if (!familiar?.isOwner) return;
 
-        const ids = familiar.itemTypes.action
-            .filter((item) => getFlag(item, "temporary"))
-            .map((item) => item.id);
+        const ids = familiar.itemTypes.action.filter((item) => getFlag(item, "temporary")).map((item) => item.id);
 
         if (ids.length) {
             await familiar.deleteEmbeddedDocuments("Item", ids);

@@ -16,6 +16,7 @@ import {
     setFlagProperty,
     SpellSource,
     splitListString,
+    SYSTEM,
 } from "module-helpers";
 import { getUuidFromInlineMatch, utils } from "utils";
 
@@ -103,19 +104,17 @@ const animist = createDaily({
     ],
     label: (actor, items) => items.attunement.name,
     rows: async (actor, items) => {
-        const pack = game.packs.get("pf2e.classfeatures");
+        const pack = SYSTEM.getPack("classfeatures");
         if (!pack) return [];
 
         const uniqueId = foundry.utils.randomID();
         const nbPrimary = items.medium && actor.level >= 9 ? 2 : 1;
         const index = await pack.getIndex({ fields: ["system.traits.otherTags"] });
-        const apparitions = index.filter((entry) =>
-            entry.system.traits.otherTags?.includes("animist-apparition")
-        );
+        const apparitions = index.filter((entry) => entry.system.traits.otherTags?.includes("animist-apparition"));
         const options = R.pipe(
             apparitions,
             R.map(({ name, uuid }) => ({ value: uuid, label: name })),
-            R.sortBy(R.prop("label"))
+            R.sortBy(R.prop("label")),
         );
 
         for (const { entry } of HomebrewsMenu.getEntries("animist")) {
@@ -230,7 +229,7 @@ const animist = createDaily({
                 }
 
                 messages.add("apparition", { uuid: item });
-            })
+            }),
         );
 
         const extraSpells: string[] = R.pipe(
@@ -242,7 +241,7 @@ const animist = createDaily({
                 items.monstrous && MONSTROUS_FORM_UUID,
             ],
             R.flat(),
-            R.filter(R.isTruthy)
+            R.filter(R.isTruthy),
         );
 
         // add extraSpells
@@ -329,7 +328,7 @@ const animist = createDaily({
         const primaryVessels = R.pipe(
             addedItems,
             R.filter((item) => item.isOfType("spell") && !!getFlag(item, "isPrimary")),
-            R.map((item) => item.id)
+            R.map((item) => item.id),
         );
 
         setExtraFlags({ primaryVessels });
@@ -344,7 +343,7 @@ const animist = createDaily({
                     value,
                     label: localize("config.animist", name),
                 };
-            })
+            }),
         );
     },
 });
@@ -352,7 +351,7 @@ const animist = createDaily({
 function getAnimistConfigs(actor: CharacterPF2e) {
     return foundry.utils.mergeObject(
         { lore: true, lores: true, spells: true, signatures: true },
-        getFlag(actor, "config.dailies.animist") ?? {}
+        getFlag(actor, "config.dailies.animist") ?? {},
     );
 }
 
@@ -362,9 +361,7 @@ function getAnimistVesselsData(actor: Maybe<ActorPF2e>) {
     const primaryVessels = getFlag<string[]>(actor, ANIMIST_VESSELS_PATH);
     if (!primaryVessels) return;
 
-    const vesselsEntry = actor.spellcasting.find(
-        (entry) => getFlagProperty(entry, "identifier") === "animist-focus"
-    );
+    const vesselsEntry = actor.spellcasting.find((entry) => getFlagProperty(entry, "identifier") === "animist-focus");
     if (!isInstanceOf(vesselsEntry, "SpellcastingEntryPF2e")) return;
 
     return { entry: vesselsEntry, primary: primaryVessels.slice() };

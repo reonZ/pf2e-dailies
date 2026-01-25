@@ -148,6 +148,14 @@
           "none": "brak"
         }
       },
+      "mindsmith": {
+        "missing": "Brakuje Broni Umysłu"
+      },
+      "rations": {
+        "yes": "Zużyj ({nb} pozostało)",
+        "no": "Nie używaj żadnych",
+        "last": "Zużyj ostatni dostępny"
+      },
       "staves": {
         "empty": "Puste miejsce",
         "flexible": "Elastyczne miejsce",
@@ -162,14 +170,6 @@
         "merged": "Połączono ze Zwykłym kosturem",
         "makeshift": "Prowizoryczny kostur",
         "regular": "Zwykły kostur"
-      },
-      "rations": {
-        "yes": "Zużyj ({nb} pozostało)",
-        "no": "Nie używaj żadnych",
-        "last": "Zużyj ostatni dostępny"
-      },
-      "mindsmith": {
-        "missing": "Brakuje Broni Umysłu"
       }
     },
     "label": {
@@ -180,6 +180,7 @@
         "other": "Projekcja #{nb}"
       },
       "expend": "Wydano #{nb}",
+      "material": "Materiał",
       "rune": "Runa Właściwości",
       "select": "Wybierz {that}",
       "mind-smith": "Kowal Myśli",

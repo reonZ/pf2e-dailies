@@ -1,10 +1,13 @@
-#
+# 4.14.0
 
 - `Blade Armament`:
   - now allow the selection of shield attachments
 - `Warshard Warrior Dedication`:
   - now allow the selection of shield attachments
   - add missing precious material entry in the chat message
+- `Custom Daily`:
+  - you can now provide a function that return a `ItemUUID` in the `Daily.items` making it possible to provide a different uuid base on the system (`PF2e` or `SF2e`)
+    - this is in preparation for the release of the `PF2e Anachronism` module where each daily will have to be able to handle the module's versions
 
 # 4.13.0
 

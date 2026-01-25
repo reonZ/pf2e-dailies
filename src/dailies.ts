@@ -67,47 +67,47 @@ const BUILTINS_DAILIES: Daily[] = [
     warshard, // Warshard Warrior Dedication
     createLoreSkillDaily(
         "quick-study", // Quick Study
-        "Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW"
+        "Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW",
     ),
     createComboSkillDaily(
         "ageless-spirit", // Ageless Spirit
-        "Compendium.pf2e.feats-srd.Item.wylnETwIz32Au46y"
+        "Compendium.pf2e.feats-srd.Item.wylnETwIz32Au46y",
     ),
     createComboSkillDaily(
         "ancient-memories", // Ancient Memories
-        "Compendium.pf2e.feats-srd.Item.ptEOt3lqjxUnAW62"
+        "Compendium.pf2e.feats-srd.Item.ptEOt3lqjxUnAW62",
     ),
     createComboSkillDaily(
         "flexible-studies", // Flexible Studies
-        "Compendium.pf2e.feats-srd.Item.9bgl6qYWKHzqWZj0"
+        "Compendium.pf2e.feats-srd.Item.9bgl6qYWKHzqWZj0",
     ),
     createLanguageDaily(
         "ancestral-linguistics", // Ancestral Linguistics
-        "Compendium.pf2e.feats-srd.Item.eCWQU16hRLfN1KaX"
+        "Compendium.pf2e.feats-srd.Item.eCWQU16hRLfN1KaX",
     ),
     createLanguageDaily(
         "borts-blesing", // Bort's Blessing
-        "Compendium.pf2e.equipment-srd.Item.iS7hAQMAaThHYE8g"
+        "Compendium.pf2e.equipment-srd.Item.iS7hAQMAaThHYE8g",
     ),
     createResistanceDaily(
         "elementalist", // Elementalist Dedication
         "Compendium.pf2e.feats-srd.Item.tx9pkrpmtqe4FnvS",
         ["air", "earth", "fire", "water", "metal", "wood"],
-        "half"
+        "half",
     ),
     createResistanceDaily(
         "ganzi", // Ganzi
         "Compendium.pf2e.heritages.Item.3reGfXH0S82hM7Gp",
         ["acid", "electricity", "sonic"],
         "half",
-        true
+        true,
     ),
     createResistanceDaily(
         "proteankin", // Proteankin (Nephilim feat)
         "Compendium.pf2e.feats-srd.Item.gNFPwTHDygxdf9pw",
         ["acid", "electricity", "sonic"],
         "half",
-        true
+        true,
     ),
     createScrollChainDaily("esoterica", [
         "Compendium.pf2e.feats-srd.Item.OqObuRB8oVSAEKFR", // Scroll Esoterica
@@ -131,7 +131,7 @@ const ALWAYS: AlwaysDaily[] = [];
 
 function prepareDailies(
     dailies: Daily[],
-    prefix: DailyPrefix
+    prefix: DailyPrefix,
 ): {
     uuids: Map<ItemUUID, PreConditionDaily>;
     always: AlwaysDaily[];
@@ -155,7 +155,7 @@ function prepareDailies(
 
             for (let i = 0; i < daily.items.length; i++) {
                 const { uuid, condition } = daily.items[i];
-                uuids.set(uuid, { daily, index: i, condition });
+                uuids.set(R.isFunction(uuid) ? uuid() : uuid, { daily, index: i, condition });
             }
         } catch (err) {
             error("error.unexpected");
@@ -237,7 +237,7 @@ async function getDailies(actor: CharacterPF2e): Promise<PreparedDailies> {
 
     const getDaily = async (
         daily: Daily,
-        precondition?: { index: number; item: ItemPF2e; condition: DailyItem["condition"] }
+        precondition?: { index: number; item: ItemPF2e; condition: DailyItem["condition"] },
     ) => {
         if (dailies[daily.key] === null) return;
 
@@ -292,7 +292,7 @@ async function getDailies(actor: CharacterPF2e): Promise<PreparedDailies> {
             return dailies.map(({ daily, index, condition }) => {
                 return getDaily(daily, { condition, index, item });
             });
-        })
+        }),
     );
 
     return dailies;
@@ -336,13 +336,5 @@ type PreConditionDaily = {
 
 type PreparedDailies = Record<string, PreparedDaily | null>;
 
-export {
-    DAILY_SCHEMA,
-    filterDailies,
-    getDailies,
-    getRawDaily,
-    initializeDailies,
-    MODULE_DAILIES,
-    parseDailies,
-};
+export { DAILY_SCHEMA, filterDailies, getDailies, getRawDaily, initializeDailies, MODULE_DAILIES, parseDailies };
 export type { PreparedDailies, PreparedDaily };

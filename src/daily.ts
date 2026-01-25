@@ -18,7 +18,7 @@ function createDaily<
     TCustom extends DailyCustom = {},
     TRowSlug extends string = string,
     TItems extends DailyItem<TItemSlug>[] = DailyItem<TItemSlug>[],
-    TRows extends DailyRow<TRowSlug>[] = DailyRow<TRowSlug>[]
+    TRows extends DailyRow<TRowSlug>[] = DailyRow<TRowSlug>[],
 >(config: Daily<TItemSlug, TCustom, TRowSlug, TItems, TRows>): Daily {
     return config as unknown as Daily;
 }
@@ -30,13 +30,13 @@ function rowIsOfType<T extends DailyRowType>(row: DailyRow, ...types: T[]): row 
 async function getDailyLabel(
     daily: Daily,
     actor: CharacterPF2e,
-    items: Record<string, ItemPF2e | undefined>
+    items: Record<string, ItemPF2e | undefined>,
 ): Promise<string> {
     return typeof daily.label === "function"
         ? daily.label(actor, items)
         : typeof daily.label === "string"
-        ? game.i18n.localize(daily.label)
-        : localizeIfExist("builtin", daily.key) ?? daily.key;
+          ? game.i18n.localize(daily.label)
+          : (localizeIfExist("builtin", daily.key) ?? daily.key);
 }
 
 type Daily<
@@ -44,23 +44,15 @@ type Daily<
     TCustom extends DailyCustom = DailyCustom,
     TRowSlug extends string = string,
     TItems extends DailyItem<TItemSlug>[] = DailyItem<TItemSlug>[],
-    TRows extends DailyRow<TRowSlug>[] | ReadonlyArray<TRowSlug> = DailyRow<TRowSlug>[]
+    TRows extends DailyRow<TRowSlug>[] | ReadonlyArray<TRowSlug> = DailyRow<TRowSlug>[],
 > = {
     key: string;
     prepare?: (actor: CharacterPF2e, items: ExtractItems<TItemSlug, TItems>) => Promisable<TCustom>;
-    label?:
-        | string
-        | ((actor: CharacterPF2e, items: ExtractItems<TItemSlug, TItems>) => Promisable<string>);
-    rows: (
-        actor: CharacterPF2e,
-        items: ExtractItems<TItemSlug, TItems>,
-        custom: TCustom
-    ) => Promisable<TRows>;
-    process: (
-        options: DailyProcessOptions<TItemSlug, TCustom, TRowSlug, TItems, TRows>
-    ) => Promisable<void>;
+    label?: string | ((actor: CharacterPF2e, items: ExtractItems<TItemSlug, TItems>) => Promisable<string>);
+    rows: (actor: CharacterPF2e, items: ExtractItems<TItemSlug, TItems>, custom: TCustom) => Promisable<TRows>;
+    process: (options: DailyProcessOptions<TItemSlug, TCustom, TRowSlug, TItems, TRows>) => Promisable<void>;
     afterItemAdded?: (
-        options: DailyAfterItemAddedOptions<TItemSlug, TCustom, TRowSlug, TItems, TRows>
+        options: DailyAfterItemAddedOptions<TItemSlug, TCustom, TRowSlug, TItems, TRows>,
     ) => Promisable<void>;
     rest?: (options: DailyRestOptions) => Promisable<void>;
     config?: (actor: CharacterPF2e) => Promisable<DailyConfigRow[] | undefined>;
@@ -72,20 +64,17 @@ type Daily<
     "condition" | "items"
 >;
 
-type ExtractItems<
-    TItemSlug extends string,
-    TItems extends DailyItem<TItemSlug>[]
-> = TItems[number] extends { slug: infer S extends TItemSlug }
+type ExtractItems<TItemSlug extends string, TItems extends DailyItem<TItemSlug>[]> = TItems[number] extends {
+    slug: infer S extends TItemSlug;
+}
     ? {
-          [k in S]: Extract<TItems[number], { slug: k }> extends { required: true }
-              ? ItemPF2e
-              : ItemPF2e | undefined;
+          [k in S]: Extract<TItems[number], { slug: k }> extends { required: true } ? ItemPF2e : ItemPF2e | undefined;
       }
     : never;
 
 type ExtractRows<
     TRowSlug extends string,
-    TRows extends DailyRow<TRowSlug>[] | ReadonlyArray<TRowSlug>
+    TRows extends DailyRow<TRowSlug>[] | ReadonlyArray<TRowSlug>,
 > = TRows[number] extends {
     slug: infer S extends TRowSlug;
 }
@@ -95,18 +84,18 @@ type ExtractRows<
                   ? DailyRowComboData | undefined
                   : DailyRowComboData
               : Extract<TRows[number], { slug: k }> extends { type: "drop" }
-              ? Extract<TRows[number], { slug: k }> extends { condition: boolean }
-                  ? DailyRowDropData | undefined
-                  : DailyRowDropData
-              : Extract<TRows[number], { slug: k }> extends { type: "select" | "input" | "random" }
-              ? Extract<TRows[number], { slug: k }> extends { condition: boolean }
-                  ? string | undefined
-                  : string
-              : Extract<TRows[number], { slug: k }> extends { type: "notify" }
-              ? Extract<TRows[number], { slug: k }> extends { condition: boolean }
-                  ? true | undefined
-                  : true
-              : never;
+                ? Extract<TRows[number], { slug: k }> extends { condition: boolean }
+                    ? DailyRowDropData | undefined
+                    : DailyRowDropData
+                : Extract<TRows[number], { slug: k }> extends { type: "select" | "input" | "random" }
+                  ? Extract<TRows[number], { slug: k }> extends { condition: boolean }
+                      ? string | undefined
+                      : string
+                  : Extract<TRows[number], { slug: k }> extends { type: "notify" }
+                    ? Extract<TRows[number], { slug: k }> extends { condition: boolean }
+                        ? true | undefined
+                        : true
+                    : never;
       }
     : never;
 
@@ -116,7 +105,7 @@ type DailyAfterItemAddedOptions<
     TRowSlug extends string = string,
     TItems extends DailyItem<TItemSlug>[] = DailyItem<TItemSlug>[],
     TRows extends DailyRow<TRowSlug>[] | ReadonlyArray<TRowSlug> = DailyRow<TRowSlug>[],
-    TRowMap = ExtractRows<TRowSlug, TRows>
+    TRowMap = ExtractRows<TRowSlug, TRows>,
 > = Omit<
     DailyProcessOptions<TItemSlug, TCustom, TRowSlug, TItems, TRows, TRowMap>,
     "addItem" | "addFeat" | "addRule"
@@ -130,7 +119,7 @@ type DailyProcessOptions<
     TRowSlug extends string = string,
     TItems extends DailyItem<TItemSlug>[] = DailyItem<TItemSlug>[],
     TRows extends DailyRow<TRowSlug>[] | ReadonlyArray<TRowSlug> = DailyRow<TRowSlug>[],
-    TRowMap = ExtractRows<TRowSlug, TRows>
+    TRowMap = ExtractRows<TRowSlug, TRows>,
 > = {
     actor: CharacterPF2e;
     items: ExtractItems<TItemSlug, TItems>;
@@ -143,11 +132,7 @@ type DailyProcessOptions<
         addRaw: (message: string, order?: number) => void;
     };
     addItem: (source: PreCreate<ItemSourcePF2e> | ItemSourcePF2e, temporary?: boolean) => void;
-    addFeat: (
-        source: PreCreate<FeatSource> | FeatSource,
-        parent?: ItemPF2e,
-        temporary?: boolean
-    ) => void;
+    addFeat: (source: PreCreate<FeatSource> | FeatSource, parent?: ItemPF2e, temporary?: boolean) => void;
     addRule: (item: ItemPF2e, source: DailyRuleElement) => void;
     replaceFeat: (original: FeatPF2e, source: PreCreate<FeatSource> | FeatSource) => void;
     updateItem: (data: EmbeddedDocumentUpdateData) => void;
@@ -163,13 +148,7 @@ type DailyRestOptions = {
     removeItem: (id: string) => void;
 };
 
-type DailyMessageGroupType =
-    | "languages"
-    | "skills"
-    | "resistances"
-    | "feats"
-    | "spells"
-    | "scrolls";
+type DailyMessageGroupType = "languages" | "skills" | "resistances" | "feats" | "spells" | "scrolls";
 
 type DailyMessageOptions =
     | { uuid: string | ItemPF2e; label?: string; selected?: string; random?: boolean }
@@ -196,7 +175,7 @@ type DailyCustom = Record<string, unknown>;
 
 type DailyItem<TItemSlug extends string = string> = {
     slug: TItemSlug;
-    uuid: ItemUUID;
+    uuid: ItemUUID | (() => ItemUUID);
     required?: boolean;
     condition?: (actor: CharacterPF2e, item: ItemPF2e) => Promisable<boolean>;
 };
@@ -261,13 +240,10 @@ type DailyRowDropData = {
 interface DailyRowDropBase<
     TRowSlug extends string,
     TType extends DailyRowDropType,
-    TSearch extends DailyRowDropSearch
+    TSearch extends DailyRowDropSearch,
 > extends DailyRowBase<TRowSlug, "drop"> {
     note?: string;
-    onDrop?: (
-        item: TType extends "feat" ? FeatPF2e : SpellPF2e,
-        actor: CharacterPF2e
-    ) => Promisable<boolean | string>;
+    onDrop?: (item: TType extends "feat" ? FeatPF2e : SpellPF2e, actor: CharacterPF2e) => Promisable<boolean | string>;
     filter: {
         type: TType;
         search: TSearch;
@@ -278,17 +254,9 @@ interface DailyRowDropBase<
     };
 }
 
-type DailyRowDropFeat<TRowSlug extends string = string> = DailyRowDropBase<
-    TRowSlug,
-    "feat",
-    DailyRowDropFeatSearch
->;
+type DailyRowDropFeat<TRowSlug extends string = string> = DailyRowDropBase<TRowSlug, "feat", DailyRowDropFeatSearch>;
 
-type DailyRowDropSpell<TRowSlug extends string = string> = DailyRowDropBase<
-    TRowSlug,
-    "spell",
-    DailyRowSpellSearch
->;
+type DailyRowDropSpell<TRowSlug extends string = string> = DailyRowDropBase<TRowSlug, "spell", DailyRowSpellSearch>;
 
 type DailyRowDrops<TRowSlug extends string> = {
     feat: DailyRowDropFeat<TRowSlug>;

@@ -148,6 +148,14 @@
           "none": "aucune"
         }
       },
+      "mindsmith": {
+        "missing": "L'arme mentale est manquante"
+      },
+      "rations": {
+        "yes": "Consommer ({nb} restant)",
+        "no": "Ne pas en consommer",
+        "last": "Consomme le dernier disponible"
+      },
       "staves": {
         "empty": "Emplacement vide",
         "flexible": "Emplacement flexible",
@@ -162,14 +170,6 @@
         "merged": "Fusionné avec un bâton ordinaire",
         "makeshift": "Bâton de fortune",
         "regular": "Bâton ordinaire"
-      },
-      "rations": {
-        "yes": "Consommer ({nb} restant)",
-        "no": "Ne pas en consommer",
-        "last": "Consomme le dernier disponible"
-      },
-      "mindsmith": {
-        "missing": "L'arme mentale est manquante"
       }
     },
     "label": {
@@ -180,6 +180,7 @@
         "other": "Apparition #{nb}"
       },
       "expend": "Dépenser #{nb}",
+      "material": "Matériau",
       "rune": "Rune de propriété",
       "select": "Sélectionner {that}",
       "mind-smith": "Façonneur spirituel",

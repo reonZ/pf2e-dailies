@@ -160,8 +160,8 @@
         "empty": "Puste miejsce",
         "flexible": "Elastyczne miejsce",
         "group": {
-          "prepared": "Przygotował {type} na ten dzień",
-          "merged": "Połączył {type} ze swoją bronią związaną na dany dzień",
+          "prepared": "Przygotowano {type} na ten dzień",
+          "merged": "Połączono {type} ze swoją bronią związaną na dany dzień",
           "bond": "Przygotowano swoją broń na ten dzień"
         },
         "staff": "Kostur",
@@ -188,31 +188,31 @@
       "mind-runic": "Kowalstwo Runiczne"
     },
     "message": {
-      "changes": "Wprowadził następujące zmiany podczas codziennych przygotowań.",
-      "noChanges": "Nie wprowadził żadnych zmian podczas codziennych przygotowań, nie musiałeś nawet o tym wiedzieć.",
-      "gained": "Uzyskał tymczasowy {type}",
+      "changes": "Wprowadzono następujące zmiany podczas codziennych przygotowań.",
+      "noChanges": "Nie wprowadzono żadnych zmian podczas codziennych przygotowań, nie musiałeś nawet o tym wiedzieć.",
+      "gained": "Uzyskano tymczasowy {type}",
       "groups": {
-        "apparition": "Dostroił się do tych projekcji",
-        "blade": "Zaszczepił ducha w swojej broni",
-        "ceremonial": "Przeprowadził rytuał, aby stworzyć nóż ceremonialny nasycony zaklęciem",
-        "familiar": "Wybrał zdolności chowańca",
-        "feats": "Nauczył się atutów",
-        "languages": "Nauczył się czytać i mówić",
-        "mindsmith": "Skupił swój umysł na broni",
+        "apparition": "Dostrojono się do tych projekcji",
+        "blade": "Zaszczepiono ducha w swojej broni",
+        "ceremonial": "Przeprowadzono rytuał, aby stworzyć nóż ceremonialny nasycony zaklęciem",
+        "familiar": "Wybrano zdolności chowańca",
+        "feats": "Nauczono się atutów",
+        "languages": "Nauczono się czytać i mówić",
+        "mindsmith": "Skupiono swój umysł na broni",
         "memories": "Przypomniałem sobie kilka cennych wspomnień",
-        "resistances": "Uzyskał odporności",
-        "scrolls": "Utworzył tymczasowe zwoje",
-        "skills": "Wytrenował się w następujących umiejętnościach",
+        "resistances": "Uzyskano odporności",
+        "scrolls": "Utworzono tymczasowe zwoje",
+        "skills": "Wytrenowano się w następujących umiejętnościach",
         "spells": "Jest gotowy do użycia zaklęć",
         "tactics": "Jest przygotowany do stosowania taktyki walki",
-        "tome": "Studiował swój tom Taumaturga",
+        "tome": "Przestudiowano swój tom Taumaturga",
         "wandering": "Ponownie przeszkolenie swoich atutów wędrówki",
         "warshard": "Nasycono swoją broń odłamkiem boga wojny"
       },
       "rations": {
-        "used": "Zużył jedną z {name} i pozostało mu {nb} sztuk.",
-        "last": "Zużył ostatnie z {name}.",
-        "almost": "Zużył jedną z {name} i pozostało mu tylko {nb} sztuk."
+        "used": "Zużyto jedną z {name} i pozostało {nb} sztuk.",
+        "last": "Zużyto ostatnie z {name}.",
+        "almost": "Zużyto jedną z {name} i pozostało tylko {nb} sztuk."
       }
     },
     "mindsmith": {
@@ -221,7 +221,7 @@
       }
     },
     "retrain": {
-      "content": "Wymienił następujące {type}",
+      "content": "Wymieniono następujące {type}",
       "hint": "Wybierz {type}, który chcesz zastąpić przez <strong>{selected}</strong>",
       "label": "Oryginalny {type}",
       "title": "Wymiana {type} - {name}",

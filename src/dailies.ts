@@ -1,6 +1,7 @@
 import { CustomDaily, parseCustomDaily } from "custom/custom";
 import { Daily, DailyCustom, DailyItem, DailyRow } from "daily";
 import {
+    adaptiveTalent,
     ancestralLongevity,
     animist,
     bladeAlly,
@@ -47,6 +48,7 @@ const PREFIXES = {
 } as const;
 
 const BUILTINS_DAILIES: Daily[] = [
+    adaptiveTalent, // Adaptive Talent
     ancestralLongevity, // Ancestral Longevity
     animist, // Animist
     bladeAlly, // Blessed Armament

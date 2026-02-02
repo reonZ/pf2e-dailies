@@ -180,6 +180,7 @@
                 "other": "Apparition #{nb}"
             },
             "expend": "Expend #{nb}",
+            "feat": "Feat #{nb}",
             "material": "Material",
             "rune": "Property Rune",
             "select": "Select {that}",

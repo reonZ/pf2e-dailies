@@ -1,3 +1,4 @@
+export * from "./adaptive-talent";
 export * from "./ancestral-longevity";
 export * from "./animist";
 export * from "./blade-ally";

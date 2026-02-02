@@ -1,3 +1,8 @@
+# 4.15.0
+
+- add support for the `Adaptive Talent` envoy feat
+  - it will work on both the pf2e & sf2e systems
+
 # 4.14.0
 
 - `Blade Armament`:

@@ -180,6 +180,7 @@
         "other": "Projekcja #{nb}"
       },
       "expend": "Wydano #{nb}",
+      "feat": "Atut #{nb}",
       "material": "Materiał",
       "rune": "Runa Właściwości",
       "select": "Wybierz {that}",

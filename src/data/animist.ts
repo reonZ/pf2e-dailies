@@ -63,7 +63,10 @@ const animist = createDaily({
         {
             slug: "attunement", // Apparition Attunement
             uuid: "Compendium.pf2e.classfeatures.Item.AHMjKkIx21AoMc9W",
-            required: true,
+        },
+        {
+            slug: "dedication", // Animist Dedication
+            uuid: "Compendium.pf2e.feats-srd.Item.5hFFM5TmhKYSQwtG",
         },
         {
             slug: "third", // Third Apparition
@@ -102,8 +105,10 @@ const animist = createDaily({
             uuid: "Compendium.pf2e.feats-srd.Item.VO2uOVrjIr7ZAjkX",
         },
     ],
-    label: (_actor, items) => items.attunement.name,
+    label: (_actor, items) => items.attunement?.name ?? items.dedication?.name ?? "",
     rows: async (actor, items) => {
+        if (!items.attunement && !items.dedication) return [];
+
         const pack = SYSTEM.getPack("classfeatures");
         if (!pack) return [];
 
@@ -124,7 +129,7 @@ const animist = createDaily({
             });
         }
 
-        let nbApparitions = 2;
+        let nbApparitions = items.attunement ? 2 : 1;
         if (items.third) nbApparitions += 1;
         if (items.fourth) nbApparitions += 1;
 
@@ -141,7 +146,9 @@ const animist = createDaily({
         });
     },
     process: async ({ actor, rows, messages, items, addItem, addFeat, addRule }) => {
-        const parent = items.attunement;
+        const parent = items.attunement ?? items.dedication;
+        if (!parent) return;
+
         const actorLevel = actor.level;
         const maxRank = getActorMaxRank(actor);
         const loreRank = actorLevel >= 16 ? 3 : actorLevel >= 8 ? 2 : 1;

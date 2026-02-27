@@ -180,6 +180,7 @@
         "other": "Apparition #{nb}"
       },
       "expend": "Dépenser #{nb}",
+      "feat": "Don #{nb}",
       "material": "Matériau",
       "rune": "Rune de propriété",
       "select": "Sélectionner {that}",

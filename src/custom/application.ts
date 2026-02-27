@@ -3,24 +3,19 @@ import { DAILY_SCHEMA } from "dailies";
 import {
     addListener,
     addListenerAll,
-    ApplicationConfiguration,
-    ApplicationRenderOptions,
     confirmDialog,
     getSetting,
-    HandlebarsTemplatePart,
     htmlQuery,
-    info,
     localize,
     setSetting,
-    templateLocalize,
     TemplateLocalize,
-} from "module-helpers";
+} from "foundry-helpers";
 import apps = foundry.applications.api;
 
 class CustomsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) {
     #selected: string | undefined;
 
-    static DEFAULT_OPTIONS: DeepPartial<ApplicationConfiguration> = {
+    static DEFAULT_OPTIONS: DeepPartial<fa.ApplicationConfiguration> = {
         classes: ["category-browser"],
         id: "pf2e-dailies-customs-menu",
         window: {
@@ -35,7 +30,7 @@ class CustomsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) {
         },
     };
 
-    static PARTS: Record<CustomsMenuPart, HandlebarsTemplatePart> = {
+    static PARTS: Record<CustomsMenuPart, fa.api.HandlebarsTemplatePart> = {
         sidebar: {
             template: "modules/pf2e-dailies/templates/customs/sidebar.hbs",
             scrollable: ["nav"],
@@ -58,7 +53,7 @@ class CustomsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) {
         return htmlQuery<HTMLInputElement>(this.element, "code-mirror")?.value ?? "";
     }
 
-    async _prepareContext(options: ApplicationRenderOptions): Promise<CustomsMenuContext> {
+    async _prepareContext(_options: fa.ApplicationRenderOptions): Promise<CustomsMenuContext> {
         const selected = this.#selected;
         const dailies = this.dailies;
         const daily = dailies.find(({ key }) => key === selected);
@@ -73,17 +68,13 @@ class CustomsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) {
         return {
             code: daily?.code,
             disabled: !daily || readonly,
-            i18n: templateLocalize("customs"),
+            i18n: localize.i18n("customs"),
             list,
             readonly,
         };
     }
 
-    _attachPartListeners(
-        partId: CustomsMenuPart,
-        html: HTMLElement,
-        options: apps.HandlebarsRenderOptions
-    ) {
+    _attachPartListeners(partId: CustomsMenuPart, html: HTMLElement, _options: apps.HandlebarsRenderOptions) {
         if (partId === "main") {
             this.#attachMainListeners(html);
         } else if (partId === "sidebar") {
@@ -113,9 +104,7 @@ class CustomsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) {
 
         readonlyEl?.remove();
 
-        const disabled = this.element.querySelectorAll<HTMLButtonElement | HTMLInputElement>(
-            "form [disabled]"
-        );
+        const disabled = this.element.querySelectorAll<HTMLButtonElement | HTMLInputElement>("form [disabled]");
 
         for (const el of disabled) {
             el.disabled = false;
@@ -154,7 +143,7 @@ class CustomsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) {
 
         await setSetting(`customDailies`, dailies);
 
-        info("customs.code.saved");
+        localize.info("customs.code.saved");
 
         this.#selected = daily.key;
         this.render();
@@ -201,14 +190,14 @@ function defaultTemplate(key: string) {
     return []
   },
   process: ({actor, rows, messages}) => {
-    
+
   }
 }`;
 }
 
 type CustomsMenuPart = "main" | "sidebar";
 
-type CustomsMenuContext = {
+type CustomsMenuContext = fa.ApplicationRenderContext & {
     code: string | undefined;
     disabled: boolean | undefined;
     i18n: TemplateLocalize;

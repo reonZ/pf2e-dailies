@@ -1,5 +1,5 @@
 import { createDaily, DailyMessageOptions, DailyRowSelectOption } from "daily";
-import { ActorPF2e, getFlag, includesAny, ItemPF2e, localize, R } from "module-helpers";
+import { ActorPF2e, getFlag, includesAny, ItemPF2e, localize, R } from "foundry-helpers";
 
 const TACTICAL_EXCELLENCE_UUID = "Compendium.pf2e.feats-srd.Item.a7sCZ2ehfsLQutvO";
 
@@ -47,7 +47,7 @@ const commanderTactics = createDaily({
             uuid: TACTICAL_EXCELLENCE_UUID,
         },
     ],
-    label: (actor, items) => items.tactics.name,
+    label: (_actor, items) => items.tactics.name,
     rows: (actor, { commander, efficient, expert, legendary, master, tactical }) => {
         const uniqueId = foundry.utils.randomID();
 
@@ -56,16 +56,14 @@ const commanderTactics = createDaily({
             R.filter(isTacticAbility),
             R.map(({ id, name }): DailyRowSelectOption => {
                 return { value: id, label: name };
-            })
+            }),
         );
 
         let extraNbTactics = efficient ? 1 : 0;
         const baseNbTactics = !commander ? 1 : legendary ? 6 : master ? 5 : expert ? 4 : 3;
 
         if (tactical) {
-            const tactics = actor.itemTypes.feat.filter(
-                (item) => item.sourceId === TACTICAL_EXCELLENCE_UUID
-            );
+            const tactics = actor.itemTypes.feat.filter((item) => item.sourceId === TACTICAL_EXCELLENCE_UUID);
 
             extraNbTactics += tactics.length;
         }

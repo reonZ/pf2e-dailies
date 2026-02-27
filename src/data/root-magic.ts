@@ -13,7 +13,7 @@ const rootMagic = createDaily({
             required: true,
         },
     ],
-    label: (actor, items) => items.root.name,
+    label: (_actor, items) => items.root.name,
     rows: (actor) => {
         return [
             {

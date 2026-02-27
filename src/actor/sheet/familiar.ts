@@ -1,4 +1,4 @@
-import { FamiliarPF2e, FamiliarSheetPF2e, getFlag } from "module-helpers";
+import { FamiliarPF2e, FamiliarSheetPF2e, getFlag } from "foundry-helpers";
 
 function onRenderFamiliarSheetPF2e(sheet: FamiliarSheetPF2e<FamiliarPF2e>, $html: JQuery) {
     const actor = sheet.actor;

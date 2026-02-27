@@ -1,15 +1,11 @@
 import { createDaily } from "daily";
-import { OneToFour, SkillSlug, ZeroToFour } from "module-helpers";
+import { ItemUUID, OneToFour, SkillSlug, ZeroToFour } from "foundry-helpers";
 import { utils } from "utils";
 
 function createComboSkillDaily(
     key: string,
     uuid: ItemUUID,
-    {
-        rank = 1,
-        removeRules = true,
-        label,
-    }: { label?: string; rank?: OneToFour; removeRules?: boolean } = {}
+    { rank = 1, removeRules = true, label }: { label?: string; rank?: OneToFour; removeRules?: boolean } = {},
 ) {
     return createDaily({
         key,
@@ -20,7 +16,7 @@ function createComboSkillDaily(
                 required: true,
             },
         ],
-        label: (actor, items) => label ?? items.item.name,
+        label: (_actor, items) => label ?? items.item.name,
         rows: (actor) => {
             const skillList = utils.getSkills();
             const actorSkills = actor.skills;
@@ -65,7 +61,7 @@ function createComboSkillDaily(
 function createLoreSkillDaily(
     key: string,
     uuid: ItemUUID,
-    { label, rank = 1 }: { label?: string; rank?: ZeroToFour } = {}
+    { label, rank = 1 }: { label?: string; rank?: ZeroToFour } = {},
 ) {
     return createDaily({
         key,
@@ -76,7 +72,7 @@ function createLoreSkillDaily(
                 required: true,
             },
         ],
-        label: (actor, items) => label ?? items.item.name,
+        label: (_actor, items) => label ?? items.item.name,
         rows: () => {
             return [
                 {

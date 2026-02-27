@@ -1,19 +1,16 @@
 import {
     addListenerAll,
-    ApplicationConfiguration,
-    ApplicationRenderOptions,
+    CompendiumCollection,
+    CompendiumIndexData,
     getSetting,
-    HandlebarsTemplatePart,
     htmlClosest,
     htmlQuery,
     ItemType,
     localize,
     R,
     setSetting,
-    templateLocalize,
     TemplateLocalize,
-    warning,
-} from "module-helpers";
+} from "foundry-helpers";
 import { utils } from "utils";
 import apps = foundry.applications.api;
 
@@ -27,7 +24,7 @@ const INDEX_TYPE: Record<HomebrewIndex, ItemType> = {
 class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) {
     #selected: HomebrewIndex | undefined;
 
-    static DEFAULT_OPTIONS: DeepPartial<ApplicationConfiguration> = {
+    static DEFAULT_OPTIONS: DeepPartial<fa.ApplicationConfiguration> = {
         classes: ["category-browser"],
         id: "pf2e-dailies-homebrews-menu",
         window: {
@@ -42,7 +39,7 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
         },
     };
 
-    static PARTS: Record<HomebrewsMenuPart, HandlebarsTemplatePart> = {
+    static PARTS: Record<HomebrewsMenuPart, fa.api.HandlebarsTemplatePart> = {
         sidebar: {
             template: "modules/pf2e-dailies/templates/homebrew/sidebar.hbs",
             scrollable: ["nav"],
@@ -79,18 +76,15 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
                 return R.pipe(
                     result.entry.index.contents,
                     R.filter((entry) => entry.type === INDEX_TYPE[index]),
-                    R.map((entry) => ({ isPack: true, entry }))
+                    R.map((entry) => ({ isPack: true, entry })),
                 );
             }),
             R.flat(),
-            R.filter(R.isTruthy)
+            R.filter(R.isTruthy),
         );
     }
 
-    static getEntryData(
-        index: Maybe<HomebrewIndex>,
-        id: string
-    ): PackHomebrew | ItemHomebrew | undefined {
+    static getEntryData(index: Maybe<HomebrewIndex>, id: string): PackHomebrew | ItemHomebrew | undefined {
         if (!index || !INDEX.includes(index)) return;
 
         const pack = game.packs.get(id);
@@ -102,7 +96,7 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
         return entry?.type === INDEX_TYPE[index] ? { entry, isPack: false } : undefined;
     }
 
-    async _prepareContext(options: ApplicationRenderOptions): Promise<HomebrewsMenuContext> {
+    async _prepareContext(_options: fa.ApplicationRenderOptions): Promise<HomebrewsMenuContext> {
         const homebrewsSettings = HomebrewsMenu.homebrews;
         const selected = this.selected;
 
@@ -115,15 +109,12 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
                 const { entry, isPack } = result;
                 const [img, name] = isPack
                     ? [null, entry.metadata.label]
-                    : [
-                          entry.img.trim() || "icons/sundries/books/book-red-exclamation.webp",
-                          entry.name,
-                      ];
+                    : [entry.img.trim() || "icons/sundries/books/book-red-exclamation.webp", entry.name];
 
                 return { id, img, name, isPack };
             }),
             R.filter(R.isTruthy),
-            R.sortBy([R.prop("isPack"), "desc"], R.prop("name"))
+            R.sortBy([R.prop("isPack"), "desc"], R.prop("name")),
         );
 
         const index: HomebrewsMenuContext["index"] = R.pipe(
@@ -135,22 +126,18 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
                     selected: selected === id,
                 };
             }),
-            R.sortBy(R.prop("label"))
+            R.sortBy(R.prop("label")),
         );
 
         return {
             disabled: !selected,
             entries,
-            i18n: templateLocalize("homebrew"),
+            i18n: localize.i18n("homebrew"),
             index,
         };
     }
 
-    _attachPartListeners(
-        partId: HomebrewsMenuPart,
-        html: HTMLElement,
-        options: apps.HandlebarsRenderOptions
-    ) {
+    _attachPartListeners(partId: HomebrewsMenuPart, html: HTMLElement, _options: apps.HandlebarsRenderOptions) {
         if (partId === "main") {
             this.#attachMainListeners(html);
         } else if (partId === "sidebar") {
@@ -180,7 +167,7 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
             return;
         }
 
-        warning("homebrew", entry ? "invalid" : "empty", { entry, type });
+        localize.warning("homebrew", entry ? "invalid" : "empty", { entry, type });
         input.value = "";
     }
 
@@ -247,7 +234,7 @@ type ItemHomebrew = {
 
 type HomebrewsMenuPart = "sidebar" | "main";
 
-type HomebrewsMenuContext = {
+type HomebrewsMenuContext = fa.ApplicationRenderContext & {
     disabled: boolean;
     entries: HomebrewEntry[];
     i18n: TemplateLocalize;

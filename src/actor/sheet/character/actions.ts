@@ -1,5 +1,5 @@
 import { getCommanderTactics, isTacticAbility } from "data";
-import { CharacterPF2e, htmlQuery } from "module-helpers";
+import { CharacterPF2e, htmlQuery } from "foundry-helpers";
 import { createRetrainBtn } from "..";
 
 function updateActionsTab(actor: CharacterPF2e, html: HTMLElement) {

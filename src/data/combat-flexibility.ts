@@ -17,8 +17,8 @@ const combatFlexibility = createDaily({
             uuid: improvedUUID,
         },
     ],
-    label: (actor, items) => items.combat.name,
-    rows: (actor, items) => {
+    label: (_actor, items) => items.combat.name,
+    rows: (_actor, items) => {
         return [
             {
                 type: "drop",

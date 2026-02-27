@@ -1,7 +1,7 @@
 import { CustomsMenu } from "custom";
 import { parseDailies } from "dailies";
 import { HomebrewsMenu } from "homebrew";
-import { registerSetting, registerSettingMenu, renderCharacterSheets } from "module-helpers";
+import { registerSetting, registerSettingMenu, renderCharacterSheets } from "foundry-helpers";
 
 function registerSettings() {
     registerSettingMenu("customs", {
@@ -26,7 +26,7 @@ function registerSettings() {
 
     registerSetting("homebrewEntries", {
         type: new foundry.data.fields.TypedObjectField(
-            new foundry.data.fields.ArrayField(new foundry.data.fields.StringField())
+            new foundry.data.fields.ArrayField(new foundry.data.fields.StringField()),
         ),
         default: {},
         scope: "world",

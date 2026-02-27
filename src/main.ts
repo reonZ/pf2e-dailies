@@ -26,7 +26,7 @@ import {
     isTacticAbility,
     setStaffChargesValue,
 } from "data";
-import { ActorPF2e, CharacterPF2e, getSetting, htmlClosest, MODULE, warning } from "module-helpers";
+import { ActorPF2e, CharacterPF2e, getSetting, htmlClosest, localize, MODULE } from "foundry-helpers";
 import { registerSettings } from "settings";
 import { utils } from "utils";
 import { registerInitWrappers, registerReadyWrappers } from "wrappers";
@@ -47,10 +47,10 @@ Hooks.once("ready", () => {
 
     if (game.user.isGM) {
         const hasIncompatibleDailies = getSetting<CustomDaily[]>("customDailies").some((custom) =>
-            foundry.utils.isNewerVersion(DAILY_SCHEMA, custom.schema ?? "")
+            foundry.utils.isNewerVersion(DAILY_SCHEMA, custom.schema ?? ""),
         );
         if (hasIncompatibleDailies) {
-            warning("error.incompatible", true);
+            localize.warning("error.incompatible", true);
         }
     }
 });
@@ -59,36 +59,34 @@ Hooks.on("renderCharacterSheetPF2e", onRenderCharacterSheetPF2e);
 Hooks.on("renderFamiliarSheetPF2e", onRenderFamiliarSheetPF2e);
 Hooks.on("renderNPCSheetPF2e", onRenderNPCSheetPF2e);
 
-MODULE.apiExpose({
-    canCastRank,
-    canPrepareDailies,
-    createRetrainBtn,
-    getAnimistConfigs,
-    getAnimistVesselsData,
-    getCommanderTactics,
-    getDailiesSummary,
-    getDisabledDailies,
-    getPhysicalItemSpells: getSpells,
-    getStaffItem: (actor: CharacterPF2e) => {
-        const flag = getStaffData(actor);
-        return (flag && actor.inventory.get(flag.staffId)) || null;
-    },
-    isTacticAbility,
-    openDailiesInterface,
-    registerCustomDailies,
-    retrain,
-    retrainFromElement: async (actor: ActorPF2e, target: HTMLElement) => {
-        const itemId = htmlClosest(target, "[data-item-id]")?.dataset.itemId;
-        const retrainType = target.dataset.retrainType;
-        return (!!itemId && !!retrainType && retrain(actor, itemId, retrainType)) || undefined;
-    },
-    setStaffChargesValue,
-    utils,
-    dailyHelpers: {
-        createComboSkillDaily,
-        createLoreSkillDaily,
-        createLanguageDaily,
-        createResistanceDaily,
-        createScrollChainDaily,
-    },
+MODULE.apiExpose("canCastRank", canCastRank);
+MODULE.apiExpose("canPrepareDailies", canPrepareDailies);
+MODULE.apiExpose("createRetrainBtn", createRetrainBtn);
+MODULE.apiExpose("getAnimistConfigs", getAnimistConfigs);
+MODULE.apiExpose("getAnimistVesselsData", getAnimistVesselsData);
+MODULE.apiExpose("getCommanderTactics", getCommanderTactics);
+MODULE.apiExpose("getDailiesSummary", getDailiesSummary);
+MODULE.apiExpose("getDisabledDailies", getDisabledDailies);
+MODULE.apiExpose("getPhysicalItemSpells", getSpells);
+MODULE.apiExpose("getStaffItem", (actor: CharacterPF2e) => {
+    const flag = getStaffData(actor);
+    return (flag && actor.inventory.get(flag.staffId)) || null;
+});
+MODULE.apiExpose("isTacticAbility", isTacticAbility);
+MODULE.apiExpose("openDailiesInterface", openDailiesInterface);
+MODULE.apiExpose("registerCustomDailies", registerCustomDailies);
+MODULE.apiExpose("retrain", retrain);
+MODULE.apiExpose("retrainFromElement", async (actor: ActorPF2e, target: HTMLElement) => {
+    const itemId = htmlClosest(target, "[data-item-id]")?.dataset.itemId;
+    const retrainType = target.dataset.retrainType;
+    return (!!itemId && !!retrainType && retrain(actor, itemId, retrainType)) || undefined;
+});
+MODULE.apiExpose("setStaffChargesValue", setStaffChargesValue);
+MODULE.apiExpose("utils", utils);
+MODULE.apiExpose("dailyHelpers", {
+    createComboSkillDaily,
+    createLoreSkillDaily,
+    createLanguageDaily,
+    createResistanceDaily,
+    createScrollChainDaily,
 });

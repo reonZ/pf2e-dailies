@@ -1,13 +1,7 @@
 import { createChargesElement } from "actor";
-import {
-    addListener,
-    CharacterPF2e,
-    createHTMLElement,
-    htmlQuery,
-    NPCPF2e,
-    SpellcastingEntryPF2eWithCharges,
-} from "module-helpers";
+import { addListener, CharacterPF2e, createHTMLElement, htmlQuery, NPCPF2e } from "foundry-helpers";
 import { updateAnimistEntries, updateStavesEntries } from ".";
+import { SpellcastingEntryPF2eWithCharges } from "spellcasting";
 
 function updateSpellsTab(actor: CharacterPF2e, html: HTMLElement, highlightItems: boolean) {
     const spellsTab = htmlQuery(html, `.sheet-content .tab[data-tab="spellcasting"]`);
@@ -29,11 +23,7 @@ function updateSpellsTab(actor: CharacterPF2e, html: HTMLElement, highlightItems
 async function renderChargesEntries(
     actor: CharacterPF2e | NPCPF2e,
     parentElement: HTMLElement,
-    callback: (
-        entryContainer: HTMLElement,
-        chargesElement: HTMLElement,
-        toggleElement: HTMLElement
-    ) => void
+    callback: (entryContainer: HTMLElement, chargesElement: HTMLElement, toggleElement: HTMLElement) => void,
 ) {
     const entries = actor.spellcasting.regular as SpellcastingEntryPF2eWithCharges[];
     const chargesEntries = entries.filter((entry) => entry.system.prepared.value === "charges");
@@ -45,28 +35,18 @@ async function renderChargesEntries(
         const charges = entry.system.slots.slot1;
         const chargesElement = await createChargesElement(actor, charges, true);
 
-        addListener(
-            chargesElement,
-            "[data-action='change-charges']",
-            "change",
-            (el: HTMLInputElement) => {
-                const value = Math.clamp(el.valueAsNumber, 0, charges.max);
-                entry.update({ "system.slots.slot1.value": value });
-            }
-        );
+        addListener(chargesElement, "[data-action='change-charges']", "change", (el: HTMLInputElement) => {
+            const value = Math.clamp(el.valueAsNumber, 0, charges.max);
+            entry.update({ "system.slots.slot1.value": value });
+        });
 
-        addListener(
-            chargesElement,
-            "[data-action='change-max-charges']",
-            "change",
-            (el: HTMLInputElement) => {
-                const value = Math.max(el.valueAsNumber, 0);
-                entry.update({
-                    "system.slots.slot1.max": value,
-                    "system.slots.slot1.value": Math.min(value, charges.value),
-                });
-            }
-        );
+        addListener(chargesElement, "[data-action='change-max-charges']", "change", (el: HTMLInputElement) => {
+            const value = Math.max(el.valueAsNumber, 0);
+            entry.update({
+                "system.slots.slot1.max": value,
+                "system.slots.slot1.value": Math.min(value, charges.value),
+            });
+        });
 
         addListener(chargesElement, "[data-action='reset-charges']", async () => {
             entry.update({ "system.slots.slot1.value": charges.max });

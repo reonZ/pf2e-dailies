@@ -3,8 +3,6 @@ import { PreparedDaily } from "dailies";
 import { DailyConfigRow, DailyConfigRowValue } from "daily";
 import {
     addListenerAll,
-    ApplicationConfiguration,
-    ApplicationRenderOptions,
     CharacterPF2e,
     getFlag,
     getInputValue,
@@ -12,10 +10,8 @@ import {
     R,
     render,
     setFlag,
-    templateLocalize,
-    TemplateLocalize,
     unsetFlag,
-} from "module-helpers";
+} from "foundry-helpers";
 
 const ApplicationV2 = foundry.applications.api.ApplicationV2;
 
@@ -23,11 +19,7 @@ class DailyConfig extends ApplicationV2 {
     #actor: CharacterPF2e;
     #dailies: PreparedDaily[];
 
-    constructor(
-        actor: CharacterPF2e,
-        dailies: PreparedDaily[],
-        options?: DeepPartial<ApplicationConfiguration>
-    ) {
+    constructor(actor: CharacterPF2e, dailies: PreparedDaily[], options?: DeepPartial<fa.ApplicationConfiguration>) {
         super(options);
         this.#actor = actor;
         this.#dailies = dailies;
@@ -35,7 +27,7 @@ class DailyConfig extends ApplicationV2 {
 
     static emittedEvents = Object.freeze([...ApplicationV2.emittedEvents, "update"]);
 
-    static DEFAULT_OPTIONS: DeepPartial<ApplicationConfiguration> = {
+    static DEFAULT_OPTIONS: DeepPartial<fa.ApplicationConfiguration> = {
         window: {
             positioned: true,
             resizable: false,
@@ -52,7 +44,7 @@ class DailyConfig extends ApplicationV2 {
         return this.#actor;
     }
 
-    async _prepareContext(options: ApplicationRenderOptions): Promise<ConfigContext> {
+    async _prepareContext(_options: fa.ApplicationRenderOptions): Promise<ConfigContext> {
         const actor = this.actor;
         const disabled = getDisabledDailies(actor);
 
@@ -62,12 +54,7 @@ class DailyConfig extends ApplicationV2 {
                     const configs = R.pipe(
                         (R.isFunction(daily.config) && (await daily.config(actor))) || [],
                         R.map((config) => {
-                            config.value ??= getFlag<DailyConfigRowValue>(
-                                actor,
-                                "config",
-                                daily.key,
-                                config.name
-                            );
+                            config.value ??= getFlag<DailyConfigRowValue>(actor, "config", daily.key, config.name);
 
                             if (config.type === "range") {
                                 config.min ??= 0;
@@ -75,7 +62,7 @@ class DailyConfig extends ApplicationV2 {
                             }
 
                             return config;
-                        })
+                        }),
                     );
 
                     return {
@@ -84,29 +71,28 @@ class DailyConfig extends ApplicationV2 {
                         enabled: disabled[daily.key] !== true,
                         configs: configs?.length ? configs : undefined,
                     };
-                })
+                }),
             ),
-            R.sortBy(R.prop("label"))
+            R.sortBy(R.prop("label")),
         );
 
         return {
             dailies,
-            i18n: templateLocalize("config"),
         };
     }
 
-    _renderHTML(context: ConfigContext, options: ApplicationRenderOptions): Promise<string> {
+    _renderHTML(context: ConfigContext, _options: fa.ApplicationRenderOptions): Promise<string> {
         return render("config", context);
     }
 
-    _replaceHTML(result: string, content: HTMLElement, options: ApplicationRenderOptions) {
+    _replaceHTML(result: string, content: HTMLElement, _options: fa.ApplicationRenderOptions) {
         content.innerHTML = result;
         this.#activateListeners(content);
     }
 
-    _onRender() {
+    async _onRender() {
         const familiarInput = this.element.querySelector<HTMLInputElement>(
-            ".window-content .familiar [name='familiar-range'] input[type='number']"
+            ".window-content .familiar [name='familiar-range'] input[type='number']",
         );
 
         if (familiarInput) {
@@ -133,9 +119,7 @@ class DailyConfig extends ApplicationV2 {
             const dailyKey = el.dataset.dailyKey as string;
             const value = getInputValue(el);
             const saveValue =
-                el.dataset.saveMaxValue === "true"
-                    ? { value, max: Number(el.getAttribute("max")) }
-                    : value;
+                el.dataset.saveMaxValue === "true" ? { value, max: Number(el.getAttribute("max")) } : value;
 
             await setFlag(actor, "config", dailyKey, el.name, saveValue);
 
@@ -153,9 +137,8 @@ type ConfigContextDaily = {
     configs: DailyConfigRow[] | undefined;
 };
 
-type ConfigContext = {
+type ConfigContext = fa.ApplicationRenderContext & {
     dailies: ConfigContextDaily[];
-    i18n: TemplateLocalize;
 };
 
 export { DailyConfig };

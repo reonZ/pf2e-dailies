@@ -1,6 +1,6 @@
 import { createChargesElement } from "actor";
 import { getStaffData, setStaffChargesValue } from "data";
-import { addListener, CharacterPF2e, equipItemToUse, getEquipAnnotation, htmlQuery } from "module-helpers";
+import { addListener, CharacterPF2e, equipItemToUse, getEquipAnnotation, htmlQuery } from "foundry-helpers";
 
 async function updateStavesEntries(actor: CharacterPF2e, spellsTab: HTMLElement, highlightItems: boolean) {
     const staffData = getStaffData(actor);

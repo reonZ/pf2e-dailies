@@ -1,5 +1,5 @@
 import { createDaily, DailyRowDropSpell } from "daily";
-import { OneToTen, R } from "module-helpers";
+import { OneToTen, R } from "foundry-helpers";
 import { utils } from "utils";
 
 const adeptUUID = "Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ";
@@ -13,7 +13,7 @@ const scrollAdept = createDaily({
             required: true,
         },
     ],
-    label: (actor, items) => items.adept.name,
+    label: (_actor, items) => items.adept.name,
     prepare: (actor) => {
         const maxRank = utils.getSpellcastingMaxRank(actor, { tradition: "arcane" });
         const proficiency = actor.system.proficiencies.spellcasting.rank;
@@ -27,12 +27,12 @@ const scrollAdept = createDaily({
                     row: `rank${rank}`,
                 };
             }),
-            R.filter(({ rank }) => rank > 0)
+            R.filter(({ rank }) => rank > 0),
         );
 
         return { ranks };
     },
-    rows: (actor, items, custom) => {
+    rows: (_actor, _items, custom) => {
         return custom.ranks.map(
             ({ rank, row }): DailyRowDropSpell => ({
                 slug: row,
@@ -46,7 +46,7 @@ const scrollAdept = createDaily({
                         rank,
                     },
                 },
-            })
+            }),
         );
     },
     process: async ({ rows, custom, messages, addItem }) => {

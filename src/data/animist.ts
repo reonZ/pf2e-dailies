@@ -17,7 +17,7 @@ import {
     SpellSource,
     splitListString,
     SYSTEM,
-} from "module-helpers";
+} from "foundry-helpers";
 import { getUuidFromInlineMatch, utils } from "utils";
 
 const ANIMIST_VESSELS_PATH = "extra.dailies.animist.primaryVessels";
@@ -102,7 +102,7 @@ const animist = createDaily({
             uuid: "Compendium.pf2e.feats-srd.Item.VO2uOVrjIr7ZAjkX",
         },
     ],
-    label: (actor, items) => items.attunement.name,
+    label: (_actor, items) => items.attunement.name,
     rows: async (actor, items) => {
         const pack = SYSTEM.getPack("classfeatures");
         if (!pack) return [];

@@ -14,7 +14,7 @@ import {
     SpellSource,
     WeaponPF2e,
     ZeroToTen,
-} from "module-helpers";
+} from "foundry-helpers";
 import { getUuidFromInlineMatch } from "utils";
 
 const LABEL_REGEX = /\d+/;
@@ -45,14 +45,14 @@ function canCastRank<TPArent extends CharacterPF2e>(actor: TPArent, rank: number
 
     const range = R.range(rank, maxRank + 1) as OneToTen[];
     const entries = actor.spellcasting.filter(
-        (entry): entry is SpellcastingEntryPF2e<TPArent> => entry.category === "spontaneous"
+        (entry): entry is SpellcastingEntryPF2e<TPArent> => entry.category === "spontaneous",
     );
 
     const nbSlots = R.pipe(
         entries,
         R.flatMap((e) => range.map((r) => e.system.slots[`slot${r}`])),
         R.filter((d) => d.max > 0),
-        R.sumBy(R.prop("value"))
+        R.sumBy(R.prop("value")),
     );
 
     return nbSlots >= 1;
@@ -62,11 +62,7 @@ function setStaffChargesValue(actor: CharacterPF2e, value?: number) {
     const charges = getStaffData(actor)?.charges;
     if (!charges || (value != null && charges.value === value)) return;
 
-    return setFlag(
-        actor,
-        "extra.dailies.staves.charges.value",
-        Math.clamp(value ?? charges.max, 0, charges.max)
-    );
+    return setFlag(actor, "extra.dailies.staves.charges.value", Math.clamp(value ?? charges.max, 0, charges.max));
 }
 
 function isStaff(item: ItemPF2e) {
@@ -89,7 +85,7 @@ function getStaves<TActor extends CharacterPF2e | NPCPF2e>(actor: TActor): Actor
 async function getSpells(
     item: Maybe<ItemPF2e>,
     maxRank: number,
-    entryId: string | null = null
+    entryId: string | null = null,
 ): Promise<SpellSource[]> {
     if (!item) return [];
 
@@ -108,7 +104,7 @@ async function getSpells(
 
             return uuids.map((uuid) => ({ rank, uuid }));
         }),
-        R.filter(({ rank }) => rank <= maxRank)
+        R.filter(({ rank }) => rank <= maxRank),
     );
 
     const spells = await Promise.all(
@@ -126,7 +122,7 @@ async function getSpells(
             });
 
             return source;
-        })
+        }),
     );
 
     return R.filter(spells, R.isTruthy);

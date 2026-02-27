@@ -2,13 +2,11 @@ import { DailyActorFlags } from "actor";
 import { PreparedDaily } from "dailies";
 import { DailyMessageOptions, DailyProcessOptions, DailyRowData, DailyRowType, DailyRuleElement } from "daily";
 import {
+    ActorSizePF2e,
     CharacterPF2e,
     createChatLink,
-    createSpellcastingWithHighestStatisticSource,
-    error,
     FeatPF2e,
     FeatSource,
-    getActorSize,
     getFlag,
     getFlagProperty,
     htmlClosest,
@@ -16,21 +14,21 @@ import {
     ItemPF2e,
     ItemSourcePF2e,
     localize,
-    localizeIfExist,
     MapOfArrays,
     MODULE,
     OneToTen,
-    PHYSICAL_ITEM_TYPES,
     PhysicalItemSource,
     R,
     setFlagProperty,
     setHasElement,
     SpellPF2e,
     SYSTEM,
-} from "module-helpers";
+} from "foundry-helpers";
 import { createUpdateCollection, utils } from "utils";
 import { DailyInterface } from ".";
 import fu = foundry.utils;
+import { PHYSICAL_ITEM_TYPES } from "foundry-helpers/dist";
+import { createSpellcastingWithHighestStatisticSource } from "spellcasting";
 
 async function processDailies(this: DailyInterface) {
     const rowElements = this.element.querySelectorAll<HTMLInputElement | HTMLSelectElement>("[data-daily]");
@@ -91,7 +89,7 @@ async function processDailies(this: DailyInterface) {
     const actor = this.actor;
     const deletedItems: string[] = [];
     const addedItems: (PreCreate<ItemSourcePF2e> | ItemSourcePF2e)[] = [];
-    const flaggedItems = new MapOfArrays<string>();
+    const flaggedItems = new MapOfArrays<string, string>();
     const itemsRules = new Map<string, DailyRuleElement[]>();
     const [updatedItems, updateItem] = createUpdateCollection();
     const rawMessages: { message: string; order: number }[] = [];
@@ -197,7 +195,13 @@ async function processDailies(this: DailyInterface) {
                     setFlagProperty(source, "temporary", true);
                 }
                 if (setHasElement(PHYSICAL_ITEM_TYPES, source.type)) {
-                    foundry.utils.setProperty(source, "system.size", getActorSize(actor).value);
+                    const ActorSizeCls = actor.system.traits.size.constructor as typeof ActorSizePF2e;
+                    const actorSize = new ActorSizeCls({
+                        value: actor.system.traits.naturalSize ?? actor.size,
+                        smallIsMedium: true,
+                    });
+
+                    foundry.utils.setProperty(source, "system.size", actorSize.value);
                 }
                 setFlagProperty(source, "daily", daily.key);
                 addedItems.push(source);
@@ -238,8 +242,8 @@ async function processDailies(this: DailyInterface) {
                 });
 
                 return daily.process(options);
-            } catch (err) {
-                error("error.unexpected");
+            } catch (err: any) {
+                localize.error("error.unexpected");
                 console.error(err);
                 console.error(`The error occured during processing of ${daily.key}`);
             }
@@ -341,8 +345,8 @@ async function processDailies(this: DailyInterface) {
                     });
 
                     return daily.afterItemAdded(options);
-                } catch (err) {
-                    error("error.unexpected");
+                } catch (err: any) {
+                    localize.error("error.unexpected");
                     console.error(err);
                     console.error(`The error occured during processing of ${daily.key}`);
                 }
@@ -374,7 +378,7 @@ async function processDailies(this: DailyInterface) {
 
         const groupLabel = group.label
             ? game.i18n.localize(group.label)
-            : (localizeIfExist("message.groups", type) ?? localize("message.gained", { type }));
+            : (localize.ifExist("message.groups", type) ?? localize("message.gained", { type }));
 
         let message = `<p><strong>${groupLabel}</strong></p>`;
 
@@ -445,7 +449,7 @@ async function processDailies(this: DailyInterface) {
     await actor.update(actorUpdates);
 }
 
-function processUpdatedItemsData(actor: CharacterPF2e, updatedItems: Collection<EmbeddedDocumentUpdateData>) {
+function processUpdatedItemsData(actor: CharacterPF2e, updatedItems: Collection<string, EmbeddedDocumentUpdateData>) {
     for (const data of updatedItems) {
         const rootItem = actor.items.get(data._id);
         if (rootItem) continue;

@@ -11,7 +11,7 @@ import {
     R,
     SYSTEM,
     updateFlag,
-} from "module-helpers";
+} from "foundry-helpers";
 import { createUpdateCollection } from "utils";
 
 async function restForTheNight(
@@ -31,7 +31,7 @@ async function restForTheNight(
         );
 
         await Promise.all(characters.map(cleanup));
-    } catch (error) {
+    } catch (error: any) {
         MODULE.error("game.pf2e.actions.restForTheNight", error);
     }
 

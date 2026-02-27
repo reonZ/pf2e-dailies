@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { OneToFour, SkillSlug } from "module-helpers";
+import { OneToFour, SkillSlug } from "foundry-helpers";
 import { utils } from "utils";
 
 type CustomRow = {
@@ -86,7 +86,7 @@ const thaumaturgeTome = createDaily({
 
         return custom;
     },
-    rows: (actor, items, custom) => {
+    rows: (_actor, _items, custom) => {
         return [
             {
                 type: "combo",

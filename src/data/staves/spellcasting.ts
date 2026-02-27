@@ -2,9 +2,7 @@ import {
     AttributeString,
     CastOptions,
     CharacterPF2e,
-    createCounteractStatistic,
     CreaturePF2e,
-    error,
     ErrorPF2e,
     getActorMaxRank,
     getSpellRankLabel,
@@ -15,19 +13,18 @@ import {
     OneToTen,
     Predicate,
     PredicateStatement,
+    R,
     SlotKey,
     SpellcastingEntryPF2e,
-    SpellcastingEntryWithCharges,
     SpellcastingSlotGroup,
     SpellCollection,
     SpellPF2e,
     Statistic,
     waitDialog,
-    warning,
     ZeroToTen,
-} from "module-helpers";
-import { ChargesSpellcastingSheetData, R } from "module-helpers/src";
-import { canCastRank, getStaffData, setStaffChargesValue } from "./_utils";
+} from "foundry-helpers";
+import { ChargesSpellcastingSheetData, SpellcastingEntryWithCharges } from "spellcasting";
+import { canCastRank, getStaffData, setStaffChargesValue } from ".";
 
 class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
     id: string;
@@ -39,15 +36,8 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
     staff: dailies.StaffPF2e;
 
     constructor(
-        {
-            id,
-            name,
-            actor,
-            statistic,
-            tradition,
-            castPredicate,
-        }: StaffSpellcastingConstructorParams<CharacterPF2e>,
-        staff: dailies.StaffPF2e
+        { id, name, actor, statistic, tradition, castPredicate }: StaffSpellcastingConstructorParams<CharacterPF2e>,
+        staff: dailies.StaffPF2e,
     ) {
         this.id = id;
         this.name = name;
@@ -121,7 +111,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
 
     async cast(
         spell: SpellPF2e,
-        options: CastOptions & { spontaneous?: { entryId: string; rank?: OneToFour } } = {}
+        options: CastOptions & { spontaneous?: { entryId: string; rank?: OneToFour } } = {},
     ): Promise<void> {
         const actor = this.actor;
         const castRank = spell.rank;
@@ -129,19 +119,19 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
         const staffFlags = getStaffData(this.actor);
 
         if (!staffFlags || canCast === null) {
-            error("staves.error.missing");
+            localize.error("staves.error.missing");
             return;
         }
 
         const staff = actor.inventory.get(staffFlags.staffId)!;
 
         if (!staff.isEquipped) {
-            warning("staves.error.notEquipped", { staff: staff.name });
+            localize.warning("staves.error.notEquipped", { staff: staff.name });
             return;
         }
 
         if (!canCast) {
-            warning("charges.error.notEnough", {
+            localize.warning("charges.error.notEnough", {
                 spell: spell.name,
                 rank: getSpellRankLabel(castRank),
             });
@@ -172,7 +162,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
                 actor.spellcasting.filter(
                     (entry): entry is SpellcastingEntryPF2e<CharacterPF2e> =>
                         entry.category === "spontaneous" &&
-                        (!options.spontaneous || options.spontaneous.entryId === entry.id)
+                        (!options.spontaneous || options.spontaneous.entryId === entry.id),
                 ),
                 R.map((e) => ({
                     id: e.id,
@@ -190,10 +180,10 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
                                 rank: getSpellRankLabel(r),
                                 value: e.system.slots[key].value,
                             };
-                        })
+                        }),
                     ),
                 })),
-                R.filter((e) => e.slots.length > 0)
+                R.filter((e) => e.slots.length > 0),
             );
 
             if (entries.length && options.spontaneous) {
@@ -205,9 +195,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
                 const multiEntries = entries.length > 1;
                 const hint = localize("staves.spontaneous", mustUseSpontaneous ? "must" : "would", {
                     rank: getSpellRankLabel(castRank),
-                    higher: entries.some((e) => e.slots.length > 1)
-                        ? localize("staves.spontaneous.higher")
-                        : "",
+                    higher: entries.some((e) => e.slots.length > 1) ? localize("staves.spontaneous.higher") : "",
                     from: localize("staves.spontaneous", multiEntries ? "multi" : "one", {
                         entry: entries[0].name,
                     }),
@@ -226,7 +214,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
                         width: 500,
                     },
                     yes: {
-                        callback: async (event, btn, dialog) => {
+                        callback: async (_event, _btn, dialog) => {
                             const selected = htmlQuery(dialog.element, "[name=entry]:checked");
                             return selected?.dataset;
                         },
@@ -284,10 +272,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
                 const rank = Number(_rank) as ZeroToTen;
                 return {
                     id: rank === 0 ? "cantrips" : rank,
-                    label:
-                        rank === 0
-                            ? "PF2E.Actor.Creature.Spellcasting.Cantrips"
-                            : getSpellRankLabel(rank),
+                    label: rank === 0 ? "PF2E.Actor.Creature.Spellcasting.Cantrips" : getSpellRankLabel(rank),
                     maxRank: rank === 0 ? maxCantripRank : rank,
                     number: rank,
                     active: spells.map((spell) => ({
@@ -295,7 +280,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
                         expended: !canCastRank(actor, rank),
                     })),
                 };
-            })
+            }),
         );
 
         return {
@@ -324,6 +309,29 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
             uses: getStaffData(actor)?.charges ?? { value: 0, max: 0 },
         } satisfies ChargesSpellcastingSheetData;
     }
+}
+
+/**
+ * https://github.com/foundryvtt/pf2e/blob/49dc6d70c7e7bb26d8039c97361e638bdef6a3bd/src/module/item/spellcasting-entry/helpers.ts#L10
+ */
+function createCounteractStatistic<TActor extends CreaturePF2e>(
+    ability: SpellcastingEntryWithCharges<TActor>,
+): Statistic<TActor> {
+    const actor = ability.actor;
+
+    // NPCs have neither a proficiency bonus nor specified attribute modifier: use their base attack roll modifier
+    const baseModifier = actor.isOfType("npc")
+        ? ability.statistic.check.modifiers.find((m) => m.type === "untyped" && m.slug === "base")?.clone()
+        : null;
+
+    const StatisticCls = actor.skills.acrobatics.constructor as typeof Statistic;
+    return new StatisticCls(actor, {
+        slug: "counteract",
+        label: "PF2E.Item.Spell.Counteract.Label",
+        attribute: ability.statistic.attribute,
+        rank: ability.statistic.rank || 1,
+        check: { type: "check", modifiers: [baseModifier].filter(R.isTruthy) },
+    });
 }
 
 interface StaffSpellcastingConstructorParams<TActor extends CreaturePF2e> {

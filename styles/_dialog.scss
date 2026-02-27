@@ -1,4 +1,8 @@
 .application.dialog {
+    &.pf2e-dailies {
+        min-width: 400px;
+    }
+
     &.pf2e-dailies-mind-weapon,
     &.pf2e-dailies-spontaneous {
         .dialog-content {
@@ -35,6 +39,7 @@
     }
 
     &.pf2e-dailies-retrain {
+        min-width: 500px;
         width: min-content;
 
         label {

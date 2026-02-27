@@ -1,7 +1,7 @@
 import { getDailies } from "dailies";
 import { DailyConfigRowValue, DailyRowData } from "daily";
 import { DailyInterface } from "interface";
-import { ActorPF2e, CharacterPF2e, getFlag, ItemSourcePF2e, localize } from "module-helpers";
+import { ActorPF2e, CharacterPF2e, getFlag, ItemSourcePF2e, localize } from "foundry-helpers";
 
 function canPrepareDailies(actor: ActorPF2e): boolean {
     return isValidCharacter(actor) && getActorFlag(actor, "rested") !== false;
@@ -11,10 +11,7 @@ function isValidCharacter(actor: Maybe<ActorPF2e>): actor is CharacterPF2e {
     return actor instanceof Actor && actor.isOfType("character");
 }
 
-function getActorFlag<K extends keyof DailyActorFlags>(
-    actor: CharacterPF2e,
-    key: K
-): DailyActorFlags[K] | undefined {
+function getActorFlag<K extends keyof DailyActorFlags>(actor: CharacterPF2e, key: K): DailyActorFlags[K] | undefined {
     return getFlag<DailyActorFlags[K]>(actor, key);
 }
 
@@ -49,11 +46,5 @@ type DailyActorFlags = {
     temporaryDeleted?: Record<string, ItemSourcePF2e>;
 };
 
-export {
-    canPrepareDailies,
-    getActorFlag,
-    getDailiesSummary,
-    getDisabledDailies,
-    openDailiesInterface,
-};
+export { canPrepareDailies, getActorFlag, getDailiesSummary, getDisabledDailies, openDailiesInterface };
 export type { DailyActorFlags };

@@ -1,9 +1,5 @@
-import {
-    onActorPrepareEmbeddedDocuments,
-    onCharacterPrepareData,
-    onCharacterSheetGetData,
-} from "actor";
-import { registerWrapper } from "module-helpers";
+import { onActorPrepareEmbeddedDocuments, onCharacterPrepareData, onCharacterSheetGetData } from "actor";
+import { registerWrapper } from "foundry-helpers";
 import { restForTheNight } from "rest";
 import {
     spellcastingEntryConsume,
@@ -15,25 +11,25 @@ function registerInitWrappers() {
     registerWrapper(
         "WRAPPER",
         "CONFIG.PF2E.Actor.documentClasses.character.prototype.prepareData",
-        onCharacterPrepareData
+        onCharacterPrepareData,
     );
 
     registerWrapper(
         "MIXED",
         "CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.prepareSiblingData",
-        spellcastingEntryPrepareSiblingData
+        spellcastingEntryPrepareSiblingData,
     );
 
     registerWrapper(
         "MIXED",
         "CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.consume",
-        spellcastingEntryConsume
+        spellcastingEntryConsume,
     );
 
     registerWrapper(
         "WRAPPER",
         "CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.getSheetData",
-        spellcastingEntryGetSheetData
+        spellcastingEntryGetSheetData,
     );
 }
 
@@ -42,12 +38,12 @@ function registerReadyWrappers() {
     registerWrapper(
         "WRAPPER",
         "CONFIG.Actor.documentClass.prototype.prepareEmbeddedDocuments",
-        onActorPrepareEmbeddedDocuments
+        onActorPrepareEmbeddedDocuments,
     );
     registerWrapper(
         "WRAPPER",
         "CONFIG.Actor.sheetClasses.character['pf2e.CharacterSheetPF2e'].cls.prototype.getData",
-        onCharacterSheetGetData
+        onCharacterSheetGetData,
     );
 }
 

@@ -1,8 +1,8 @@
-import { ActorInventory, ActorPF2e, getFlag, MODULE, PhysicalItemPF2e } from "module-helpers";
+import { ActorInventory, ActorPF2e, DatabaseDeleteOperation, getFlag, MODULE, PhysicalItemPF2e } from "foundry-helpers";
 
 function onActorPrepareEmbeddedDocuments<TActor extends ActorPF2e>(
     this: TActor,
-    wrapped: libWrapper.RegisterCallback
+    wrapped: libWrapper.RegisterCallback,
 ): void {
     wrapped();
 
@@ -10,7 +10,7 @@ function onActorPrepareEmbeddedDocuments<TActor extends ActorPF2e>(
         Object.defineProperty(this.inventory, "deleteTemporaryItems", {
             value: async function (
                 this: ActorInventory<TActor>,
-                operation?: Partial<DatabaseDeleteOperation<TActor>>
+                operation?: Partial<DatabaseDeleteOperation<TActor>>,
             ): Promise<PhysicalItemPF2e<TActor>[]> {
                 const actor = this.actor;
                 const specialResourceItems = Object.values(actor.synthetics.resources)
@@ -21,23 +21,19 @@ function onActorPrepareEmbeddedDocuments<TActor extends ActorPF2e>(
                         (i) =>
                             i.system.temporary &&
                             !getFlag(i, "temporary") &&
-                            (!i.sourceId || !specialResourceItems.includes(i.sourceId))
+                            (!i.sourceId || !specialResourceItems.includes(i.sourceId)),
                     )
                     .map((i) => i.id);
 
                 if (itemsToDelete.length) {
-                    const deletedItems = await actor.deleteEmbeddedDocuments(
-                        "Item",
-                        itemsToDelete,
-                        operation
-                    );
+                    const deletedItems = await actor.deleteEmbeddedDocuments("Item", itemsToDelete, operation);
                     return deletedItems as PhysicalItemPF2e<TActor>[];
                 }
 
                 return [];
             },
         });
-    } catch (error) {
+    } catch (error: any) {
         MODULE.error("ActorPF2e#prepareEmbeddedDocuments", error);
     }
 }

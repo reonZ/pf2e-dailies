@@ -1,7 +1,6 @@
 import { DailyRowDrop } from "daily";
 import {
     CompendiumBrowserFeatTab,
-    error,
     FeatFilters,
     FeatOrFeatureCategory,
     FeatPF2e,
@@ -17,8 +16,7 @@ import {
     SpellFilters,
     SpellPF2e,
     SpellTrait,
-    warning,
-} from "module-helpers";
+} from "foundry-helpers";
 import { DailyInterface } from "./application";
 
 async function onInterfaceDrop(this: DailyInterface, el: HTMLElement, event: DragEvent) {
@@ -28,25 +26,25 @@ async function onInterfaceDrop(this: DailyInterface, el: HTMLElement, event: Dra
     const data = getDragEventData(event);
 
     if (data?.type !== "Item" || typeof data.uuid !== "string") {
-        return error("interface.drop.error.wrongDataType");
+        return localize.error("interface.drop.error.wrongDataType");
     }
 
     const item = await fromUuid<SpellPF2e | FeatPF2e>(data.uuid);
     const compendium = await this.compendiumFilterFromElement(target);
 
     if (!item || !compendium) {
-        return error("interface.drop.error.wrongDataType");
+        return localize.error("interface.drop.error.wrongDataType");
     }
 
     if (item.parent) {
-        return error("interface.drop.error.wrongSource");
+        return localize.error("interface.drop.error.wrongSource");
     }
 
     if (item.type !== compendium.type) {
         return dropDataWarning(
             "type",
             game.i18n.localize(`TYPES.Item.${compendium.type}`),
-            game.i18n.localize(`TYPES.Item.${item.type}`)
+            game.i18n.localize(`TYPES.Item.${item.type}`),
         );
     }
 
@@ -55,7 +53,7 @@ async function onInterfaceDrop(this: DailyInterface, el: HTMLElement, event: Dra
         const result = await dailyRow.onDrop(item as any, this.actor);
 
         if (result === false) {
-            return warning("interface.drop.error.exclude", { item: item.name });
+            return localize.warning("interface.drop.error.exclude", { item: item.name });
         }
         if (typeof result === "string") {
             return ui.notifications.warn(result);
@@ -84,16 +82,8 @@ async function onInterfaceDrop(this: DailyInterface, el: HTMLElement, event: Dra
 
 function dropDataWarning(type: string, need?: string | string[], has?: string | string[]) {
     const localizedType = localize("interface.drop.error.type", type);
-    const formattedNeed = Array.isArray(need)
-        ? need.length === 1
-            ? need[0]
-            : `[${need.join(", ")}]`
-        : need;
-    const formattedHas = Array.isArray(has)
-        ? has.length === 1
-            ? has[0]
-            : `[${has.join(", ")}]`
-        : has;
+    const formattedNeed = Array.isArray(need) ? (need.length === 1 ? need[0] : `[${need.join(", ")}]`) : need;
+    const formattedHas = Array.isArray(has) ? (has.length === 1 ? has[0] : `[${has.join(", ")}]`) : has;
     const localizedHas = formattedHas || localize("interface.drop.error.none");
     const localizedRequire =
         need && has
@@ -102,10 +92,10 @@ function dropDataWarning(type: string, need?: string | string[], has?: string | 
                   has: localizedHas,
               })
             : need
-            ? localize("interface.drop.error.missing", { need: formattedNeed })
-            : localize("interface.drop.error.invalid", { has: localizedHas });
+              ? localize("interface.drop.error.missing", { need: formattedNeed })
+              : localize("interface.drop.error.invalid", { has: localizedHas });
 
-    warning("interface.drop.error.wrongData", {
+    localize.warning("interface.drop.error.wrongData", {
         type: localizedType,
         require: localizedRequire,
     });
@@ -134,7 +124,7 @@ function validateSpell(item: SpellPF2e, filter: SpellFilters): boolean {
                 isFocusSpell ? "focus" : null,
                 isRitual ? "ritual" : null,
             ] as SpellTrait[],
-            R.isTruthy
+            R.isTruthy,
         );
 
         const sortedFilterCategories = filterCategories.sort();
@@ -144,9 +134,7 @@ function validateSpell(item: SpellPF2e, filter: SpellFilters): boolean {
             dropDataWarning(
                 "categories",
                 sortedFilterCategories.map((x) => game.i18n.localize(CONFIG.PF2E.spellTraits[x])),
-                sortedItemCategories.map((x) =>
-                    game.i18n.localize(CONFIG.PF2E.spellTraits[x] ?? "TYPES.Item.spell")
-                )
+                sortedItemCategories.map((x) => game.i18n.localize(CONFIG.PF2E.spellTraits[x] ?? "TYPES.Item.spell")),
             );
             return false;
         }
@@ -158,7 +146,7 @@ function validateSpell(item: SpellPF2e, filter: SpellFilters): boolean {
         dropDataWarning(
             "traditions",
             filterTraditions.map((x) => game.i18n.localize(CONFIG.PF2E.magicTraditions[x])),
-            itemTraditions.map((x) => game.i18n.localize(CONFIG.PF2E.magicTraditions[x]))
+            itemTraditions.map((x) => game.i18n.localize(CONFIG.PF2E.magicTraditions[x])),
         );
         return false;
     }
@@ -183,7 +171,7 @@ function validateFeat(item: FeatPF2e, filter: FeatFilters): boolean {
         dropDataWarning(
             "category",
             filterCategory.map((x) => game.i18n.localize(CONFIG.PF2E.featCategories[x])),
-            game.i18n.localize(CONFIG.PF2E.featCategories[item.category])
+            game.i18n.localize(CONFIG.PF2E.featCategories[item.category]),
         );
         return false;
     }
@@ -192,7 +180,7 @@ function validateFeat(item: FeatPF2e, filter: FeatFilters): boolean {
     if (filterSkills.length) {
         const prereqs: { value: string }[] = item.system.prerequisites.value;
         const prerequisitesArr = prereqs.map((prerequisite) =>
-            prerequisite?.value ? prerequisite.value.toLowerCase() : ""
+            prerequisite?.value ? prerequisite.value.toLowerCase() : "",
         );
         const translatedSkills = getTranslatedSkills(true);
         const skillList = Object.entries(translatedSkills);
@@ -212,7 +200,7 @@ function validateFeat(item: FeatPF2e, filter: FeatFilters): boolean {
         if (missingSkills.length) {
             dropDataWarning(
                 "skills",
-                missingSkills.map((x) => translatedSkills[x])
+                missingSkills.map((x) => translatedSkills[x]),
             );
             return false;
         }
@@ -230,14 +218,8 @@ function validateDefault(item: FeatPF2e | SpellPF2e, filter: FeatFilters | Spell
     const tab = game.pf2e.compendiumBrowser.tabs[item.type as "spell" | "feat"];
     const itemTraits = item.system.traits.value.map((t: string) => t.replace(/^hb_/, ""));
 
-    if (
-        !(tab as CompendiumBrowserFeatTab)["filterTraits"](
-            itemTraits,
-            traits.selected,
-            traits.conjunction
-        )
-    ) {
-        warning("interface.drop.error.wrongTraits");
+    if (!(tab as CompendiumBrowserFeatTab)["filterTraits"](itemTraits, traits.selected, traits.conjunction)) {
+        localize.warning("interface.drop.error.wrongTraits");
         return false;
     }
 
@@ -246,7 +228,7 @@ function validateDefault(item: FeatPF2e | SpellPF2e, filter: FeatFilters | Spell
         dropDataWarning(
             "rarity",
             filterRarity.map((x) => game.i18n.localize(CONFIG.PF2E.rarityTraits[x])),
-            game.i18n.localize(CONFIG.PF2E.rarityTraits[item.rarity])
+            game.i18n.localize(CONFIG.PF2E.rarityTraits[item.rarity]),
         );
         return false;
     }

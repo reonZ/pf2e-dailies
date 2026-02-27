@@ -12,7 +12,7 @@ import {
     sortByLocaleCompare,
     SYSTEM,
     ValueAndMax,
-} from "module-helpers";
+} from "foundry-helpers";
 
 const SKIP_UNIQUES = [
     "jevzf9JbJJibpqaI", // skilled

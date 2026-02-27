@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { ConsumablePF2e, localize } from "module-helpers";
+import { ConsumablePF2e, localize } from "foundry-helpers";
 import { utils } from "utils";
 
 const rationsUUID = "Compendium.pf2e.equipment-srd.Item.L9ZV076913otGtiB";
@@ -13,8 +13,8 @@ const rations = createDaily({
             required: true,
         },
     ],
-    label: (actor, items) => items.rations.name,
-    rows: (actor, items) => {
+    label: (_actor, items) => items.rations.name,
+    rows: (_actor, items) => {
         const rations = items.rations as ConsumablePF2e;
         const { value, max } = rations.uses;
         const remaining = (rations.quantity - 1) * max + value;
@@ -71,8 +71,8 @@ const rations = createDaily({
             remaining < 1
                 ? localize("message.rations.last", { name })
                 : remaining < 3
-                ? localize("message.rations.almost", { name, nb: remaining })
-                : localize("message.rations.used", { name, nb: remaining });
+                  ? localize("message.rations.almost", { name, nb: remaining })
+                  : localize("message.rations.used", { name, nb: remaining });
 
         messages.addRaw(message, 200);
     },

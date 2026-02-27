@@ -12,9 +12,9 @@ import {
     R,
     render,
     setFlag,
-    SpellcastingEntryPF2eWithCharges,
     waitDialog,
-} from "module-helpers";
+} from "foundry-helpers";
+import { SpellcastingEntryPF2eWithCharges } from "spellcasting";
 
 const RETRAIN_PATH = {
     vessel: ANIMIST_VESSELS_PATH,
@@ -24,11 +24,7 @@ const RETRAIN_PATH = {
 async function renderChargesEntries(
     actor: CharacterPF2e | NPCPF2e,
     parentElement: HTMLElement,
-    callback: (
-        entryContainer: HTMLElement,
-        chargesElement: HTMLElement,
-        toggleElement: HTMLElement
-    ) => void
+    callback: (entryContainer: HTMLElement, chargesElement: HTMLElement, toggleElement: HTMLElement) => void,
 ) {
     const entries = actor.spellcasting.regular as SpellcastingEntryPF2eWithCharges[];
     const chargesEntries = entries.filter((entry) => entry.system.prepared.value === "charges");
@@ -40,28 +36,18 @@ async function renderChargesEntries(
         const charges = entry.system.slots.slot1;
         const chargesElement = await createChargesElement(actor, charges, true);
 
-        addListener(
-            chargesElement,
-            "[data-action='change-charges']",
-            "change",
-            (el: HTMLInputElement) => {
-                const value = Math.clamp(el.valueAsNumber, 0, charges.max);
-                entry.update({ "system.slots.slot1.value": value });
-            }
-        );
+        addListener(chargesElement, "[data-action='change-charges']", "change", (el: HTMLInputElement) => {
+            const value = Math.clamp(el.valueAsNumber, 0, charges.max);
+            entry.update({ "system.slots.slot1.value": value });
+        });
 
-        addListener(
-            chargesElement,
-            "[data-action='change-max-charges']",
-            "change",
-            (el: HTMLInputElement) => {
-                const value = Math.max(el.valueAsNumber, 0);
-                entry.update({
-                    "system.slots.slot1.max": value,
-                    "system.slots.slot1.value": Math.min(value, charges.value),
-                });
-            }
-        );
+        addListener(chargesElement, "[data-action='change-max-charges']", "change", (el: HTMLInputElement) => {
+            const value = Math.max(el.valueAsNumber, 0);
+            entry.update({
+                "system.slots.slot1.max": value,
+                "system.slots.slot1.value": Math.min(value, charges.value),
+            });
+        });
 
         addListener(chargesElement, "[data-action='reset-charges']", async () => {
             entry.update({ "system.slots.slot1.value": charges.max });
@@ -84,7 +70,7 @@ async function createChargesElement(
     actor: ActorPF2e,
     charges: { value: number; max: number },
     withMax: boolean,
-    annotation?: EquipAnnotationData
+    annotation?: EquipAnnotationData,
 ) {
     if (annotation) {
         annotation.label = game.i18n.localize(annotation.label).replace(/\(.+?\)/, "");
@@ -123,7 +109,7 @@ function createRetrainBtn(actor: ActorPF2e, selectedId: string, type: RetrainTyp
     });
 
     if (isOwner) {
-        btn.addEventListener("click", async (event) => {
+        btn.addEventListener("click", async () => {
             await retrain(actor, selectedId, type);
         });
     }
@@ -151,7 +137,7 @@ async function retrain(actor: ActorPF2e, selectedId: string, type: string) {
             };
         }),
         R.filter(R.isTruthy),
-        R.sortBy(R.prop("label"))
+        R.sortBy(R.prop("label")),
     );
 
     const result = await waitDialog<{ id: string }>({
@@ -164,7 +150,6 @@ async function retrain(actor: ActorPF2e, selectedId: string, type: string) {
             type,
         },
         i18n: "retrain",
-        minWidth: "500px",
         yes: {
             icon: "fa-solid fa-retweet",
         },

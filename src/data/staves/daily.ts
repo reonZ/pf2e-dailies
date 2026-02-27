@@ -2,14 +2,14 @@ import { createDaily, DailyRowSelect, DailyRowSelectOption, DailyRowSelectOption
 import {
     CharacterPF2e,
     FeatPF2e,
-    hasItemWithSourceId,
+    findItemWithSourceId,
     localize,
     R,
     SlotKey,
     SpellcastingEntryPF2e,
     WeaponPF2e,
     ZeroToTen,
-} from "module-helpers";
+} from "foundry-helpers";
 import { utils } from "utils";
 import { getSpells, getStaves, isStaff } from ".";
 
@@ -41,7 +41,7 @@ const staves = createDaily({
         let maxCharges = 0;
         const actorCharges = utils.getActorMaxRank(actor);
         const activationType =
-            actor.getStatistic("kineticist") && hasItemWithSourceId(actor, KINETIC_ACTIVATION, "feat")
+            actor.getStatistic("kineticist") && findItemWithSourceId(actor, KINETIC_ACTIVATION, "feat")
                 ? "kineticist"
                 : undefined;
 
@@ -109,7 +109,7 @@ const staves = createDaily({
 
         return { entries, maxCharges, preparedEntries, activationType, runelordSin };
     },
-    rows: (actor, items, custom) => {
+    rows: (actor, _items, custom) => {
         if (!custom.entries) {
             return [];
         }
@@ -122,7 +122,7 @@ const staves = createDaily({
         )[];
 
         const isRunelord = !!custom.runelordSin;
-        const hasStaffNexus = hasItemWithSourceId(actor, STAFF_NEXUS, "feat");
+        const hasStaffNexus = !!findItemWithSourceId(actor, STAFF_NEXUS, "feat");
 
         const weapons = isRunelord
             ? getPotentialBonds(actor).map((weapon) => {

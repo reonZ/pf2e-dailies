@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { ResistanceType, sortByLocaleCompare } from "module-helpers";
+import { ItemUUID, ResistanceType, sortByLocaleCompare } from "foundry-helpers";
 import { SimplifiableRuleValue, utils } from "utils";
 
 function createResistanceDaily(
@@ -7,7 +7,7 @@ function createResistanceDaily(
     uuid: ItemUUID,
     resistances: ResistanceType[],
     resistance: SimplifiableRuleValue,
-    isRandom = false
+    isRandom = false,
 ) {
     return createDaily({
         key,
@@ -18,7 +18,7 @@ function createResistanceDaily(
                 required: true,
             },
         ],
-        label: (actor, items) => items.item.name,
+        label: (_actor, items) => items.item.name,
         rows: () => {
             const options = resistances.map((value) => ({
                 value,

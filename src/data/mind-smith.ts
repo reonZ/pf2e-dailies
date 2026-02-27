@@ -14,7 +14,7 @@ import {
     WeaponSource,
     WeaponTrait,
     ZeroToFour,
-} from "module-helpers";
+} from "foundry-helpers";
 
 const mindUUID = "Compendium.pf2e.feats-srd.Item.juikoiIA0Jy8PboY";
 const mentalUUID = "Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky";

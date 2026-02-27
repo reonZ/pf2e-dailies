@@ -1,5 +1,5 @@
 import { createDaily, DailyRowComboData } from "daily";
-import { SkillSlug } from "module-helpers";
+import { SkillSlug } from "foundry-helpers";
 import { utils } from "utils";
 
 const ancestralUUID = "Compendium.pf2e.feats-srd.Item.WoLh16gyDp8y9WOZ";
@@ -18,7 +18,7 @@ const ancestralLongevity = createDaily({
             uuid: expertUUID,
         },
     ],
-    label: (actor, items) => items.trained.name,
+    label: (_actor, items) => items.trained.name,
     rows: (actor, items) => {
         const skillList = utils.getSkills();
         const actorSkills = actor.skills;

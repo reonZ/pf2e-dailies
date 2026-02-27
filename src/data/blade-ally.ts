@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { getActorWeapons, getItemFromUuid, MODULE, R, WeaponPropertyRuneType } from "module-helpers";
+import { getItemFromUuid, MODULE, R, WeaponPropertyRuneType } from "foundry-helpers";
 import { utils } from "utils";
 
 const bladeUUID = "Compendium.pf2e.classfeatures.Item.EtltLdiy9kNfHU0c";
@@ -23,7 +23,7 @@ const bladeAlly = createDaily({
     ],
     label: (_actor, items) => items.blade.name,
     rows: (actor, items) => {
-        const weapons = getActorWeapons(actor).filter((weapon) => !weapon.isAlchemical);
+        const weapons = utils.getActorWeapons(actor).filter((weapon) => !weapon.isAlchemical);
         if (!weapons.length) return [];
 
         const runes: WeaponPropertyRuneType[] = [

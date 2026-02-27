@@ -19,14 +19,10 @@ import {
 import {
     ActorPF2e,
     addListenerAll,
-    ApplicationConfiguration,
-    ApplicationRenderOptions,
     CharacterPF2e,
     CheckboxData,
     dataToDatasetString,
-    error,
     FeatFilters,
-    getCompendiumFilters,
     getFlag,
     htmlClosest,
     htmlQuery,
@@ -37,9 +33,7 @@ import {
     SpellFilters,
     stringBoolean,
     stringNumber,
-    templateLocalize,
-    warning,
-} from "module-helpers";
+} from "foundry-helpers";
 import { DailyConfig, onInterfaceDrop, processDailies } from ".";
 
 class DailyInterface extends foundry.applications.api.ApplicationV2 {
@@ -51,7 +45,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
     #randomInterval?: NodeJS.Timeout;
     #dropFilters: Record<string, DropFilter> = {};
 
-    static DEFAULT_OPTIONS: DeepPartial<ApplicationConfiguration> = {
+    static DEFAULT_OPTIONS: DeepPartial<fa.ApplicationConfiguration> = {
         window: {
             positioned: true,
             resizable: false,
@@ -70,11 +64,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         drop: 0,
     };
 
-    constructor(
-        actor: CharacterPF2e,
-        dailies: PreparedDailies,
-        options: Partial<ApplicationOptions> = {}
-    ) {
+    constructor(actor: CharacterPF2e, dailies: PreparedDailies, options: Partial<fa.ApplicationConfiguration> = {}) {
         options.id = `pf2e-dailies-interface-${actor.uuid}`;
         super(options);
 
@@ -122,8 +112,8 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             })());
 
             return foundry.utils.deepClone(dropFilter);
-        } catch (err) {
-            error("error.unexpected");
+        } catch (err: any) {
+            localize.error("error.unexpected");
             console.error(err);
             console.error(`The error occured when trying to open a drop filter.`);
         }
@@ -134,7 +124,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         clearInterval(this.#randomInterval);
     }
 
-    async _renderFrame(options: ApplicationRenderOptions) {
+    async _renderFrame(options: fa.ApplicationRenderOptions) {
         const frame = await super._renderFrame(options);
 
         const configLabel = localize("interface.config");
@@ -148,7 +138,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         return frame;
     }
 
-    async _prepareContext(options: ApplicationRenderOptions): Promise<DailyContext> {
+    async _prepareContext(_options: fa.ApplicationRenderOptions): Promise<DailyContext> {
         const actor = this.actor;
 
         let hasAlert = false;
@@ -164,8 +154,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
                 if (disabled[daily.key]) return;
 
-                const custom =
-                    typeof daily.prepare === "function" ? await daily.prepare(actor, items) : {};
+                const custom = typeof daily.prepare === "function" ? await daily.prepare(actor, items) : {};
                 const rows = await daily.rows(actor, items, custom);
 
                 const dailyTemplate: DailyTemplate = {
@@ -181,8 +170,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                         continue;
                     }
 
-                    const rowLabel =
-                        typeof row.label === "string" ? game.i18n.localize(row.label) : row.slug;
+                    const rowLabel = typeof row.label === "string" ? game.i18n.localize(row.label) : row.slug;
 
                     const rowTemplate: RowTemplate = {
                         type: row.type,
@@ -204,7 +192,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                         type: row.type,
                         row: row.slug,
                         save: stringBoolean(isSavedRow),
-                        empty: stringBoolean(row.empty ?? false),
+                        empty: stringBoolean(!!row.empty),
                     };
 
                     if (rowIsOfType(row, "select", "combo", "random")) {
@@ -231,11 +219,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                             rowTemplate.options.push({ groupEnd: true });
                         }
 
-                        if (
-                            rowIsOfType(row, "combo", "select") &&
-                            row.unique &&
-                            rowTemplate.options.length > 1
-                        ) {
+                        if (rowIsOfType(row, "combo", "select") && row.unique && rowTemplate.options.length > 1) {
                             rowTemplate.unique = row.unique;
                         }
 
@@ -246,7 +230,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                                 ? undefined
                                 : rowTemplate.options.find(
                                       (option): option is DailyRowSelectOptionValue =>
-                                          "value" in option && option.value === selected
+                                          "value" in option && option.value === selected,
                                   );
 
                             rowTemplate.value = (isInput ? selected : option?.label) ?? "";
@@ -261,13 +245,13 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                     } else if (rowIsOfType(row, "drop")) {
                         const { name, uuid } = R.isPlainObject(row.value)
                             ? row.value
-                            : getSavedFlag<DailyRowDropData>() ?? {};
+                            : (getSavedFlag<DailyRowDropData>() ?? {});
 
                         if (row.filter.type === "feat") {
                             this.#featUuids ??= R.pipe(
                                 this.actor.itemTypes.feat,
                                 R.map((feat) => feat.sourceId),
-                                R.filter(R.isTruthy)
+                                R.filter(R.isTruthy),
                             );
                         }
 
@@ -290,8 +274,8 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                                 row.color === true
                                     ? "var(--notify-color)"
                                     : typeof row.color === "string"
-                                    ? row.color
-                                    : "var(--color-text-primary)";
+                                      ? row.color
+                                      : "var(--color-text-primary)";
                         }
                     } else if (rowIsOfType(row, "input")) {
                         rowTemplate.value = getSavedFlag<string>() ?? "";
@@ -305,17 +289,14 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                 if (dailyTemplate.rows.length) {
                     templates.push(dailyTemplate);
                 }
-            })
+            }),
         );
 
         const rows: RowTemplate[] = [];
         const groups: DailyTemplate[] = [];
 
         for (const template of templates) {
-            if (
-                template.rows.length === 1 &&
-                !["alert", "notify"].includes(template.rows[0].type)
-            ) {
+            if (template.rows.length === 1 && !["alert", "notify"].includes(template.rows[0].type)) {
                 const row = template.rows[0];
                 row.label = template.label;
                 rows.push(row);
@@ -332,31 +313,22 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         return {
             rows,
             groups,
-            i18n: templateLocalize("interface"),
             hasDailies,
             hasAlert,
             canAccept: hasDailies && !hasAlert,
         };
     }
 
-    async _renderHTML(context: DailyContext, options: ApplicationRenderOptions): Promise<string> {
+    async _renderHTML(context: DailyContext, _options: fa.ApplicationRenderOptions): Promise<string> {
         return render("interface", context);
     }
 
-    _replaceHTML(result: string, content: HTMLElement, options: ApplicationRenderOptions) {
+    _replaceHTML(result: string, content: HTMLElement, _options: fa.ApplicationRenderOptions) {
         content.innerHTML = result;
         this.#addEventListeners(content);
     }
 
-    _onClickAction(event: PointerEvent, el: HTMLElement) {
-        type EventAction =
-            | "accept"
-            | "cancel"
-            | "clear-field"
-            | "configs"
-            | "open-browser"
-            | "resolve-alert";
-
+    _onClickAction(_event: PointerEvent, el: HTMLElement) {
         const action = el.dataset.action as EventAction;
 
         if (action === "accept") {
@@ -382,20 +354,16 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             labelEl.classList.remove("empty");
         }
 
-        const emptyRows = htmlQueryAll<HTMLInputElement | HTMLSelectElement>(
-            html,
-            "[data-empty='false']"
-        ).filter((el) => el.value.trim() === "");
+        const emptyRows = htmlQueryAll<HTMLInputElement | HTMLSelectElement>(html, "[data-empty='false']").filter(
+            (el) => el.value.trim() === "",
+        );
 
         if (emptyRows.length) {
-            warning("interface.error.empty");
+            localize.warning("interface.error.empty");
 
             for (const inputEl of emptyRows) {
                 const { row } = inputEl.dataset as RowElementDataset;
-                const labelEl = htmlQuery(
-                    htmlClosest(inputEl, ".group"),
-                    `label[data-row="${row}"]`
-                );
+                const labelEl = htmlQuery(htmlClosest(inputEl, ".group"), `label[data-row="${row}"]`);
 
                 labelEl?.classList.add("empty");
             }
@@ -415,41 +383,34 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         const compendium = await this.compendiumFilterFromElement(inputEl);
 
         if (compendium) {
-            game.pf2e.compendiumBrowser.openTab(
-                // @ts-ignore
-                compendium.type,
-                { filter: compendium.filter }
-            );
+            game.pf2e.compendiumBrowser.openTab(compendium.type, { filter: compendium.filter });
         }
     }
 
-    async #convertToCompendiumFilter<T extends DailyRowDropType>(
-        dropFilter: DailyRowDropFilters[T]
-    ) {
+    async #convertToCompendiumFilter<T extends DailyRowDropType>(dropFilter: DailyRowDropFilters[T]) {
         const type = dropFilter.type;
-        const compendiumFilter = await getCompendiumFilters(type);
+        const browserTab = game.pf2e.compendiumBrowser.tabs[type];
+        const compendiumFilter = await browserTab.getFilterData();
 
         if (filterIsOfType(dropFilter, "spell")) {
             const rank = Array.isArray(dropFilter.search.rank)
                 ? dropFilter.search.rank.map(stringNumber)
                 : typeof dropFilter.search.rank === "string"
-                ? simplifyValue(this.actor, dropFilter.search.rank)
-                : dropFilter.search.rank;
+                  ? simplifyValue(this.actor, dropFilter.search.rank)
+                  : dropFilter.search.rank;
 
             dropFilter.search.rank = Array.isArray(rank)
                 ? rank
                 : typeof rank === "number"
-                ? R.range(1, rank + 1).map(stringNumber)
-                : undefined;
+                  ? R.range(1, rank + 1).map(stringNumber)
+                  : undefined;
         }
 
-        const checkboxes = Object.entries(compendiumFilter.checkboxes).concat([
-            ["source", compendiumFilter.source],
-        ]);
+        const checkboxes = Object.entries(compendiumFilter.checkboxes).concat([["source", compendiumFilter.source]]);
         for (const checkboxEntry of checkboxes) {
             const [checkboxName, filterCheckbox] = checkboxEntry as [
                 keyof typeof compendiumFilter.checkboxes,
-                CheckboxData
+                CheckboxData,
             ];
             const searchCheckbox = dropFilter.search[checkboxName];
 
@@ -480,8 +441,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                 traitsFilter.conjunction = searchTraits.conjunction ?? "and";
 
                 for (const select of searchTraits.selected) {
-                    const selection =
-                        typeof select === "string" ? { value: select, not: undefined } : select;
+                    const selection = typeof select === "string" ? { value: select, not: undefined } : select;
                     traitsFilter.selected.push(selection as any);
                 }
             }
@@ -542,7 +502,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
             () => {
                 this.#settingsApp = undefined;
             },
-            { once: true }
+            { once: true },
         );
         this.#settingsApp.render(true);
     }
@@ -551,7 +511,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         const uniqueTag = el.dataset.unique as string;
         const uniqueOptions = new Set<string>();
         const selectElements = htmlClosest(el, ".dailies")?.querySelectorAll<HTMLSelectElement>(
-            `select[data-unique="${uniqueTag}"]`
+            `select[data-unique="${uniqueTag}"]`,
         );
 
         for (const selectEl of selectElements ?? []) {
@@ -561,9 +521,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
             const optionUniqueValue = () => {
                 const option = selectOptions[index];
-                return option.dataset.skipUnique === "true"
-                    ? undefined
-                    : option.dataset.unique ?? option.value;
+                return option.dataset.skipUnique === "true" ? undefined : (option.dataset.unique ?? option.value);
             };
 
             const optionExists = () => {
@@ -618,7 +576,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
         const option = value
             ? Array.from(selectEl.options).find(
-                  (option) => option.value === value || option.text.toLowerCase() === value
+                  (option) => option.value === value || option.text.toLowerCase() === value,
               )
             : undefined;
 
@@ -647,26 +605,18 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
         addListenerAll(html, ".combo select", "change", this.#onComboSelectChange.bind(this));
         addListenerAll(html, ".input input[type='text']", "change", this.#onInputChange.bind(this));
 
-        addListenerAll(
-            html,
-            "input[type='text']",
-            "keyup",
-            (el, event) => event.key === "Enter" && el.blur()
-        );
+        addListenerAll(html, "input[type='text']", "keyup", (el, event) => event.key === "Enter" && el.blur());
 
         const randomElements = html.querySelectorAll<HTMLSelectElement>("select.random");
         if (randomElements.length) {
             this.#randomInterval = setInterval(() => {
                 for (const randomElement of randomElements) {
-                    randomElement.selectedIndex =
-                        (randomElement.selectedIndex + 1) % randomElement.options.length;
+                    randomElement.selectedIndex = (randomElement.selectedIndex + 1) % randomElement.options.length;
                 }
             }, 1000);
         }
 
-        const dropFeatInputs = html.querySelectorAll<HTMLInputElement>(
-            "input[data-droptype='feat']"
-        );
+        const dropFeatInputs = html.querySelectorAll<HTMLInputElement>("input[data-droptype='feat']");
         for (const dropFeatInput of dropFeatInputs) {
             const uuid = dropFeatInput.dataset.uuid;
             if (uuid && this.#featUuids.includes(uuid)) {
@@ -691,7 +641,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
 
 function filterIsOfType<T extends DailyRowDropType>(
     filter: DailyRowDropFilter,
-    type: T
+    type: T,
 ): filter is DailyRowDropFilters[T] {
     return filter.type === type;
 }
@@ -722,10 +672,11 @@ function isSimplifiableValue(value: any): value is SimplifiableValue {
     );
 }
 
+type EventAction = "accept" | "cancel" | "clear-field" | "configs" | "open-browser" | "resolve-alert";
+
 type SimplifiableValue = number | `${number}` | "level" | "half";
 
-type DailyRowDropFilter<TRowSlug extends string = string> =
-    DailyRowDropFilters<TRowSlug>[DailyRowDropType];
+type DailyRowDropFilter<TRowSlug extends string = string> = DailyRowDropFilters<TRowSlug>[DailyRowDropType];
 
 type DailyRowDropFilters<TRowSlug extends string = string> = {
     feat: DailyRowDropFeatFilter<TRowSlug>;
@@ -752,17 +703,9 @@ type RowElementDataset = RowElementDatasetBase & {
     empty: `${boolean}`;
 };
 
-type DailyContext = {
+type DailyContext = fa.ApplicationRenderContext & {
     rows: RowTemplate[];
     groups: DailyTemplate[];
-    i18n: (
-        key: string,
-        {
-            hash,
-        }: {
-            hash: Record<string, string>;
-        }
-    ) => string;
     hasDailies: boolean;
     hasAlert: boolean;
     canAccept: boolean;

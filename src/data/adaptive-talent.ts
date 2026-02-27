@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { localize, R, SYSTEM } from "module-helpers";
+import { ItemUUID, localize, R, SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
 const adaptiveTalent = createDaily({

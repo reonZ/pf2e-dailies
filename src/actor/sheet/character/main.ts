@@ -1,6 +1,7 @@
 import { canPrepareDailies, getActorFlag, getDailiesSummary, openDailiesInterface } from "actor";
 import { getStaffData } from "data";
 import {
+    ActorSheetOptions,
     CharacterPF2e,
     CharacterSheetData,
     CharacterSheetPF2e,
@@ -10,7 +11,7 @@ import {
     localize,
     MODULE,
     R,
-} from "module-helpers";
+} from "foundry-helpers";
 import { updateActionsTab, updateSpellsTab } from ".";
 
 async function onCharacterSheetGetData(
@@ -36,7 +37,7 @@ async function onCharacterSheetGetData(
 
         const collectionGroup = knownCollections.splice(collectionIndex, 1)[0];
         data.spellCollectionGroups.activations.unshift(collectionGroup);
-    } catch (error) {
+    } catch (error: any) {
         MODULE.error("CharacterSheetPF2e#getData", error);
     }
 

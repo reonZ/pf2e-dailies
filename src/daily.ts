@@ -5,13 +5,14 @@ import {
     FeatSource,
     ItemPF2e,
     ItemSourcePF2e,
-    localizeIfExist,
+    ItemUUID,
+    localize,
     MagicTradition,
     Rarity,
     RuleElementSource,
     SkillSlug,
     SpellPF2e,
-} from "module-helpers";
+} from "foundry-helpers";
 
 function createDaily<
     TItemSlug extends string = string,
@@ -36,7 +37,7 @@ async function getDailyLabel(
         ? daily.label(actor, items)
         : typeof daily.label === "string"
           ? game.i18n.localize(daily.label)
-          : (localizeIfExist("builtin", daily.key) ?? daily.key);
+          : (localize.ifExist("builtin", daily.key) ?? daily.key);
 }
 
 type Daily<

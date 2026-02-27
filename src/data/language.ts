@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { Language } from "module-helpers";
+import { ItemUUID, Language } from "foundry-helpers";
 import { utils } from "utils";
 
 function createLanguageDaily(key: string, uuid: ItemUUID) {
@@ -12,7 +12,7 @@ function createLanguageDaily(key: string, uuid: ItemUUID) {
                 required: true,
             },
         ],
-        label: (actor, items) => items.item.name,
+        label: (_actor, items) => items.item.name,
         rows: (actor) => {
             const languageList = utils.getLanguages();
             const actorLanguages = actor.system.details.languages.value;

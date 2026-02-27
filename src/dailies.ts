@@ -28,15 +28,16 @@ import {
 } from "data";
 import {
     CharacterPF2e,
-    error,
     getItemSourceId,
     getSetting,
     isSupressedFeat,
     ItemPF2e,
+    ItemUUID,
+    localize,
     MapOfArrays,
     MODULE,
     R,
-} from "module-helpers";
+} from "foundry-helpers";
 
 const DAILY_SCHEMA = "3.0.0";
 const MODULE_DAILIES: Map<string, Daily> = new Map();
@@ -125,10 +126,10 @@ const BUILTINS_DAILIES: Daily[] = [
 
 const ALL_DAILIES: Map<string, Daily> = new Map();
 
-const BUILTINS_UUIDS = new MapOfArrays<PreConditionDaily, ItemUUID>();
+const BUILTINS_UUIDS = new MapOfArrays<ItemUUID, PreConditionDaily>();
 const BUILTINS_ALWAYS: AlwaysDaily[] = [];
 
-const UUIDS = new MapOfArrays<PreConditionDaily, ItemUUID>();
+const UUIDS = new MapOfArrays<ItemUUID, PreConditionDaily>();
 const ALWAYS: AlwaysDaily[] = [];
 
 function prepareDailies(
@@ -160,7 +161,7 @@ function prepareDailies(
                 uuids.set(R.isFunction(uuid) ? uuid() : uuid, { daily, index: i, condition });
             }
         } catch (err) {
-            error("error.unexpected");
+            localize.error("error.unexpected");
             console.error(err);
             console.error(`The error occured during data gathering of ${prefix}.${originalKey}`);
         }
@@ -269,7 +270,7 @@ async function getDailies(actor: CharacterPF2e): Promise<PreparedDailies> {
                 tmpDaily.prepared.items[itemSlug] = item;
             }
         } catch (err) {
-            error("error.unexpected");
+            localize.error("error.unexpected");
             console.error(err);
             console.error(`The error occured during data gathering of ${daily.key}`);
         }

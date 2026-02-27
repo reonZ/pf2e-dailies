@@ -1,6 +1,5 @@
 import { MODULE_DAILIES, parseDailies } from "dailies";
 import { createDaily, Daily } from "daily";
-import { error } from "module-helpers";
 import { utils } from "utils";
 import { isValidDaily } from ".";
 import {
@@ -10,6 +9,7 @@ import {
     createResistanceDaily,
     createScrollChainDaily,
 } from "data";
+import { localize } from "foundry-helpers";
 
 async function parseCustomDaily(custom: CustomDaily): Promise<Daily | undefined> {
     try {
@@ -21,7 +21,7 @@ async function parseCustomDaily(custom: CustomDaily): Promise<Daily | undefined>
             "createLanguageDaily",
             "createResistanceDaily",
             "createScrollChainDaily",
-            custom.code
+            custom.code,
         );
         const daily = await fn(
             utils,
@@ -30,14 +30,14 @@ async function parseCustomDaily(custom: CustomDaily): Promise<Daily | undefined>
             createLoreSkillDaily,
             createLanguageDaily,
             createResistanceDaily,
-            createScrollChainDaily
+            createScrollChainDaily,
         );
 
         if (isValidDaily(daily)) {
             return daily;
         }
-    } catch (err) {
-        error("error.unexpected");
+    } catch (err: any) {
+        localize.error("error.unexpected");
         console.error(err);
         console.error(`The error occured during creation of custom daily for ${custom.key}`);
     }

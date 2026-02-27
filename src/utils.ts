@@ -4,33 +4,34 @@ import {
     CharacterPF2e,
     ConsumableSource,
     createChatLink,
-    createConsumableFromSpell,
-    CreateSpellcastingSource,
-    createSpellcastingSource,
+    CreaturePF2e,
     DamageType,
     FeatOrFeatureCategory,
     FeatSource,
     FeatTrait,
-    getActorMaxRank,
+    findItemWithSourceId,
+    getActorWeapons,
     getChoiceSetSelection,
     getItemSourceFromUuid,
     getItemSourceId,
-    getItemTypeLabel,
     getSetting,
     getSkillLabel,
-    getSpellcastingMaxRank,
     getSpellRankLabel,
-    hasItemWithSourceId,
+    ImageFilePath,
+    ItemInstances,
     ItemPF2e,
+    ItemSourcePF2e,
+    ItemType,
+    ItemUUID,
     Language,
     LoreSource,
     MagicTradition,
     OneToFour,
     OneToTen,
+    PhysicalItemPF2e,
     PreciousMaterialType,
     R,
     ResistanceType,
-    rollDie,
     setFlagProperty,
     ShieldPF2e,
     SkillSlug,
@@ -44,77 +45,16 @@ import {
     WeaponTrait,
     ZeroToFour,
     ZeroToTen,
-} from "module-helpers";
-import { CreatedSpellcastingEntrySource } from "module-helpers/src";
+} from "foundry-helpers";
+import { createConsumableFromSpell } from "foundry-helpers/dist";
+import {
+    CreatedSpellcastingEntrySource,
+    createSpellcastingSource,
+    CreateSpellcastingSource,
+    getSpellcastingMaxRank,
+} from "spellcasting";
 
 const utils = {
-    /**
-     * getSkillLabel(skill: SkillSlug, localize?: boolean): string
-     */
-    getSkillLabel,
-    /**
-     * getActorMaxRank(actor: CreaturePF2e): OneToTen
-     */
-    getActorMaxRank,
-    /**
-     * getItemTypeLabel(type: ItemType): string
-     */
-    getItemTypeLabel,
-    /**
-     * hasItemWithSourceId(actor: ActorPF2e, uuid: string, type?: ItemType): boolean
-     */
-    hasItemWithSourceId,
-    /**
-     * getSourceId: (item: ItemPF2e) => ItemUUID
-     */
-    getSourceId: getItemSourceId,
-    /**
-     * getItemSource(uuid: string, type?: ItemType): Promise<ItemSourcePF2e | null>
-     */
-    getItemSource: getItemSourceFromUuid,
-    getChoiSetRuleSelection: (
-        item: ItemPF2e,
-        option?: string | { option?: string; flag?: string },
-    ): string | undefined => {
-        const options = typeof option === "string" ? { option } : option;
-        return getChoiceSetSelection(item, options);
-    },
-    hasFreePropertySlot: (item: WeaponPF2e): boolean => {
-        const potency = item.system.runes.potency;
-        return potency > 0 && item.system.runes.property.length < potency;
-    },
-    getResistanceLabel: (resistance: ResistanceType, localize = true): string => {
-        const label = CONFIG.PF2E.resistanceTypes[resistance];
-        return localize ? game.i18n.localize(label).capitalize() : label;
-    },
-    getResistances: (): { value: ResistanceType; label: string }[] => {
-        return R.pipe(
-            CONFIG.PF2E.resistanceTypes,
-            R.entries(),
-            R.map(([value, label]) => ({ value, label: label.capitalize() })),
-        );
-    },
-    getLanguageLabel: (language: Language, localize = true): string => {
-        const label = CONFIG.PF2E.languages[language];
-        return localize ? game.i18n.localize(label) : label;
-    },
-    getLanguages: (): { value: Language; label: string }[] => {
-        return R.pipe(
-            CONFIG.PF2E.languages,
-            R.entries(),
-            R.map(([value, label]) => ({ value, label })),
-        );
-    },
-    getSkills: (): { value: SkillSlug; label: string }[] => {
-        return R.pipe(
-            CONFIG.PF2E.skills,
-            R.entries(),
-            R.map(([value, { label }]) => ({ value, label })),
-        );
-    },
-    getSpellRankLabel: (rank: ZeroToTen): string => {
-        return getSpellRankLabel(rank);
-    },
     createExcludeFeatList: (
         actor: CharacterPF2e,
         categories: FeatOrFeatureCategory[],
@@ -127,46 +67,6 @@ const utils = {
             R.map((feat) => feat.sourceId),
             R.filter(R.isTruthy),
         );
-    },
-    getSpellcastingMaxRank: (
-        actor: CharacterPF2e,
-        { tradition, rankLimit }: { tradition?: MagicTradition; rankLimit?: OneToTen } = {},
-    ): ZeroToTen => {
-        const maxRank = R.pipe(
-            actor.spellcasting.spellcastingFeatures,
-            tradition ? R.filter((entry) => entry.tradition === tradition) : R.identity(),
-            R.map((entry) => getSpellcastingMaxRank(entry, rankLimit)),
-            R.firstBy([R.identity(), "desc"]),
-        );
-        return maxRank ?? 0;
-    },
-    getActors: (actor?: CharacterPF2e): ActorPF2e[] => {
-        const list =
-            actor && getSetting("partyMembers") && actor.parties.size
-                ? Array.from(actor.parties).flatMap((party) => party.members)
-                : game.actors.filter((a) => a.hasPlayerOwner);
-        return actor ? list.filter((a) => a !== actor) : list;
-    },
-    getProficiencyLabel: (rank: OneToFour): string => {
-        return game.i18n.localize(CONFIG.PF2E.proficiencyLevels[rank]);
-    },
-    getWeaponPropertyRuneLabel: (rune: WeaponPropertyRuneType): string => {
-        return game.i18n.localize(`PF2E.WeaponPropertyRune.${rune}.Name`);
-    },
-    getWeaponPotencyRuneLabel: (potency: ZeroToFour): string => {
-        return game.i18n.localize(`PF2E.WeaponPotencyRune${potency}`);
-    },
-    getWeaponTraitLabel: (trait: WeaponTrait): string => {
-        return game.i18n.localize(CONFIG.PF2E.weaponTraits[trait]);
-    },
-    getWeaponDamageLabel: (damage: DamageType): string => {
-        return game.i18n.localize(CONFIG.PF2E.damageTypes[damage]);
-    },
-    getWeaponGroupLabel: (group: WeaponGroup): string => {
-        return game.i18n.localize(CONFIG.PF2E.weaponGroups[group]);
-    },
-    getPreciousMaterialLabel(material: PreciousMaterialType): string {
-        return game.i18n.localize(CONFIG.PF2E.preciousMaterials[material]);
     },
     createFeatSource: async (uuid: string): Promise<FeatSource> => {
         const source = await getItemSourceFromUuid(uuid, "feat");
@@ -207,7 +107,7 @@ const utils = {
     createLoreSource: ({ name, rank }: { name: string; rank: ZeroToFour }): PreCreate<LoreSource> => {
         return {
             type: "lore",
-            img: SYSTEM.getPath("icons/default-icons/lore.svg"),
+            img: SYSTEM.relativePath("icons/default-icons/lore.svg"),
             name,
             system: { proficient: { value: rank } },
         };
@@ -255,6 +155,117 @@ const utils = {
     createChatLink: (itemOrUuid: ItemPF2e | string, label?: string): string => {
         const uuid = itemOrUuid instanceof Item ? (itemOrUuid.sourceId ?? itemOrUuid.uuid) : itemOrUuid;
         return createChatLink(uuid, { label });
+    },
+    getSkillLabel: (skill: SkillSlug, localize?: boolean): string => {
+        return getSkillLabel(skill, localize);
+    },
+    getActorWeapons: <TActor extends ActorPF2e>(actor: TActor): WeaponPF2e<TActor>[] => {
+        return getActorWeapons(actor);
+    },
+    getSourceId: (item: ItemPF2e): ItemUUID => {
+        return getItemSourceId(item);
+    },
+    getItemSource: <T extends ItemType | "physical" | never>(
+        uuid: string,
+        type?: T,
+    ): T extends ItemType
+        ? Promise<ItemInstances<ActorPF2e>[T]["_source"] | null>
+        : T extends "physical"
+          ? Promise<PhysicalItemPF2e["_source"] | null>
+          : Promise<ItemSourcePF2e | null> => {
+        return getItemSourceFromUuid(uuid, type) as any;
+    },
+    getActorMaxRank: (actor: CreaturePF2e): OneToTen => {
+        return Math.max(1, Math.ceil(actor.level / 2)) as OneToTen;
+    },
+    getItemTypeLabel: (type: ItemType): string => {
+        return game.i18n.localize(`TYPES.Item.${type}`);
+    },
+    getChoiSetRuleSelection: (
+        item: ItemPF2e,
+        option?: string | { option?: string; flag?: string },
+    ): string | undefined => {
+        const options = typeof option === "string" ? { option } : option;
+        return getChoiceSetSelection(item, options);
+    },
+    getResistanceLabel: (resistance: ResistanceType, localize = true): string => {
+        const label = CONFIG.PF2E.resistanceTypes[resistance];
+        return localize ? game.i18n.localize(label).capitalize() : label;
+    },
+    getResistances: (): { value: ResistanceType; label: string }[] => {
+        return R.pipe(
+            CONFIG.PF2E.resistanceTypes,
+            R.entries(),
+            R.map(([value, label]) => ({ value, label: label.capitalize() })),
+        );
+    },
+    getLanguageLabel: (language: Language, localize = true): string => {
+        const label = CONFIG.PF2E.languages[language];
+        return localize ? game.i18n.localize(label) : label;
+    },
+    getLanguages: (): { value: Language; label: string }[] => {
+        return R.pipe(
+            CONFIG.PF2E.languages,
+            R.entries(),
+            R.map(([value, label]) => ({ value, label })),
+        );
+    },
+    getSkills: (): { value: SkillSlug; label: string }[] => {
+        return R.pipe(
+            CONFIG.PF2E.skills,
+            R.entries(),
+            R.map(([value, { label }]) => ({ value, label })),
+        );
+    },
+    getSpellRankLabel: (rank: ZeroToTen): string => {
+        return getSpellRankLabel(rank);
+    },
+    getSpellcastingMaxRank: (
+        actor: CharacterPF2e,
+        { tradition, rankLimit }: { tradition?: MagicTradition; rankLimit?: OneToTen } = {},
+    ): ZeroToTen => {
+        const maxRank = R.pipe(
+            actor.spellcasting.spellcastingFeatures,
+            tradition ? R.filter((entry) => entry.tradition === tradition) : R.identity(),
+            R.map((entry) => getSpellcastingMaxRank(entry, rankLimit)),
+            R.firstBy([R.identity(), "desc"]),
+        );
+        return maxRank ?? 0;
+    },
+    getActors: (actor?: CharacterPF2e): ActorPF2e[] => {
+        const list =
+            actor && getSetting("partyMembers") && actor.parties.size
+                ? Array.from(actor.parties).flatMap((party) => party.members)
+                : game.actors.filter((a) => a.hasPlayerOwner);
+        return actor ? list.filter((a) => a !== actor) : list;
+    },
+    getProficiencyLabel: (rank: OneToFour): string => {
+        return game.i18n.localize(CONFIG.PF2E.proficiencyLevels[rank]);
+    },
+    getWeaponPropertyRuneLabel: (rune: WeaponPropertyRuneType): string => {
+        return game.i18n.localize(`PF2E.WeaponPropertyRune.${rune}.Name`);
+    },
+    getWeaponPotencyRuneLabel: (potency: ZeroToFour): string => {
+        return game.i18n.localize(`PF2E.WeaponPotencyRune${potency}`);
+    },
+    getWeaponTraitLabel: (trait: WeaponTrait): string => {
+        return game.i18n.localize(CONFIG.PF2E.weaponTraits[trait]);
+    },
+    getWeaponDamageLabel: (damage: DamageType): string => {
+        return game.i18n.localize(CONFIG.PF2E.damageTypes[damage]);
+    },
+    getWeaponGroupLabel: (group: WeaponGroup): string => {
+        return game.i18n.localize(CONFIG.PF2E.weaponGroups[group]);
+    },
+    getPreciousMaterialLabel(material: PreciousMaterialType): string {
+        return game.i18n.localize(CONFIG.PF2E.preciousMaterials[material]);
+    },
+    hasFreePropertySlot: (item: WeaponPF2e): boolean => {
+        const potency = item.system.runes.potency;
+        return potency > 0 && item.system.runes.property.length < potency;
+    },
+    hasItemWithSourceId: (actor: ActorPF2e, uuid: string, type?: ItemType) => {
+        return !!findItemWithSourceId(actor, uuid, type);
     },
     selectRandomOption: (
         options: (string | { value: string })[] | HTMLSelectElement | HTMLOptionsCollection,
@@ -337,8 +348,16 @@ function simplifyRuleValue(value: SimplifiableRuleValue): string | number {
     return value === "half" ? "max(1,floor(@actor.level/2))" : value === "level" ? "max(1,@actor.level)" : value;
 }
 
-function createUpdateCollection<T extends EmbeddedDocumentUpdateData>(): [Collection<T>, (data: T) => void] {
-    const collection = new Collection<T>();
+function rollDie(faces: number, nb = 1) {
+    let total = 0;
+    for (let i = 0; i < nb; i++) {
+        total += Math.floor(Math.random() * faces) + 1;
+    }
+    return total;
+}
+
+function createUpdateCollection<T extends EmbeddedDocumentUpdateData>(): [Collection<string, T>, (data: T) => void] {
+    const collection = new Collection<string, T>();
 
     return [
         collection,

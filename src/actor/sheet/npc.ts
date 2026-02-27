@@ -2,15 +2,15 @@ import { ActorStaff, getSpells, getStaves } from "data";
 import {
     calculateCreatureDC,
     createHTMLElement,
-    createSpellcastingSource,
     getActorMaxRank,
     htmlQuery,
-    info,
+    localize,
     MODULE,
     NPCPF2e,
     NPCSheetPF2e,
-} from "module-helpers";
+} from "foundry-helpers";
 import { renderChargesEntries } from ".";
+import { createSpellcastingSource } from "spellcasting";
 
 function onRenderNPCSheetPF2e(sheet: NPCSheetPF2e, $html: JQuery) {
     const actor = sheet.actor;
@@ -84,7 +84,7 @@ async function generateNpcStaff(actor: NPCPF2e, item: ActorStaff<NPCPF2e>) {
     const spellsSources = await getSpells(item, maxCharges, entry.id);
     await actor.createEmbeddedDocuments("Item", spellsSources);
 
-    info("sheet.generate.confirm", { name: item.name });
+    localize.info("sheet.generate.confirm", { name: item.name });
 }
 
 export { onRenderNPCSheetPF2e };

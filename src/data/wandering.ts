@@ -1,5 +1,5 @@
 import { createDaily, DailyRowDropFeat } from "daily";
-import { getItemSourceId, R } from "module-helpers";
+import { getItemSourceId, R } from "foundry-helpers";
 import { utils } from "utils";
 
 const ANIMIST_CLASS = "Compendium.pf2e.classes.Item.9KiqZVG9r5g8mC4V";
@@ -14,12 +14,12 @@ const wandering = createDaily({
             R.map((feat) => {
                 const level = feat.system.level.taken ?? feat.system.level.value;
                 return [level, feat] as const;
-            })
+            }),
         );
 
         return { feats };
     },
-    rows: (actor, items, custom) => {
+    rows: (_actor, _items, custom) => {
         return R.pipe(
             custom.feats,
             R.sortBy(([level]) => level),
@@ -43,10 +43,10 @@ const wandering = createDaily({
                         uuid: getItemSourceId(feat),
                     },
                 } satisfies DailyRowDropFeat;
-            })
+            }),
         );
     },
-    process: async ({ actor, custom: { feats }, messages, rows, replaceFeat }) => {
+    process: async ({ custom: { feats }, messages, rows, replaceFeat }) => {
         for (const [level, feat] of feats) {
             const row = rows[`feat-${level}`];
             const uuid = utils.getSourceId(feat);

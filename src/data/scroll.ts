@@ -1,5 +1,5 @@
 import { createDaily, DailyRowDropSpell } from "daily";
-import { OneToSix, R } from "module-helpers";
+import { ItemUUID, OneToSix, R } from "foundry-helpers";
 import { utils } from "utils";
 
 type OneToSeven = OneToSix | 7;
@@ -22,7 +22,7 @@ function createScrollChainDaily(key: string, uuids: [ItemUUID, ItemUUID, ItemUUI
                 uuid: uuids[2],
             },
         ],
-        label: (actor, items) => items.trained.name,
+        label: (_actor, items) => items.trained.name,
         rows: (actor, items) => {
             const level = actor.level;
             const ranks: OneToSeven[] = [1];
@@ -53,7 +53,7 @@ function createScrollChainDaily(key: string, uuids: [ItemUUID, ItemUUID, ItemUUI
                             rarity: ["common"],
                         },
                     },
-                })
+                }),
             );
         },
         process: async ({ rows, messages, addItem }) => {

@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { OneToTen, SYSTEM } from "module-helpers";
+import { OneToTen, SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
 const ICON = SYSTEM.path("icons/equipment/weapons/wish-knife.webp");
@@ -15,14 +15,14 @@ const ceremonialKnife = createDaily({
             required: true,
         },
     ],
-    label: (actor, items) => items.ceremonial.name,
+    label: (_actor, items) => items.ceremonial.name,
     prepare: (actor) => {
         const rank = Math.ceil((actor.level - 5) / 2);
         return {
             rank: Math.max(rank, 1) as OneToTen,
         };
     },
-    rows: (actor, items, custom) => {
+    rows: (_actor, _items, custom) => {
         return [
             {
                 type: "drop",

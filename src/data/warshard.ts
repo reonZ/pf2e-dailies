@@ -1,10 +1,8 @@
 import { createDaily } from "daily";
 import {
     CharacterPF2e,
-    getActorWeapons,
     getFlag,
     getItemFromUuid,
-    hasItemWithSourceId,
     localize,
     MartialProficiency,
     R,
@@ -15,7 +13,7 @@ import {
     WeaponPF2e,
     WeaponPropertyRuneType,
     ZeroToFour,
-} from "module-helpers";
+} from "foundry-helpers";
 import { utils } from "utils";
 
 /**
@@ -365,7 +363,7 @@ const warshard = createDaily({
         },
     ],
     rows: (actor, items) => {
-        const weapons = getActorWeapons(actor).filter((weapon) => {
+        const weapons = utils.getActorWeapons(actor).filter((weapon) => {
             const options = new Set(weapon.getRollOptions("item"));
             const rank = getWeaponProficiencyRank(actor, weapon, options);
 
@@ -483,9 +481,9 @@ const warshard = createDaily({
         }
     },
     rest: ({ actor, updateItem }) => {
-        if (!hasItemWithSourceId(actor, TRANSMUTE_WEAPON_UUID, "feat")) return;
+        if (!utils.hasItemWithSourceId(actor, TRANSMUTE_WEAPON_UUID, "feat")) return;
 
-        for (const item of getActorWeapons(actor)) {
+        for (const item of utils.getActorWeapons(actor)) {
             const data = getFlag<WeaponMaterialSource>(item, "material");
             if (!data) continue;
 

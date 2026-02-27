@@ -8,8 +8,8 @@ import {
     SpellSource,
     SpellToMessageOptions,
     SYSTEM,
-} from "module-helpers";
-import { getHighestSpellcastingStatistic } from "module-helpers/src";
+} from "foundry-helpers";
+import { getHighestSpellcastingStatistic } from "spellcasting";
 
 function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.RegisterCallback): void {
     wrapped();
@@ -50,13 +50,13 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
 
         class StaffSpell extends CONFIG.PF2E.Item.documentClasses.spell<CharacterPF2e> {
             override async toMessage(
-                event?: Maybe<MouseEvent | JQuery.TriggeredEvent>,
+                event?: Maybe<PointerEvent>,
                 { create = true, data, rollMode }: SpellToMessageOptions = {},
             ): Promise<ChatMessagePF2e | undefined> {
                 const message = await super.toMessage(event, { rollMode, data, create: false });
                 if (!message) return undefined;
 
-                const messageSource = message.toObject() as ChatMessageCreateData<ChatMessagePF2e>;
+                const messageSource = message.toObject();
 
                 foundry.utils.setProperty(messageSource, `flags.${SYSTEM.id}.casting.embeddedSpell`, this.toObject());
 
@@ -86,7 +86,7 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
 
         this.spellcasting.set(staffEntry.id, staffEntry);
         this.spellcasting.collections.set(collectionId, collection);
-    } catch (error) {
+    } catch (error: any) {
         MODULE.error("CharacterPF2e#prepareData", error);
     }
 }

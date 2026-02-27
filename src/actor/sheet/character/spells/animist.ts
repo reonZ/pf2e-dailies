@@ -1,6 +1,6 @@
 import { createRetrainBtn } from "actor";
 import { getAnimistVesselsData } from "data";
-import { CharacterPF2e, htmlQuery } from "module-helpers";
+import { CharacterPF2e, htmlQuery } from "foundry-helpers";
 
 function updateAnimistEntries(actor: CharacterPF2e, spellsTab: HTMLElement, isOwner: boolean) {
     const vesselsData = getAnimistVesselsData(actor);

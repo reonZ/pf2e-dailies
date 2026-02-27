@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { ChoiceSetRuleElement, FeatPF2e, R, SkillSlug } from "module-helpers";
+import { ChoiceSetRuleElement, FeatPF2e, R, SkillSlug } from "foundry-helpers";
 import { utils } from "utils";
 
 const ASSURANCE_UUID = "Compendium.pf2e.feats-srd.Item.W6Gl9ePmItfDHji0";
@@ -16,7 +16,7 @@ const coreMemories = createDaily({
             required: true,
         },
     ],
-    label: (actor, items) => items.core.name,
+    label: (_actor, items) => items.core.name,
     rows: (actor, {}) => {
         const skillList = utils.getSkills();
         const actorSkills = actor.skills;
@@ -35,9 +35,7 @@ const coreMemories = createDaily({
         const assurance = (await fromUuid<FeatPF2e>(ASSURANCE_UUID))?.toObject();
         if (!assurance) return;
 
-        const rule = (assurance.system.rules as ChoiceSetRuleElement[]).find(
-            (rule) => rule.flag === "assurance"
-        );
+        const rule = (assurance.system.rules as ChoiceSetRuleElement[]).find((rule) => rule.flag === "assurance");
 
         if (rule) {
             rule.selection = slug;

@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { localize, SpellPF2e } from "module-helpers";
+import { localize, SpellPF2e } from "foundry-helpers";
 import { utils } from "utils";
 
 const tricksterAce = createDaily({
@@ -11,7 +11,7 @@ const tricksterAce = createDaily({
             required: true,
         },
     ],
-    label: (actor, items) => items.ace.name,
+    label: (_actor, items) => items.ace.name,
     rows: () => {
         return [
             {

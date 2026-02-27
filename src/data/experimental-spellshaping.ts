@@ -11,7 +11,7 @@ const experimentalSpellshaping = createDaily({
             condition: (actor) => actor.level >= 4,
         },
     ],
-    label: (actor, items) => items.experimental.name,
+    label: (_actor, items) => items.experimental.name,
     rows: () => {
         return [
             {

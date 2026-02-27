@@ -13,7 +13,6 @@ import {
 import { utils } from "utils";
 import { getSpells, getStaves, isStaff } from ".";
 
-const KINETIC_ACTIVATION = "Compendium.pf2e.feats-srd.Item.NV9H39kbkbjhAK6X";
 const STAFF_NEXUS = "Compendium.pf2e.classfeatures.Item.Klb35AwlkNrq1gpB";
 
 const RUNELORD_SINS = [
@@ -40,12 +39,9 @@ const staves = createDaily({
 
         let maxCharges = 0;
         const actorCharges = utils.getActorMaxRank(actor);
-        const activationType =
-            actor.getStatistic("kineticist") && findItemWithSourceId(actor, KINETIC_ACTIVATION, "feat")
-                ? "kineticist"
-                : undefined;
+        const specialStatistic = actor.getStatistic("kinetic-activation");
 
-        if (activationType) {
+        if (specialStatistic) {
             maxCharges = Math.max(maxCharges, actorCharges);
         } else {
             maxCharges = utils.getSpellcastingMaxRank(actor, { rankLimit: actorCharges });
@@ -107,7 +103,7 @@ const staves = createDaily({
 
         const runelordSin = getRunelordSin(actor);
 
-        return { entries, maxCharges, preparedEntries, activationType, runelordSin };
+        return { entries, maxCharges, preparedEntries, runelordSin, specialStatistic };
     },
     rows: (actor, _items, custom) => {
         if (!custom.entries) {
@@ -338,14 +334,9 @@ const staves = createDaily({
             spells: [...sinSpells, ...staffSpells],
         };
 
-        if (custom.activationType) {
-            const statistic =
-                // we only handle kineticist activation for now
-                actor.synthetics.statistics.get("impulse") ?? actor.synthetics.statistics.get("kinetic-activation");
-
-            if (statistic) {
-                staffData.statistic = { slug: statistic.slug, tradition: "primal" };
-            }
+        // we only handle kineticist activation for now
+        if (custom.specialStatistic?.slug === "kinetic-activation") {
+            staffData.statistic = { slug: custom.specialStatistic.slug, tradition: "primal" };
         }
 
         setExtraFlags(staffData);

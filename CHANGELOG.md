@@ -1,3 +1,12 @@
+# 4.16.0
+
+- `Apparition Attunement`:
+  - add support for the `Animist Dedication`
+- `Prepare a Staff`:
+  - fix kineticist using the `impulse` statistic instead of `kinetic-activation`
+- `Custom Daily`:
+  - add new `utils.getActorWeapons` helper function
+
 # 4.15.0
 
 - add support for the `Adaptive Talent` envoy feat

@@ -121,7 +121,6 @@ const mindSmith = createDaily({
 
         const mentalUniqueId = foundry.utils.randomID();
         const mentalOptions = arrayToOptions(!!items.mental, mentalForgeTraits, utils.getWeaponTraitLabel);
-
         const canHaveRune = (!!items.runic || !!items.advanced) && utils.hasFreePropertySlot(weapon);
 
         return [
@@ -192,11 +191,7 @@ const mindSmith = createDaily({
             selected: damageLabel(damage),
         });
 
-        const itemPredicate = [
-            {
-                or: ["item:category:{item|_id}", "item:id:{item|_id}"],
-            },
-        ];
+        const itemPredicate = [{ or: ["item:category:{item|_id}", "item:id:{item|_id}"] }];
 
         const traits = R.pipe(
             [1, 2] as const,
@@ -317,7 +312,7 @@ async function createMindWeapon(actor: CharacterPF2e) {
     const source: PreCreate<WeaponSource> = {
         type: "weapon",
         name: localize("mindsmith.weapon.name"),
-        img: SYSTEM.getPath("icons/spells/disrupting-weapons.webp"),
+        img: SYSTEM.relativePath("icons/spells/disrupting-weapons.webp"),
         system: {
             slug: weaponSlug,
             level: { value: actor.level },

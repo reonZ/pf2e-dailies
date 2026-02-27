@@ -1,5 +1,6 @@
 import {
     ActorPF2e,
+    ActorSizePF2e,
     ArmorPF2e,
     CharacterPF2e,
     ConsumableSource,

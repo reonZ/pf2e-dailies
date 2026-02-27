@@ -2,11 +2,11 @@ import { DailyActorFlags } from "actor";
 import { PreparedDaily } from "dailies";
 import { DailyMessageOptions, DailyProcessOptions, DailyRowData, DailyRowType, DailyRuleElement } from "daily";
 import {
-    ActorSizePF2e,
     CharacterPF2e,
     createChatLink,
     FeatPF2e,
     FeatSource,
+    getActorSize,
     getFlag,
     getFlagProperty,
     htmlClosest,
@@ -24,11 +24,11 @@ import {
     SpellPF2e,
     SYSTEM,
 } from "foundry-helpers";
+import { PHYSICAL_ITEM_TYPES } from "foundry-helpers/dist";
+import { createSpellcastingWithHighestStatisticSource } from "spellcasting";
 import { createUpdateCollection, utils } from "utils";
 import { DailyInterface } from ".";
 import fu = foundry.utils;
-import { PHYSICAL_ITEM_TYPES } from "foundry-helpers/dist";
-import { createSpellcastingWithHighestStatisticSource } from "spellcasting";
 
 async function processDailies(this: DailyInterface) {
     const rowElements = this.element.querySelectorAll<HTMLInputElement | HTMLSelectElement>("[data-daily]");
@@ -195,12 +195,7 @@ async function processDailies(this: DailyInterface) {
                     setFlagProperty(source, "temporary", true);
                 }
                 if (setHasElement(PHYSICAL_ITEM_TYPES, source.type)) {
-                    const ActorSizeCls = actor.system.traits.size.constructor as typeof ActorSizePF2e;
-                    const actorSize = new ActorSizeCls({
-                        value: actor.system.traits.naturalSize ?? actor.size,
-                        smallIsMedium: true,
-                    });
-
+                    const actorSize = getActorSize(actor);
                     foundry.utils.setProperty(source, "system.size", actorSize.value);
                 }
                 setFlagProperty(source, "daily", daily.key);

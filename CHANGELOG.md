@@ -1,3 +1,7 @@
+# 4.16.1
+
+- fix drop issue due to missing method that was removed in the latest system update
+
 # 4.16.0
 
 - `Apparition Attunement`:

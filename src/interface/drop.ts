@@ -1,6 +1,5 @@
 import { DailyRowDrop } from "daily";
 import {
-    CompendiumBrowserFeatTab,
     FeatFilters,
     FeatOrFeatureCategory,
     FeatPF2e,
@@ -16,6 +15,7 @@ import {
     SpellFilters,
     SpellPF2e,
     SpellTrait,
+    TraitData,
 } from "foundry-helpers";
 import { DailyInterface } from "./application";
 
@@ -213,12 +213,28 @@ function validateFeat(item: FeatPF2e, filter: FeatFilters): boolean {
     return true;
 }
 
+/**
+ * old system method that no longer exist
+ */
+function filterTraits(traits: string[], selected: TraitData["selected"], condition: TraitData["conjunction"]): boolean {
+    const selectedTraits = selected.filter((s) => !s.not).map((s) => s.value);
+    const notTraits = selected.filter((t) => t.not).map((s) => s.value);
+    if (notTraits.some((t) => traits.includes(t))) {
+        return false;
+    }
+    if (selectedTraits.length) {
+        return condition === "and"
+            ? selectedTraits.every((t) => traits.includes(t))
+            : selectedTraits.some((t) => traits.includes(t));
+    }
+    return true;
+}
+
 function validateDefault(item: FeatPF2e | SpellPF2e, filter: FeatFilters | SpellFilters): boolean {
     const { checkboxes, source, traits } = filter;
-    const tab = game.pf2e.compendiumBrowser.tabs[item.type as "spell" | "feat"];
     const itemTraits = item.system.traits.value.map((t: string) => t.replace(/^hb_/, ""));
 
-    if (!(tab as CompendiumBrowserFeatTab)["filterTraits"](itemTraits, traits.selected, traits.conjunction)) {
+    if (!filterTraits(itemTraits, traits.selected, traits.conjunction)) {
         localize.warning("interface.drop.error.wrongTraits");
         return false;
     }

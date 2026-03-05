@@ -1,10 +1,12 @@
 import {
     ActorPF2e,
-    ActorSizePF2e,
     ArmorPF2e,
     CharacterPF2e,
     ConsumableSource,
     createChatLink,
+    CreatedSpellcastingEntrySource,
+    createSpellcastingSource,
+    CreateSpellcastingSource,
     CreaturePF2e,
     DamageType,
     FeatOrFeatureCategory,
@@ -48,12 +50,7 @@ import {
     ZeroToTen,
 } from "foundry-helpers";
 import { createConsumableFromSpell } from "foundry-helpers/dist";
-import {
-    CreatedSpellcastingEntrySource,
-    createSpellcastingSource,
-    CreateSpellcastingSource,
-    getSpellcastingMaxRank,
-} from "spellcasting";
+import { getSpellcastingMaxRank } from "spellcasting";
 
 const utils = {
     createExcludeFeatList: (

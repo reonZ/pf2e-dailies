@@ -1,20 +1,20 @@
 import {
     ActorPF2e,
-    AttributeString,
     CharacterPF2e,
+    CreateSpellcastingSource,
+    createSpellcastingSource,
     CreaturePF2e,
     isInstanceOf,
     ItemSystemData,
     localize,
-    MagicTradition,
     MODULE,
     NPCPF2e,
     OneToTen,
+    R,
     SlotKey,
     SpellcastingCategory,
     SpellcastingEntry,
     SpellcastingEntryPF2e,
-    SpellcastingEntrySource,
     SpellcastingEntrySystemSource,
     SpellcastingSheetData,
     SpellCollection,
@@ -23,47 +23,9 @@ import {
     spellSlotGroupIdToNumber,
     ValueAndMax,
     warnInvalidDrop,
-    ZeroToFour,
     ZeroToTen,
 } from "foundry-helpers";
-import { getSpellRankLabel, R } from "foundry-helpers/dist";
-
-function createSpellcastingSource({
-    name,
-    category,
-    attribute,
-    flags,
-    proficiencyRank,
-    proficiencySlug,
-    showSlotlessRanks,
-    sort,
-    tradition,
-}: CreateSpellcastingSource): CreatedSpellcastingEntrySource {
-    return {
-        type: "spellcastingEntry",
-        name,
-        sort: sort ?? 0,
-        system: {
-            ability: {
-                value: (!proficiencySlug && attribute) || "",
-            },
-            prepared: {
-                value: (category as SpellcastingCategory) ?? "innate",
-            },
-            showSlotlessLevels: {
-                value: showSlotlessRanks ?? false,
-            },
-            proficiency: {
-                value: proficiencyRank ?? 1,
-                slug: proficiencySlug ?? "",
-            },
-            tradition: {
-                value: tradition ?? "arcane",
-            },
-        },
-        flags: flags ?? {},
-    };
-}
+import { getSpellRankLabel } from "foundry-helpers/dist";
 
 function createSpellcastingWithHighestStatisticSource(
     actor: NPCPF2e | CharacterPF2e,
@@ -316,18 +278,6 @@ type SpellcastingEntryPF2eWithCharges<TParent extends ActorPF2e | null = ActorPF
             };
     };
 
-type CreateSpellcastingSource = {
-    name: string;
-    category?: SpellcastingCategory | "charges";
-    sort?: number;
-    attribute?: AttributeString | null;
-    proficiencySlug?: string;
-    showSlotlessRanks?: boolean;
-    proficiencyRank?: ZeroToFour | null;
-    tradition?: MagicTradition;
-    flags?: Record<string, any>;
-};
-
 type CreateSpellcastingSourceWithHighestStatistic = Omit<
     CreateSpellcastingSource,
     "attribute" | "proficiencyRank" | "proficiencySlug" | "tradition"
@@ -354,12 +304,7 @@ type SpellcastingEntryWithCharges<TActor extends ActorPF2e> = Omit<
         }): Promise<SpellcastingSheetDataWithCharges>;
     };
 
-type CreatedSpellcastingEntrySource = Omit<PreCreate<SpellcastingEntrySource>, "system"> & {
-    system: DeepPartial<SpellcastingEntrySystemSource>;
-};
-
 export {
-    createSpellcastingSource,
     createSpellcastingWithHighestStatisticSource,
     getHighestSpellcastingStatistic,
     getSpellcastingMaxRank,
@@ -367,10 +312,4 @@ export {
     spellcastingEntryGetSheetData,
     spellcastingEntryPrepareSiblingData,
 };
-export type {
-    ChargesSpellcastingSheetData,
-    CreatedSpellcastingEntrySource,
-    CreateSpellcastingSource,
-    SpellcastingEntryPF2eWithCharges,
-    SpellcastingEntryWithCharges,
-};
+export type { ChargesSpellcastingSheetData, SpellcastingEntryPF2eWithCharges, SpellcastingEntryWithCharges };

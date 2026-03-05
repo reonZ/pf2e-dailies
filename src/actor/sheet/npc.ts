@@ -2,6 +2,7 @@ import { ActorStaff, getSpells, getStaves } from "data";
 import {
     calculateCreatureDC,
     createHTMLElement,
+    createSpellcastingSource,
     getActorMaxRank,
     htmlQuery,
     localize,
@@ -10,7 +11,6 @@ import {
     NPCSheetPF2e,
 } from "foundry-helpers";
 import { renderChargesEntries } from ".";
-import { createSpellcastingSource } from "spellcasting";
 
 function onRenderNPCSheetPF2e(sheet: NPCSheetPF2e, $html: JQuery) {
     const actor = sheet.actor;

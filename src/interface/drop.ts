@@ -3,6 +3,7 @@ import {
     FeatFilters,
     FeatOrFeatureCategory,
     FeatPF2e,
+    filterTraits,
     getDragEventData,
     getTranslatedSkills,
     htmlClosest,
@@ -15,7 +16,6 @@ import {
     SpellFilters,
     SpellPF2e,
     SpellTrait,
-    TraitData,
 } from "foundry-helpers";
 import { DailyInterface } from "./application";
 
@@ -210,23 +210,6 @@ function validateFeat(item: FeatPF2e, filter: FeatFilters): boolean {
         return false;
     }
 
-    return true;
-}
-
-/**
- * old system method that no longer exist
- */
-function filterTraits(traits: string[], selected: TraitData["selected"], condition: TraitData["conjunction"]): boolean {
-    const selectedTraits = selected.filter((s) => !s.not).map((s) => s.value);
-    const notTraits = selected.filter((t) => t.not).map((s) => s.value);
-    if (notTraits.some((t) => traits.includes(t))) {
-        return false;
-    }
-    if (selectedTraits.length) {
-        return condition === "and"
-            ? selectedTraits.every((t) => traits.includes(t))
-            : selectedTraits.some((t) => traits.includes(t));
-    }
     return true;
 }
 

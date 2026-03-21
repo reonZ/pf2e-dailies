@@ -1,3 +1,8 @@
+# 4.16.3
+
+- `Core Memories`:
+  - fix support for the sf2e system not actually working
+
 # 4.16.2
 
 - `Core Memories`:

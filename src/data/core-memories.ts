@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { ChoiceSetRuleElement, FeatPF2e, R, SkillSlug } from "foundry-helpers";
+import { ChoiceSetRuleElement, FeatPF2e, ItemUUID, R, SkillSlug, SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
 const ASSURANCE_UUID = "Compendium.pf2e.feats-srd.Item.W6Gl9ePmItfDHji0";
@@ -12,7 +12,10 @@ const coreMemories = createDaily({
     items: [
         {
             slug: "core", // Core Memories
-            uuid: "Compendium.sf2e-anachronism.class-features.Item.ENxkQJEIkz35yuMT",
+            uuid: SYSTEM.uuid<ItemUUID>(
+                "Compendium.sf2e-anachronism.class-features.Item.ENxkQJEIkz35yuMT",
+                "Compendium.sf2e.class-features.Item.ENxkQJEIkz35yuMT",
+            ),
             required: true,
         },
     ],

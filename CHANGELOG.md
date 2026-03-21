@@ -1,3 +1,8 @@
+# 4.16.2
+
+- `Core Memories`:
+  - add support for the sf2e system
+
 # 4.16.1
 
 - fix drop issue due to missing method that was removed in the latest system update

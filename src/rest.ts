@@ -66,7 +66,7 @@ async function cleanup(actor: CharacterPF2e) {
                         const slug = game.pf2e.system.sluggify(item.name, { camel: "dromedary" });
                         updateItem({
                             _id: parentId,
-                            [`flags.${SYSTEM.id}.itemGrants.-=${slug}`]: null,
+                            [`flags.${SYSTEM.id}.itemGrants.${slug}`]: _del,
                         });
                     }
                 }
@@ -112,11 +112,11 @@ async function cleanup(actor: CharacterPF2e) {
 
     await updateFlag(actor, {
         rested: true,
-        "-=addedItems": null,
-        "-=flaggedItems": null,
-        "-=extra": null,
-        "-=tooltip": null,
-        "-=temporaryDeleted": null,
+        addedItems: _del,
+        flaggedItems: _del,
+        extra: _del,
+        tooltip: _del,
+        temporaryDeleted: _del,
     });
 }
 

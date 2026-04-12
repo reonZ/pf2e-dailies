@@ -2,9 +2,9 @@ import { getStaffData, StaffSpellcasting } from "data";
 import {
     CharacterPF2e,
     ChatMessagePF2e,
+    getSpellCollectionCls,
     MODULE,
     SpellcastingEntry,
-    SpellCollection,
     SpellSource,
     SpellToMessageOptions,
     SYSTEM,
@@ -69,9 +69,8 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
             }
         }
 
-        const SpellCollectionCls = this.spellcasting.get("rituals")!.spells!
-            .constructor as typeof SpellCollection<CharacterPF2e>;
-        const collection = new SpellCollectionCls(staffEntry);
+        const SpellCollection = getSpellCollectionCls(this);
+        const collection = new SpellCollection(staffEntry);
 
         for (const spellSource of staffFlags.spells) {
             const source: SpellSource = foundry.utils.mergeObject(

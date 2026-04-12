@@ -24,7 +24,7 @@ import {
     SpellPF2e,
     SYSTEM,
 } from "foundry-helpers";
-import { PHYSICAL_ITEM_TYPES } from "foundry-helpers/dist";
+import { enrichHTML, PHYSICAL_ITEM_TYPES } from "foundry-helpers/dist";
 import { createSpellcastingWithHighestStatisticSource } from "spellcasting";
 import { createUpdateCollection, utils } from "utils";
 import { DailyInterface } from ".";
@@ -438,7 +438,7 @@ async function processDailies(this: DailyInterface) {
         addedItems: addedItemIds,
         flaggedItems: flaggedItems.toObject(),
         temporaryDeleted,
-        tooltip: await foundry.applications.ux.TextEditor.implementation.enrichHTML(chatContent),
+        tooltip: await enrichHTML(chatContent),
     } satisfies DailyActorFlags);
 
     await actor.update(actorUpdates);

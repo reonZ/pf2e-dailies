@@ -25,6 +25,7 @@ import {
 } from "foundry-helpers";
 import { ChargesSpellcastingSheetData, SpellcastingEntryWithCharges } from "spellcasting";
 import { canCastRank, getStaffData, setStaffChargesValue } from ".";
+import { createCounteractStatistic } from "foundry-helpers/dist";
 
 class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
     id: string;
@@ -49,7 +50,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
     }
 
     get counteraction(): Statistic {
-        return createCounteractStatistic(this);
+        return createCounteractStatistic(this as any);
     }
 
     get attribute(): AttributeString {
@@ -309,29 +310,6 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
             uses: getStaffData(actor)?.charges ?? { value: 0, max: 0 },
         } satisfies ChargesSpellcastingSheetData;
     }
-}
-
-/**
- * https://github.com/foundryvtt/pf2e/blob/49dc6d70c7e7bb26d8039c97361e638bdef6a3bd/src/module/item/spellcasting-entry/helpers.ts#L10
- */
-function createCounteractStatistic<TActor extends CreaturePF2e>(
-    ability: SpellcastingEntryWithCharges<TActor>,
-): Statistic<TActor> {
-    const actor = ability.actor;
-
-    // NPCs have neither a proficiency bonus nor specified attribute modifier: use their base attack roll modifier
-    const baseModifier = actor.isOfType("npc")
-        ? ability.statistic.check.modifiers.find((m) => m.type === "untyped" && m.slug === "base")?.clone()
-        : null;
-
-    const StatisticCls = actor.skills.acrobatics.constructor as typeof Statistic;
-    return new StatisticCls(actor, {
-        slug: "counteract",
-        label: "PF2E.Item.Spell.Counteract.Label",
-        attribute: ability.statistic.attribute,
-        rank: ability.statistic.rank || 1,
-        check: { type: "check", modifiers: [baseModifier].filter(R.isTruthy) },
-    });
 }
 
 interface StaffSpellcastingConstructorParams<TActor extends CreaturePF2e> {

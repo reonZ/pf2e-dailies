@@ -1,3 +1,8 @@
+# 4.17.0
+
+- this is a foundry `14.360` release
+- update to be compatible with the various v14 changes
+
 # 4.16.3
 
 - `Core Memories`:

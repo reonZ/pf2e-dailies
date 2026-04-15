@@ -315,7 +315,7 @@ const utils = {
         return source;
     },
     getSpellWithRankLabel: (uuid: string, rank: OneToTen): string => {
-        const name = fromUuidSync(uuid)?.name ?? "";
+        const name = fromUuidSync(uuid, { strict: false })?.name ?? "";
         return `${name} (${getSpellRankLabel(rank)})`;
     },
     getRunedItemName: (item: WeaponPF2e | ArmorPF2e | ShieldPF2e): string => {

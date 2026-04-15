@@ -92,7 +92,7 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
             return pack.metadata.type === "Item" ? { entry: pack, isPack: true } : undefined;
         }
 
-        const entry = fromUuidSync<CompendiumIndexData>(id);
+        const entry = fromUuidSync<CompendiumIndexData>(id, { strict: false });
         return entry?.type === INDEX_TYPE[index] ? { entry, isPack: false } : undefined;
     }
 

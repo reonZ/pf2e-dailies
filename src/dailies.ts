@@ -37,6 +37,7 @@ import {
     MapOfArrays,
     MODULE,
     R,
+    SYSTEM,
 } from "foundry-helpers";
 
 const DAILY_SCHEMA = "3.0.0";
@@ -70,57 +71,102 @@ const BUILTINS_DAILIES: Daily[] = [
     warshard, // Warshard Warrior Dedication
     createLoreSkillDaily(
         "quick-study", // Quick Study
-        "Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW",
+        SYSTEM.uuid(
+            "Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW",
+            "Compendium.pf2e-anachronism.feats.Item.aLJsBBZzlUK3G8MW",
+        ),
     ),
     createComboSkillDaily(
         "ageless-spirit", // Ageless Spirit
-        "Compendium.pf2e.feats-srd.Item.wylnETwIz32Au46y",
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.wylnETwIz32Au46y",
+            "Compendium.pf2e-anachronism.feats.Item.wylnETwIz32Au46y",
+        ),
     ),
     createComboSkillDaily(
         "ancient-memories", // Ancient Memories
-        "Compendium.pf2e.feats-srd.Item.ptEOt3lqjxUnAW62",
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.ptEOt3lqjxUnAW62",
+            "Compendium.pf2e-anachronism.feats.Item.ptEOt3lqjxUnAW62",
+        ),
     ),
     createComboSkillDaily(
         "flexible-studies", // Flexible Studies
-        "Compendium.pf2e.feats-srd.Item.9bgl6qYWKHzqWZj0",
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.9bgl6qYWKHzqWZj0",
+            "Compendium.pf2e-anachronism.feats.Item.9bgl6qYWKHzqWZj0",
+        ),
     ),
     createLanguageDaily(
         "ancestral-linguistics", // Ancestral Linguistics
-        "Compendium.pf2e.feats-srd.Item.eCWQU16hRLfN1KaX",
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.eCWQU16hRLfN1KaX",
+            "Compendium.pf2e-anachronism.feats.Item.eCWQU16hRLfN1KaX",
+        ),
     ),
     createLanguageDaily(
         "borts-blesing", // Bort's Blessing
-        "Compendium.pf2e.equipment-srd.Item.iS7hAQMAaThHYE8g",
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.equipment-srd.Item.iS7hAQMAaThHYE8g",
+            "Compendium.pf2e-anachronism.equipment.Item.iS7hAQMAaThHYE8g",
+        ),
     ),
     createResistanceDaily(
         "elementalist", // Elementalist Dedication
-        "Compendium.pf2e.feats-srd.Item.tx9pkrpmtqe4FnvS",
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.tx9pkrpmtqe4FnvS",
+            "Compendium.pf2e-anachronism.feats.Item.tx9pkrpmtqe4FnvS",
+        ),
         ["air", "earth", "fire", "water", "metal", "wood"],
         "half",
     ),
     createResistanceDaily(
-        "ganzi", // Ganzi
-        "Compendium.pf2e.heritages.Item.3reGfXH0S82hM7Gp",
+        "ganzi", // Nephilim
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.heritages.Item.1oLMOmLpurfWTTff",
+            "Compendium.pf2e-anachronism.heritages.Item.1oLMOmLpurfWTTff",
+        ),
         ["acid", "electricity", "sonic"],
         "half",
         true,
     ),
     createResistanceDaily(
-        "proteankin", // Proteankin (Nephilim feat)
-        "Compendium.pf2e.feats-srd.Item.gNFPwTHDygxdf9pw",
+        "proteankin", // Proteankin
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.gNFPwTHDygxdf9pw",
+            "Compendium.pf2e-anachronism.feats.Item.gNFPwTHDygxdf9pw",
+        ),
         ["acid", "electricity", "sonic"],
         "half",
         true,
     ),
     createScrollChainDaily("esoterica", [
-        "Compendium.pf2e.feats-srd.Item.OqObuRB8oVSAEKFR", // Scroll Esoterica
-        "Compendium.pf2e.feats-srd.Item.nWd7m0yRcIEVUy7O", // Elaborate Scroll Esoterica
-        "Compendium.pf2e.feats-srd.Item.LHjPTV5vP3MOsPPJ", // Grand Scroll Esoterica
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.OqObuRB8oVSAEKFR",
+            "Compendium.pf2e-anachronism.feats.Item.OqObuRB8oVSAEKFR",
+        ), // Scroll Esoterica
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.nWd7m0yRcIEVUy7O",
+            "Compendium.pf2e-anachronism.feats.Item.nWd7m0yRcIEVUy7O",
+        ), // Elaborate Scroll Esoterica
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.LHjPTV5vP3MOsPPJ",
+            "Compendium.pf2e-anachronism.feats.Item.LHjPTV5vP3MOsPPJ",
+        ), // Grand Scroll Esoterica
     ]),
     createScrollChainDaily("trickster", [
-        "Compendium.pf2e.feats-srd.Item.ROAUR1GhC19Pjk9C", // Basic Scroll Cache
-        "Compendium.pf2e.feats-srd.Item.UrOj9TROtn8nuxPf", // Expert Scroll Cache
-        "Compendium.pf2e.feats-srd.Item.lIg5Gzz7W70jfbk1", // Master Scroll Cache
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.ROAUR1GhC19Pjk9C",
+            "Compendium.pf2e-anachronism.feats.Item.ROAUR1GhC19Pjk9C",
+        ), // Basic Scroll Cache
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.UrOj9TROtn8nuxPf",
+            "Compendium.pf2e-anachronism.feats.Item.UrOj9TROtn8nuxPf",
+        ), // Expert Scroll Cache
+        SYSTEM.itemUuid(
+            "Compendium.pf2e.feats-srd.Item.lIg5Gzz7W70jfbk1",
+            "Compendium.pf2e-anachronism.feats.Item.lIg5Gzz7W70jfbk1",
+        ), // Master Scroll Cache
     ]),
 ];
 

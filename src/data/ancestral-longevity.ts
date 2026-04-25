@@ -1,9 +1,15 @@
 import { createDaily, DailyRowComboData } from "daily";
-import { SkillSlug } from "foundry-helpers";
+import { SkillSlug, SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
-const ancestralUUID = "Compendium.pf2e.feats-srd.Item.WoLh16gyDp8y9WOZ";
-const expertUUID = "Compendium.pf2e.feats-srd.Item.vfuHVSuExvtyajkW";
+const ancestralUUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.feats-srd.Item.WoLh16gyDp8y9WOZ",
+    "Compendium.pf2e-anachronism.feats.Item.WoLh16gyDp8y9WOZ",
+);
+const expertUUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.feats-srd.Item.vfuHVSuExvtyajkW",
+    "Compendium.pf2e-anachronism.feats.Item.vfuHVSuExvtyajkW",
+);
 
 const ancestralLongevity = createDaily({
     key: "ancestral-longevity",
@@ -43,8 +49,8 @@ const ancestralLongevity = createDaily({
     },
     process: ({ items, rows, messages, addItem, addRule, removeRule }) => {
         const data = [
-            ["trained", 1, ancestralUUID],
-            ["expert", 2, expertUUID],
+            ["trained", 1, ancestralUUID()],
+            ["expert", 2, expertUUID()],
         ] as const;
 
         for (const [slug, rank, uuid] of data) {

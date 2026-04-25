@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { ItemUUID, localize, R, SYSTEM } from "foundry-helpers";
+import { localize, R, SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
 const adaptiveTalent = createDaily({
@@ -7,7 +7,7 @@ const adaptiveTalent = createDaily({
     items: [
         {
             slug: "talent", // Adaptive Talent
-            uuid: SYSTEM.uuid<ItemUUID>(
+            uuid: SYSTEM.itemUuid(
                 "Compendium.sf2e-anachronism.class-features.Item.9nO9EkhE1TiS0Yh6",
                 "Compendium.sf2e.class-features.Item.9nO9EkhE1TiS0Yh6",
             ),
@@ -15,7 +15,7 @@ const adaptiveTalent = createDaily({
         },
         {
             slug: "endless", // Endlessly Adaptive
-            uuid: SYSTEM.uuid<ItemUUID>(
+            uuid: SYSTEM.itemUuid(
                 "Compendium.sf2e-anachronism.feats.Item.kTmHzD83BRz8bvmg",
                 "Compendium.sf2e.feats.Item.kTmHzD83BRz8bvmg",
             ),

@@ -7,6 +7,7 @@ import {
     MartialProficiency,
     R,
     setFlagProperty,
+    SYSTEM,
     unsetFlagProperty,
     WeaponMaterialSource,
     WeaponMaterialType,
@@ -343,19 +344,28 @@ const WEAPON_MATERIALS: PartialRecord<WeaponMaterialType, { low?: number; standa
     },
 };
 
-const TRANSMUTE_WEAPON_UUID = "Compendium.pf2e.feats-srd.Item.n7a7ltuY9C4qcAiT";
+const TRANSMUTE_WEAPON_UUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.feats-srd.Item.n7a7ltuY9C4qcAiT",
+    "Compendium.pf2e-anachronism.feats.Item.n7a7ltuY9C4qcAiT",
+);
 
 const warshard = createDaily({
     key: "warshard",
     items: [
         {
             slug: "dedication", // Warshard Warrior Dedication
-            uuid: "Compendium.pf2e.feats-srd.Item.GtohZQvFVZaIQD0S",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.GtohZQvFVZaIQD0S",
+                "Compendium.pf2e-anachronism.feats.Item.GtohZQvFVZaIQD0S",
+            ),
             required: true,
         },
         {
             slug: "rune", // Warshard Rune
-            uuid: "Compendium.pf2e.feats-srd.Item.MsNPLqPsWgOO0dqh",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.MsNPLqPsWgOO0dqh",
+                "Compendium.pf2e-anachronism.feats.Item.MsNPLqPsWgOO0dqh",
+            ),
         },
         {
             slug: "transmute", // Transmute Weapon
@@ -481,7 +491,7 @@ const warshard = createDaily({
         }
     },
     rest: ({ actor, updateItem }) => {
-        if (!utils.hasItemWithSourceId(actor, TRANSMUTE_WEAPON_UUID, "feat")) return;
+        if (!utils.hasItemWithSourceId(actor, TRANSMUTE_WEAPON_UUID(), "feat")) return;
 
         for (const item of utils.getActorWeapons(actor)) {
             const data = getFlag<WeaponMaterialSource>(item, "material");

@@ -1,8 +1,8 @@
 import { createDaily } from "daily";
-import { ConsumablePF2e, localize } from "foundry-helpers";
+import { ConsumablePF2e, localize, SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
-const rationsUUID = "Compendium.pf2e.equipment-srd.Item.L9ZV076913otGtiB";
+const rationsUUID = SYSTEM.itemUuid("Compendium.pf2e.equipment-srd.Item.L9ZV076913otGtiB");
 
 const rations = createDaily({
     key: "rations",
@@ -66,7 +66,7 @@ const rations = createDaily({
         }
 
         const remaining = (quantity - 1) * max + value;
-        const name = utils.createChatLink(rationsUUID, rations.name);
+        const name = utils.createChatLink(rationsUUID(), rations.name);
         const message =
             remaining < 1
                 ? localize("message.rations.last", { name })

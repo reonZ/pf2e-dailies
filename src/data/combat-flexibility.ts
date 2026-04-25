@@ -1,20 +1,24 @@
 import { createDaily } from "daily";
+import { SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
-
-const combatUUID = "Compendium.pf2e.classfeatures.Item.8g6HzARbhfcgilP8";
-const improvedUUID = "Compendium.pf2e.classfeatures.Item.W2rwudMNcAxs8VoX";
 
 const combatFlexibility = createDaily({
     key: "combat-flexibility",
     items: [
         {
             slug: "combat", // Combat Flexibility
-            uuid: combatUUID,
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.8g6HzARbhfcgilP8",
+                "Compendium.pf2e-anachronism.class-features.Item.8g6HzARbhfcgilP8",
+            ),
             required: true,
         },
         {
             slug: "improved", // Improved Flexibility
-            uuid: improvedUUID,
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.W2rwudMNcAxs8VoX",
+                "Compendium.pf2e-anachronism.class-features.Item.W2rwudMNcAxs8VoX",
+            ),
         },
     ],
     label: (_actor, items) => items.combat.name,

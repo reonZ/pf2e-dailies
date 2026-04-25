@@ -16,11 +16,10 @@ import {
     ZeroToFour,
 } from "foundry-helpers";
 
-const mindUUID = "Compendium.pf2e.feats-srd.Item.juikoiIA0Jy8PboY";
-const mentalUUID = "Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky";
-const metallicUUID = "Compendium.pf2e.feats-srd.Item.8KUvJuAWCoxWg5FH";
-const runicUUID = "Compendium.pf2e.feats-srd.Item.2uQbQgz1AbjzcFSp";
-const advancedUUID = "Compendium.pf2e.feats-srd.Item.fgnfXwFcn9jZlXGD";
+const metallicUUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.feats-srd.Item.8KUvJuAWCoxWg5FH",
+    "Compendium.pf2e-anachronism.feats.Item.8KUvJuAWCoxWg5FH",
+);
 
 const weaponSlug = "mind-weapon";
 
@@ -61,12 +60,18 @@ const mindSmith = createDaily({
     items: [
         {
             slug: "mind", // Mind Smith Dedication
-            uuid: mindUUID,
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.juikoiIA0Jy8PboY",
+                "Compendium.pf2e-anachronism.feats.Item.juikoiIA0Jy8PboY",
+            ),
             required: true,
         },
         {
             slug: "mental", // Malleable Mental Forge
-            uuid: mentalUUID,
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.PccekOihIbRWdDky",
+                "Compendium.pf2e-anachronism.feats.Item.PccekOihIbRWdDky",
+            ),
         },
         {
             slug: "metallic", // Metallic Envisionment
@@ -74,11 +79,17 @@ const mindSmith = createDaily({
         },
         {
             slug: "runic", // Runic Mind Smithing
-            uuid: runicUUID,
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.2uQbQgz1AbjzcFSp",
+                "Compendium.pf2e-anachronism.feats.Item.2uQbQgz1AbjzcFSp",
+            ),
         },
         {
             slug: "advanced", // Advanced Runic Mind Smithing
-            uuid: advancedUUID,
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.fgnfXwFcn9jZlXGD",
+                "Compendium.pf2e-anachronism.feats.Item.fgnfXwFcn9jZlXGD",
+            ),
         },
     ],
     label: (_actor, items) => items.mind.name,
@@ -231,7 +242,7 @@ const mindSmith = createDaily({
             });
 
             messages.add("mindsmith", {
-                uuid: items.metallic ?? metallicUUID,
+                uuid: items.metallic ?? metallicUUID(),
                 selected: utils.getPreciousMaterialLabel(material),
             });
         }

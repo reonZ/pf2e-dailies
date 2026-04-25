@@ -1,15 +1,21 @@
 import { createDaily } from "daily";
+import { SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
-const featUUID = "Compendium.pf2e.feats-srd.Item.22P7IFyhrF7Fbw8B";
-const effectUUID = "Compendium.pf2e.feat-effects.Item.jO7wMhnjT7yoAtQg";
+const effectUUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.feat-effects.Item.jO7wMhnjT7yoAtQg",
+    "Compendium.pf2e-anachronism.feat-effects.Item.jO7wMhnjT7yoAtQg",
+);
 
 const rootMagic = createDaily({
     key: "root-magic",
     items: [
         {
             slug: "root", // Root Magic
-            uuid: featUUID,
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.22P7IFyhrF7Fbw8B",
+                "Compendium.pf2e-anachronism.feats.Item.22P7IFyhrF7Fbw8B",
+            ),
             required: true,
         },
     ],
@@ -26,7 +32,7 @@ const rootMagic = createDaily({
     process: ({ rows, messages }) => {
         const actor = game.actors.get(rows.target);
         if (actor) {
-            messages.add("root", { uuid: effectUUID, selected: actor.name });
+            messages.add("root", { uuid: effectUUID(), selected: actor.name });
         }
     },
 });

@@ -1,24 +1,31 @@
 import { createDaily } from "daily";
-import { getItemFromUuid, MODULE, R, WeaponPropertyRuneType } from "foundry-helpers";
+import { getItemFromUuid, MODULE, R, SYSTEM, WeaponPropertyRuneType } from "foundry-helpers";
 import { utils } from "utils";
-
-const bladeUUID = "Compendium.pf2e.classfeatures.Item.EtltLdiy9kNfHU0c";
 
 const bladeAlly = createDaily({
     key: "blade-ally",
     items: [
         {
             slug: "blade", // Blessed Armament
-            uuid: bladeUUID,
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.EtltLdiy9kNfHU0c",
+                "Compendium.pf2e-anachronism.class-features.Item.EtltLdiy9kNfHU0c",
+            ),
             required: true,
         },
         {
             slug: "radiant", // Radiant Armament
-            uuid: "Compendium.pf2e.feats-srd.Item.h5ksUZlrVGBjq6p4",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.h5ksUZlrVGBjq6p4",
+                "Compendium.pf2e-anachronism.feats.Item.h5ksUZlrVGBjq6p4",
+            ),
         },
         {
             slug: "paragon", // Armament Paragon
-            uuid: "Compendium.pf2e.feats-srd.Item.jYEMVfrXJLpXS6aC",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.jYEMVfrXJLpXS6aC",
+                "Compendium.pf2e-anachronism.feats.Item.jYEMVfrXJLpXS6aC",
+            ),
         },
     ],
     label: (_actor, items) => items.blade.name,

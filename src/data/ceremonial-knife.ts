@@ -3,7 +3,6 @@ import { OneToTen, SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
 const ICON = SYSTEM.path("icons/equipment/weapons/wish-knife.webp");
-const featUUID = "Compendium.pf2e.feats-srd.Item.78pkCdFaY8hI07Lj";
 
 const ceremonialKnife = createDaily({
     key: "ceremonial-knife",
@@ -11,7 +10,10 @@ const ceremonialKnife = createDaily({
     items: [
         {
             slug: "ceremonial", // Ceremonial Knife
-            uuid: featUUID,
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.78pkCdFaY8hI07Lj",
+                "Compendium.pf2e-anachronism.feats.Item.78pkCdFaY8hI07Lj",
+            ),
             required: true,
         },
     ],

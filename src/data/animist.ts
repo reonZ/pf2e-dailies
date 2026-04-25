@@ -26,12 +26,30 @@ const LORE_STRIP_REGEX = /^(.+?) Lore$/;
 
 const UUID_REGEX = /@(uuid|compendium)\[([a-z0-9\._-]+)\]/gi;
 
-const AVATAR_UUID = "Compendium.pf2e.spells-srd.Item.ckUOoqOM7Kg7VqxB";
-const HEAL_UUID = "Compendium.pf2e.spells-srd.Item.rfZpqmj0AIIdkVIs";
-const HARM_UUID = "Compendium.pf2e.spells-srd.Item.wdA52JJnsuQWeyqz";
-const ANIMAL_FORM_UUID = "Compendium.pf2e.spells-srd.Item.wp09USMB3GIW1qbp";
-const AERIAL_FORM_UUID = "Compendium.pf2e.spells-srd.Item.NzXpEzcZAjuDTZjK";
-const MONSTROUS_FORM_UUID = "Compendium.pf2e.spells-srd.Item.8AMvNVOUEtxBCDvJ";
+const AVATAR_UUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.spells-srd.Item.ckUOoqOM7Kg7VqxB",
+    "Compendium.sf2e.spells.Item.ckUOoqOM7Kg7VqxB",
+);
+const HEAL_UUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.spells-srd.Item.rfZpqmj0AIIdkVIs",
+    "Compendium.sf2e.spells.Item.rfZpqmj0AIIdkVIs",
+);
+const HARM_UUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.spells-srd.Item.wdA52JJnsuQWeyqz",
+    "Compendium.sf2e.spells.Item.wdA52JJnsuQWeyqz",
+);
+const ANIMAL_FORM_UUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.spells-srd.Item.wp09USMB3GIW1qbp",
+    "Compendium.sf2e.spells.Item.wp09USMB3GIW1qbp",
+);
+const AERIAL_FORM_UUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.spells-srd.Item.NzXpEzcZAjuDTZjK",
+    "Compendium.sf2e.spells.Item.NzXpEzcZAjuDTZjK",
+);
+const MONSTROSITY_FORM_UUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.spells-srd.Item.8AMvNVOUEtxBCDvJ",
+    "Compendium.sf2e.spells.Item.8AMvNVOUEtxBCDvJ",
+);
 
 // level 1 to 20 / rank 1 to 9
 const SPELLS_SLOTS = [
@@ -62,44 +80,74 @@ const animist = createDaily({
     items: [
         {
             slug: "attunement", // Apparition Attunement
-            uuid: "Compendium.pf2e.classfeatures.Item.AHMjKkIx21AoMc9W",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.AHMjKkIx21AoMc9W",
+                "Compendium.pf2e-anachronism.class-features.Item.AHMjKkIx21AoMc9W",
+            ),
             required: true,
         },
         {
             slug: "third", // Third Apparition
-            uuid: "Compendium.pf2e.classfeatures.Item.bRAjde9LlavcOUuM",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.bRAjde9LlavcOUuM",
+                "Compendium.pf2e-anachronism.class-features.Item.bRAjde9LlavcOUuM",
+            ),
         },
         {
             slug: "fourth", // Fourth Apparition
-            uuid: "Compendium.pf2e.classfeatures.Item.avLo2Jl3mNWssp0W",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.avLo2Jl3mNWssp0W",
+                "Compendium.pf2e-anachronism.class-features.Item.avLo2Jl3mNWssp0W",
+            ),
         },
         {
             slug: "supreme", // Supreme Incarnation
-            uuid: "Compendium.pf2e.classfeatures.Item.1MHXjNczVZfVvDP6",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.1MHXjNczVZfVvDP6",
+                "Compendium.pf2e-anachronism.class-features.Item.1MHXjNczVZfVvDP6",
+            ),
         },
         {
             slug: "balance", // Embodiment of the Balance
-            uuid: "Compendium.pf2e.feats-srd.Item.8Y9DCalsSnXHDCeV",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.8Y9DCalsSnXHDCeV",
+                "Compendium.pf2e-anachronism.feats.Item.8Y9DCalsSnXHDCeV",
+            ),
         },
         {
             slug: "walk", // Walk the Wilds
-            uuid: "Compendium.pf2e.feats-srd.Item.zKUtZxlQw5jWnX9z",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.zKUtZxlQw5jWnX9z",
+                "Compendium.pf2e-anachronism.feats.Item.zKUtZxlQw5jWnX9z",
+            ),
         },
         {
             slug: "medium", // Medium
-            uuid: "Compendium.pf2e.classfeatures.Item.k6c2gesVQ8QuEWGm",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.k6c2gesVQ8QuEWGm",
+                "Compendium.pf2e-anachronism.class-features.Item.k6c2gesVQ8QuEWGm",
+            ),
         },
         {
             slug: "spirit", // Circle of Spirits
-            uuid: "Compendium.pf2e.feats-srd.Item.M8jbV0il124Ve5oV",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.M8jbV0il124Ve5oV",
+                "Compendium.pf2e-anachronism.feats.Item.M8jbV0il124Ve5oV",
+            ),
         },
         {
             slug: "wind", // Wind Seeker
-            uuid: "Compendium.pf2e.feats-srd.Item.LoK6iI2f8ziSxFaU",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.LoK6iI2f8ziSxFaU",
+                "Compendium.pf2e-anachronism.feats.Item.LoK6iI2f8ziSxFaU",
+            ),
         },
         {
             slug: "monstrous", // Monstrous Inclinations
-            uuid: "Compendium.pf2e.feats-srd.Item.VO2uOVrjIr7ZAjkX",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.VO2uOVrjIr7ZAjkX",
+                "Compendium.pf2e-anachronism.feats.Item.VO2uOVrjIr7ZAjkX",
+            ),
         },
     ],
     label: (_actor, items) => items.attunement.name,
@@ -234,18 +282,18 @@ const animist = createDaily({
 
         const extraSpells: string[] = R.pipe(
             [
-                items.supreme && AVATAR_UUID,
-                items.balance && [HEAL_UUID, HARM_UUID],
-                items.walk && ANIMAL_FORM_UUID,
-                items.wind && AERIAL_FORM_UUID,
-                items.monstrous && MONSTROUS_FORM_UUID,
+                items.supreme && AVATAR_UUID(),
+                items.balance && [HEAL_UUID(), HARM_UUID()],
+                items.walk && ANIMAL_FORM_UUID(),
+                items.wind && AERIAL_FORM_UUID(),
+                items.monstrous && MONSTROSITY_FORM_UUID(),
             ],
             R.flat(),
             R.filter(R.isTruthy),
         );
 
         // add extraSpells
-        await Promise.all(extraSpells.map((uuid) => addSpell(uuid, uuid !== AVATAR_UUID)));
+        await Promise.all(extraSpells.map((uuid) => addSpell(uuid, uuid !== AVATAR_UUID())));
 
         const attribute = actor.classDC?.attribute ?? "wis";
 

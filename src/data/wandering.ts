@@ -1,12 +1,17 @@
 import { createDaily, DailyRowDropFeat } from "daily";
-import { getItemSourceId, R } from "foundry-helpers";
+import { getItemSourceId, R, SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
-const ANIMIST_CLASS = "Compendium.pf2e.classes.Item.9KiqZVG9r5g8mC4V";
+const ANIMIST_CLASS = SYSTEM.itemUuid(
+    "Compendium.pf2e.classes.Item.9KiqZVG9r5g8mC4V",
+    "Compendium.pf2e-anachronism.classes.Item.9KiqZVG9r5g8mC4V",
+);
 
 const wandering = createDaily({
     key: "wandering",
-    condition: (actor) => actor.class?.sourceId === ANIMIST_CLASS,
+    condition: (actor) => {
+        return actor.class?.sourceId === ANIMIST_CLASS();
+    },
     prepare: (actor) => {
         const feats = R.pipe(
             actor.itemTypes.feat,

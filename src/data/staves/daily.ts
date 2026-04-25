@@ -7,23 +7,48 @@ import {
     R,
     SlotKey,
     SpellcastingEntryPF2e,
+    SYSTEM,
     WeaponPF2e,
     ZeroToTen,
 } from "foundry-helpers";
 import { utils } from "utils";
 import { getSpells, getStaves, isStaff } from ".";
 
-const STAFF_NEXUS = "Compendium.pf2e.classfeatures.Item.Klb35AwlkNrq1gpB";
+const STAFF_NEXUS = SYSTEM.itemUuid(
+    "Compendium.pf2e.classfeatures.Item.Klb35AwlkNrq1gpB",
+    "Compendium.pf2e-anachronism.class-features.Item.Klb35AwlkNrq1gpB",
+);
 
-const RUNELORD_SINS = [
-    "Compendium.pf2e.classfeatures.Item.Fh5Khtx5bgGpBeOu", // envy
-    "Compendium.pf2e.classfeatures.Item.hzATJ1FV3lTPgeG9", // gluttony
-    "Compendium.pf2e.classfeatures.Item.COMhWWNBJOdaJqp7", // greed
-    "Compendium.pf2e.classfeatures.Item.MpZ0sdwMJ8fdZmtR", // lust
-    "Compendium.pf2e.classfeatures.Item.GI09dKNZVCPdSGZC", // pride
-    "Compendium.pf2e.classfeatures.Item.cz9fwc6KSkqxD3Nn", // sloth
-    "Compendium.pf2e.classfeatures.Item.wtPywk3wqEg3iYOP", // wrath
-];
+const RUNELORD_SINS = SYSTEM.uuids([
+    [
+        "Compendium.pf2e.classfeatures.Item.Fh5Khtx5bgGpBeOu",
+        "Compendium.pf2e-anachronism.class-features.Item.Fh5Khtx5bgGpBeOu",
+    ], // envy
+    [
+        "Compendium.pf2e.classfeatures.Item.hzATJ1FV3lTPgeG9",
+        "Compendium.pf2e-anachronism.class-features.Item.hzATJ1FV3lTPgeG9",
+    ], // gluttony
+    [
+        "Compendium.pf2e.classfeatures.Item.COMhWWNBJOdaJqp7",
+        "Compendium.pf2e-anachronism.class-features.Item.COMhWWNBJOdaJqp7",
+    ], // greed
+    [
+        "Compendium.pf2e.classfeatures.Item.MpZ0sdwMJ8fdZmtR",
+        "Compendium.pf2e-anachronism.class-features.Item.MpZ0sdwMJ8fdZmtR",
+    ], // lust
+    [
+        "Compendium.pf2e.classfeatures.Item.GI09dKNZVCPdSGZC",
+        "Compendium.pf2e-anachronism.class-features.Item.GI09dKNZVCPdSGZC",
+    ], // pride
+    [
+        "Compendium.pf2e.classfeatures.Item.cz9fwc6KSkqxD3Nn",
+        "Compendium.pf2e-anachronism.class-features.Item.cz9fwc6KSkqxD3Nn",
+    ], // sloth
+    [
+        "Compendium.pf2e.classfeatures.Item.wtPywk3wqEg3iYOP",
+        "Compendium.pf2e-anachronism.class-features.Item.wtPywk3wqEg3iYOP",
+    ], // wrath
+]);
 
 const staves = createDaily({
     key: "staves",
@@ -118,7 +143,7 @@ const staves = createDaily({
         )[];
 
         const isRunelord = !!custom.runelordSin;
-        const hasStaffNexus = !!findItemWithSourceId(actor, STAFF_NEXUS, "feat");
+        const hasStaffNexus = !!findItemWithSourceId(actor, STAFF_NEXUS(), "feat");
 
         const weapons = isRunelord
             ? getPotentialBonds(actor).map((weapon) => {
@@ -377,7 +402,7 @@ function getRunelordSin(actor: CharacterPF2e): FeatPF2e<CharacterPF2e> | undefin
         if (item.suppressed) continue;
 
         const sourceId = item.sourceId;
-        if (sourceId && RUNELORD_SINS.includes(sourceId)) {
+        if (sourceId && R.isIncludedIn(sourceId, RUNELORD_SINS())) {
             return item;
         }
     }

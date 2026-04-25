@@ -1,4 +1,5 @@
 import { createDaily } from "daily";
+import { SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
 const experimentalSpellshaping = createDaily({
@@ -6,7 +7,10 @@ const experimentalSpellshaping = createDaily({
     items: [
         {
             slug: "experimental", // Experimental Spellshaping
-            uuid: "Compendium.pf2e.classfeatures.Item.89zWKD2CN7nRu2xp",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.89zWKD2CN7nRu2xp",
+                "Compendium.pf2e-anachronism.class-features.Item.89zWKD2CN7nRu2xp",
+            ),
             required: true,
             condition: (actor) => actor.level >= 4,
         },

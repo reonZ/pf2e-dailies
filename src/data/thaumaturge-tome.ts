@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { OneToFour, SkillSlug } from "foundry-helpers";
+import { OneToFour, SkillSlug, SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
 type CustomRow = {
@@ -16,20 +16,32 @@ const thaumaturgeTome = createDaily({
     items: [
         {
             slug: "tome", // Initiate Benefit (Tome)
-            uuid: "Compendium.pf2e.classfeatures.Item.oADE2kM43wpF7MT5",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.oADE2kM43wpF7MT5",
+                "Compendium.pf2e-anachronism.class-features.Item.oADE2kM43wpF7MT5",
+            ),
             required: true,
         },
         {
             slug: "adept", // Adept Benefit (Tome)
-            uuid: "Compendium.pf2e.classfeatures.Item.gR8ODlO6au0laXo4",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.gR8ODlO6au0laXo4",
+                "Compendium.pf2e-anachronism.class-features.Item.gR8ODlO6au0laXo4",
+            ),
         },
         {
             slug: "intense", // Intense Implement
-            uuid: "Compendium.pf2e.feats-srd.Item.yRRM1dsY6jakEMaC",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.yRRM1dsY6jakEMaC",
+                "Compendium.pf2e-anachronism.feats.Item.yRRM1dsY6jakEMaC",
+            ),
         },
         {
             slug: "paragon", // Paragon Benefit (Tome)
-            uuid: "Compendium.pf2e.classfeatures.Item.IGv5wS17AAi0U87W",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.IGv5wS17AAi0U87W",
+                "Compendium.pf2e-anachronism.class-features.Item.IGv5wS17AAi0U87W",
+            ),
         },
     ],
     prepare: (actor, items) => {

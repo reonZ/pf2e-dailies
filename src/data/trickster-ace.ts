@@ -1,5 +1,5 @@
 import { createDaily } from "daily";
-import { localize, SpellPF2e } from "foundry-helpers";
+import { localize, SpellPF2e, SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
 
 const tricksterAce = createDaily({
@@ -7,7 +7,10 @@ const tricksterAce = createDaily({
     items: [
         {
             slug: "ace", // Trickster Ace
-            uuid: "Compendium.pf2e.feats-srd.Item.POrE3ZgBRdBL9MsW",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.POrE3ZgBRdBL9MsW",
+                "Compendium.pf2e-anachronism.feats.Item.POrE3ZgBRdBL9MsW",
+            ),
             required: true,
         },
     ],

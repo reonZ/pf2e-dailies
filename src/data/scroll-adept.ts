@@ -1,15 +1,16 @@
 import { createDaily, DailyRowDropSpell } from "daily";
-import { OneToTen, R } from "foundry-helpers";
+import { OneToTen, R, SYSTEM } from "foundry-helpers";
 import { utils } from "utils";
-
-const adeptUUID = "Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ";
 
 const scrollAdept = createDaily({
     key: "scroll-adept",
     items: [
         {
             slug: "adept", // Scroll Adept
-            uuid: adeptUUID,
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.u5DBg0LrBUKP0JsJ",
+                "Compendium.pf2e-anachronism.feats.Item.u5DBg0LrBUKP0JsJ",
+            ),
             required: true,
         },
     ],

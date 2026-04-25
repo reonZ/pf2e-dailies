@@ -1,7 +1,10 @@
 import { createDaily, DailyMessageOptions, DailyRowSelectOption } from "daily";
-import { ActorPF2e, getFlag, includesAny, ItemPF2e, localize, R } from "foundry-helpers";
+import { ActorPF2e, getFlag, includesAny, ItemPF2e, localize, R, SYSTEM } from "foundry-helpers";
 
-const TACTICAL_EXCELLENCE_UUID = "Compendium.pf2e.feats-srd.Item.a7sCZ2ehfsLQutvO";
+const TACTICAL_EXCELLENCE_UUID = SYSTEM.itemUuid(
+    "Compendium.pf2e.feats-srd.Item.a7sCZ2ehfsLQutvO",
+    "Compendium.pf2e-anachronism.feats.Item.a7sCZ2ehfsLQutvO",
+);
 
 const COMMANDER_TACTIC_PATH = "extra.dailies.commander-tactics.tactics";
 
@@ -19,28 +22,46 @@ const commanderTactics = createDaily({
     items: [
         {
             slug: "tactics", // Tactics
-            uuid: "Compendium.pf2e.classfeatures.Item.2IysodKQuf62jmd7",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.2IysodKQuf62jmd7",
+                "Compendium.pf2e-anachronism.class-features.Item.2IysodKQuf62jmd7",
+            ),
             required: true,
         },
         {
             slug: "commander", // Commander,
-            uuid: "Compendium.pf2e.classes.Item.Oyee5Ds9uwYLEkD0",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classes.Item.Oyee5Ds9uwYLEkD0",
+                "Compendium.pf2e-anachronism.classes.Item.Oyee5Ds9uwYLEkD0",
+            ),
         },
         {
             slug: "expert", // Expert Tactician
-            uuid: "Compendium.pf2e.classfeatures.Item.ZvsiPWL9mVZk5Tz1",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.ZvsiPWL9mVZk5Tz1",
+                "Compendium.pf2e-anachronism.class-features.Item.ZvsiPWL9mVZk5Tz1",
+            ),
         },
         {
             slug: "master", // Master Tactician
-            uuid: "Compendium.pf2e.classfeatures.Item.wHVfwjs6LJOgDERO",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.wHVfwjs6LJOgDERO",
+                "Compendium.pf2e-anachronism.class-features.Item.wHVfwjs6LJOgDERO",
+            ),
         },
         {
             slug: "legendary", // Legendary Tactician
-            uuid: "Compendium.pf2e.classfeatures.Item.jMxFu2vsw9ZOw61O",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.classfeatures.Item.jMxFu2vsw9ZOw61O",
+                "Compendium.pf2e-anachronism.class-features.Item.jMxFu2vsw9ZOw61O",
+            ),
         },
         {
             slug: "efficient", // Efficient Preparation
-            uuid: "Compendium.pf2e.feats-srd.Item.UvQjCHNAQVhKvTWb",
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.UvQjCHNAQVhKvTWb",
+                "Compendium.pf2e-anachronism.feats.Item.UvQjCHNAQVhKvTWb",
+            ),
         },
         {
             slug: "tactical", // Tactical Excellence
@@ -63,8 +84,8 @@ const commanderTactics = createDaily({
         const baseNbTactics = !commander ? 1 : legendary ? 6 : master ? 5 : expert ? 4 : 3;
 
         if (tactical) {
-            const tactics = actor.itemTypes.feat.filter((item) => item.sourceId === TACTICAL_EXCELLENCE_UUID);
-
+            const sourceId = TACTICAL_EXCELLENCE_UUID();
+            const tactics = actor.itemTypes.feat.filter((item) => item.sourceId === sourceId);
             extraNbTactics += tactics.length;
         }
 

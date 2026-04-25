@@ -2,7 +2,7 @@ import { createDaily } from "daily";
 import { ItemUUID, Language } from "foundry-helpers";
 import { utils } from "utils";
 
-function createLanguageDaily(key: string, uuid: ItemUUID) {
+function createLanguageDaily(key: string, uuid: ItemUUID | (() => ItemUUID)) {
     return createDaily({
         key,
         items: [

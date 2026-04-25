@@ -35,7 +35,7 @@ const familiar = createDaily({
     condition: (actor) => !!actor.familiar?.isOwner,
     rows: async (actor) => {
         const nbAbilities = getFamiliarAbilityCount(actor);
-        const pack = SYSTEM.getPack("familiar-abilities");
+        const pack = SYSTEM.getPack("pf2e.familiar-abilities", "pf2e-anachronism.familiar-abilities");
         if (!nbAbilities || !pack) return [];
 
         const uniqueId = foundry.utils.randomID();

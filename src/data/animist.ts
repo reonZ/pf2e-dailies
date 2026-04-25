@@ -84,7 +84,20 @@ const animist = createDaily({
                 "Compendium.pf2e.classfeatures.Item.AHMjKkIx21AoMc9W",
                 "Compendium.pf2e-anachronism.class-features.Item.AHMjKkIx21AoMc9W",
             ),
-            required: true,
+        },
+        {
+            slug: "dedication", // Animist Dedication
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.5hFFM5TmhKYSQwtG",
+                "Compendium.pf2e-anachronism.feats.Item.5hFFM5TmhKYSQwtG",
+            ),
+        },
+        {
+            slug: "basic", // Basic Animist Spellcasting
+            uuid: SYSTEM.itemUuid(
+                "Compendium.pf2e.feats-srd.Item.l64p70oQ6a3AtMq9",
+                "Compendium.pf2e-anachronism.feats.Item.l64p70oQ6a3AtMq9",
+            ),
         },
         {
             slug: "third", // Third Apparition
@@ -150,9 +163,11 @@ const animist = createDaily({
             ),
         },
     ],
-    label: (_actor, items) => items.attunement.name,
+    label: (_actor, items) => items.attunement?.name ?? items.dedication?.name ?? "",
     rows: async (actor, items) => {
-        const pack = SYSTEM.getPack("classfeatures");
+        if (!items.attunement && !items.dedication) return [];
+
+        const pack = SYSTEM.getPack("pf2e.classfeatures", "pf2e-anachronism.class-features");
         if (!pack) return [];
 
         const uniqueId = foundry.utils.randomID();
@@ -172,7 +187,7 @@ const animist = createDaily({
             });
         }
 
-        let nbApparitions = 2;
+        let nbApparitions = items.attunement ? 2 : 1;
         if (items.third) nbApparitions += 1;
         if (items.fourth) nbApparitions += 1;
 
@@ -189,7 +204,9 @@ const animist = createDaily({
         });
     },
     process: async ({ actor, rows, messages, items, addItem, addFeat, addRule }) => {
-        const parent = items.attunement;
+        const parent = items.attunement ?? items.dedication;
+        if (!parent) return;
+
         const actorLevel = actor.level;
         const maxRank = getActorMaxRank(actor);
         const loreRank = actorLevel >= 16 ? 3 : actorLevel >= 8 ? 2 : 1;
@@ -208,6 +225,8 @@ const animist = createDaily({
                 signature: animistConfig.signatures || signature,
             });
 
+            // dedication can only cast cantrips if no basic spellcasting feat
+            if (!items.attunement && !items.basic && !R.isIncludedIn("cantrip", source.system.traits.value)) return;
             if (source.system.level.value > maxRank) return;
 
             spellsToAdd.push({ source, uuid });
@@ -259,7 +278,7 @@ const animist = createDaily({
                 }
 
                 const vesselEl = spellsEl?.nextElementSibling as HTMLElement | undefined;
-                if (vesselEl) {
+                if (items.attunement && vesselEl) {
                     UUID_REGEX.lastIndex = 0;
 
                     const match = UUID_REGEX.exec(vesselEl.textContent ?? "");

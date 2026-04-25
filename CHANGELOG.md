@@ -1,3 +1,10 @@
+# 4.18.0
+
+- all dailies have been converted to add full support for the `PF2e Anachronism` and `SF2e Anachronism` modules
+- `Apparition Attunement`:
+- fix `Animist Dedication` not doing what it is supposed to do and instead working like a single apparition version of the `Animist` class
+  - also add support for the `Basic Animist Spellcasting` feat
+
 # 4.17.0
 
 - this is a foundry `14.360` release

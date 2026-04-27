@@ -71,7 +71,7 @@ const BUILTINS_DAILIES: Daily[] = [
     warshard, // Warshard Warrior Dedication
     createLoreSkillDaily(
         "quick-study", // Quick Study
-        SYSTEM.uuid(
+        SYSTEM.itemUuid(
             "Compendium.pf2e.feats-srd.Item.aLJsBBZzlUK3G8MW",
             "Compendium.pf2e-anachronism.feats.Item.aLJsBBZzlUK3G8MW",
         ),
@@ -119,16 +119,6 @@ const BUILTINS_DAILIES: Daily[] = [
         ),
         ["air", "earth", "fire", "water", "metal", "wood"],
         "half",
-    ),
-    createResistanceDaily(
-        "ganzi", // Nephilim
-        SYSTEM.itemUuid(
-            "Compendium.pf2e.heritages.Item.1oLMOmLpurfWTTff",
-            "Compendium.pf2e-anachronism.heritages.Item.1oLMOmLpurfWTTff",
-        ),
-        ["acid", "electricity", "sonic"],
-        "half",
-        true,
     ),
     createResistanceDaily(
         "proteankin", // Proteankin

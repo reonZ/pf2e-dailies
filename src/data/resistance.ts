@@ -35,14 +35,16 @@ function createResistanceDaily(
                 },
             ];
         },
-        process: ({ rows, items, messages, addRule }) => {
+        process: ({ rows, items, messages, addRule, removeRule }) => {
             const type = rows.resistance as ResistanceType;
             const source = utils.createResistanceRuleElement({
                 type,
                 value: resistance,
             });
 
+            removeRule(items.item, (rule) => rule.key !== "FlatModifier");
             addRule(items.item, source);
+
             messages.add("resistances", {
                 uuid: items.item,
                 selected: utils.getResistanceLabel(type),

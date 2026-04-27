@@ -1,3 +1,8 @@
+# 4.18.1
+
+- fix `Nephilim` heritage triggering the `Proteankin` daily as well
+- fix `Proteankin` daily not removing the system's rule elements from the feat item leading to having two different resistances
+
 # 4.18.0
 
 - all dailies have been converted to add full support for the `PF2e Anachronism` and `SF2e Anachronism` modules

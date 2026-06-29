@@ -93,13 +93,6 @@ const animist = createDaily({
             ),
         },
         {
-            slug: "basic", // Basic Animist Spellcasting
-            uuid: SYSTEM.itemUuid(
-                "Compendium.pf2e.feats-srd.Item.l64p70oQ6a3AtMq9",
-                "Compendium.pf2e-anachronism.feats.Item.l64p70oQ6a3AtMq9",
-            ),
-        },
-        {
             slug: "third", // Third Apparition
             uuid: SYSTEM.itemUuid(
                 "Compendium.pf2e.classfeatures.Item.bRAjde9LlavcOUuM",
@@ -225,11 +218,9 @@ const animist = createDaily({
                 signature: animistConfig.signatures || signature,
             });
 
-            // dedication can only cast cantrips if no basic spellcasting feat
-            if (!items.attunement && !items.basic && !R.isIncludedIn("cantrip", source.system.traits.value)) return;
-            if (source.system.level.value > maxRank) return;
-
-            spellsToAdd.push({ source, uuid });
+            if (source.system.level.value <= maxRank) {
+                spellsToAdd.push({ source, uuid });
+            }
         };
 
         let nbApparitions = 0;
@@ -241,6 +232,14 @@ const animist = createDaily({
                 if (!item?.isOfType("feat")) return;
 
                 nbApparitions++;
+
+                messages.add("apparition", { uuid: item });
+
+                const isPrimary = index < nbPrimary;
+
+                if (isPrimary) {
+                    nbActualPrimary++;
+                }
 
                 const itemSource = getItemSource(item);
                 addFeat(itemSource, parent);
@@ -261,6 +260,8 @@ const animist = createDaily({
                     }
                 }
 
+                if (!items.attunement) return;
+
                 const spellsEl = htmlQuery(descriptionEl, "ul");
                 if (spellsEl) {
                     UUID_REGEX.lastIndex = 0;
@@ -269,12 +270,6 @@ const animist = createDaily({
                     const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
 
                     await Promise.all(uuids.map((uuid) => addSpell(uuid, false)));
-                }
-
-                const isPrimary = index < nbPrimary;
-
-                if (isPrimary) {
-                    nbActualPrimary++;
                 }
 
                 const vesselEl = spellsEl?.nextElementSibling as HTMLElement | undefined;
@@ -294,10 +289,10 @@ const animist = createDaily({
                         vesselsToAdd.push({ source, uuid });
                     }
                 }
-
-                messages.add("apparition", { uuid: item });
             }),
         );
+
+        if (!items.attunement) return;
 
         const extraSpells: string[] = R.pipe(
             [

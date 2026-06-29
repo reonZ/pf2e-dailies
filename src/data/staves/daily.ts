@@ -79,6 +79,8 @@ const staves = createDaily({
         const preparedEntries: Record<string, FlexiblePreparedEntryGroup | PreparedEntryGroup> = {};
 
         for (const entry of entries.filter((entry) => entry.isPrepared)) {
+            if (entry.flags["pf2e-team-plus-magic"]?.isEssence) continue;
+
             const entryId = entry.id;
             const isFlexible = entry.isFlexible;
 

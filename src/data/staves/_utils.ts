@@ -16,12 +16,16 @@ import {
     ZeroToTen,
 } from "foundry-helpers";
 import { getUuidFromInlineMatch } from "utils";
+import { zStaffData } from ".";
 
 const LABEL_REGEX = /\d+/;
 const UUID_REGEX = /@(uuid|compendium)\[([a-z0-9\._-]+)\]/gi;
 
+let _staffData: ReturnType<typeof zStaffData> | undefined;
+
 function getStaffData(actor: CharacterPF2e): dailies.StaffFlags | undefined {
-    return getFlag<dailies.StaffFlags>(actor, "extra.dailies.staves");
+    const flag = getFlag<dailies.StaffFlags>(actor, "extra.dailies.staves");
+    return (_staffData ??= zStaffData()).safeParse(flag).data as dailies.StaffFlags | undefined;
 }
 
 function canCastRank<TPArent extends CharacterPF2e>(actor: TPArent, rank: number) {
@@ -129,8 +133,7 @@ async function getSpells(
 }
 
 type ActorStaff<TActor extends CharacterPF2e | NPCPF2e = CharacterPF2e | NPCPF2e> =
-    | EquipmentPF2e<TActor>
-    | WeaponPF2e<TActor>;
+    EquipmentPF2e<TActor> | WeaponPF2e<TActor>;
 
 export { canCastRank, getSpells, getStaffData, getStaves, isStaff, setStaffChargesValue };
 export type { ActorStaff };

@@ -117,14 +117,14 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
         const actor = this.actor;
         const castRank = spell.rank;
         const canCast = spell.isCantrip || canCastRank(actor, castRank);
-        const staffFlags = getStaffData(this.actor);
+        const staffData = getStaffData(this.actor);
 
-        if (!staffFlags || canCast === null) {
+        if (!staffData || canCast === null) {
             localize.error("staves.error.missing");
             return;
         }
 
-        const staff = actor.inventory.get(staffFlags.staffId)!;
+        const staff = actor.inventory.get(staffData.staffId)!;
 
         if (!staff.isEquipped) {
             localize.warning("staves.error.notEquipped", { staff: staff.name });
@@ -139,7 +139,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
             return;
         }
 
-        if (!staffFlags || options.message === false || !this.canCast(spell)) {
+        if (!staffData || options.message === false || !this.canCast(spell)) {
             return;
         }
 
@@ -151,11 +151,11 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
             return;
         }
 
-        let charges = staffFlags.charges.value;
+        let charges = staffData.charges.value;
         let mustUseSpontaneous = charges < castRank;
         let useSpontaneous: null | false | { entry: string; slot: SlotKey } = false;
 
-        if (!staffFlags.expended) {
+        if (!staffData.expended) {
             const minRank = Math.min(options.spontaneous?.rank ?? castRank, castRank);
             const maxRank = getActorMaxRank(actor);
             const range = R.range(minRank, maxRank + 1) as OneToTen[];

@@ -25,6 +25,7 @@ import {
     getStaffData,
     isTacticAbility,
     setStaffChargesValue,
+    StaffSpellcasting,
 } from "data";
 import { ActorPF2e, CharacterPF2e, getSetting, htmlClosest, localize, MODULE } from "foundry-helpers";
 import { registerSettings } from "settings";
@@ -59,6 +60,7 @@ Hooks.on("renderCharacterSheetPF2e", onRenderCharacterSheetPF2e);
 Hooks.on("renderFamiliarSheetPF2e", onRenderFamiliarSheetPF2e);
 Hooks.on("renderNPCSheetPF2e", onRenderNPCSheetPF2e);
 
+MODULE.apiExpose("StaffSpellcasting", StaffSpellcasting);
 MODULE.apiExpose("canCastRank", canCastRank);
 MODULE.apiExpose("canPrepareDailies", canPrepareDailies);
 MODULE.apiExpose("createRetrainBtn", createRetrainBtn);
@@ -68,6 +70,7 @@ MODULE.apiExpose("getCommanderTactics", getCommanderTactics);
 MODULE.apiExpose("getDailiesSummary", getDailiesSummary);
 MODULE.apiExpose("getDisabledDailies", getDisabledDailies);
 MODULE.apiExpose("getPhysicalItemSpells", getSpells);
+MODULE.apiExpose("getStaffData", getStaffData);
 MODULE.apiExpose("getStaffItem", (actor: CharacterPF2e) => {
     const flag = getStaffData(actor);
     return (flag && actor.inventory.get(flag.staffId)) || null;

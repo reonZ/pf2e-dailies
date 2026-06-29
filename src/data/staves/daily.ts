@@ -173,7 +173,7 @@ const staves = createDaily({
                 label: "PF2E.Weapon.Base.staff",
                 empty: true,
                 unique: "staff",
-                options: hasBond ? [{ value: "", label: "" }, ...staves] : staves,
+                options: hasBond || hasStaffNexus ? [{ value: "", label: "" }, ...staves] : staves,
             } as const satisfies DailyRowSelect;
 
             if (hasStaffNexus) {
@@ -184,9 +184,7 @@ const staves = createDaily({
                 });
             }
 
-            if (!hasStaffNexus || staves.length > 1) {
-                rows.push(stavesRow);
-            }
+            rows.push(stavesRow);
         }
 
         const preparedEntries = Object.values(custom.preparedEntries);

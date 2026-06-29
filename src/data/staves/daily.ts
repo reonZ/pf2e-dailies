@@ -177,14 +177,20 @@ const staves = createDaily({
             } as const satisfies DailyRowSelect;
 
             if (hasStaffNexus) {
-                rows.push({
-                    ...stavesRow,
-                    slug: "nexus",
-                    label: localize("interface.staves.makeshift"),
-                });
+                rows.push(
+                    {
+                        ...stavesRow,
+                        slug: "nexus",
+                        label: localize("interface.staves.makeshift"),
+                    },
+                    {
+                        ...stavesRow,
+                        label: localize("interface.staves.regular"),
+                    },
+                );
+            } else {
+                rows.push(stavesRow);
             }
-
-            rows.push(stavesRow);
         }
 
         const preparedEntries = Object.values(custom.preparedEntries);

@@ -166,6 +166,7 @@
                     "shifted": "Has merged a {type} to their Makeshift Staff for the day."
                 },
                 "makeshift": "Makeshift Staff",
+                "regular": "Regular Staff",
                 "staff": "Staff"
             }
         },

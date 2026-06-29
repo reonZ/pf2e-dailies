@@ -2,8 +2,7 @@
 
 - now always display the dailies icon even if the user isn't the character sheet owner
 - improve (Hopefully) parsing of spells in item description used in both `Apparition Attunement` & `Prepare a Staff`
-- `Apparition Attunement`:
-  - fix `Animist Dedication` adding spellcasting entries for vessels or apparition spells
+- fix `Animist Dedication` adding spellcasting entries for vessels or apparition spells
 - `Prepare a Staff`:
   - add some extra check during processing of the daily to accommodate the `Magic+` module
   - expose more stuff to the API

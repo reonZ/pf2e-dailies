@@ -1,3 +1,16 @@
+# 4.19.0
+
+- now always display the dailies icon even if the user isn't the character sheet owner
+- improve (Hopefully) parsing of spells in item description used in both `Apparition Attunement` & `Prepare a Staff`
+- `Apparition Attunement`:
+  - fix `Animist Dedication` adding spellcasting entries for vessels or apparition spells
+- `Prepare a Staff`:
+  - add some extra check during processing of the daily to accommodate the `Magic+` module
+  - expose more stuff to the API
+  - rework workflow for `Staff Nexus` wizards
+    - if you only select a makeshift/regular staff, it will be prepared as such
+    - if select both a makeshift staff and a regular staff, they will be merged together and have default charges
+
 # 4.18.1
 
 - fix `Nephilim` heritage triggering the `Proteankin` daily as well

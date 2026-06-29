@@ -160,11 +160,12 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
             const maxRank = getActorMaxRank(actor);
             const range = R.range(minRank, maxRank + 1) as OneToTen[];
             const entries = R.pipe(
-                actor.spellcasting.filter(
-                    (entry): entry is SpellcastingEntryPF2e<CharacterPF2e> =>
+                actor.spellcasting.filter((entry): entry is SpellcastingEntryPF2e<CharacterPF2e> => {
+                    return (
                         entry.category === "spontaneous" &&
-                        (!options.spontaneous || options.spontaneous.entryId === entry.id),
-                ),
+                        (!options.spontaneous || options.spontaneous.entryId === entry.id)
+                    );
+                }),
                 R.map((e) => ({
                     id: e.id,
                     name: e.name,

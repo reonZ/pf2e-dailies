@@ -101,8 +101,8 @@ async function getSpells(
     const spellsData = R.pipe(
         htmlQueryAll(spellList, "li"),
         R.flatMap((SpellRankEL) => {
-            const label = SpellRankEL.firstChild as HTMLElement;
-            const rank = Number(label.textContent?.match(LABEL_REGEX)?.[0] || "0") as ZeroToTen;
+            const label = (SpellRankEL.firstChild as HTMLElement).textContent.split("@")[0];
+            const rank = Number(label.match(LABEL_REGEX)?.[0] || "0") as ZeroToTen;
             const text = SpellRankEL.textContent ?? "";
             const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
 
@@ -119,11 +119,11 @@ async function getSpells(
             const source = spell.toObject();
 
             source._id = foundry.utils.randomID();
+            source.system.location.value = entryId;
 
-            foundry.utils.setProperty(source, "system.location", {
-                value: entryId,
-                heightenedLevel: rank,
-            });
+            if (!spell.isCantrip && rank !== spell.baseRank) {
+                source.system.location.heightenedLevel = rank;
+            }
 
             return source;
         }),

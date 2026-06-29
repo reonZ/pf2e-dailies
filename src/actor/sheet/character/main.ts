@@ -88,8 +88,6 @@ function onRenderCharacterSheetPF2e(sheet: CharacterSheetPF2e<CharacterPF2e>, $h
 }
 
 function addDailiesIcon(actor: CharacterPF2e, html: HTMLElement) {
-    if (!actor.isOwner) return;
-
     const parent = htmlQuery(html, "aside .hitpoints .hp-small");
     if (!parent) return;
 
@@ -111,7 +109,7 @@ function addDailiesIcon(actor: CharacterPF2e, html: HTMLElement) {
 
     parent.appendChild(icon);
 
-    if (canPrep) {
+    if (canPrep && actor.isOwner) {
         icon.addEventListener("click", () => {
             openDailiesInterface(actor);
         });

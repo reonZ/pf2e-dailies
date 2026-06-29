@@ -137,7 +137,7 @@ const staves = createDaily({
 
         const rows = [] as (
             | DailyRowSelect<`expend${number}`>
-            | DailyRowSelect<"type">
+            | DailyRowSelect<"nexus">
             | DailyRowSelect<"staff">
             | DailyRowSelect<"bond">
         )[];
@@ -151,9 +151,9 @@ const staves = createDaily({
               })
             : [];
 
-        const hasWeapon = weapons.length > 0;
+        const hasBond = weapons.length > 0;
 
-        if (hasWeapon) {
+        if (hasBond) {
             rows.push({
                 type: "select",
                 slug: "bond",
@@ -167,26 +167,26 @@ const staves = createDaily({
         });
 
         if (staves.length) {
-            rows.push({
+            const stavesRow = {
                 type: "select",
                 slug: "staff",
                 label: "PF2E.Weapon.Base.staff",
-                empty: hasWeapon,
-                options: hasWeapon ? [{ value: "", label: "" }, ...staves] : staves,
-            });
-        }
-
-        if (hasStaffNexus) {
-            const typeRow = {
-                type: "select",
-                slug: "type",
-                label: localize("interface.staves.type"),
-                options: ["makeshift", "regular"].map((value) => {
-                    return { value, label: localize("interface.staves", value) };
-                }),
+                empty: true,
+                unique: "staff",
+                options: hasBond ? [{ value: "", label: "" }, ...staves] : staves,
             } as const satisfies DailyRowSelect;
 
-            rows.push(typeRow);
+            if (hasStaffNexus) {
+                rows.push({
+                    ...stavesRow,
+                    slug: "nexus",
+                    label: localize("interface.staves.makeshift"),
+                });
+            }
+
+            if (!hasStaffNexus || staves.length > 1) {
+                rows.push(stavesRow);
+            }
         }
 
         const preparedEntries = Object.values(custom.preparedEntries);
@@ -259,23 +259,25 @@ const staves = createDaily({
     process: async ({ actor, rows, custom, messages, flagItem, updateItem, setExtraFlags }) => {
         const sin = custom.runelordSin;
         const bond = sin && rows.bond ? actor.inventory.get(rows.bond) : null;
+        const nexus = rows.nexus ? actor.inventory.get(rows.nexus) : null;
         const staff = rows.staff ? actor.inventory.get(rows.staff) : null;
-        if (!custom.entries || (!staff && !bond)) return;
+        if (!custom.entries || (!staff && !bond && !nexus)) return;
 
         const maxCharges = custom.maxCharges;
+        const nexusSpells = await getSpells(nexus, maxCharges);
         const sinSpells = await getSpells(sin, maxCharges);
         const staffSpells = await getSpells(staff, maxCharges);
-        if (!sinSpells.length && !staffSpells.length) return;
+        if (!sinSpells.length && !staffSpells.length && !nexusSpells.length) return;
 
         let overcharge = 0;
-        const spellcasting = actor.spellcasting!;
+        const spellcasting = actor.spellcasting;
         const preparedEntries = custom.preparedEntries;
         const flexibleLabel = localize("interface.staves.flexible");
         const emptyLabel = localize("interface.staves.empty");
         const expendedSpells: { name: string; rank: ZeroToTen; uuid?: string }[] = [];
         const slotsUpdates: Record<string, Record<string, number>> = {};
 
-        const expendedRows = R.pipe(rows, R.omit(["staff", "type", "bond"]), R.values(), R.filter(R.isTruthy));
+        const expendedRows = R.pipe(rows, R.omit(["staff", "nexus", "bond"]), R.values(), R.filter(R.isTruthy));
 
         const preparedUpdates: Record<
             string,
@@ -286,8 +288,7 @@ const staves = createDaily({
             const entryId = preparedPath?.split(".")[0];
             const entry = spellcasting.get(entryId) as SpellcastingEntryPF2e<CharacterPF2e>;
             const preparedData = foundry.utils.getProperty(preparedEntries, preparedPath) as
-                | FlexiblePreparedEntryGroup["slots"][number]
-                | PreparedEntryGroup["spells"][number];
+                FlexiblePreparedEntryGroup["slots"][number] | PreparedEntryGroup["spells"][number];
 
             if (!entry || !preparedData) continue;
 
@@ -345,18 +346,17 @@ const staves = createDaily({
             }
         }
 
-        const isMerged = !!bond && !!staff;
-        const isMakeshift = rows.type === "makeshift";
+        const isMakeshift = !!nexus && !staff;
         const charges = (isMakeshift ? 0 : maxCharges) + overcharge;
 
         const staffData: dailies.StaffFlags = {
-            staffId: bond?.id ?? staff!.id,
+            staffId: bond?.id ?? nexus?.id ?? staff!.id,
             charges: {
                 value: charges,
                 max: charges,
             },
             expended: expendedSpells.length > 0,
-            spells: [...sinSpells, ...staffSpells],
+            spells: [...nexusSpells, ...sinSpells, ...staffSpells],
         };
 
         // we only handle kineticist activation for now
@@ -367,13 +367,18 @@ const staves = createDaily({
         setExtraFlags(staffData);
 
         const staffType = localize("interface.staves", isMakeshift ? "makeshift" : "staff");
-        const groupLabel = isMerged ? "merged" : !!bond ? "bond" : "prepared";
+        const groupLabel = bond && staff ? "merged" : staff && nexus ? "shifted" : bond ? "bond" : "prepared";
 
         messages.addGroup("staff", localize("interface.staves.group", groupLabel, { type: staffType }), 45);
 
         if (bond) {
             flagItem(bond, localize("staves.bond"));
             messages.add("staff", { uuid: bond.uuid });
+        }
+
+        if (nexus) {
+            flagItem(nexus, localize("interface.staves.makeshift"));
+            messages.add("staff", { uuid: nexus.uuid });
         }
 
         if (staff) {

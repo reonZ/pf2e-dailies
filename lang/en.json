@@ -160,16 +160,13 @@
                 "empty": "Empty Slot",
                 "flexible": "Flexible Slot",
                 "group": {
-                    "prepared": "Has prepared a {type} for the day",
+                    "bond": "Has prepared their bonded weapon for the day",
                     "merged": "Has merged a {type} to their bonded weapon for the day",
-                    "bond": "Has prepared their bonded weapon for the day"
+                    "prepared": "Has prepared a {type} for the day",
+                    "shifted": "Has merged a {type} to their Makeshift Staff for the day."
                 },
-                "staff": "Staff",
-                "type": "Category",
-                "mergedshift": "Merged with Makeshift Staff",
-                "merged": "Merged with Regular Staff",
                 "makeshift": "Makeshift Staff",
-                "regular": "Regular Staff"
+                "staff": "Staff"
             }
         },
         "label": {

@@ -27,7 +27,7 @@ const coreMemories = createDaily({
         },
     ],
     label: (_actor, items) => items.core.name,
-    rows: (actor, {}) => {
+    rows: (actor) => {
         const skillList = utils.getSkills();
         const actorSkills = actor.skills;
 

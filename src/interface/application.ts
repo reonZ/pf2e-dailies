@@ -240,7 +240,7 @@ class DailyInterface extends foundry.applications.api.ApplicationV2 {
                         } else if (!row.options.length) {
                             continue;
                         } else {
-                            rowTemplate.selected = getSavedFlag<string>() ?? "";
+                            rowTemplate.selected = getSavedFlag<string>() ?? row.selected ?? "";
                         }
                     } else if (rowIsOfType(row, "drop")) {
                         const { name, uuid } = R.isPlainObject(row.value)

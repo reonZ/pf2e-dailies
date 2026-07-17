@@ -6,7 +6,9 @@ import {
     onRenderCharacterSheetPF2e,
     onRenderFamiliarSheetPF2e,
     onRenderNPCSheetPF2e,
+    onRenderPartySheetPF2e,
     openDailiesInterface,
+    openPartyDailiesInterfaces,
     retrain,
 } from "actor";
 import { CustomDaily, registerCustomDailies } from "custom";
@@ -59,6 +61,7 @@ Hooks.once("ready", () => {
 Hooks.on("renderCharacterSheetPF2e", onRenderCharacterSheetPF2e);
 Hooks.on("renderFamiliarSheetPF2e", onRenderFamiliarSheetPF2e);
 Hooks.on("renderNPCSheetPF2e", onRenderNPCSheetPF2e);
+Hooks.on("renderPartySheetPF2e", onRenderPartySheetPF2e);
 
 MODULE.apiExpose("StaffSpellcasting", StaffSpellcasting);
 MODULE.apiExpose("canCastRank", canCastRank);
@@ -77,6 +80,7 @@ MODULE.apiExpose("getStaffItem", (actor: CharacterPF2e) => {
 });
 MODULE.apiExpose("isTacticAbility", isTacticAbility);
 MODULE.apiExpose("openDailiesInterface", openDailiesInterface);
+MODULE.apiExpose("openPartyDailiesInterfaces", openPartyDailiesInterfaces);
 MODULE.apiExpose("registerCustomDailies", registerCustomDailies);
 MODULE.apiExpose("retrain", retrain);
 MODULE.apiExpose("retrainFromElement", async (actor: ActorPF2e, target: HTMLElement) => {

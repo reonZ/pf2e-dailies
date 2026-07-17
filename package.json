@@ -21,6 +21,6 @@
         "typescript": "^5.9.3"
     },
     "dependencies": {
-        "foundry-helpers": "github:reonZ/foundry-helpers"
+        "foundry-helpers": "github:reonZ/foundry-helpers#93528ad4062aa861830e1e8c6882e5e94c4c1a8a"
     }
 }

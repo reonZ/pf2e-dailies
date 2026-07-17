@@ -150,7 +150,6 @@
                 }
             },
             "advanced-alchemy": {
-                "empty": "No items prepared on the Crafting tab",
                 "item": "{name} × {quantity}"
             },
             "mindsmith": {
@@ -177,6 +176,7 @@
         },
         "label": {
             "ability": "Ability #{nb}",
+            "item": "Item #{nb}",
             "apparition": {
                 "first": "Primary Apparition",
                 "primary": "Primary #{nb} ",
@@ -242,6 +242,10 @@
             "generate": {
                 "tooltip": "Generate Spellcasting Entry",
                 "confirm": "Spellcasting entry for <strong>{name}</strong> has been created."
+            },
+            "party": {
+                "dailyPrep": "Daily Prep",
+                "none": "No party members are ready for daily preparations (rest may be required)."
             },
             "retrain": "Exchange {type}",
             "tactic": "Tactic",

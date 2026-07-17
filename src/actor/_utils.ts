@@ -33,6 +33,20 @@ async function openDailiesInterface(actor: Maybe<ActorPF2e>) {
     new DailyInterface(actor, dailies).render(true);
 }
 
+async function openPartyDailiesInterfaces(party: Maybe<ActorPF2e>) {
+    if (!party?.isOfType("party")) return;
+
+    const characters = party.members.filter((member): member is CharacterPF2e => member.isOfType("character"));
+    const preparable = characters.filter((actor) => actor.isOwner && canPrepareDailies(actor));
+
+    if (!preparable.length) {
+        localize.warning("sheet.party.none");
+        return;
+    }
+
+    await Promise.all(preparable.map((actor) => openDailiesInterface(actor)));
+}
+
 type DailyActorFlags = {
     rested?: boolean;
     addedItems?: string[];
@@ -46,5 +60,5 @@ type DailyActorFlags = {
     temporaryDeleted?: Record<string, ItemSourcePF2e>;
 };
 
-export { canPrepareDailies, getActorFlag, getDailiesSummary, getDisabledDailies, openDailiesInterface };
+export { canPrepareDailies, getActorFlag, getDailiesSummary, getDisabledDailies, openDailiesInterface, openPartyDailiesInterfaces };
 export type { DailyActorFlags };

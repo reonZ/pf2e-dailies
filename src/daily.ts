@@ -205,6 +205,8 @@ type DailyRowSelectOption = DailyRowSelectOptionGroup | DailyRowSelectOptionValu
 type DailyRowSelect<TRowSlug extends string = string> = DailyRowBase<TRowSlug, "select"> & {
     options: DailyRowSelectOption[];
     unique?: string;
+    /** Default selection when no saved flag exists */
+    selected?: string;
 };
 
 type DailyRowComboData = {

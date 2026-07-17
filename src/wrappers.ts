@@ -1,4 +1,5 @@
 import { onActorPrepareEmbeddedDocuments, onCharacterPrepareData, onCharacterSheetGetData } from "actor";
+import { onPartySheetActivateListeners } from "actor/sheet/party";
 import { registerWrapper } from "foundry-helpers";
 import { restForTheNight } from "rest";
 import {
@@ -44,6 +45,11 @@ function registerReadyWrappers() {
         "WRAPPER",
         "CONFIG.Actor.sheetClasses.character['pf2e.CharacterSheetPF2e'].cls.prototype.getData",
         onCharacterSheetGetData,
+    );
+    registerWrapper(
+        "WRAPPER",
+        "CONFIG.Actor.sheetClasses.party['pf2e.PartySheetPF2e'].cls.prototype.activateListeners",
+        onPartySheetActivateListeners,
     );
 }
 

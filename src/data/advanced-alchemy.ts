@@ -1,5 +1,5 @@
-import { createDaily } from "daily";
-import { CharacterPF2e, ItemSourcePF2e, localize } from "foundry-helpers";
+import { createDaily, DailyRowSelectOption } from "daily";
+import { CharacterPF2e, ItemSourcePF2e, localize, R, sortByLocaleCompare } from "foundry-helpers";
 
 type PreparedFormulaData = {
     uuid: string;
@@ -15,6 +15,11 @@ type PreparedFormulaLike = {
     item: { name: string; uuid: string };
 };
 
+type CraftingFormulaLike = {
+    uuid: string;
+    item: { name: string; uuid: string };
+};
+
 type DailyCraftingResultLike = {
     items: PreCreate<ItemSourcePF2e>[];
     resource: { slug: string; cost: number } | null;
@@ -25,8 +30,11 @@ type CraftingAbilityLike = {
     slug: string;
     isAlchemical: boolean;
     isDailyPrep: boolean;
+    maxSlots: number;
+    resource: string | null;
     preparedFormulaData: PreparedFormulaData[];
     getPreparedCraftingFormulas: () => Promise<PreparedFormulaLike[]>;
+    getValidFormulas: () => Promise<CraftingFormulaLike[]>;
     calculateDailyCrafting: () => Promise<DailyCraftingResultLike>;
     updateFormulas: (formulas: PreparedFormulaData[], operation?: object) => Promise<void>;
 };
@@ -46,76 +54,118 @@ type CraftingActor = CharacterPF2e & {
     };
 };
 
-type PreparedAlchemyItem = {
-    uuid: string;
-    name: string;
-    quantity: number;
+type AlchemyPrepareData = {
+    abilities: CraftingAbilityLike[];
+    maxSlots: number;
+    options: DailyRowSelectOption[];
+    defaults: string[];
 };
+
+/** Remaster Advanced Alchemy uses isDailyPrep + maxSlots and does not set isAlchemical. */
+function isAdvancedAlchemyAbility(ability: CraftingAbilityLike): boolean {
+    if (!ability.isDailyPrep) return false;
+    return ability.isAlchemical || ability.slug === "advanced-alchemy";
+}
 
 function getAlchemicalAbilities(actor: CharacterPF2e): CraftingAbilityLike[] {
     const crafting = (actor as CraftingActor).crafting;
     if (!crafting?.abilities) return [];
 
-    return crafting.abilities.filter((ability) => ability.isAlchemical && ability.isDailyPrep);
+    return crafting.abilities.filter(isAdvancedAlchemyAbility);
 }
 
-async function getPreparedAlchemyItems(actor: CharacterPF2e): Promise<PreparedAlchemyItem[]> {
+function getAbilityCapacity(actor: CharacterPF2e, ability: CraftingAbilityLike): number {
+    if (ability.maxSlots > 0) return ability.maxSlots;
+
+    if (ability.resource) {
+        return (actor as CraftingActor).getResource(ability.resource)?.max ?? 0;
+    }
+
+    return 0;
+}
+
+async function prepareAlchemyData(actor: CharacterPF2e): Promise<AlchemyPrepareData> {
     const abilities = getAlchemicalAbilities(actor);
-    const prepared: PreparedAlchemyItem[] = [];
+    const formulaByUuid = new Map<string, string>();
+    const defaults: string[] = [];
+    let maxSlots = 0;
 
     for (const ability of abilities) {
-        const formulas = await ability.getPreparedCraftingFormulas();
+        maxSlots += getAbilityCapacity(actor, ability);
 
-        for (const formula of formulas) {
+        const valid = await ability.getValidFormulas();
+        for (const formula of valid) {
+            formulaByUuid.set(formula.item.uuid, formula.item.name);
+        }
+
+        const prepared = await ability.getPreparedCraftingFormulas();
+        for (const formula of prepared) {
             if (formula.expended) continue;
-
-            prepared.push({
-                uuid: formula.item.uuid,
-                name: formula.item.name,
-                quantity: formula.quantity,
-            });
+            for (let i = 0; i < formula.quantity; i++) {
+                defaults.push(formula.item.uuid);
+            }
         }
     }
 
-    return prepared;
+    const formulaOptions = [...formulaByUuid.entries()].map(([value, label]) => ({ value, label }));
+    sortByLocaleCompare(formulaOptions, "label");
+
+    return {
+        abilities,
+        maxSlots,
+        options: [{ value: "", label: "" }, ...formulaOptions],
+        defaults: defaults.slice(0, maxSlots),
+    };
+}
+
+function groupSelections(uuids: string[]): PreparedFormulaData[] {
+    const quantities = new Map<string, number>();
+
+    for (const uuid of uuids) {
+        if (!uuid) continue;
+        quantities.set(uuid, (quantities.get(uuid) ?? 0) + 1);
+    }
+
+    return [...quantities.entries()].map(([uuid, quantity]) => ({ uuid, quantity }));
 }
 
 const advancedAlchemy = createDaily({
     key: "advanced-alchemy",
     condition: (actor) => getAlchemicalAbilities(actor).length > 0,
-    prepare: async (actor) => {
-        return {
-            prepared: await getPreparedAlchemyItems(actor),
-        };
-    },
+    prepare: async (actor) => prepareAlchemyData(actor),
     rows: (_actor, _items, custom) => {
-        if (!custom.prepared.length) {
-            return [
-                {
-                    type: "notify",
-                    slug: "empty",
-                    message: localize("interface.advanced-alchemy.empty"),
-                },
-            ];
+        if (!custom.maxSlots || !custom.options.some((option) => "value" in option && option.value)) {
+            return [];
         }
 
-        return custom.prepared.map((item, index) => ({
-            type: "notify" as const,
+        return R.range(1, custom.maxSlots + 1).map((index) => ({
+            type: "select" as const,
             slug: `item${index}`,
-            message: localize("interface.advanced-alchemy.item", {
-                name: item.name,
-                quantity: item.quantity,
-            }),
+            label: localize("label.item", { nb: index }),
+            empty: true,
+            order: 100,
+            options: custom.options,
+            selected: custom.defaults[index - 1] ?? "",
         }));
     },
-    process: async ({ actor, custom, messages }) => {
-        if (!custom.prepared.length) return;
+    process: async ({ actor, custom, rows, messages }) => {
+        const selections = R.range(1, custom.maxSlots + 1)
+            .map((index) => rows[`item${index}`] as string | undefined)
+            .filter((uuid): uuid is string => !!uuid);
+
+        const prepared = groupSelections(selections);
+        if (!prepared.length || !custom.abilities.length) return;
+
+        // Remaster has a single Advanced Alchemy ability; write prep there.
+        // Legacy/archetype isAlchemical entries share the same selection pool.
+        const [primary, ...rest] = custom.abilities;
+        await primary.updateFormulas(prepared, { render: false });
+        for (const ability of rest) {
+            await ability.updateFormulas([], { render: false });
+        }
 
         const craftingActor = actor as CraftingActor;
-        const abilities = getAlchemicalAbilities(actor);
-        if (!abilities.length) return;
-
-        const results = await Promise.all(abilities.map((ability) => ability.calculateDailyCrafting()));
+        const results = await Promise.all(custom.abilities.map((ability) => ability.calculateDailyCrafting()));
         const itemsToAdd = results.flatMap((result) => result.items);
         if (!itemsToAdd.length) return;
 
@@ -147,21 +197,22 @@ const advancedAlchemy = createDaily({
             await craftingActor.updateResource(slug, value, { render: false });
         }
 
-        for (const ability of abilities) {
+        for (const ability of custom.abilities) {
             const formulas = ability.preparedFormulaData.map((formula) => ({ ...formula, expended: true }));
             await ability.updateFormulas(formulas, { render: false });
         }
 
         await craftingActor.inventory.add(itemsToAdd, { stack: true });
 
-        messages.addGroup("alchemy", undefined, 35);
+        const names = new Map(custom.options.flatMap((option) => ("value" in option && option.value ? [[option.value, option.label] as const] : [])));
 
-        for (const item of custom.prepared) {
+        messages.addGroup("alchemy", undefined, 35);
+        for (const item of prepared) {
             messages.add("alchemy", {
                 uuid: item.uuid,
                 label: localize("interface.advanced-alchemy.item", {
-                    name: item.name,
-                    quantity: item.quantity,
+                    name: names.get(item.uuid) ?? item.uuid,
+                    quantity: item.quantity ?? 1,
                 }),
             });
         }

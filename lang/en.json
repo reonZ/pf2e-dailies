@@ -29,6 +29,7 @@
         },
         "builtin": {
             "dailies": {
+                "advanced-alchemy": "Advanced Alchemy",
                 "familiar": "Familiar Abilities",
                 "staves": "Prepare a Staff",
                 "thaumaturge-tome": "Thaumaturge Tome",
@@ -148,6 +149,10 @@
                     "none": "none"
                 }
             },
+            "advanced-alchemy": {
+                "empty": "No items prepared on the Crafting tab",
+                "item": "{name} × {quantity}"
+            },
             "mindsmith": {
                 "missing": "Mind Weapon is missing"
             },
@@ -191,6 +196,7 @@
             "noChanges": "Has made no changes during their daily preparations, you didn't even need to know about it really.",
             "gained": "Gained the temporary {type}",
             "groups": {
+                "alchemy": "Created the Advanced Alchemy items",
                 "apparition": "Has attuned with their apparitions",
                 "blade": "Imbued their spirit into their weapon",
                 "ceremonial": "Performed a ritual to create a ceremonial knife imbued with the spell",

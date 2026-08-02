@@ -160,16 +160,14 @@
         "empty": "Puste miejsce",
         "flexible": "Elastyczne miejsce",
         "group": {
-          "prepared": "Przygotowano {type} na ten dzień",
+          "bond": "Przygotowano swoją broń na ten dzień",
           "merged": "Połączono {type} ze swoją bronią związaną na dany dzień",
-          "bond": "Przygotowano swoją broń na ten dzień"
+          "prepared": "Przygotowano {type} na ten dzień",
+          "shifted": "Połączył {type} ze swoim prowizorycznym kosturem na ten dzień."
         },
-        "staff": "Kostur",
-        "type": "Kategoria",
-        "mergedshift": "Połączono z Prowizorycznym kosturem",
-        "merged": "Połączono ze Zwykłym kosturem",
         "makeshift": "Prowizoryczny kostur",
-        "regular": "Zwykły kostur"
+        "regular": "Zwykły kostur",
+        "staff": "Kostur"
       }
     },
     "label": {

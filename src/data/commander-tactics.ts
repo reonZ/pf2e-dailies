@@ -1,5 +1,5 @@
 import { createDaily, DailyMessageOptions, DailyRowSelectOption } from "daily";
-import { ActorPF2e, getFlag, includesAny, ItemPF2e, localize, R, SYSTEM } from "foundry-helpers";
+import { ActorPF2e, getFlag, ItemPF2e, localize, R, SYSTEM } from "foundry-helpers";
 
 const TACTICAL_EXCELLENCE_UUID = SYSTEM.itemUuid(
     "Compendium.pf2e.feats-srd.Item.a7sCZ2ehfsLQutvO",
@@ -7,15 +7,6 @@ const TACTICAL_EXCELLENCE_UUID = SYSTEM.itemUuid(
 );
 
 const COMMANDER_TACTIC_PATH = "extra.dailies.commander-tactics.tactics";
-
-const TACTIC_TRAITS = [
-    "commander-expert-tactic",
-    "commander-legendary-tactic",
-    "commander-master-tactic",
-    "commander-mobility-tactic",
-    "commander-offensive-tactic",
-    "vcommander-master-tactic",
-];
 
 const commanderTactics = createDaily({
     key: "commander-tactics",
@@ -127,7 +118,7 @@ function getCommanderTactics(actor: ActorPF2e) {
 }
 
 function isTacticAbility(item: Maybe<ItemPF2e>): item is ItemPF2e {
-    return item instanceof Item && includesAny(item.system.traits.otherTags, TACTIC_TRAITS);
+    return item instanceof Item && item.isOfType("action") && R.isIncludedIn("tactic", item.system.traits.value);
 }
 
 export { COMMANDER_TACTIC_PATH, commanderTactics, getCommanderTactics, isTacticAbility };

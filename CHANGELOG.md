@@ -1,3 +1,8 @@
+# 4.19.1
+
+- `Commander Tactics`:
+  - now only check for the `tactic` trait instead of also looking for the `otherTags` due to some system tactics not having any
+
 # 4.19.0
 
 - now always display the dailies icon even if the user isn't the character sheet owner

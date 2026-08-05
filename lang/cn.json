@@ -75,7 +75,7 @@
                 "held-in-one-hand": "单手",
                 "title": "创建心灵武器",
                 "yes": "创建",
-                "flavor": "该角色的库存中没有心灵武器。<br>请选择下列选项之一创建一把心灵武器。",
+                "flavor": "该角色的物品栏中没有心灵武器。<br>请选择下列选项之一创建一把心灵武器。",
                 "oneTrait": " 且拥有 <strong>{trait1}</strong> 特征",
                 "twoTraits": " 且拥有 <strong>{trait1}</strong> 和 <strong>{trait2}</strong> 特征",
                 "label": "一件{hand}造成 <strong>1{die}</strong> 点伤害的武器，{hasTrait}",
@@ -153,7 +153,8 @@
                 "group": {
                     "bond": "今日的连结武器已准备",
                     "merged": "已将{type}与今日的连结武器融合",
-                    "prepared": "今日已准备{type}"
+                    "prepared": "今日已准备{type}",
+                    "shifted": "已将{type}与今日的临时法杖融合。"
                 },
                 "type": "类别",
                 "merged": "与常规法杖融合",
@@ -186,7 +187,8 @@
             "mind-smith": "铸念师",
             "expend": "扩展 #{nb}",
             "mind-runic": "符文锻造",
-            "material": "材料"
+            "material": "材料",
+            "feat": "专长 #{nb}"
         },
         "message": {
             "groups": {

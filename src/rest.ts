@@ -10,7 +10,6 @@ import {
     MODULE,
     R,
     SYSTEM,
-    updateFlag,
 } from "foundry-helpers";
 import { createUpdateCollection } from "utils";
 
@@ -97,27 +96,54 @@ async function cleanup(actor: CharacterPF2e) {
         getFlag<DailyActorFlags["temporaryDeleted"]>(actor, "temporaryDeleted") ?? {},
     );
 
+    const operations: ModifyBatchOperation[] = [];
+
     if (temporaryDeleted.length) {
-        await actor.createEmbeddedDocuments("Item", temporaryDeleted, { keepId: true });
+        operations.push({
+            action: "create",
+            data: temporaryDeleted,
+            documentName: "Item",
+            keepId: true,
+            parent: actor,
+        });
     }
 
     if (updatedItems.size) {
         processUpdatedItemsData(actor, updatedItems);
-        await actor.updateEmbeddedDocuments("Item", updatedItems.contents);
+        operations.push({
+            action: "update",
+            documentName: "Item",
+            updates: updatedItems.contents,
+            parent: actor,
+        });
     }
 
     if (removedItems.length) {
-        await actor.deleteEmbeddedDocuments("Item", removedItems);
+        operations.push({
+            action: "delete",
+            documentName: "Item",
+            ids: removedItems,
+            parent: actor,
+        });
     }
 
-    await updateFlag(actor, {
+    const flagUpdates = {
         rested: true,
         addedItems: _del,
         flaggedItems: _del,
         extra: _del,
         tooltip: _del,
         temporaryDeleted: _del,
+    };
+
+    operations.push({
+        action: "update",
+        documentName: "Actor",
+        updates: [{ _id: actor.id, flags: { [MODULE.id]: flagUpdates } }],
+        parent: actor.parent,
     });
+
+    await foundry.documents.modifyBatch(operations);
 }
 
 export { restForTheNight };

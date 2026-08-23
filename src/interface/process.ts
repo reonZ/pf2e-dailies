@@ -24,7 +24,7 @@ import {
     SpellPF2e,
     SYSTEM,
 } from "foundry-helpers";
-import { enrichHTML, PHYSICAL_ITEM_TYPES } from "foundry-helpers/dist";
+import { applyActorGroupUpdate, enrichHTML, PHYSICAL_ITEM_TYPES } from "foundry-helpers/dist";
 import { createSpellcastingWithHighestStatisticSource } from "spellcasting";
 import { createUpdateCollection, utils } from "utils";
 import { DailyInterface } from ".";
@@ -353,31 +353,6 @@ async function processDailies(this: DailyInterface) {
         updateItem({ _id, "system.rules": rules });
     }
 
-    const operations: ModifyBatchOperation[] = [];
-
-    if (updatedItems.size) {
-        processUpdatedItemsData(actor, updatedItems);
-        operations.push({
-            action: "update",
-            documentName: "Item",
-            updates: updatedItems.contents,
-            parent: actor,
-        });
-    }
-
-    if (deletedItems.length) {
-        operations.push({
-            action: "delete",
-            documentName: "Item",
-            ids: deletedItems,
-            parent: actor,
-        });
-    }
-
-    if (operations.length) {
-        await foundry.documents.modifyBatch(operations);
-    }
-
     const messages = Object.entries(messageGroups);
     const chatGroups = rawMessages.map(({ message, order }) => ({
         message: `<p>${message}</p>`,
@@ -426,14 +401,7 @@ async function processDailies(this: DailyInterface) {
     chatGroups.unshift({ message: preface, order: Infinity });
     chatGroups.sort((a, b) => b.order - a.order);
 
-    const ChatMessagePF2e = getDocumentClass("ChatMessage");
     const chatContent = chatGroups.map((group) => group.message).join("<hr />");
-
-    await ChatMessagePF2e.create({
-        content: `<div class="pf2e-dailies-summary">${chatContent}</div>`,
-        speaker: ChatMessagePF2e.getSpeaker({ actor }),
-    });
-
     const actorUpdates: Record<string, any> = {};
 
     if (currentMaxFocus !== hasFocusSpells) {
@@ -447,6 +415,8 @@ async function processDailies(this: DailyInterface) {
         }
     }
 
+    processUpdatedItemsData(actor, updatedItems);
+
     setFlagProperty(actorUpdates, {
         ...flags,
         extra: extraFlags,
@@ -457,7 +427,17 @@ async function processDailies(this: DailyInterface) {
         tooltip: await enrichHTML(chatContent),
     } satisfies DailyActorFlags);
 
-    await actor.update(actorUpdates);
+    await applyActorGroupUpdate(actor, {
+        actorUpdates,
+        itemDeletes: deletedItems,
+        itemUpdates: updatedItems.contents,
+    });
+
+    const ChatMessagePF2e = getDocumentClass("ChatMessage");
+    await ChatMessagePF2e.create({
+        content: `<div class="pf2e-dailies-summary">${chatContent}</div>`,
+        speaker: ChatMessagePF2e.getSpeaker({ actor }),
+    });
 }
 
 function processUpdatedItemsData(actor: CharacterPF2e, updatedItems: Collection<string, EmbeddedDocumentUpdateData>) {

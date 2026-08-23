@@ -12,6 +12,7 @@ import {
     SYSTEM,
 } from "foundry-helpers";
 import { createUpdateCollection } from "utils";
+import { applyActorGroupUpdate } from "foundry-helpers/dist";
 
 async function restForTheNight(
     wrapped: libWrapper.RegisterCallback,
@@ -96,54 +97,25 @@ async function cleanup(actor: CharacterPF2e) {
         getFlag<DailyActorFlags["temporaryDeleted"]>(actor, "temporaryDeleted") ?? {},
     );
 
-    const operations: ModifyBatchOperation[] = [];
+    processUpdatedItemsData(actor, updatedItems);
 
-    if (temporaryDeleted.length) {
-        operations.push({
-            action: "create",
-            data: temporaryDeleted,
-            documentName: "Item",
-            keepId: true,
-            parent: actor,
-        });
-    }
-
-    if (updatedItems.size) {
-        processUpdatedItemsData(actor, updatedItems);
-        operations.push({
-            action: "update",
-            documentName: "Item",
-            updates: updatedItems.contents,
-            parent: actor,
-        });
-    }
-
-    if (removedItems.length) {
-        operations.push({
-            action: "delete",
-            documentName: "Item",
-            ids: removedItems,
-            parent: actor,
-        });
-    }
-
-    const flagUpdates = {
-        rested: true,
-        addedItems: _del,
-        flaggedItems: _del,
-        extra: _del,
-        tooltip: _del,
-        temporaryDeleted: _del,
-    };
-
-    operations.push({
-        action: "update",
-        documentName: "Actor",
-        updates: [{ _id: actor.id, flags: { [MODULE.id]: flagUpdates } }],
-        parent: actor.parent,
+    await applyActorGroupUpdate(actor, {
+        actorUpdates: {
+            flags: {
+                [MODULE.id]: {
+                    rested: true,
+                    addedItems: _del,
+                    flaggedItems: _del,
+                    extra: _del,
+                    tooltip: _del,
+                    temporaryDeleted: _del,
+                },
+            },
+        },
+        itemCreates: temporaryDeleted,
+        itemDeletes: removedItems,
+        itemUpdates: updatedItems.contents,
     });
-
-    await foundry.documents.modifyBatch(operations);
 }
 
 export { restForTheNight };

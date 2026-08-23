@@ -353,13 +353,29 @@ async function processDailies(this: DailyInterface) {
         updateItem({ _id, "system.rules": rules });
     }
 
+    const operations: ModifyBatchOperation[] = [];
+
     if (updatedItems.size) {
         processUpdatedItemsData(actor, updatedItems);
-        await actor.updateEmbeddedDocuments("Item", updatedItems.contents);
+        operations.push({
+            action: "update",
+            documentName: "Item",
+            updates: updatedItems.contents,
+            parent: actor,
+        });
     }
 
     if (deletedItems.length) {
-        await actor.deleteEmbeddedDocuments("Item", deletedItems);
+        operations.push({
+            action: "delete",
+            documentName: "Item",
+            ids: deletedItems,
+            parent: actor,
+        });
+    }
+
+    if (operations.length) {
+        await foundry.documents.modifyBatch(operations);
     }
 
     const messages = Object.entries(messageGroups);

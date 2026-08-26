@@ -145,6 +145,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
 
         if (spell.isCantrip) {
             spell.toMessage(null, {
+                actualCast: true,
                 rollMode: options.rollMode,
                 data: { castRank: spell.rank },
             });
@@ -252,6 +253,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
         await setStaffChargesValue(actor, spontaneousValue ? charges - 1 : charges - castRank);
 
         spell.toMessage(null, {
+            actualCast: true,
             rollMode: options.rollMode,
             data: { castRank: spell.rank },
         });

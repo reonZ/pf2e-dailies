@@ -51,9 +51,9 @@ function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.Registe
         class StaffSpell extends CONFIG.PF2E.Item.documentClasses.spell<CharacterPF2e> {
             override async toMessage(
                 event?: Maybe<PointerEvent>,
-                { create = true, data, rollMode }: SpellToMessageOptions = {},
+                { actualCast, create = true, data, rollMode }: SpellToMessageOptions = {},
             ): Promise<ChatMessagePF2e | undefined> {
-                const message = await super.toMessage(event, { rollMode, data, create: false });
+                const message = await super.toMessage(event, { actualCast, rollMode, data, create: false });
                 if (!message) return undefined;
 
                 const messageSource = message.toObject();

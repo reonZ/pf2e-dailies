@@ -160,16 +160,14 @@
         "empty": "Emplacement vide",
         "flexible": "Emplacement flexible",
         "group": {
-          "prepared": "A préparé un {type} pour la journée",
+          "bond": "A préparé l'arme auquel il est lié pour la journée",
           "merged": "A fusionné un {type} à l'arme liée pour la journée",
-          "bond": "A préparé l'arme auquel il est lié pour la journée"
+          "prepared": "A préparé un {type} pour la journée",
+          "shifted": "A intégré un {type} à son bâton de fortune pour la journée."
         },
-        "staff": "Bâton",
-        "type": "Catégorie",
-        "mergedshift": "Fusionné avec un bâton de fortune",
-        "merged": "Fusionné avec un bâton ordinaire",
         "makeshift": "Bâton de fortune",
-        "regular": "Bâton ordinaire"
+        "regular": "Bâton régulier",
+        "staff": "Bâton"
       }
     },
     "label": {

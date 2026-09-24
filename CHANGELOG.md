@@ -1,8 +1,12 @@
+# 4.20.1
+
+- localization & foundry verified version bump
+
 # 4.20.0
 
 - small performance boost for characters that have a lot of stuff being added/updated/removed during dailies/rest
 - `Prepare a Staff`:
-  - add the `origin:action:slug:cast-a-spell` rollOption to the spells cast from a staff spellcasting entry
+  - add the `origin:action:slug:cast-a-spell` roll-option to the spells cast from a staff spellcasting entry
 
 # 4.19.1
 

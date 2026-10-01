@@ -231,8 +231,8 @@
                 "tooltip": "重置充能至最大值（max:{max}）"
             },
             "generate": {
-                "confirm": "已创建<strong>{name}</strong>的施法条目。",
-                "tooltip": "生成施法条目"
+                "confirm": "已为<strong>{name}</strong>创建施法列表。",
+                "tooltip": "生成施法列表"
             },
             "primary": {
                 "assign": "指定为主附灵精魄",

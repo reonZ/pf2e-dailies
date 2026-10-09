@@ -148,28 +148,26 @@
           "none": "ninguno"
         }
       },
-      "staves": {
-        "empty": "Ranura vacía",
-        "flexible": "Ranura flexible",
-        "group": {
-          "prepared": "Ha preparado un {type} para el día",
-          "merged": "Ha fusionado un {type} a su arma vinculada para el día.",
-          "bond": "Ha preparado su arma vinculada para el día."
-        },
-        "staff": "Bastón",
-        "type": "Categoría",
-        "mergedshift": "Fusionado con el bastón improvisado",
-        "merged": "Se fusionó con el bastón estándar",
-        "makeshift": "Bastón improvisado",
-        "regular": "Bastón estándar"
+      "mindsmith": {
+        "missing": "Falta el arma mental"
       },
       "rations": {
         "yes": "Consumir ({nb} restante)",
         "no": "No consumir ninguno",
         "last": "Consumir el último disponible"
       },
-      "mindsmith": {
-        "missing": "Falta el arma mental"
+      "staves": {
+        "empty": "Ranura vacía",
+        "flexible": "Ranura flexible",
+        "group": {
+          "bond": "Ha preparado su arma vinculada para el día.",
+          "merged": "Ha fusionado un {type} a su arma vinculada para el día.",
+          "prepared": "Ha preparado un {type} para el día",
+          "shifted": "Ha incorporado un {tipo} a su bastón improvisado para el día."
+        },
+        "makeshift": "Bastón improvisado",
+        "regular": "Bastón normal",
+        "staff": "Bastón"
       }
     },
     "label": {
@@ -180,6 +178,8 @@
         "other": "Aparición #{nb}"
       },
       "expend": "Gastar #{nb}",
+      "feat": "Dote #{nb}",
+      "material": "Material",
       "rune": "Runa de propiedad",
       "select": "Seleccione {that}",
       "mind-smith": "Forjar Mente",

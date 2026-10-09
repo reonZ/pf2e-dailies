@@ -40,8 +40,8 @@ function createComboSkillDaily(
             }
 
             if (rows.skill.input) {
-                const source = utils.createLoreSource({ name: selected, rank });
-                addItem(source);
+                const source = utils.createLoreRuleElement({ label: selected, slug: selected, rank });
+                addRule(items.item, source);
             } else {
                 const skill = selected as SkillSlug;
                 const source = utils.createSkillRuleElement({
@@ -81,10 +81,11 @@ function createLoreSkillDaily(
                 },
             ];
         },
-        process: ({ items, rows, messages, addItem }) => {
-            const source = utils.createLoreSource({ name: rows.lore, rank });
-            addItem(source);
-            messages.add("skills", { uuid: items.item, selected: rows.lore });
+        process: ({ items, rows, messages, addRule }) => {
+            const label = rows.lore;
+            const source = utils.createLoreRuleElement({ slug: label, label, rank });
+            addRule(items.item, source);
+            messages.add("skills", { uuid: items.item, selected: label });
         },
     });
 }

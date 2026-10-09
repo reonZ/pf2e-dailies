@@ -64,8 +64,8 @@ const ancestralLongevity = createDaily({
             let selected = row.selected;
 
             if (row.input) {
-                const source = utils.createLoreSource({ name: selected, rank });
-                addItem(source);
+                const source = utils.createLoreRuleElement({ slug: selected, label: selected, rank });
+                addRule(item, source);
             } else {
                 const skill = selected as SkillSlug;
                 const source = utils.createSkillRuleElement({

@@ -1,6 +1,8 @@
+import { DailyRuleElement } from "daily";
 import {
     ActorPF2e,
     ArmorPF2e,
+    AttributeString,
     CharacterPF2e,
     ConsumableSource,
     createChatLink,
@@ -91,7 +93,7 @@ const utils = {
         mode?: "upgrade";
         value: number;
         predicate?: any[];
-    }) => {
+    }): DailyRuleElement => {
         const rule = {
             key: "ActiveEffectLike",
             mode,
@@ -102,7 +104,28 @@ const utils = {
 
         return rule;
     },
-    createLoreSource: ({ name, rank }: { name: string; rank: ZeroToFour }): PreCreate<LoreSource> => {
+    createLoreRuleElement: ({
+        attribute = "int",
+        label = "{item|name}",
+        rank = 1,
+        slug,
+    }: {
+        slug: string;
+        attribute?: AttributeString;
+        label?: string;
+        rank?: ZeroToFour | string;
+    }): DailyRuleElement => {
+        slug = SYSTEM.sluggify(slug);
+        const pathSlug = slug.endsWith("-lore") ? slug : `${slug}-lore`;
+
+        return {
+            key: "ActiveEffectLike",
+            mode: "override",
+            path: `system.skills.${pathSlug}`,
+            value: { attribute, label, rank },
+        };
+    },
+    createLoreSoGurce: ({ name, rank }: { name: string; rank: ZeroToFour }): PreCreate<LoreSource> => {
         return {
             type: "lore",
             img: SYSTEM.relativePath("icons/default-icons/lore.svg"),

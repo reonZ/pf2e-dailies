@@ -251,9 +251,9 @@ const animist = createDaily({
                 const filteredLores = R.filter(lores, R.isTruthy);
                 for (const lore of filteredLores) {
                     const name = animistConfig.lore ? lore.replace(LORE_STRIP_REGEX, "$1") : lore;
-                    const loreSource = utils.createLoreSource({ name, rank: loreRank });
+                    const loreSource = utils.createLoreRuleElement({ slug: name, label: name, rank: loreRank });
 
-                    addItem(loreSource);
+                    addRule(parent, loreSource);
 
                     if (animistConfig.lores) {
                         messages.add("skills", { label: name });

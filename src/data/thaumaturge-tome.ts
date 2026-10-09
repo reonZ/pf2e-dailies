@@ -126,8 +126,8 @@ const thaumaturgeTome = createDaily({
             let selected = rows[slug].selected;
 
             if (rows[slug].input) {
-                const source = utils.createLoreSource({ name: selected, rank });
-                addItem(source);
+                const source = utils.createLoreRuleElement({ slug: selected, label: selected, rank });
+                addRule(items.tome, source);
             } else {
                 const skill = selected as SkillSlug;
                 const source = utils.createSkillRuleElement({

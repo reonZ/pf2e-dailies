@@ -13,7 +13,7 @@
     ],
     "compatibility": {
         "minimum": "14.360",
-        "verified": "14.368",
+        "verified": "14.369",
         "maximum": "14"
     },
     "version": "4.20.1",
@@ -55,6 +55,11 @@
     },
     "languages": [
         {
+            "lang": "cn",
+            "name": "简体中文",
+            "path": "lang/cn.json"
+        },
+        {
             "lang": "en",
             "name": "English",
             "path": "lang/en.json"
@@ -73,11 +78,6 @@
             "lang": "pl",
             "name": "Polish",
             "path": "lang/pl.json"
-        },
-        {
-            "lang": "cn",
-            "name": "简体中文",
-            "path": "lang/cn.json"
         },
         {
             "lang": "pt-BR",

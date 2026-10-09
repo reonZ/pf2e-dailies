@@ -1,3 +1,9 @@
+# 4.21.0
+
+- this is a systems `8.6.0` and `1.6.0` release
+- convert all dailies that could generate a `Lore` item to use the new `RuleElement` solution
+- fix exposed module localize path (from `game.dailies.localize`)
+
 # 4.20.1
 
 - localization & foundry verified version bump

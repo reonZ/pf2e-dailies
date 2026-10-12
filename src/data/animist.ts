@@ -14,6 +14,7 @@ import {
     localize,
     R,
     setFlagProperty,
+    sortByLocaleCompare,
     SpellSource,
     splitListString,
     SYSTEM,
@@ -168,11 +169,7 @@ const animist = createDaily({
         const nbPrimary = items.medium && actor.level >= 9 ? 2 : 1;
         const index = await pack?.getIndex({ fields: ["system.traits.otherTags"] });
         const apparitions = index?.filter((entry) => entry.system.traits.otherTags?.includes("animist-apparition"));
-        const options = R.pipe(
-            apparitions ?? [],
-            R.map(({ name, uuid }) => ({ value: uuid, label: name })),
-            R.sortBy(R.prop("label")),
-        );
+        const options = R.map(apparitions ?? [], ({ name, uuid }) => ({ value: uuid, label: name }));
 
         for (const { entry } of homebrew) {
             options.push({
@@ -180,6 +177,8 @@ const animist = createDaily({
                 label: entry.name,
             });
         }
+
+        sortByLocaleCompare(options, "label");
 
         let nbApparitions = items.attunement ? 2 : 1;
         if (items.third) nbApparitions += 1;
@@ -193,7 +192,7 @@ const animist = createDaily({
                 slug: `apparition${i}`,
                 label: localize(`label.apparition.${labelKey}`, { nb: i }),
                 unique: uniqueId,
-                options: options,
+                options,
             };
         });
     },

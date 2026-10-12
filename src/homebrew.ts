@@ -22,6 +22,8 @@ const INDEX_TYPE: Record<HomebrewIndex, ItemType> = {
 };
 
 class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) {
+    static #moduleEntries: HomebrewEntries = R.fromKeys(INDEX, () => []);
+
     #selected: HomebrewIndex | undefined;
 
     static DEFAULT_OPTIONS: DeepPartial<fa.ApplicationConfiguration> = {
@@ -51,7 +53,7 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
     };
 
     static get homebrews() {
-        return getSetting<Partial<Record<HomebrewIndex, string[]>>>("homebrewEntries");
+        return getSetting<Partial<HomebrewEntries>>("homebrewEntries");
     }
 
     get title(): string {
@@ -62,13 +64,27 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
         return this.#selected && INDEX.includes(this.#selected) ? this.#selected : undefined;
     }
 
-    static getEntries(index: HomebrewIndex) {
+    static registerEntries(entries: unknown) {
+        if (!R.isPlainObject(entries)) return;
+
+        for (const [index, ids] of R.entries(entries)) {
+            if (!R.isIncludedIn(index, INDEX) || !R.isArray(ids)) continue;
+
+            this.#moduleEntries[index].push(
+                ...ids.filter((id): id is string => R.isString(id) && !!this.getEntryData(index, id)),
+            );
+        }
+    }
+
+    static getEntries(index: HomebrewIndex): { isPack: boolean; entry: CompendiumIndexData }[] {
         if (!INDEX.includes(index)) return [];
 
         return R.pipe(
-            HomebrewsMenu.homebrews[index] ?? [],
+            this.homebrews[index] ?? [],
+            R.concat(this.#moduleEntries[index]),
+            R.unique(),
             R.map((id) => {
-                const result = HomebrewsMenu.getEntryData(index, id);
+                const result = this.getEntryData(index, id);
                 if (!result) return;
 
                 if (!result.isPack) return [result];
@@ -96,27 +112,35 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
         return entry?.type === INDEX_TYPE[index] ? { entry, isPack: false } : undefined;
     }
 
-    async _prepareContext(_options: fa.ApplicationRenderOptions): Promise<HomebrewsMenuContext> {
-        const homebrewsSettings = HomebrewsMenu.homebrews;
-        const selected = this.selected;
+    static prepareEntries(index: HomebrewIndex | undefined): HomebrewEntry[] {
+        if (!index || !INDEX.includes(index)) return [];
 
-        const entries = R.pipe(
-            (selected && homebrewsSettings[selected]) ?? [],
-            R.map((id): HomebrewEntry | undefined => {
-                const result = HomebrewsMenu.getEntryData(selected, id);
-                if (!result) return;
+        return R.pipe(
+            [
+                [this.homebrews[index] ?? [], false],
+                [this.#moduleEntries[index], true],
+            ] as const,
+            R.flatMap(([entries, isModule]) => {
+                return entries.map((id): HomebrewEntry | undefined => {
+                    const result = this.getEntryData(index, id);
+                    if (!result) return;
 
-                const { entry, isPack } = result;
-                const [img, name] = isPack
-                    ? [null, entry.metadata.label]
-                    : [entry.img.trim() || "icons/sundries/books/book-red-exclamation.webp", entry.name];
+                    const { entry, isPack } = result;
+                    const [img, name] = isPack
+                        ? [null, entry.metadata.label]
+                        : [entry.img.trim() || "icons/sundries/books/book-red-exclamation.webp", entry.name];
 
-                return { id, img, name, isPack };
+                    return { id, img, name, isModule, isPack };
+                });
             }),
             R.filter(R.isTruthy),
+            R.uniqueBy(R.prop("id")),
             R.sortBy([R.prop("isPack"), "desc"], R.prop("name")),
         );
+    }
 
+    async _prepareContext(_options: fa.ApplicationRenderOptions): Promise<HomebrewsMenuContext> {
+        const selected = this.selected;
         const index: HomebrewsMenuContext["index"] = R.pipe(
             INDEX,
             R.map((id) => {
@@ -131,7 +155,7 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
 
         return {
             disabled: !selected,
-            entries,
+            entries: HomebrewsMenu.prepareEntries(selected),
             i18n: localize.i18n("homebrew"),
             index,
         };
@@ -251,9 +275,12 @@ type HomebrewEntry = {
     id: string;
     img: string | null;
     name: string;
+    isModule: boolean;
     isPack: boolean;
 };
 
 type HomebrewIndex = (typeof INDEX)[number];
+
+type HomebrewEntries = Record<HomebrewIndex, string[]>;
 
 export { HomebrewsMenu };

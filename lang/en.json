@@ -97,6 +97,7 @@
                 "familiar": "Familiar Abilities",
                 "animist": "Animist Apparitions"
             },
+            "lock": "This entry has been regitered by a module",
             "pack": "Compendium Pack",
             "add": "Add Entry",
             "delete": "Delete Entry",

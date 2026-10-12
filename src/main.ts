@@ -28,6 +28,7 @@ import {
     StaffSpellcasting,
 } from "data";
 import { ActorPF2e, CharacterPF2e, getSetting, htmlClosest, localize, MODULE } from "foundry-helpers";
+import { HomebrewsMenu } from "homebrew";
 import { registerSettings } from "settings";
 import { utils } from "utils";
 import { registerInitWrappers, registerReadyWrappers } from "wrappers";
@@ -78,6 +79,7 @@ MODULE.apiExpose("getStaffItem", (actor: CharacterPF2e) => {
 MODULE.apiExpose("isTacticAbility", isTacticAbility);
 MODULE.apiExpose("openDailiesInterface", openDailiesInterface);
 MODULE.apiExpose("registerCustomDailies", registerCustomDailies);
+MODULE.apiExpose("registerHomebrewEntries", HomebrewsMenu.registerEntries.bind(HomebrewsMenu));
 MODULE.apiExpose("retrain", retrain);
 MODULE.apiExpose("retrainFromElement", async (actor: ActorPF2e, target: HTMLElement) => {
     const itemId = htmlClosest(target, "[data-item-id]")?.dataset.itemId;

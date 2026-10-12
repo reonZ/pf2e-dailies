@@ -6,12 +6,18 @@
                 {{#if entry.img}}
                 <img src="{{entry.img}}">
                 {{else}}
-                <i class="fa-solid fa-folder pack" {{{@root.i18n.tooltip 'pack' }}}></i>
+                <i class="fa-solid fa-folder pack" {{{@root.i18n.tooltip 'pack'}}}></i>
                 {{/if}}
                 <a class="name" data-action="open-entry">{{entry.name}}</a>
+                {{#if entry.isModule}}
+                <span {{{@root.i18n.tooltip 'lock'}}}>
+                    <i class="fa-solid fa-lock"></i>
+                </span>
+                {{else}}
                 <a data-action="delete-entry" {{{@root.i18n.tooltip 'delete' }}}>
                     <i class="fas fa-trash"></i>
                 </a>
+                {{/if}}
             </div>
             {{/each}}
         </section>

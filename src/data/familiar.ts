@@ -35,17 +35,20 @@ const familiar = createDaily({
     condition: (actor) => !!actor.familiar?.isOwner,
     rows: async (actor) => {
         const nbAbilities = getFamiliarAbilityCount(actor);
+        if (!nbAbilities) return [];
+
+        const homebrew = HomebrewsMenu.getEntries("familiar");
         const pack = SYSTEM.getPack("pf2e.familiar-abilities", "pf2e-anachronism.familiar-abilities");
-        if (!nbAbilities || !pack) return [];
+        if (!pack && !homebrew.length) return [];
 
         const uniqueId = foundry.utils.randomID();
-        const options = pack.index.map(({ _id, uuid, name }) => ({
+        const options = R.map(pack?.index.contents ?? [], ({ _id, uuid, name }) => ({
             value: uuid,
             label: name,
             skipUnique: SKIP_UNIQUES.includes(_id),
         }));
 
-        for (const { entry } of HomebrewsMenu.getEntries("familiar")) {
+        for (const { entry } of homebrew) {
             options.push({
                 value: entry.uuid,
                 label: entry.name,

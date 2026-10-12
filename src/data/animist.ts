@@ -160,20 +160,21 @@ const animist = createDaily({
     rows: async (actor, items) => {
         if (!items.attunement && !items.dedication) return [];
 
+        const homebrew = HomebrewsMenu.getEntries("animist");
         const pack = SYSTEM.getPack("pf2e.classfeatures", "pf2e-anachronism.class-features");
-        if (!pack) return [];
+        if (!pack && !homebrew.length) return [];
 
         const uniqueId = foundry.utils.randomID();
         const nbPrimary = items.medium && actor.level >= 9 ? 2 : 1;
-        const index = await pack.getIndex({ fields: ["system.traits.otherTags"] });
-        const apparitions = index.filter((entry) => entry.system.traits.otherTags?.includes("animist-apparition"));
+        const index = await pack?.getIndex({ fields: ["system.traits.otherTags"] });
+        const apparitions = index?.filter((entry) => entry.system.traits.otherTags?.includes("animist-apparition"));
         const options = R.pipe(
-            apparitions,
+            apparitions ?? [],
             R.map(({ name, uuid }) => ({ value: uuid, label: name })),
             R.sortBy(R.prop("label")),
         );
 
-        for (const { entry } of HomebrewsMenu.getEntries("animist")) {
+        for (const { entry } of homebrew) {
             options.push({
                 value: entry.uuid,
                 label: entry.name,

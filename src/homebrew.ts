@@ -51,7 +51,7 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
     };
 
     static get homebrews() {
-        return getSetting<Record<HomebrewIndex, string[]>>("homebrewEntries");
+        return getSetting<Partial<Record<HomebrewIndex, string[]>>>("homebrewEntries");
     }
 
     get title(): string {
@@ -154,11 +154,12 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
         const type = utils.getItemTypeLabel(INDEX_TYPE[index]);
 
         if (entry && HomebrewsMenu.getEntryData(index, entry)) {
-            const homebrew = HomebrewsMenu.homebrews[index]?.slice() ?? [];
+            const homebrews = HomebrewsMenu.homebrews;
+            const homebrew = (homebrews[index] ??= []);
 
             if (!homebrew.includes(entry)) {
                 homebrew.push(entry);
-                await setSetting(`homebrewEntries`, { [index]: homebrew });
+                await setSetting(`homebrewEntries`, homebrews);
                 this.render();
             } else {
                 input.value = "";
@@ -175,10 +176,11 @@ class HomebrewsMenu extends apps.HandlebarsApplicationMixin(apps.ApplicationV2) 
         const index = this.selected;
         if (!index) return;
 
-        const homebrew = HomebrewsMenu.homebrews[index]?.slice();
+        const homebrews = HomebrewsMenu.homebrews;
+        const homebrew = homebrews[index];
 
         if (homebrew?.findSplice((entry) => entry === id)) {
-            await setSetting(`homebrewEntries`, { [index]: homebrew });
+            await setSetting(`homebrewEntries`, homebrews);
             this.render();
         }
     }

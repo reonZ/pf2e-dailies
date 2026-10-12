@@ -1,3 +1,9 @@
+# 4.22.0
+
+- add new api function `registerHomebrewEntries` allowing third parties to register homebrew entries
+- fix `Animist Dedication` homebrew options not being sorted with the compendium entries
+- fix adding/deleting homebrew entries in one category completely clearing the other categories
+
 # 4.21.0
 
 - this is a systems `8.6.0` and `1.6.0` release

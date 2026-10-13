@@ -34,11 +34,12 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
     statistic: Statistic;
     tradition: MagicTradition | null;
     castPredicate: Predicate;
-    staff: dailies.StaffPF2e;
+    item: dailies.StaffPF2e;
+    itemCategory: "staff" | "server";
 
     constructor(
         { id, name, actor, statistic, tradition, castPredicate }: StaffSpellcastingConstructorParams<CharacterPF2e>,
-        staff: dailies.StaffPF2e,
+        item: dailies.StaffPF2e,
     ) {
         this.id = id;
         this.name = name;
@@ -46,7 +47,8 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
         this.statistic = statistic;
         this.tradition = tradition ?? null;
         this.castPredicate = new game.pf2e.Predicate(castPredicate);
-        this.staff = staff;
+        this.item = item;
+        this.itemCategory = item.system.traits.value.includes("staff") ? "staff" : "server";
     }
 
     get counteraction(): Statistic {
@@ -97,13 +99,21 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
         return true;
     }
 
+    get isStaff(): boolean {
+        return this.itemCategory === "staff";
+    }
+
+    get itemData(): dailies.StaffFlags | undefined {
+        return this.isStaff ? getStaffData(this.actor) : getStaffData(this.actor);
+    }
+
     canCast(spell: SpellPF2e): boolean {
         if (this.actor !== spell.actor) {
             return false;
         }
 
         const rollOptions = new Set([
-            ...this.staff.getRollOptions("item"),
+            ...this.item.getRollOptions("item"),
             ...spell.getRollOptions("spell", { includeVariants: true }),
         ]);
 
@@ -117,17 +127,15 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
         const actor = this.actor;
         const castRank = spell.rank;
         const canCast = spell.isCantrip || canCastRank(actor, castRank);
-        const staffData = getStaffData(this.actor);
+        const itemData = this.itemData;
 
-        if (!staffData || canCast === null) {
+        if (!itemData || canCast === null) {
             localize.error("staves.error.missing");
             return;
         }
 
-        const staff = actor.inventory.get(staffData.staffId)!;
-
-        if (!staff.isEquipped) {
-            localize.warning("staves.error.notEquipped", { staff: staff.name });
+        if (!this.item.isEquipped) {
+            localize.warning("staves.error.notEquipped", { staff: this.name });
             return;
         }
 
@@ -139,7 +147,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
             return;
         }
 
-        if (!staffData || options.message === false || !this.canCast(spell)) {
+        if (!itemData || options.message === false || !this.canCast(spell)) {
             return;
         }
 
@@ -152,11 +160,11 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
             return;
         }
 
-        let charges = staffData.charges.value;
+        let charges = itemData.charges.value;
         let mustUseSpontaneous = charges < castRank;
         let useSpontaneous: null | false | { entry: string; slot: SlotKey } = false;
 
-        if (!staffData.expended) {
+        if (!itemData.expended) {
             const minRank = Math.min(options.spontaneous?.rank ?? castRank, castRank);
             const maxRank = getActorMaxRank(actor);
             const range = R.range(minRank, maxRank + 1) as OneToTen[];
@@ -228,7 +236,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
             }
 
             if (useSpontaneous) {
-                charges = getStaffData(actor)?.charges.value ?? 0;
+                charges = this.itemData?.charges.value ?? 0;
                 mustUseSpontaneous = charges < castRank;
             }
         }
@@ -310,7 +318,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
             usesSpellProficiency: false,
             isCharges: true,
             isStaff: true,
-            uses: getStaffData(actor)?.charges ?? { value: 0, max: 0 },
+            uses: this.itemData?.charges ?? { value: 0, max: 0 },
         } satisfies ChargesSpellcastingSheetData;
     }
 }

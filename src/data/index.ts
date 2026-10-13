@@ -16,7 +16,7 @@ export * from "./root-magic";
 export * from "./scroll";
 export * from "./scroll-adept";
 export * from "./skill";
-export * from "./staves";
+export * from "./spellcasting";
 export * from "./thaumaturge-tome";
 export * from "./trickster-ace";
 export * from "./wandering";

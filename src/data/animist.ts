@@ -15,6 +15,7 @@ import {
     R,
     setFlagProperty,
     sortByLocaleCompare,
+    SpellcastingEntryPF2e,
     SpellSource,
     splitListString,
     SYSTEM,
@@ -417,7 +418,7 @@ function getAnimistConfigs(actor: CharacterPF2e) {
     );
 }
 
-function getAnimistVesselsData(actor: Maybe<ActorPF2e>) {
+function getAnimistVesselsData(actor: Maybe<ActorPF2e>): dailies.AnimistVesselsData | undefined {
     if (!(actor instanceof Actor) || !actor.isOfType("character")) return;
 
     const primaryVessels = getFlag<string[]>(actor, ANIMIST_VESSELS_PATH);
@@ -426,7 +427,7 @@ function getAnimistVesselsData(actor: Maybe<ActorPF2e>) {
     const vesselsEntry = actor.spellcasting.find((entry) => getFlagProperty(entry, "identifier") === "animist-focus");
     if (!isInstanceOf(vesselsEntry, "SpellcastingEntryPF2e")) return;
 
-    return { entry: vesselsEntry, primary: primaryVessels.slice() };
+    return { entry: vesselsEntry as SpellcastingEntryPF2e<CharacterPF2e>, primary: primaryVessels.slice() };
 }
 
 export { animist, ANIMIST_VESSELS_PATH, getAnimistConfigs, getAnimistVesselsData };

@@ -24,7 +24,6 @@ import {
     getStaffData,
     isTacticAbility,
     setStaffChargesValue,
-    StaffSpellcasting,
 } from "data";
 import { ActorPF2e, CharacterPF2e, getSetting, htmlClosest, localize, MODULE } from "foundry-helpers";
 import { HomebrewsMenu } from "homebrew";
@@ -60,42 +59,43 @@ Hooks.on("renderCharacterSheetPF2e", onRenderCharacterSheetPF2e);
 Hooks.on("renderFamiliarSheetPF2e", onRenderFamiliarSheetPF2e);
 Hooks.on("renderNPCSheetPF2e", onRenderNPCSheetPF2e);
 
-MODULE.apiExpose("animist", {
-    getAnimistConfigs,
-    getAnimistVesselsData,
-});
-MODULE.apiExpose("canPrepareDailies", canPrepareDailies);
-MODULE.apiExpose("commander", {
-    getCommanderTactics,
-    isTacticAbility,
-});
-MODULE.apiExpose("createRetrainBtn", createRetrainBtn);
-MODULE.apiExpose("getDailiesSummary", getDailiesSummary);
-MODULE.apiExpose("getDisabledDailies", getDisabledDailies);
-MODULE.apiExpose("openDailiesInterface", openDailiesInterface);
-MODULE.apiExpose("registerCustomDailies", registerCustomDailies);
-MODULE.apiExpose("registerHomebrewEntries", HomebrewsMenu.registerEntries.bind(HomebrewsMenu));
-MODULE.apiExpose("retrain", retrain);
-MODULE.apiExpose("retrainFromElement", async (actor: ActorPF2e, target: HTMLElement) => {
-    const itemId = htmlClosest(target, "[data-item-id]")?.dataset.itemId;
-    const retrainType = target.dataset.retrainType;
-    return (!!itemId && !!retrainType && retrain(actor, itemId, retrainType)) || undefined;
-});
-MODULE.apiExpose("staves", {
-    canCastRank,
-    getStaffData,
-    getStaffItem: (actor: CharacterPF2e) => {
-        const flag = getStaffData(actor);
-        return (flag && actor.inventory.get(flag.staffId)) || null;
+MODULE.apiExpose({
+    animist: {
+        getAnimistConfigs,
+        getAnimistVesselsData,
     },
-    setStaffChargesValue,
-    StaffSpellcasting: StaffSpellcasting,
-});
-MODULE.apiExpose("utils", utils);
-MODULE.apiExpose("dailyHelpers", {
-    createComboSkillDaily,
-    createLoreSkillDaily,
-    createLanguageDaily,
-    createResistanceDaily,
-    createScrollChainDaily,
-});
+    canPrepareDailies,
+    commander: {
+        getCommanderTactics,
+        isTacticAbility,
+    },
+    createRetrainBtn,
+    dailyHelpers: {
+        createComboSkillDaily,
+        createLoreSkillDaily,
+        createLanguageDaily,
+        createResistanceDaily,
+        createScrollChainDaily,
+    },
+    getDailiesSummary,
+    getDisabledDailies,
+    openDailiesInterface,
+    registerCustomDailies: registerCustomDailies as (dailies: object[]) => void,
+    registerHomebrewEntries: HomebrewsMenu.registerEntries.bind(HomebrewsMenu),
+    retrain,
+    retrainFromElement: async (actor: ActorPF2e, target: HTMLElement) => {
+        const itemId = htmlClosest(target, "[data-item-id]")?.dataset.itemId;
+        const retrainType = target.dataset.retrainType;
+        return (!!itemId && !!retrainType && retrain(actor, itemId, retrainType)) || undefined;
+    },
+    staves: {
+        canCastRank,
+        getStaffData,
+        getStaffItem: (actor: CharacterPF2e) => {
+            const flag = getStaffData(actor);
+            return (flag && actor.inventory.get(flag.staffId)) || null;
+        },
+        setStaffChargesValue,
+    },
+    utils,
+} satisfies dailies.Api);

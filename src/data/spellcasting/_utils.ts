@@ -15,7 +15,7 @@ import {
 import { utils } from "utils";
 import { zStaffData } from ".";
 
-const ACTIVATIONS_ENTRY_TYPES: Record<ActivationDailyType, ActivationsEntriesData> = {
+const ACTIVATIONS_ENTRY_TYPES: Record<dailies.ActivationType, ActivationsEntriesData> = {
     servers: {
         canCast: canSpellServerCastRank,
         getData: getSpellServerData,
@@ -50,7 +50,7 @@ function getPreparedSpellcastingData(
     return { maxCharges, specialStatistic };
 }
 
-function getData(actor: CharacterPF2e, type: ActivationDailyType): dailies.ActivationFlag | undefined {
+function getData(actor: CharacterPF2e, type: dailies.ActivationType): dailies.ActivationFlag | undefined {
     const flag = getFlag<dailies.ActivationFlag>(actor, `extra.dailies.${type}`);
     return (_staffData ??= zStaffData()).safeParse(flag).data as dailies.ActivationFlag | undefined;
 }
@@ -63,7 +63,7 @@ function getSpellServerData(actor: CharacterPF2e): dailies.ActivationFlag | unde
     return getData(actor, "servers");
 }
 
-function canCastRank(type: ActivationDailyType, actor: CharacterPF2e, rank: number): boolean | null {
+function canCastRank(type: dailies.ActivationType, actor: CharacterPF2e, rank: number): boolean | null {
     const dataFlag = ACTIVATIONS_ENTRY_TYPES[type].getData(actor);
     if (!dataFlag) return null;
 
@@ -154,8 +154,6 @@ function setSpecialStatisticData(data: dailies.ActivationFlag, statistic: Statis
 type ActorStaff<TActor extends CharacterPF2e | NPCPF2e = CharacterPF2e | NPCPF2e> =
     EquipmentPF2e<TActor> | WeaponPF2e<TActor>;
 
-type ActivationDailyType = "staves" | "servers";
-
 type ActivationsEntriesData = {
     canCast: (actor: CharacterPF2e, rank: number) => boolean | null;
     getData: (actor: CharacterPF2e) => dailies.ActivationFlag | undefined;
@@ -177,4 +175,4 @@ export {
     setSpellServerChargesValue,
     setStaffChargesValue,
 };
-export type { ActivationDailyType, ActivationsEntriesData, ActorStaff };
+export type { ActivationsEntriesData, ActorStaff };

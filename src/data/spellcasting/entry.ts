@@ -24,7 +24,7 @@ import {
     ZeroToTen,
 } from "foundry-helpers";
 import { ChargesSpellcastingSheetData, SpellcastingEntryWithCharges } from "spellcasting";
-import { ActivationDailyType, ACTIVATIONS_ENTRY_TYPES } from ".";
+import { ACTIVATIONS_ENTRY_TYPES } from ".";
 import { createCounteractStatistic } from "foundry-helpers/dist";
 
 class ActivationSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
@@ -35,7 +35,7 @@ class ActivationSpellcasting implements SpellcastingEntryWithCharges<CharacterPF
     tradition: MagicTradition | null;
     castPredicate: Predicate;
     item: dailies.ActivationItem;
-    activationType: ActivationDailyType;
+    activationType: dailies.ActivationType;
 
     constructor(
         {

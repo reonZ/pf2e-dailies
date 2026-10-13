@@ -12,6 +12,7 @@ import {
 import { CustomDaily, registerCustomDailies } from "custom";
 import { DAILY_SCHEMA, initializeDailies } from "dailies";
 import {
+    canSpellServerCastRank,
     canStaffCastRank,
     createComboSkillDaily,
     createLanguageDaily,
@@ -21,8 +22,10 @@ import {
     getAnimistConfigs,
     getAnimistVesselsData,
     getCommanderTactics,
+    getSpellServerData,
     getStaffData,
     isTacticAbility,
+    setSpellServerChargesValue,
     setStaffChargesValue,
 } from "data";
 import { ActorPF2e, CharacterPF2e, getSetting, htmlClosest, localize, MODULE } from "foundry-helpers";
@@ -88,14 +91,23 @@ MODULE.apiExpose({
         const retrainType = target.dataset.retrainType;
         return (!!itemId && !!retrainType && retrain(actor, itemId, retrainType)) || undefined;
     },
+    spellServers: {
+        canCastRank: canSpellServerCastRank,
+        getData: getSpellServerData,
+        getItem: (actor: CharacterPF2e) => {
+            const flag = getSpellServerData(actor);
+            return (flag && actor.inventory.get(flag.staffId)) || null;
+        },
+        setChargesValue: setSpellServerChargesValue,
+    },
     staves: {
         canCastRank: canStaffCastRank,
-        getStaffData,
-        getStaffItem: (actor: CharacterPF2e) => {
+        getData: getStaffData,
+        getItem: (actor: CharacterPF2e) => {
             const flag = getStaffData(actor);
             return (flag && actor.inventory.get(flag.staffId)) || null;
         },
-        setStaffChargesValue,
+        setChargesValue: setStaffChargesValue,
     },
     utils,
 } satisfies dailies.Api);

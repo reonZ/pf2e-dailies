@@ -21,7 +21,6 @@ import {
     getAnimistConfigs,
     getAnimistVesselsData,
     getCommanderTactics,
-    getSpells,
     getStaffData,
     isTacticAbility,
     setStaffChargesValue,
@@ -61,22 +60,18 @@ Hooks.on("renderCharacterSheetPF2e", onRenderCharacterSheetPF2e);
 Hooks.on("renderFamiliarSheetPF2e", onRenderFamiliarSheetPF2e);
 Hooks.on("renderNPCSheetPF2e", onRenderNPCSheetPF2e);
 
-MODULE.apiExpose("StaffSpellcasting", StaffSpellcasting);
-MODULE.apiExpose("canCastRank", canCastRank);
+MODULE.apiExpose("animist", {
+    getAnimistConfigs,
+    getAnimistVesselsData,
+});
 MODULE.apiExpose("canPrepareDailies", canPrepareDailies);
+MODULE.apiExpose("commander", {
+    getCommanderTactics,
+    isTacticAbility,
+});
 MODULE.apiExpose("createRetrainBtn", createRetrainBtn);
-MODULE.apiExpose("getAnimistConfigs", getAnimistConfigs);
-MODULE.apiExpose("getAnimistVesselsData", getAnimistVesselsData);
-MODULE.apiExpose("getCommanderTactics", getCommanderTactics);
 MODULE.apiExpose("getDailiesSummary", getDailiesSummary);
 MODULE.apiExpose("getDisabledDailies", getDisabledDailies);
-MODULE.apiExpose("getPhysicalItemSpells", getSpells);
-MODULE.apiExpose("getStaffData", getStaffData);
-MODULE.apiExpose("getStaffItem", (actor: CharacterPF2e) => {
-    const flag = getStaffData(actor);
-    return (flag && actor.inventory.get(flag.staffId)) || null;
-});
-MODULE.apiExpose("isTacticAbility", isTacticAbility);
 MODULE.apiExpose("openDailiesInterface", openDailiesInterface);
 MODULE.apiExpose("registerCustomDailies", registerCustomDailies);
 MODULE.apiExpose("registerHomebrewEntries", HomebrewsMenu.registerEntries.bind(HomebrewsMenu));
@@ -86,7 +81,16 @@ MODULE.apiExpose("retrainFromElement", async (actor: ActorPF2e, target: HTMLElem
     const retrainType = target.dataset.retrainType;
     return (!!itemId && !!retrainType && retrain(actor, itemId, retrainType)) || undefined;
 });
-MODULE.apiExpose("setStaffChargesValue", setStaffChargesValue);
+MODULE.apiExpose("staves", {
+    canCastRank,
+    getStaffData,
+    getStaffItem: (actor: CharacterPF2e) => {
+        const flag = getStaffData(actor);
+        return (flag && actor.inventory.get(flag.staffId)) || null;
+    },
+    setStaffChargesValue,
+    StaffSpellcasting: StaffSpellcasting,
+});
 MODULE.apiExpose("utils", utils);
 MODULE.apiExpose("dailyHelpers", {
     createComboSkillDaily,

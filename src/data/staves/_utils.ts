@@ -1,25 +1,17 @@
 import {
     CharacterPF2e,
-    createHTMLElement,
     EquipmentPF2e,
     getActorMaxRank,
     getFlag,
-    htmlQueryAll,
     ItemPF2e,
     NPCPF2e,
     OneToTen,
     R,
     setFlag,
     SpellcastingEntryPF2e,
-    SpellSource,
     WeaponPF2e,
-    ZeroToTen,
 } from "foundry-helpers";
-import { getUuidFromInlineMatch } from "utils";
 import { zStaffData } from ".";
-
-const LABEL_REGEX = /\d+/;
-const UUID_REGEX = /@(uuid|compendium)\[([a-z0-9\._-]+)\]/gi;
 
 let _staffData: ReturnType<typeof zStaffData> | undefined;
 
@@ -86,54 +78,8 @@ function getStaves<TActor extends CharacterPF2e | NPCPF2e>(actor: TActor): Actor
     ] as ActorStaff<TActor>[];
 }
 
-async function getSpells(
-    item: Maybe<ItemPF2e>,
-    maxRank: number,
-    entryId: string | null = null,
-): Promise<SpellSource[]> {
-    if (!item) return [];
-
-    const descriptionEl = createHTMLElement("div", { content: item.description });
-    const spellLists = descriptionEl.querySelectorAll("ul");
-    const spellList = spellLists[spellLists.length - 1];
-    if (!spellList) return [];
-
-    const spellsData = R.pipe(
-        htmlQueryAll(spellList, "li"),
-        R.flatMap((SpellRankEL) => {
-            const label = (SpellRankEL.firstChild as HTMLElement).textContent.split("@")[0];
-            const rank = Number(label.match(LABEL_REGEX)?.[0] || "0") as ZeroToTen;
-            const text = SpellRankEL.textContent ?? "";
-            const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
-
-            return uuids.map((uuid) => ({ rank, uuid }));
-        }),
-        R.filter(({ rank }) => rank <= maxRank),
-    );
-
-    const spells = await Promise.all(
-        spellsData.map(async ({ rank, uuid }) => {
-            const spell = await fromUuid<ItemPF2e>(uuid);
-            if (!(spell instanceof Item) || !spell.isOfType("spell")) return;
-
-            const source = spell.toObject();
-
-            source._id = foundry.utils.randomID();
-            source.system.location.value = entryId;
-
-            if (!spell.isCantrip && rank !== spell.baseRank) {
-                source.system.location.heightenedLevel = rank;
-            }
-
-            return source;
-        }),
-    );
-
-    return R.filter(spells, R.isTruthy);
-}
-
 type ActorStaff<TActor extends CharacterPF2e | NPCPF2e = CharacterPF2e | NPCPF2e> =
     EquipmentPF2e<TActor> | WeaponPF2e<TActor>;
 
-export { canCastRank, getSpells, getStaffData, getStaves, isStaff, setStaffChargesValue };
+export { canCastRank, getStaffData, getStaves, isStaff, setStaffChargesValue };
 export type { ActorStaff };

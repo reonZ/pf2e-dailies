@@ -7,6 +7,7 @@ import {
     ConsumableSource,
     createChatLink,
     CreatedSpellcastingEntrySource,
+    createHTMLElement,
     createSpellcastingSource,
     CreateSpellcastingSource,
     CreaturePF2e,
@@ -22,6 +23,7 @@ import {
     getSetting,
     getSkillLabel,
     getSpellRankLabel,
+    htmlQueryAll,
     ImageFilePath,
     ItemInstances,
     ItemPF2e,
@@ -55,6 +57,10 @@ import { createConsumableFromSpell } from "foundry-helpers/dist";
 import { getSpellcastingMaxRank } from "spellcasting";
 
 const utils = {
+    createChatLink: (itemOrUuid: ItemPF2e | string, label?: string): string => {
+        const uuid = itemOrUuid instanceof Item ? (itemOrUuid.sourceId ?? itemOrUuid.uuid) : itemOrUuid;
+        return createChatLink(uuid, { label });
+    },
     createExcludeFeatList: (
         actor: CharacterPF2e,
         categories: FeatOrFeatureCategory[],
@@ -77,28 +83,23 @@ const utils = {
 
         return source;
     },
-    createSpellScrollSource: (options: CreateSpellConsumableSourceOptions): Promise<ConsumableSource> => {
-        return createSpellConsumableSource("scroll", options);
-    },
-    createWandSource: (options: CreateSpellConsumableSourceOptions): Promise<ConsumableSource> => {
-        return createSpellConsumableSource("wand", options);
-    },
-    createSkillRuleElement: ({
-        skill,
-        mode = "upgrade",
-        value,
+    createLanguageRuleElement: ({
+        language,
+        mode = "add",
         predicate,
     }: {
-        skill: SkillSlug;
-        mode?: "upgrade";
-        value: number;
+        language: string;
+        mode?: "add";
         predicate?: any[];
-    }): DailyRuleElement => {
+    }) => {
         const rule = {
             key: "ActiveEffectLike",
             mode,
-            path: `system.skills.${skill}.rank`,
-            value,
+            path: "system.build.languages.granted",
+            value: {
+                slug: language,
+                source: "{item|name}",
+            },
             predicate,
         };
 
@@ -125,7 +126,7 @@ const utils = {
             value: { attribute, label, rank },
         };
     },
-    createLoreSoGurce: ({ name, rank }: { name: string; rank: ZeroToFour }): PreCreate<LoreSource> => {
+    createLoreSource: ({ name, rank }: { name: string; rank: ZeroToFour }): PreCreate<LoreSource> => {
         return {
             type: "lore",
             img: SYSTEM.relativePath("icons/default-icons/lore.svg"),
@@ -151,156 +152,26 @@ const utils = {
 
         return rule;
     },
-    createLanguageRuleElement: ({
-        language,
-        mode = "add",
+    createSkillRuleElement: ({
+        skill,
+        mode = "upgrade",
+        value,
         predicate,
     }: {
-        language: string;
-        mode?: "add";
+        skill: SkillSlug;
+        mode?: "upgrade";
+        value: number;
         predicate?: any[];
-    }) => {
+    }): DailyRuleElement => {
         const rule = {
             key: "ActiveEffectLike",
             mode,
-            path: "system.build.languages.granted",
-            value: {
-                slug: language,
-                source: "{item|name}",
-            },
+            path: `system.skills.${skill}.rank`,
+            value,
             predicate,
         };
 
         return rule;
-    },
-    createChatLink: (itemOrUuid: ItemPF2e | string, label?: string): string => {
-        const uuid = itemOrUuid instanceof Item ? (itemOrUuid.sourceId ?? itemOrUuid.uuid) : itemOrUuid;
-        return createChatLink(uuid, { label });
-    },
-    getSkillLabel: (skill: SkillSlug, localize?: boolean): string => {
-        return getSkillLabel(skill, localize);
-    },
-    getActorWeapons: <TActor extends ActorPF2e>(actor: TActor): WeaponPF2e<TActor>[] => {
-        return getActorWeapons(actor);
-    },
-    getSourceId: (item: ItemPF2e): ItemUUID => {
-        return getItemSourceId(item);
-    },
-    getItemSource: <T extends ItemType | "physical" | never>(
-        uuid: string,
-        type?: T,
-    ): T extends ItemType
-        ? Promise<ItemInstances<ActorPF2e>[T]["_source"] | null>
-        : T extends "physical"
-          ? Promise<PhysicalItemPF2e["_source"] | null>
-          : Promise<ItemSourcePF2e | null> => {
-        return getItemSourceFromUuid(uuid, type) as any;
-    },
-    getActorMaxRank: (actor: CreaturePF2e): OneToTen => {
-        return Math.max(1, Math.ceil(actor.level / 2)) as OneToTen;
-    },
-    getItemTypeLabel: (type: ItemType): string => {
-        return game.i18n.localize(`TYPES.Item.${type}`);
-    },
-    getChoiSetRuleSelection: (
-        item: ItemPF2e,
-        option?: string | { option?: string; flag?: string },
-    ): string | undefined => {
-        const options = typeof option === "string" ? { option } : option;
-        return getChoiceSetSelection(item, options);
-    },
-    getResistanceLabel: (resistance: ResistanceType, localize = true): string => {
-        const label = CONFIG.PF2E.resistanceTypes[resistance];
-        return localize ? game.i18n.localize(label).capitalize() : label;
-    },
-    getResistances: (): { value: ResistanceType; label: string }[] => {
-        return R.pipe(
-            CONFIG.PF2E.resistanceTypes,
-            R.entries(),
-            R.map(([value, label]) => ({ value, label: label.capitalize() })),
-        );
-    },
-    getLanguageLabel: (language: Language, localize = true): string => {
-        const label = CONFIG.PF2E.languages[language];
-        return localize ? game.i18n.localize(label) : label;
-    },
-    getLanguages: (): { value: Language; label: string }[] => {
-        return R.pipe(
-            CONFIG.PF2E.languages,
-            R.entries(),
-            R.map(([value, label]) => ({ value, label })),
-        );
-    },
-    getSkills: (): { value: SkillSlug; label: string }[] => {
-        return R.pipe(
-            CONFIG.PF2E.skills,
-            R.entries(),
-            R.map(([value, { label }]) => ({ value, label })),
-        );
-    },
-    getSpellRankLabel: (rank: ZeroToTen): string => {
-        return getSpellRankLabel(rank);
-    },
-    getSpellcastingMaxRank: (
-        actor: CharacterPF2e,
-        { tradition, rankLimit }: { tradition?: MagicTradition; rankLimit?: OneToTen } = {},
-    ): ZeroToTen => {
-        const maxRank = R.pipe(
-            actor.spellcasting.spellcastingFeatures,
-            tradition ? R.filter((entry) => entry.tradition === tradition) : R.identity(),
-            R.map((entry) => getSpellcastingMaxRank(entry, rankLimit)),
-            R.firstBy([R.identity(), "desc"]),
-        );
-        return maxRank ?? 0;
-    },
-    getActors: (actor?: CharacterPF2e): ActorPF2e[] => {
-        const list =
-            actor && getSetting("partyMembers") && actor.parties.size
-                ? Array.from(actor.parties).flatMap((party) => party.members)
-                : game.actors.filter((a) => a.hasPlayerOwner);
-        return actor ? list.filter((a) => a !== actor) : list;
-    },
-    getProficiencyLabel: (rank: OneToFour): string => {
-        return game.i18n.localize(CONFIG.PF2E.proficiencyLevels[rank]);
-    },
-    getWeaponPropertyRuneLabel: (rune: WeaponPropertyRuneType): string => {
-        return game.i18n.localize(`PF2E.WeaponPropertyRune.${rune}.Name`);
-    },
-    getWeaponPotencyRuneLabel: (potency: ZeroToFour): string => {
-        return game.i18n.localize(`PF2E.WeaponPotencyRune${potency}`);
-    },
-    getWeaponTraitLabel: (trait: WeaponTrait): string => {
-        return game.i18n.localize(CONFIG.PF2E.weaponTraits[trait]);
-    },
-    getWeaponDamageLabel: (damage: DamageType): string => {
-        return game.i18n.localize(CONFIG.PF2E.damageTypes[damage]);
-    },
-    getWeaponGroupLabel: (group: WeaponGroup): string => {
-        return game.i18n.localize(CONFIG.PF2E.weaponGroups[group]);
-    },
-    getPreciousMaterialLabel(material: PreciousMaterialType): string {
-        return game.i18n.localize(CONFIG.PF2E.preciousMaterials[material]);
-    },
-    hasFreePropertySlot: (item: WeaponPF2e): boolean => {
-        const potency = item.system.runes.potency;
-        return potency > 0 && item.system.runes.property.length < potency;
-    },
-    hasItemWithSourceId: (actor: ActorPF2e, uuid: string, type?: ItemType) => {
-        return !!findItemWithSourceId(actor, uuid, type);
-    },
-    selectRandomOption: (
-        options: (string | { value: string })[] | HTMLSelectElement | HTMLOptionsCollection,
-    ): string => {
-        options = options instanceof HTMLSelectElement ? options.options : options;
-        options =
-            options instanceof HTMLOptionsCollection ? Array.from(options).map((option) => option.value) : options;
-
-        if (options.length === 0) return "";
-
-        const roll = rollDie(options.length);
-        const result = options[roll - 1];
-
-        return typeof result === "object" ? result.value : result;
     },
     createSpellcastingEntrySource: (
         options: CreateSpellcastingSource & { identifier?: string },
@@ -312,6 +183,9 @@ const utils = {
         }
 
         return source;
+    },
+    createSpellScrollSource: (options: CreateSpellConsumableSourceOptions): Promise<ConsumableSource> => {
+        return createSpellConsumableSource("scroll", options);
     },
     createSpellSource: async (
         uuid: string,
@@ -337,12 +211,141 @@ const utils = {
 
         return source;
     },
+    createWandSource: (options: CreateSpellConsumableSourceOptions): Promise<ConsumableSource> => {
+        return createSpellConsumableSource("wand", options);
+    },
+    getActorMaxRank: (actor: CreaturePF2e): OneToTen => {
+        return Math.max(1, Math.ceil(actor.level / 2)) as OneToTen;
+    },
+    getActors: (actor?: CharacterPF2e): ActorPF2e[] => {
+        const list =
+            actor && getSetting("partyMembers") && actor.parties.size
+                ? Array.from(actor.parties).flatMap((party) => party.members)
+                : game.actors.filter((a) => a.hasPlayerOwner);
+        return actor ? list.filter((a) => a !== actor) : list;
+    },
+    getActorWeapons: <TActor extends ActorPF2e>(actor: TActor): WeaponPF2e<TActor>[] => {
+        return getActorWeapons(actor);
+    },
+    getChoiSetRuleSelection: (
+        item: ItemPF2e,
+        option?: string | { option?: string; flag?: string },
+    ): string | undefined => {
+        const options = typeof option === "string" ? { option } : option;
+        return getChoiceSetSelection(item, options);
+    },
+    getItemSource: <T extends ItemType | "physical" | never>(
+        uuid: string,
+        type?: T,
+    ): T extends ItemType
+        ? Promise<ItemInstances<ActorPF2e>[T]["_source"] | null>
+        : T extends "physical"
+          ? Promise<PhysicalItemPF2e["_source"] | null>
+          : Promise<ItemSourcePF2e | null> => {
+        return getItemSourceFromUuid(uuid, type) as any;
+    },
+    getItemTypeLabel: (type: ItemType): string => {
+        return game.i18n.localize(`TYPES.Item.${type}`);
+    },
+    getLanguageLabel: (language: Language, localize = true): string => {
+        const label = CONFIG.PF2E.languages[language];
+        return localize ? game.i18n.localize(label) : label;
+    },
+    getLanguages: (): { value: Language; label: string }[] => {
+        return R.pipe(
+            CONFIG.PF2E.languages,
+            R.entries(),
+            R.map(([value, label]) => ({ value, label })),
+        );
+    },
+    getPhysicalItemSpells,
+    getPreciousMaterialLabel(material: PreciousMaterialType): string {
+        return game.i18n.localize(CONFIG.PF2E.preciousMaterials[material]);
+    },
+    getProficiencyLabel: (rank: OneToFour): string => {
+        return game.i18n.localize(CONFIG.PF2E.proficiencyLevels[rank]);
+    },
+    getResistanceLabel: (resistance: ResistanceType, localize = true): string => {
+        const label = CONFIG.PF2E.resistanceTypes[resistance];
+        return localize ? game.i18n.localize(label).capitalize() : label;
+    },
+    getResistances: (): { value: ResistanceType; label: string }[] => {
+        return R.pipe(
+            CONFIG.PF2E.resistanceTypes,
+            R.entries(),
+            R.map(([value, label]) => ({ value, label: label.capitalize() })),
+        );
+    },
+    getRunedItemName: (item: WeaponPF2e | ArmorPF2e | ShieldPF2e): string => {
+        return item.name !== item._source.name ? `... ${item._source.name}` : item.name;
+    },
+    getSkillLabel: (skill: SkillSlug, localize?: boolean): string => {
+        return getSkillLabel(skill, localize);
+    },
+    getSourceId: (item: ItemPF2e): ItemUUID => {
+        return getItemSourceId(item);
+    },
+    getSkills: (): { value: SkillSlug; label: string }[] => {
+        return R.pipe(
+            CONFIG.PF2E.skills,
+            R.entries(),
+            R.map(([value, { label }]) => ({ value, label })),
+        );
+    },
+    getSpellcastingMaxRank: (
+        actor: CharacterPF2e,
+        { tradition, rankLimit }: { tradition?: MagicTradition; rankLimit?: OneToTen } = {},
+    ): ZeroToTen => {
+        const maxRank = R.pipe(
+            actor.spellcasting.spellcastingFeatures,
+            tradition ? R.filter((entry) => entry.tradition === tradition) : R.identity(),
+            R.map((entry) => getSpellcastingMaxRank(entry, rankLimit)),
+            R.firstBy([R.identity(), "desc"]),
+        );
+        return maxRank ?? 0;
+    },
+    getSpellRankLabel: (rank: ZeroToTen): string => {
+        return getSpellRankLabel(rank);
+    },
     getSpellWithRankLabel: (uuid: string, rank: OneToTen): string => {
         const name = fromUuidSync(uuid, { strict: false })?.name ?? "";
         return `${name} (${getSpellRankLabel(rank)})`;
     },
-    getRunedItemName: (item: WeaponPF2e | ArmorPF2e | ShieldPF2e): string => {
-        return item.name !== item._source.name ? `... ${item._source.name}` : item.name;
+    getWeaponDamageLabel: (damage: DamageType): string => {
+        return game.i18n.localize(CONFIG.PF2E.damageTypes[damage]);
+    },
+    getWeaponPotencyRuneLabel: (potency: ZeroToFour): string => {
+        return game.i18n.localize(`PF2E.WeaponPotencyRune${potency}`);
+    },
+    getWeaponPropertyRuneLabel: (rune: WeaponPropertyRuneType): string => {
+        return game.i18n.localize(`PF2E.WeaponPropertyRune.${rune}.Name`);
+    },
+    getWeaponTraitLabel: (trait: WeaponTrait): string => {
+        return game.i18n.localize(CONFIG.PF2E.weaponTraits[trait]);
+    },
+    getWeaponGroupLabel: (group: WeaponGroup): string => {
+        return game.i18n.localize(CONFIG.PF2E.weaponGroups[group]);
+    },
+    hasFreePropertySlot: (item: WeaponPF2e): boolean => {
+        const potency = item.system.runes.potency;
+        return potency > 0 && item.system.runes.property.length < potency;
+    },
+    hasItemWithSourceId: (actor: ActorPF2e, uuid: string, type?: ItemType) => {
+        return !!findItemWithSourceId(actor, uuid, type);
+    },
+    selectRandomOption: (
+        options: (string | { value: string })[] | HTMLSelectElement | HTMLOptionsCollection,
+    ): string => {
+        options = options instanceof HTMLSelectElement ? options.options : options;
+        options =
+            options instanceof HTMLOptionsCollection ? Array.from(options).map((option) => option.value) : options;
+
+        if (options.length === 0) return "";
+
+        const roll = rollDie(options.length);
+        const result = options[roll - 1];
+
+        return typeof result === "object" ? result.value : result;
     },
 };
 
@@ -391,6 +394,54 @@ function createUpdateCollection<T extends EmbeddedDocumentUpdateData>(): [Collec
     ];
 }
 
+const LABEL_REGEX = /\d+/;
+const UUID_REGEX = /@(uuid|compendium)\[([a-z0-9\._-]+)\]/gi;
+async function getPhysicalItemSpells(
+    item: Maybe<ItemPF2e>,
+    maxRank: number,
+    entryId: string | null = null,
+): Promise<SpellSource[]> {
+    if (!item) return [];
+
+    const descriptionEl = createHTMLElement("div", { content: item.description });
+    const spellLists = descriptionEl.querySelectorAll("ul");
+    const spellList = spellLists[spellLists.length - 1];
+    if (!spellList) return [];
+
+    const spellsData = R.pipe(
+        htmlQueryAll(spellList, "li"),
+        R.flatMap((SpellRankEL) => {
+            const label = (SpellRankEL.firstChild as HTMLElement).textContent.split("@")[0];
+            const rank = Number(label.match(LABEL_REGEX)?.[0] || "0") as ZeroToTen;
+            const text = SpellRankEL.textContent ?? "";
+            const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
+
+            return uuids.map((uuid) => ({ rank, uuid }));
+        }),
+        R.filter(({ rank }) => rank <= maxRank),
+    );
+
+    const spells = await Promise.all(
+        spellsData.map(async ({ rank, uuid }) => {
+            const spell = await fromUuid<ItemPF2e>(uuid);
+            if (!(spell instanceof Item) || !spell.isOfType("spell")) return;
+
+            const source = spell.toObject();
+
+            source._id = foundry.utils.randomID();
+            source.system.location.value = entryId;
+
+            if (!spell.isCantrip && rank !== spell.baseRank) {
+                source.system.location.heightenedLevel = rank;
+            }
+
+            return source;
+        }),
+    );
+
+    return R.filter(spells, R.isTruthy);
+}
+
 function getUuidFromInlineMatch(match: RegExpExecArray | RegExpMatchArray) {
     return match[1] === "Compendium" ? `Compendium.${match[2]}` : match[2];
 }
@@ -404,5 +455,5 @@ type CreateSpellConsumableSourceOptions = {
 
 type SimplifiableRuleValue = "half" | "level" | (string & {}) | (number & {});
 
-export { createUpdateCollection, getUuidFromInlineMatch, utils };
+export { createUpdateCollection, getPhysicalItemSpells, getUuidFromInlineMatch, utils };
 export type { SimplifiableRuleValue };

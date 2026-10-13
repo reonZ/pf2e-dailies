@@ -20,6 +20,7 @@ import {
     rations,
     rootMagic,
     scrollAdept,
+    servers,
     staves,
     thaumaturgeTome,
     tricksterAce,
@@ -64,6 +65,7 @@ const BUILTINS_DAILIES: Daily[] = [
     rations, // Rations
     rootMagic, // Root Magic
     scrollAdept, // Scroll Adept
+    servers, // Spell Servers
     staves, // Staves
     thaumaturgeTome, //Thaumaturge Tome
     tricksterAce, // Trickster Ace

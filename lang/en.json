@@ -30,6 +30,7 @@
         "builtin": {
             "dailies": {
                 "familiar": "Familiar Abilities",
+                "servers": "Prepare a Spell Server",
                 "staves": "Prepare a Staff",
                 "thaumaturge-tome": "Thaumaturge Tome",
                 "wandering": "Wandering Feats",

@@ -9,13 +9,13 @@ function zStatistic() {
 
 function zStaffData() {
     return z.object({
-        staffId: zDocumentId(true),
         charges: z.object({
             value: z.number(),
             max: z.number(),
         }),
         expended: z.boolean(),
         spells: z.array(z.record(z.string(), z.any())),
+        staffId: zDocumentId(true),
         statistic: zStatistic().optional(),
     });
 }

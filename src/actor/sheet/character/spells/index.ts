@@ -1,3 +1,3 @@
 export * from "./animist";
-export * from "./staff";
+export * from "./activations";
 export * from "./main";

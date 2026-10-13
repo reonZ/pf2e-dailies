@@ -12,7 +12,7 @@ import {
     ZeroToTen,
 } from "foundry-helpers";
 import { utils } from "utils";
-import { getStaves, isStaff } from ".";
+import { getPreparedSpellcastingData, getStaves, isStaff, setSpecialStatisticData } from ".";
 
 const STAFF_NEXUS = SYSTEM.itemUuid(
     "Compendium.pf2e.classfeatures.Item.Klb35AwlkNrq1gpB",
@@ -60,22 +60,10 @@ const staves = createDaily({
         );
     },
     prepare: (actor) => {
+        const data = getPreparedSpellcastingData(actor);
+        if (!data) return {};
+
         const entries = actor.spellcasting.spellcastingFeatures;
-
-        let maxCharges = 0;
-        const actorCharges = utils.getActorMaxRank(actor);
-        const specialStatistic = actor.getStatistic("kinetic-activation");
-
-        if (specialStatistic) {
-            maxCharges = Math.max(maxCharges, actorCharges);
-        } else {
-            maxCharges = utils.getSpellcastingMaxRank(actor, { rankLimit: actorCharges });
-        }
-
-        if (!maxCharges) {
-            return {};
-        }
-
         const preparedEntries: Record<string, FlexiblePreparedEntryGroup | PreparedEntryGroup> = {};
 
         for (const entry of entries.filter((entry) => entry.isPrepared)) {
@@ -130,7 +118,13 @@ const staves = createDaily({
 
         const runelordSin = getRunelordSin(actor);
 
-        return { entries, maxCharges, preparedEntries, runelordSin, specialStatistic };
+        return {
+            entries,
+            maxCharges: data.maxCharges,
+            preparedEntries,
+            runelordSin,
+            specialStatistic: data.specialStatistic,
+        };
     },
     rows: (actor, _items, custom) => {
         if (!custom.entries) {
@@ -355,21 +349,17 @@ const staves = createDaily({
         const isMakeshift = !!nexus && !staff;
         const charges = (isMakeshift ? 0 : maxCharges) + overcharge;
 
-        const staffData: dailies.StaffFlags = {
-            staffId: bond?.id ?? nexus?.id ?? staff!.id,
+        const staffData: dailies.ActivationFlag = {
             charges: {
                 value: charges,
                 max: charges,
             },
             expended: expendedSpells.length > 0,
             spells: [...nexusSpells, ...sinSpells, ...staffSpells],
+            staffId: bond?.id ?? nexus?.id ?? staff!.id,
         };
 
-        // we only handle kineticist activation for now
-        if (custom.specialStatistic?.slug === "kinetic-activation") {
-            staffData.statistic = { slug: custom.specialStatistic.slug, tradition: "primal" };
-        }
-
+        setSpecialStatisticData(staffData, custom.specialStatistic);
         setExtraFlags(staffData);
 
         const staffType = localize("interface.staves", isMakeshift ? "makeshift" : "staff");

@@ -12,7 +12,7 @@ import {
 import { CustomDaily, registerCustomDailies } from "custom";
 import { DAILY_SCHEMA, initializeDailies } from "dailies";
 import {
-    canCastRank,
+    canStaffCastRank,
     createComboSkillDaily,
     createLanguageDaily,
     createLoreSkillDaily,
@@ -89,7 +89,7 @@ MODULE.apiExpose({
         return (!!itemId && !!retrainType && retrain(actor, itemId, retrainType)) || undefined;
     },
     staves: {
-        canCastRank,
+        canCastRank: canStaffCastRank,
         getStaffData,
         getStaffItem: (actor: CharacterPF2e) => {
             const flag = getStaffData(actor);

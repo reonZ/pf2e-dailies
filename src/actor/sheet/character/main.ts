@@ -1,5 +1,4 @@
 import { canPrepareDailies, getActorFlag, getDailiesSummary, openDailiesInterface } from "actor";
-import { getStaffData } from "data";
 import {
     ActorSheetOptions,
     CharacterPF2e,
@@ -9,10 +8,9 @@ import {
     getSetting,
     htmlQuery,
     localize,
-    MODULE,
     R,
 } from "foundry-helpers";
-import { updateActionsTab, updateSpellsTab } from ".";
+import { moveCharacterSheetActicationsData, updateActionsTab, updateSpellsTab } from ".";
 
 async function onCharacterSheetGetData(
     this: CharacterSheetPF2e<CharacterPF2e>,
@@ -20,27 +18,7 @@ async function onCharacterSheetGetData(
     options?: ActorSheetOptions,
 ) {
     const data = (await wrapped(options)) as CharacterSheetData;
-
-    try {
-        const actor = this.actor;
-        const staffId = getStaffData(actor)?.staffId;
-        if (!staffId) return data;
-
-        const staff = actor.inventory.get(staffId);
-        if (!staff) return data;
-
-        const collectionId = `${staff.id}-casting`;
-        const knownCollections = data.spellCollectionGroups["known-spells"];
-
-        const collectionIndex = knownCollections.findIndex((group) => group.id === collectionId);
-        if (collectionIndex === -1) return data;
-
-        const collectionGroup = knownCollections.splice(collectionIndex, 1)[0];
-        data.spellCollectionGroups.activations.unshift(collectionGroup);
-    } catch (error: any) {
-        MODULE.error("CharacterSheetPF2e#getData", error);
-    }
-
+    moveCharacterSheetActicationsData(this.actor, data);
     return data;
 }
 

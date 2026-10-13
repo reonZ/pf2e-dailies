@@ -17,12 +17,13 @@ function onActorPrepareEmbeddedDocuments<TActor extends ActorPF2e>(
                     .map((r) => r.itemUUID)
                     .filter((i) => !!i);
                 const itemsToDelete = this.actor.inventory
-                    .filter(
-                        (i) =>
+                    .filter((i) => {
+                        return (
                             i.system.temporary &&
                             !getFlag(i, "temporary") &&
-                            (!i.sourceId || !specialResourceItems.includes(i.sourceId)),
-                    )
+                            (!i.sourceId || !specialResourceItems.includes(i.sourceId))
+                        );
+                    })
                     .map((i) => i.id);
 
                 if (itemsToDelete.length) {

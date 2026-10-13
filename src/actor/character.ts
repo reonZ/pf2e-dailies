@@ -1,12 +1,16 @@
-import { getStaffData, StaffSpellcasting } from "data";
+import { ACTIVATIONS_ENTRY_TYPES, ActivationSpellcasting } from "data";
 import {
+    ActorPF2e,
     CharacterPF2e,
     ChatMessagePF2e,
     getSpellCollectionCls,
+    MagicTradition,
     MODULE,
+    R,
     SpellcastingEntry,
     SpellSource,
     SpellToMessageOptions,
+    Statistic,
     SYSTEM,
 } from "foundry-helpers";
 import { getHighestSpellcastingStatistic } from "spellcasting";
@@ -14,80 +18,90 @@ import { getHighestSpellcastingStatistic } from "spellcasting";
 function onCharacterPrepareData(this: CharacterPF2e, wrapped: libWrapper.RegisterCallback): void {
     wrapped();
 
-    try {
-        const staffFlags = getStaffData(this);
-        if (!staffFlags) return;
-
-        const staff = this.items.get<dailies.StaffPF2e>(staffFlags.staffId);
-        if (!staff) return;
-
-        const staffStatistic = (() => {
-            if (staffFlags.statistic) {
-                const statistic = this.getStatistic(staffFlags.statistic.slug);
-                return statistic
-                    ? {
-                          statistic,
-                          tradition: staffFlags.statistic.tradition,
-                      }
-                    : undefined;
-            }
-            return getHighestSpellcastingStatistic(this);
-        })();
-
-        if (!staffStatistic) return;
-
-        const collectionId = `${staff.id}-casting`;
-        const staffEntry = new StaffSpellcasting(
-            {
-                ...staffStatistic,
-                id: collectionId,
-                name: staff.name,
-                actor: this,
-                castPredicate: [`item:id:${staff.id}`, { or: staffFlags.spells.map((s) => `spell:id:${s._id}`) }],
-            },
-            staff,
-        ) as unknown as SpellcastingEntry<CharacterPF2e>;
-
-        class StaffSpell extends CONFIG.PF2E.Item.documentClasses.spell<CharacterPF2e> {
-            override async toMessage(
-                event?: Maybe<PointerEvent>,
-                { actualCast, create = true, data, rollMode }: SpellToMessageOptions = {},
-            ): Promise<ChatMessagePF2e | undefined> {
-                const message = await super.toMessage(event, { actualCast, rollMode, data, create: false });
-                if (!message) return undefined;
-
-                const messageSource = message.toObject();
-
-                foundry.utils.setProperty(messageSource, `flags.${SYSTEM.id}.casting.embeddedSpell`, this.toObject());
-
-                if (!create) {
-                    message.updateSource(messageSource);
-                    return message;
-                }
-
-                return getDocumentClass("ChatMessage").create(messageSource, { renderSheet: false });
-            }
+    for (const [key, { getData }] of R.entries(ACTIVATIONS_ENTRY_TYPES)) {
+        try {
+            prepareActivationData.call(this, getData(this));
+        } catch (error: any) {
+            MODULE.error(`CharacterPF2e#prepareData (${key})`, error);
         }
-
-        const SpellCollection = getSpellCollectionCls(this);
-        const collection = new SpellCollection(staffEntry);
-
-        for (const spellSource of staffFlags.spells) {
-            const source: SpellSource = foundry.utils.mergeObject(
-                spellSource,
-                { "system.location.value": collectionId },
-                { inplace: false },
-            );
-
-            const spell = new StaffSpell(source, { parent: this });
-            collection.set(spell.id, spell);
-        }
-
-        this.spellcasting.set(staffEntry.id, staffEntry);
-        this.spellcasting.collections.set(collectionId, collection);
-    } catch (error: any) {
-        MODULE.error("CharacterPF2e#prepareData", error);
     }
+}
+
+function getItemStatistic(
+    this: CharacterPF2e,
+    data: dailies.ActivationFlag,
+): { statistic: Statistic<ActorPF2e>; tradition: MagicTradition | null } | undefined {
+    if (!data.statistic) {
+        return getHighestSpellcastingStatistic(this);
+    }
+
+    const statistic = this.getStatistic(data.statistic.slug);
+    if (!statistic) return;
+
+    return {
+        statistic,
+        tradition: data.statistic.tradition,
+    };
+}
+
+function prepareActivationData(this: CharacterPF2e, flagData: dailies.ActivationFlag | undefined) {
+    if (!flagData) return;
+
+    const item = this.items.get<dailies.ActivationItem>(flagData.staffId);
+    if (!item) return;
+
+    const statistic = getItemStatistic.call(this, flagData);
+    if (!statistic) return;
+
+    const collectionId = `${item.id}-casting`;
+    const spellcastingEntry = new ActivationSpellcasting(
+        {
+            ...statistic,
+            id: collectionId,
+            name: item.name,
+            actor: this,
+            castPredicate: [`item:id:${item.id}`, { or: flagData.spells.map((s) => `spell:id:${s._id}`) }],
+        },
+        item,
+    ) as unknown as SpellcastingEntry<CharacterPF2e>;
+
+    class ActivationSpell extends CONFIG.PF2E.Item.documentClasses.spell<CharacterPF2e> {
+        override async toMessage(
+            event?: Maybe<PointerEvent>,
+            { actualCast, create = true, data, rollMode }: SpellToMessageOptions = {},
+        ): Promise<ChatMessagePF2e | undefined> {
+            const message = await super.toMessage(event, { actualCast, rollMode, data, create: false });
+            if (!message) return undefined;
+
+            const messageSource = message.toObject();
+
+            foundry.utils.setProperty(messageSource, `flags.${SYSTEM.id}.casting.embeddedSpell`, this.toObject());
+
+            if (!create) {
+                message.updateSource(messageSource);
+                return message;
+            }
+
+            return getDocumentClass("ChatMessage").create(messageSource, { renderSheet: false });
+        }
+    }
+
+    const SpellCollection = getSpellCollectionCls(this);
+    const collection = new SpellCollection(spellcastingEntry);
+
+    for (const spellSource of flagData.spells) {
+        const source: SpellSource = foundry.utils.mergeObject(
+            spellSource,
+            { "system.location.value": collectionId },
+            { inplace: false },
+        );
+
+        const spell = new ActivationSpell(source, { parent: this });
+        collection.set(spell.id, spell);
+    }
+
+    this.spellcasting.set(spellcastingEntry.id, spellcastingEntry);
+    this.spellcasting.collections.set(collectionId, collection);
 }
 
 export { onCharacterPrepareData };

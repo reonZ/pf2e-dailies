@@ -1,6 +1,6 @@
 import { createChargesElement } from "actor";
 import { addListener, CharacterPF2e, createHTMLElement, htmlQuery, NPCPF2e } from "foundry-helpers";
-import { updateAnimistEntries, updateStavesEntries } from ".";
+import { updateAnimistEntries, updateSpellcastingEntries } from ".";
 import { SpellcastingEntryPF2eWithCharges } from "spellcasting";
 
 function updateSpellsTab(actor: CharacterPF2e, html: HTMLElement, highlightItems: boolean) {
@@ -17,7 +17,7 @@ function updateSpellsTab(actor: CharacterPF2e, html: HTMLElement, highlightItems
     });
 
     updateAnimistEntries(actor, spellsTab, isOwner);
-    updateStavesEntries(actor, spellsTab, highlightItems);
+    updateSpellcastingEntries(actor, spellsTab, highlightItems);
 }
 
 async function renderChargesEntries(

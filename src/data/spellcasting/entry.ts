@@ -24,22 +24,29 @@ import {
     ZeroToTen,
 } from "foundry-helpers";
 import { ChargesSpellcastingSheetData, SpellcastingEntryWithCharges } from "spellcasting";
-import { canCastRank, getStaffData, setStaffChargesValue } from ".";
+import { ActivationDailyType, ACTIVATIONS_ENTRY_TYPES } from ".";
 import { createCounteractStatistic } from "foundry-helpers/dist";
 
-class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
+class ActivationSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
     id: string;
     name: string;
     actor: CharacterPF2e;
     statistic: Statistic;
     tradition: MagicTradition | null;
     castPredicate: Predicate;
-    item: dailies.StaffPF2e;
-    itemCategory: "staff" | "server";
+    item: dailies.ActivationItem;
+    activationType: ActivationDailyType;
 
     constructor(
-        { id, name, actor, statistic, tradition, castPredicate }: StaffSpellcastingConstructorParams<CharacterPF2e>,
-        item: dailies.StaffPF2e,
+        {
+            id,
+            name,
+            actor,
+            statistic,
+            tradition,
+            castPredicate,
+        }: ActivationSpellcastingConstructorParams<CharacterPF2e>,
+        item: dailies.ActivationItem,
     ) {
         this.id = id;
         this.name = name;
@@ -48,7 +55,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
         this.tradition = tradition ?? null;
         this.castPredicate = new game.pf2e.Predicate(castPredicate);
         this.item = item;
-        this.itemCategory = item.system.traits.value.includes("staff") ? "staff" : "server";
+        this.activationType = item.system.traits.value.includes("staff") ? "staves" : "servers";
     }
 
     get counteraction(): Statistic {
@@ -100,11 +107,23 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
     }
 
     get isStaff(): boolean {
-        return this.itemCategory === "staff";
+        return this.activationType === "staves";
     }
 
-    get itemData(): dailies.StaffFlags | undefined {
-        return this.isStaff ? getStaffData(this.actor) : getStaffData(this.actor);
+    get isServer(): boolean {
+        return this.activationType === "servers";
+    }
+
+    get itemData(): dailies.ActivationFlag | undefined {
+        return ACTIVATIONS_ENTRY_TYPES[this.activationType].getData(this.actor);
+    }
+
+    setCharges(value: number): Promise<CharacterPF2e> | undefined {
+        return ACTIVATIONS_ENTRY_TYPES[this.activationType].setCharges(this.actor, value);
+    }
+
+    canCastRank(rank: ZeroToTen): boolean | null {
+        return ACTIVATIONS_ENTRY_TYPES[this.activationType].canCast(this.actor, rank);
     }
 
     canCast(spell: SpellPF2e): boolean {
@@ -126,7 +145,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
     ): Promise<void> {
         const actor = this.actor;
         const castRank = spell.rank;
-        const canCast = spell.isCantrip || canCastRank(actor, castRank);
+        const canCast = spell.isCantrip || this.canCastRank(castRank);
         const itemData = this.itemData;
 
         if (!itemData || canCast === null) {
@@ -164,7 +183,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
         let mustUseSpontaneous = charges < castRank;
         let useSpontaneous: null | false | { entry: string; slot: SlotKey } = false;
 
-        if (!itemData.expended) {
+        if (!itemData.expended && (this.isServer || castRank > 1)) {
             const minRank = Math.min(options.spontaneous?.rank ?? castRank, castRank);
             const maxRank = getActorMaxRank(actor);
             const range = R.range(minRank, maxRank + 1) as OneToTen[];
@@ -175,13 +194,13 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
                         (!options.spontaneous || options.spontaneous.entryId === entry.id)
                     );
                 }),
-                R.map((e) => ({
-                    id: e.id,
-                    name: e.name,
+                R.map((entry) => ({
+                    id: entry.id,
+                    name: entry.name,
                     slots: R.pipe(
                         range,
-                        R.filter((r) => {
-                            const slot = e.system.slots[`slot${r}`];
+                        R.filter((rank) => {
+                            const slot = entry.system.slots[`slot${rank}`];
                             return slot.max > 0 && slot.value > 0;
                         }),
                         R.map((r) => {
@@ -189,7 +208,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
                             return {
                                 key,
                                 rank: getSpellRankLabel(r),
-                                value: e.system.slots[key].value,
+                                value: entry.system.slots[key].value,
                             };
                         }),
                     ),
@@ -258,7 +277,9 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
             ]);
         }
 
-        await setStaffChargesValue(actor, spontaneousValue ? charges - 1 : charges - castRank);
+        if (!spontaneousValue || this.isStaff) {
+            await this.setCharges(spontaneousValue ? charges - 1 : charges - castRank);
+        }
 
         spell.toMessage(null, {
             actualCast: true,
@@ -289,7 +310,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
                     number: rank,
                     active: spells.map((spell) => ({
                         spell,
-                        expended: !canCastRank(actor, rank),
+                        expended: !this.canCastRank(rank),
                     })),
                 };
             }),
@@ -323,7 +344,7 @@ class StaffSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
     }
 }
 
-interface StaffSpellcastingConstructorParams<TActor extends CreaturePF2e> {
+interface ActivationSpellcastingConstructorParams<TActor extends CreaturePF2e> {
     id: string;
     name: string;
     actor: TActor;
@@ -332,4 +353,4 @@ interface StaffSpellcastingConstructorParams<TActor extends CreaturePF2e> {
     castPredicate: PredicateStatement[];
 }
 
-export { StaffSpellcasting };
+export { ActivationSpellcasting };

@@ -240,6 +240,9 @@ class ActivationSpellcasting implements SpellcastingEntryWithCharges<CharacterPF
                         entries,
                         multiEntries,
                     },
+                    no: {
+                        label: mustUseSpontaneous ? "Cancel" : localize.path("staves.spontaneous.no"),
+                    },
                     position: {
                         width: 500,
                     },

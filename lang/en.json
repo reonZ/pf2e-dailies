@@ -250,13 +250,14 @@
         "staves": {
             "bond": "Runelord Bond",
             "spontaneous": {
-                "title": "Use Spontaneous slot",
-                "remaining": "remaining",
-                "must": "You must consume a spontaneous slot of <strong>{rank}</strong>{higher} from {from}?",
-                "would": "Would you like to consume a spontaneous spell slot of <strong>{rank}</strong>{higher} from {from}?",
-                "one": "<strong>{entry}</strong>",
-                "multi": "any of the following spellcasting entries",
                 "higher": " or higher ",
+                "multi": "any of the following spellcasting entries",
+                "must": "You must consume a spontaneous slot of <strong>{rank}</strong>{higher} from {from}?",
+                "no": "Do not consume",
+                "one": "<strong>{entry}</strong>",
+                "remaining": "remaining",
+                "title": "Use Spontaneous slot",
+                "would": "Would you like to consume a spontaneous spell slot of <strong>{rank}</strong>{higher} from {from}?",
                 "yes": "Consume"
             },
             "error": {

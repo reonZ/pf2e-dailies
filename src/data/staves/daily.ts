@@ -12,7 +12,7 @@ import {
     ZeroToTen,
 } from "foundry-helpers";
 import { utils } from "utils";
-import { getSpells, getStaves, isStaff } from ".";
+import { getStaves, isStaff } from ".";
 
 const STAFF_NEXUS = SYSTEM.itemUuid(
     "Compendium.pf2e.classfeatures.Item.Klb35AwlkNrq1gpB",
@@ -270,9 +270,9 @@ const staves = createDaily({
         if (!custom.entries || (!staff && !bond && !nexus)) return;
 
         const maxCharges = custom.maxCharges;
-        const nexusSpells = await getSpells(nexus, maxCharges);
-        const sinSpells = await getSpells(sin, maxCharges);
-        const staffSpells = await getSpells(staff, maxCharges);
+        const nexusSpells = await utils.getPhysicalItemSpells(nexus, maxCharges);
+        const sinSpells = await utils.getPhysicalItemSpells(sin, maxCharges);
+        const staffSpells = await utils.getPhysicalItemSpells(staff, maxCharges);
         if (!sinSpells.length && !staffSpells.length && !nexusSpells.length) return;
 
         let overcharge = 0;

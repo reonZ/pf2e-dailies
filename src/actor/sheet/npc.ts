@@ -1,4 +1,4 @@
-import { ActorStaff, getSpells, getStaves } from "data";
+import { ActorStaff, getStaves } from "data";
 import {
     calculateCreatureDC,
     createHTMLElement,
@@ -11,6 +11,7 @@ import {
     NPCSheetPF2e,
 } from "foundry-helpers";
 import { renderChargesEntries } from ".";
+import { utils } from "utils";
 
 function onRenderNPCSheetPF2e(sheet: NPCSheetPF2e, $html: JQuery) {
     const actor = sheet.actor;
@@ -81,7 +82,7 @@ async function generateNpcStaff(actor: NPCPF2e, item: ActorStaff<NPCPF2e>) {
     const [entry] = await actor.createEmbeddedDocuments("Item", [entrySource]);
     if (!entry?.isOfType("spellcastingEntry")) return;
 
-    const spellsSources = await getSpells(item, maxCharges, entry.id);
+    const spellsSources = await utils.getPhysicalItemSpells(item, maxCharges, entry.id);
     await actor.createEmbeddedDocuments("Item", spellsSources);
 
     localize.info("sheet.generate.confirm", { name: item.name });

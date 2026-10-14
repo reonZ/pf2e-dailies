@@ -1,4 +1,4 @@
-import { ActorStaff, getStaves } from "data";
+import { ACTIVATIONS_ENTRY_TYPES } from "data";
 import {
     calculateCreatureDC,
     createHTMLElement,
@@ -9,6 +9,7 @@ import {
     MODULE,
     NPCPF2e,
     NPCSheetPF2e,
+    R,
 } from "foundry-helpers";
 import { renderChargesEntries } from ".";
 import { utils } from "utils";
@@ -30,34 +31,36 @@ function onRenderNPCSheetPF2e(sheet: NPCSheetPF2e, $html: JQuery) {
     const inventoryTab = htmlQuery(html, ".tab[data-tab='inventory'] .inventory-list");
     if (!inventoryTab) return;
 
-    for (const staff of getStaves(actor)) {
-        const controls = htmlQuery(inventoryTab, `[data-item-id="${staff.id}"] .item-controls`);
-        if (!controls) continue;
+    for (const { getItems } of R.values(ACTIVATIONS_ENTRY_TYPES)) {
+        for (const item of getItems(actor)) {
+            const controls = htmlQuery(inventoryTab, `[data-item-id="${item.id}"] .item-controls`);
+            if (!controls) continue;
 
-        const staffBtn = createHTMLElement("a", {
-            dataset: {
-                tooltip: MODULE.path("sheet.generate.tooltip"),
-            },
-            content: "<i class='fa-solid fa-wand-magic fa-fw'></i>",
-        });
+            const btn = createHTMLElement("a", {
+                dataset: {
+                    tooltip: MODULE.path("sheet.generate.tooltip"),
+                },
+                content: "<i class='fa-solid fa-wand-magic fa-fw'></i>",
+            });
 
-        staffBtn.addEventListener("click", () => generateNpcStaff(actor, staff));
+            btn.addEventListener("click", () => generateNpcActivationEntry(actor, item));
 
-        const generateBtn = htmlQuery(controls, `[data-action="generate-attack"]`);
-        if (generateBtn) {
-            generateBtn.replaceWith(staffBtn);
-        } else {
-            const editBtn = htmlQuery(controls, "[data-action='edit-item']");
-            if (editBtn) {
-                editBtn.before(staffBtn);
+            const generateBtn = htmlQuery(controls, `[data-action="generate-attack"]`);
+            if (generateBtn) {
+                generateBtn.replaceWith(btn);
             } else {
-                controls.prepend(staffBtn);
+                const editBtn = htmlQuery(controls, "[data-action='edit-item']");
+                if (editBtn) {
+                    editBtn.before(btn);
+                } else {
+                    controls.prepend(btn);
+                }
             }
         }
     }
 }
 
-async function generateNpcStaff(actor: NPCPF2e, item: ActorStaff<NPCPF2e>) {
+async function generateNpcActivationEntry(actor: NPCPF2e, item: dailies.ActivationItem<NPCPF2e>) {
     const existing = actor.spellcasting.spellcastingFeatures.at(0);
     const maxCharges = getActorMaxRank(actor);
 

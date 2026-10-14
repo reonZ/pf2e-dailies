@@ -10,7 +10,6 @@ import {
     setFlag,
     SpellcastingEntryPF2e,
     Statistic,
-    WeaponPF2e,
 } from "foundry-helpers";
 import { utils } from "utils";
 import { zStaffData } from ".";
@@ -19,11 +18,13 @@ const ACTIVATIONS_ENTRY_TYPES: Record<dailies.ActivationType, ActivationsEntries
     servers: {
         canCast: canSpellServerCastRank,
         getData: getSpellServerData,
+        getItems: getSpellServers,
         setCharges: setSpellServerChargesValue,
     },
     staves: {
         canCast: canStaffCastRank,
         getData: getStaffData,
+        getItems: getStaves,
         setCharges: setStaffChargesValue,
     },
 };
@@ -133,11 +134,11 @@ function isSpellServer(item: ItemPF2e): boolean {
     return item.isOfType("equipment") && item.system.traits?.value.includes("spell-server") && item.isMagical;
 }
 
-function getStaves<TActor extends CharacterPF2e | NPCPF2e>(actor: TActor): ActorStaff<TActor>[] {
+function getStaves<TActor extends CharacterPF2e | NPCPF2e>(actor: TActor): dailies.ActivationItem<TActor>[] {
     return [
         ...actor.itemTypes.weapon.filter(isStaff),
         ...actor.itemTypes.equipment.filter(isStaff),
-    ] as ActorStaff<TActor>[];
+    ] as dailies.ActivationItem<TActor>[];
 }
 
 function getSpellServers<TActor extends CharacterPF2e | NPCPF2e>(actor: TActor): EquipmentPF2e<TActor>[] {
@@ -151,12 +152,10 @@ function setSpecialStatisticData(data: dailies.ActivationFlag, statistic: Statis
     }
 }
 
-type ActorStaff<TActor extends CharacterPF2e | NPCPF2e = CharacterPF2e | NPCPF2e> =
-    EquipmentPF2e<TActor> | WeaponPF2e<TActor>;
-
 type ActivationsEntriesData = {
     canCast: (actor: CharacterPF2e, rank: number) => boolean | null;
     getData: (actor: CharacterPF2e) => dailies.ActivationFlag | undefined;
+    getItems: <T extends CharacterPF2e | NPCPF2e>(actor: T) => dailies.ActivationItem<T>[];
     setCharges: (actor: CharacterPF2e, value?: number) => Promise<CharacterPF2e> | undefined;
 };
 
@@ -175,4 +174,4 @@ export {
     setSpellServerChargesValue,
     setStaffChargesValue,
 };
-export type { ActivationsEntriesData, ActorStaff };
+export type { ActivationsEntriesData };

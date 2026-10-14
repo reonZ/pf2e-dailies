@@ -166,9 +166,7 @@ class ActivationSpellcasting implements SpellcastingEntryWithCharges<CharacterPF
             return;
         }
 
-        if (!itemData || options.message === false || !this.canCast(spell)) {
-            return;
-        }
+        if (!itemData || options.message === false || !this.canCast(spell)) return;
 
         if (spell.isCantrip) {
             spell.toMessage(null, {
@@ -267,9 +265,7 @@ class ActivationSpellcasting implements SpellcastingEntryWithCharges<CharacterPF
             ? actor.spellcasting.get(useSpontaneous.entry)?.system?.slots[useSpontaneous.slot].value
             : undefined;
 
-        if (charges < 1 || (mustUseSpontaneous && !spontaneousValue)) {
-            return;
-        }
+        if ((this.isStaff && charges < 1) || (mustUseSpontaneous && !spontaneousValue)) return;
 
         if (spontaneousValue && useSpontaneous) {
             await actor.updateEmbeddedDocuments("Item", [
@@ -341,6 +337,7 @@ class ActivationSpellcasting implements SpellcastingEntryWithCharges<CharacterPF
             hasCollection: !!spells?.size,
             usesSpellProficiency: false,
             isCharges: true,
+            isServer: this.isServer,
             isStaff: true,
             uses: this.itemData?.charges ?? { value: 0, max: 0 },
         } satisfies ChargesSpellcastingSheetData;

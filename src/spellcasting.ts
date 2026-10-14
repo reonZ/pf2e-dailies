@@ -288,6 +288,7 @@ type CreateSpellcastingSourceWithHighestStatistic = Omit<
 type SpellcastingSheetDataWithCharges = Omit<SpellcastingSheetData, "category"> & WithCharges;
 
 type ChargesSpellcastingSheetData = SpellcastingSheetDataWithCharges & {
+    isServer: boolean;
     isStaff: boolean;
     isCharges: boolean;
     uses: { value: number; max: number };

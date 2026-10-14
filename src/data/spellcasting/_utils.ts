@@ -78,7 +78,7 @@ function canCastRank(type: dailies.ActivationType, actor: CharacterPF2e, rank: n
 
     const charges = dataFlag.charges.value;
 
-    if (charges < 1) return false;
+    if (type === "staves" && charges < 1) return false;
     if (charges >= rank) return true;
 
     if (dataFlag.expended && charges < rank) return false;

@@ -64,12 +64,12 @@ Hooks.on("renderNPCSheetPF2e", onRenderNPCSheetPF2e);
 
 MODULE.apiExpose({
     animist: {
-        getAnimistConfigs,
-        getAnimistVesselsData,
+        getConfigs: getAnimistConfigs,
+        getVesselsData: getAnimistVesselsData,
     },
     canPrepareDailies,
     commander: {
-        getCommanderTactics,
+        getTactics: getCommanderTactics,
         isTacticAbility,
     },
     createRetrainBtn,

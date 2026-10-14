@@ -1,6 +1,18 @@
-# 4.22.0
+# 4.23.0
 
 - add new api function `registerHomebrewEntries` allowing third parties to register homebrew entries
+- add `utils.getPhysicalItemSpells` helper function
+- BREAKING: group (and sometime rename) all api functions related to a daily in a same object:
+  - `animist`, `commander`, `staves`,
+- BREAKING: remove the `getPhysicalItemSpells` api function (it is now in `utils`)
+- add `Prepare a Spell Server` builtin daily:
+  - the module handles it quite similarly to `Prepare a Staff`
+  - the `Generate Attack` button of spell server items in NPC sheets is replaced by a `Generate Spellcasting Entry`
+  - the rules are very brief and do not cover much, here is what was decided:
+    - you can only prepare a single `Spell Server`
+    - you can both prepare a `Staff` and a `Spell Server`
+  - expose `spellServers` function in the API
+- fix casting a staff spell of rank 1 opening the expend spontaneous popup
 - fix `Animist Dedication` homebrew options not being sorted with the compendium entries
 - fix adding/deleting homebrew entries in one category completely clearing the other categories
 

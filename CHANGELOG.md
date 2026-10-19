@@ -1,3 +1,8 @@
+# 4.23.1
+
+- `Prepare a Staff`:
+  - fix not being able to cast spell when merging a staff to another equipment (e.g. `Runelord`, `Staff Nexus`)
+
 # 4.23.0
 
 - add new api function `registerHomebrewEntries` allowing third parties to register homebrew entries

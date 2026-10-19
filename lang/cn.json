@@ -38,7 +38,8 @@
                 "thaumaturge-tome": "奇术师典奇具",
                 "staves": "准备法杖",
                 "wandering": "游移专长",
-                "warshard": "神雨遗锋"
+                "warshard": "神雨遗锋",
+                "servers": "准备法术服务器"
             }
         },
         "config": {
@@ -49,7 +50,7 @@
                 "lore": "移除学识后缀",
                 "spells": "显示法术汇总"
             },
-            "title": "{actor} -每日准备配置"
+            "title": "{actor} - 每日准备配置"
         },
         "customs": {
             "list": {
@@ -76,9 +77,9 @@
                 "title": "创建心灵武器",
                 "yes": "创建",
                 "flavor": "该角色的物品栏中没有心灵武器。<br>请选择下列选项之一创建一把心灵武器。",
-                "oneTrait": " 且拥有 <strong>{trait1}</strong> 特征",
-                "twoTraits": " 且拥有 <strong>{trait1}</strong> 和 <strong>{trait2}</strong> 特征",
-                "label": "一件{hand}造成 <strong>1{die}</strong> 点伤害的武器，{hasTrait}",
+                "oneTrait": " 且具有<strong>{trait1}</strong>特征",
+                "twoTraits": " 且具有<strong>{trait1}</strong>和<strong>{trait2}</strong>特征",
+                "label": "一把造成<strong>1{die}</strong>点伤害的{hand}武器，{hasTrait}",
                 "held-in-two-hands": "双手"
             }
         },
@@ -96,8 +97,9 @@
             "pack": "合集包",
             "add": "添加条目",
             "delete": "删除条目",
-            "empty": "你必须提供合集包的ID或 <strong>{type}</strong>的UUID",
-            "invalid": "<strong>{entry}</strong>既不属于合集包的ID，也不是 <strong>{type}</strong>的UUID"
+            "empty": "你必须提供合集包的ID或<strong>{type}</strong>的UUID",
+            "invalid": "<strong>{entry}</strong>既不属于合集包的ID，也不是 <strong>{type}</strong>的UUID",
+            "lock": "该条目已被一个模组注册"
         },
         "interface": {
             "title": "{actor} - 每日准备",
@@ -171,7 +173,7 @@
             }
         },
         "error": {
-            "unexpected": "模组<strong>PF2e Dailies</strong>出现意外错误，详情请查看控制台（F12）。",
+            "unexpected": "<strong>PF2e Dailies</strong>模组出现意外错误，详情请查看控制台（F12）。",
             "incompatible": "存在一些自定义的每日准备项不兼容当前版本的<strong>PF2e Dailies</strong>。"
         },
         "label": {
@@ -255,7 +257,8 @@
                 "higher": " 或更高环 ",
                 "must": "你必须从{from}消耗一个<strong>{rank}</strong>{higher}的自发法术位吗？",
                 "would": "你想要从{from}中消耗一个<strong>{rank}</strong>{higher}的自发法术位吗？",
-                "multi": "下列任意施法条目"
+                "multi": "下列任意施法条目",
+                "no": "不消耗"
             },
             "error": {
                 "notEquipped": "你需要装备{staff}以使用它。",

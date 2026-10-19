@@ -24,7 +24,7 @@ import {
     ZeroToTen,
 } from "foundry-helpers";
 import { ChargesSpellcastingSheetData, SpellcastingEntryWithCharges } from "spellcasting";
-import { ACTIVATIONS_ENTRY_TYPES } from ".";
+import { ACTIVATIONS_ENTRY_TYPES, isSpellServer } from ".";
 import { createCounteractStatistic } from "foundry-helpers/dist";
 
 class ActivationSpellcasting implements SpellcastingEntryWithCharges<CharacterPF2e> {
@@ -55,7 +55,7 @@ class ActivationSpellcasting implements SpellcastingEntryWithCharges<CharacterPF
         this.tradition = tradition ?? null;
         this.castPredicate = new game.pf2e.Predicate(castPredicate);
         this.item = item;
-        this.activationType = item.system.traits.value.includes("staff") ? "staves" : "servers";
+        this.activationType = isSpellServer(item) ? "servers" : "staves";
     }
 
     get counteraction(): Statistic {
